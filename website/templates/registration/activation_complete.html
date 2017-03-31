@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Activation complete" %}{% endblock %}
+{% block content %}
+{% url 'auth_login' as auth_login_url %}
+{% blocktrans %}
+<div class = "modal-dialog" style = "padding-top: 30px; padding-bottom:30px;">
+<div class = "profile-form-container">
+<h2>
+Thanks, you have activated your account!  You may now <a href='{{ auth_login_url }}' style = "color: #8F3985">login</a> using the username and password you set at registration.
+</h2>
+</div>
+</div>
+{% endblocktrans %}
+{% endblock %}

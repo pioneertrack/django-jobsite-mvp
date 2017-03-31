@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}
+{{user.founder.startup_name}}
+{% endblock %}
+{% block content %}
+<div class = "profile-page">
+<div class="jumbotron">
+  <div class = "container">
+    <div id = "profile-hero" class = "row well">
+      <div class="col-md-4 centerfy">
+          <div class = 'profile-image text-center'>
+              <img src="{{user.founder.logo.url}}" class="img-responsive"/>
+          </div>
+      </div>
+      <div class = "colmd-8 centerfy">
+        <h1>{{user.founder.startup_name}}</h1>
+        <hr>
+        {%if profile %}
+        <button id="update" class = "btn btn-lg btn-success btn-outline">Update your company profile</button>
+        {%else%}
+        <button id="connect" class = "btn btn-lg btn-primary btn-outline">Contact</button>
+        {%endif%}
+      </div>
+    </div>
+  </div>
+</div>
+<div class = "container">
+  <div class = "row">
+    <div class = "col col-md-3 col-md-offset-2">
+      <h2>Seeking</h2>
+      {%if user.founder.seeking != "" %}
+      <h3>{{user.founder.get_seeking_display}}</h3>
+      {%else%}
+      <p>None</p>
+      {%endif%}
+      <hr>
+    </div>
+    <div class = "col col-md-4">
+      <h2>Hours wanted</h2>
+      {%if user.founder.get_hours_wanted_display != ""%} <h3>{{user.founder.get_hours_wanted_display}}</h3>{%else%}<h3>Any number of</h3>{%endif%}
+      <h2>hours per week</h2>
+      <hr>
+    </div>
+  </div>
+  <div class = "row">
+     <div class = "col col-md-8 col-md-offset-2">
+       <h2>About</h2>
+       <p>{{user.founder.description|linebreaks}}</p>
+       <hr>
+     </div>
+  </div>
+  <div class = "row">
+    <div class = "col col-md-8 col-md-offset-2">
+      <h2>Job openings</h2>
+      {%for job in jobs%}
+        <div class = "row">
+          <div class = "col col-sm-12 well">
+            <h2>{{job.title}}</h2>
+            <p>{{job.get_level_display}}</p>
+            {%if job.pay %}
+            <p>{{job.pay}}</p>
+            {%endif%}
+            {%if job.description %}
+            <p>{{job.description}}</p>
+            {%endif%}
+        </div>
+        </div>
+      {%endfor%}
+      <hr>
+    </div>
+  </div>
+  {%if user.founder.website != "" %}
+  <div class = "row">
+     <div class = "col col-md-8 col-md-offset-2">
+       <h2>Website</h2>
+       <h3>{{user.founder.website}}</h3>
+       <hr>
+     </div>
+  </div>
+  {%endif%}
+</div>
+</div>
+{%endblock%}

@@ -1,0 +1,184 @@
+{% load static %}
+<!doctype html>
+<html>
+    <head>
+        <link rel='shortcut icon' type='image/x-icon' href='/media/images/favicon/favicon-connectdevelop.ico' />
+        <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" type="text/css">
+        <link rel="stylesheet" href="{% static 'css/login.css' %}" type="text/css">
+        <link rel="stylesheet" href="{% static 'css/profile.css' %}" type="text/css">
+        <link rel="stylesheet" href="{% static 'css/searchbar.css' %}" type="text/css">
+        <link rel="stylesheet" href="{% static 'css/dropdown.css' %}" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+        <link rel="stylesheet" type="text/css" media="all"
+      href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/smoothness/jquery-ui.css"    />
+        <script src = "{% static 'jquery/dist/jquery.min.js' %}"></script>
+        <script src = "{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+        <script src = "{% static 'js/navbar.js' %}"></script>
+        <script src = "{% static 'js/jquery_formset.js' %}"></script>
+        <script src = "{% static 'js/script.js' %}"></script>
+        <script src = "{% static 'js/Modernizer.js' %}"></script>
+        <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <script src = "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.css">
+        <title>{% block title %}{% endblock %}</title>
+        <script>
+        $( function() {
+          $( ".date" ).datepicker();
+        });
+        {% if show_exp %}
+        $(function() {
+            $('#profileform .set .forminstance').formset({
+              prefix: 'experience_set',
+              deleteCssClass: 'remove',
+              deleteText:'[&mdash;] remove',
+              addCssClass:'add-another',
+              addText:'[+] Add work experience'
+            });
+          });
+        {% else %}
+          $(function() {
+              $('#profileform .set .forminstance').formset({
+                prefix: 'jobs_set',
+                deleteCssClass: 'remove',
+                deleteText:'[&mdash;] remove',
+                addCssClass:'add-another',
+                addText:'[+] Add work experience'
+              });
+            });
+          {%endif%}
+          $(document).ready(function() {
+          setTimeout(function() {
+              $('.message').fadeOut('slow');
+          }, 2000);
+        });
+        </script>
+    </head>
+    <body>
+      <header class="cd-auto-hide-header" style="z-index:1005;">
+        <div class = "logo"><a href = "/"><img src = "/media/images/favicon/logo.png"/>BearFounders </a></div>
+      	<nav class="cd-primary-nav">
+      		<a href="#cd-navigation" class="nav-trigger">
+      			<span>
+      				<em aria-hidden="true"></em>
+      				Menu
+      			</span>
+      		</a> <!-- .nav-trigger -->
+          {% if request.user.is_authenticated %}
+
+      		<ul id="cd-navigation">
+      			<li><a href="/profile/"><img id="headerthumbnail" src = "{%if not request.user.is_founder%}{{request.user.profile.image.url}}{%else%}{{request.user.founder.logo.url}}{%endif%}"> My Profile</a></li>
+            <li ><a href="/logout/">Logout</a></li>
+      		</ul>
+          {% elif not request.user.is_authenticated %}
+          <ul id="cd-navigation">
+      			<li>
+              {% if request.path != '/register/' %}
+              <button type="button" class="btn btn-register">Register</button>
+              {%else%}
+              <button type="button" class="btn btn-login">Login</button>
+              {%endif%}
+            </li>
+      		</ul>
+          {% endif %}
+      	</nav> <!-- .cd-primary-nav -->
+        {% if request.user.is_authenticated%}
+        <nav class="cd-secondary-nav">
+          <form id="mainform" action="/" autocomplete="off" method="POST">
+            {% csrf_token %}
+            <div id = "dropdown">
+            <div class="cd-dropdown-wrapper">
+              <a class="cd-dropdown-trigger" href="#0">Filter</a>
+              <nav class="cd-dropdown">
+                <a href="#0" class="cd-close">Close</a>
+                <ul class="cd-dropdown-content">
+                    <li class="has-children">
+                        <a href="/">Year</a>
+                        <ul class="cd-dropdown-icons is-hidden">
+                          <li class="go-back"><a href="#0">Menu</a></li>
+                          {%for x in years%}
+                          <li class = "checkbox"><label><input type="checkbox" name="year" value="{{x.0}}" {%if not posted or x.0 in oldvals%}checked{%endif%}><span class = "cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>{{x.1}}</label></li>
+                          {%endfor%}
+                          <li class = "see-all"><input type="submit" value="Update search"></li>
+                        </ul>
+                    </li>
+                    <li class="has-children">
+                    <a href="/">Major</a>
+                      <ul class="cd-dropdown-icons is-hidden">
+                        <li class="go-back"><a href="#0">Menu</a></li>
+                        {%for x in majors%}
+                        <li class = "checkbox"><label><input type="checkbox" name="major" value="{{x.0}}" {%if not posted or x.0 in oldvals%}checked{%endif%}><span class = "cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>{{x.1}}</label></li>
+                        {%endfor%}
+                        <li class = "see-all"><input class="regular-checkbox"type="submit" value="Update search"></li>
+                      </ul>
+                    </li>
+                    <li class="has-children">
+                    <a href="/">Primary Role</a>
+                      <ul class="cd-dropdown-icons is-hidden">
+                        <li class="go-back"><a href="#0">Menu</a></li>
+                        {%for x in roles%}
+                        <li class = "checkbox"><label><input type="checkbox" name="role" value="{{x.0}}" {%if not posted or x.0 in oldvals%}checked{%endif%}><span class = "cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>{{x.1}}</label></li>
+                        {%endfor%}
+                        <li class = "see-all"><input type="submit" value="Update search"></li>
+                      </ul>
+                    </li>
+                    <hr style="margin-top:0;">
+                    <li><div class = "checkbox"><label><input type="checkbox" name="startup" value ='True' {%if startup%}checked{%endif%}><span class = "cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>Has startup experience</label></div></li>
+                    <li><div class = "checkbox"><label><input type="checkbox" name="funding" value='True' {%if funding%}checked{%endif%}><span class = "cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>Has funding experience</label></div></li>
+                </ul>
+              </nav>
+            </div>
+            </div>
+          <div id="search" class="cd-main-search is-visible">
+            <div class = "searchform">
+        		<input type="search" name="query" placeholder="Search... ">
+        		<div class="cd-select">
+        			<span>in</span>
+        			<select id="selector" name="select-category">
+                <option value="people" {%if not founder%}selected{%endif%}>People</option>
+                <option value="startups"{%if founder%}selected{%endif%}>Startups</option>
+        			</select>
+        			<input name="category" type="hidden"><span class="selected-value" style="text-transform:capitalize;"></span></input>
+              <i class = "fa fa-chevron-down"></i>
+        		</div>
+
+            <div class = "cd-search-button">
+            <button id = "searchbutton" type="submit" class="btn btn-success">
+                <i class="fa fa-search"></i>
+            </button>
+          </div>
+        </div>
+        </div>
+      </form>
+      	</nav> <!-- .cd-secondary-nav -->
+        {% endif %}
+      </header> <!-- .cd-auto-hide-header -->
+      <main class="cd-main-content" style = "background-color:{% if not request.user.is_authenticated %} #25283D {% else %} white {% endif %}">
+        {% if messages and request.user.is_authenticated %}
+        <ul class="messages" >
+        </ul>
+        <div style = "position:fixed;width:30%;z-index:1000;bottom:1.5%;right:1%;">
+        {% for message in messages %}
+        <div class="message alert {% if message.tags %} alert-{{ message.tags }} {% endif %} fade in" style:"position:relative; z-index:1000; width:100%;">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            {% if message.tags %}<strong>{{ message.tags|capfirst }}!</strong>{% endif %} {{message}}.
+        </div>
+        {% endfor %}
+      </div>
+        {% elif request.user.is_authenticated %}
+        <div class = "messages"></div>
+        {% endif %}
+        {% block content %}{% endblock %}
+      </main> <!-- .cd-main-content -->
+      <a href="#0" class="cd-top"></a>
+    </body>
+    {% if request.user.first_name %}
+    <script type="text/javascript">
+
+        name = {%if not user.is_founder%}'{{user.first_name|safe}}'{%else%}'{{user.founder.startup_name|safe}}'{%endif%}
+        user = '{{user.id|safe}}'
+    </script>
+    {% endif %}
+</html>

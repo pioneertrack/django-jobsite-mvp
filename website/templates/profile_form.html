@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+{% trans "Update profile" %}
+{% endblock %}
+{% block content %}
+<div class = "profile-form">
+  <div class="modal-dialog">
+  <div id = "updateprofile" class = "profile-form-container">
+    <h1> Update your profile </h1><br>
+    <form id = "profileform"method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% for dict in experience.errors %}
+          {% for error in dict.values %}
+            <div class="alert alert-danger">
+              <strong>Error!</strong> {{ error }}
+            </div>
+          {% endfor %}
+      {% endfor %}
+      {% for dict in jobs.errors %}
+          {% for error in dict.values %}
+            <div class="alert alert-danger">
+              <strong>Error!</strong> {{ error }}
+            </div>
+          {% endfor %}
+      {% endfor %}
+      <h1>Basic info</h1>
+      <hr>
+      {{ profile_form|crispy }}
+      {%if show_exp %}
+      <h1>Experience</h1>
+      <hr>
+        <div class ="set">
+            {% for form in experience.forms %}
+            <div class = "forminstance">
+              <strong>Company</strong>
+               <p>
+                  {{ form.company }}{% if form.instance.pk %}{{ form.DELETE }}{% endif %}
+               </p>
+               <p>{{form.id}}</p>
+               <strong>Position</strong>
+               <p>{{ form.position }}</p>
+               <strong>Start Date (MM/DD/YY)</strong>
+               <p>{{ form.start_date }}</p>
+               <strong>End Date (MM/DD/YY)</strong>
+               <p>{{ form.end_date }}</p>
+               <strong>Description</strong>
+               <p>{{ form.description }}</p>
+               <hr style = "width:100%;">
+            </div>
+            {% endfor %}
+
+          </div>
+          {{experience.management_form}}
+        {%else%}
+        <h1>Job openings</h1>
+        <hr>
+          <div class ="set">
+            {% for form in jobs.forms %}
+            <div class = "forminstance">
+              <strong>Job title</strong>
+               <p>
+                  {{ form.title }}{% if form.instance.pk %}{{ form.DELETE }}{% endif %}
+               </p>
+               <p>{{form.id}}</p>
+               <strong>Job position</strong>
+               <p>{{ form.level }}</p>
+               <strong>Pay</strong>
+               <p>{{ form.pay }}</p>
+               <strong>Description</strong>
+               <p>{{ form.description }}</p>
+               <hr style = "width:100%;">
+            </div>
+            {% endfor %}
+          </div>
+          {{jobs.management_form}}
+        {%endif%}
+      <input type="submit" name="save" class="profile-form-submit" value="Save changes">
+    </form>
+  </div>
+</div>
+</div>
+{%endblock%}
