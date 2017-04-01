@@ -28,7 +28,8 @@ stemmer = PorterStemmer()
 CONTEXT = {
     'years': prof.Profile.YEAR_IN_SCHOOL_CHOICES,
     'majors': prof.Profile.MAJORS,
-    'roles': prof.Profile.PRIMARY_ROLE
+    'roles': prof.Profile.PRIMARY_ROLE,
+    'fields': prof.Founder.CATEGORY
 }
 def stem_remove_stop_words(arr):
     return [stemmer.stem(word) for word in arr if word not in stopwords.words('english')]
@@ -65,6 +66,7 @@ def index(request):
         roles = request.POST.getlist('role')
         years = request.POST.getlist('year')
         majors = request.POST.getlist('major')
+        fields = request.POST.getlist('field')
         if request.POST['select-category'] == 'people':
             if request.POST.get('startup', False) and request.POST.get('funding', False):
                 result = models.MyUser.objects.filter(is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_funding_exp = True, profile__has_startup_exp = True)
@@ -124,7 +126,7 @@ def index(request):
                 'founder': False,
             }))
         else:
-            result = models.MyUser.objects.filter(is_founder=True)
+            result = models.MyUser.objects.filter(is_founder=True, founder__field__in=fields)
             for r in result:
                 jobs = [stem_remove_stop_words(arr) for arr in [" ".join([x.description, x.title, str(x.get_level_display)]).lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in r.founder.job_set.all()]]
                 attr = [stem_remove_stop_words(arr) for arr in [x.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in [r.first_name+" " +r.last_name, r.founder.startup_name, r.founder.description]]]

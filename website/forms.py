@@ -69,7 +69,7 @@ class FounderForm(forms.ModelForm):
         return super(FounderForm, self).is_valid()
     class Meta:
         model = profile.Founder
-        fields = ('startup_name', 'logo', 'description', 'website', 'seeking')
+        fields = ('startup_name', 'logo', 'description','field', 'website', 'seeking')
         labels = {
             'hours_wanted': 'Hours per week candidates should have available',
             'seeking': 'Looking for a partner or to hire/contract?'

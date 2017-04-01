@@ -124,6 +124,17 @@
                         <li class = "see-all"><input type="submit" value="Update search"></li>
                       </ul>
                     </li>
+                    <li class="has-children">
+                    <hr>
+                    <a href="/">Startup Field</a>
+                      <ul class="cd-dropdown-icons is-hidden">
+                        <li class="go-back"><a href="#0">Menu</a></li>
+                        {%for x in fields%}
+                        <li class = "checkbox"><label><input type="checkbox" name="field" value="{{x.0}}" checked><span class = "cr"><i class="cr-icon fa fa-check"></i></span>{{x.1}}</label></li>
+                        {%endfor%}
+                        <li class = "see-all"><input type="submit" value="Update search"></li>
+                      </ul>
+                    </li>
                     <hr style="margin-top:0;">
                     <li><div class = "checkbox"><label><input type="checkbox" name="startup" value ='True' {%if startup%}checked{%endif%}><span class = "cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>Has startup experience</label></div></li>
                     <li><div class = "checkbox"><label><input type="checkbox" name="funding" value='True' {%if funding%}checked{%endif%}><span class = "cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>Has funding experience</label></div></li>

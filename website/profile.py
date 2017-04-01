@@ -40,6 +40,9 @@ class Profile(models.Model):
         ('CS', 'Computer Science'),
         ('STAT', 'Statistics'),
         ('HAAS', 'Business'),
+        ('PH', 'Public Health'),
+        ('MCB', 'MCB'),
+        ('BIO', 'Biology'),
         ('UND', 'Undecided'),
         ('NONE', 'Other')
     )
@@ -84,12 +87,33 @@ class Experience(models.Model):
     description = models.TextField(max_length=500, blank=True,null=False)
 
 class Founder(models.Model):
+    CATEGORY = (
+        ('EDUC', 'Education'),
+        ('TECH', 'Technology'),
+        ('RE', 'Retail'),
+        ('HEAL', 'Health Care'),
+        ('ECOM', 'E-Commerce'),
+        ('MARK', 'Marketplaces'),
+        ('FIN', 'Finance'),
+        ('HARD', 'Hardware'),
+        ('MANG', 'Management/Consulting'),
+        ('LEG', 'Legal'),
+        ('MED', 'Medical'),
+        ('HOUS', 'Real Estate'),
+        ('AUTO', 'Automotive'),
+        ('ENER', 'Energy'),
+        ('MACH', 'Machinery'),
+        ('ENV', 'Environmental'),
+        ('ACC', 'Accounting'),
+        ('NONE', 'Other')
+    )
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
     logo = models.ImageField(upload_to=company_logo_path, default = 'images/default/default-logo.jpg', blank=True, null=False)
     startup_name = models.CharField(max_length = 99)
     description = models.TextField(blank = True, null = False)
     website = models.URLField(blank = True, null = False)
     seeking = models.CharField(max_length = 1, choices = POSITION, blank = True, null = False)
+    field = models.CharField(max_length = 4, choices = CATEGORY, blank = True, null = False)
 class Job(models.Model):
     LEVELS = (
         ('FT', 'Full-time'),
