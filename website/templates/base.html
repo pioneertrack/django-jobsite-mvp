@@ -125,6 +125,16 @@
                       </ul>
                     </li>
                     <li class="has-children">
+                    <a href="/">Compensation type</a>
+                      <ul class="cd-dropdown-icons is-hidden">
+                        <li class="go-back"><a href="#0">Menu</a></li>
+                        {%for x in position%}
+                        <li class = "checkbox"><label><input type="checkbox" name="pos" value="{{x.0}}" checked><span class = "cr"><i class="cr-icon fa fa-check"></i></span>{{x.1}}</label></li>
+                        {%endfor%}
+                        <li class = "see-all"><input type="submit" value="Update search"></li>
+                      </ul>
+                    </li>
+                    <li class="has-children">
                     <a href="/">Startup Field</a>
                       <ul class="cd-dropdown-icons is-hidden">
                         <li class="go-back"><a href="#0">Menu</a></li>

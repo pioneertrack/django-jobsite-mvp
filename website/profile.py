@@ -104,7 +104,6 @@ class Founder(models.Model):
         ('ENER', 'Energy'),
         ('MACH', 'Machinery'),
         ('ENV', 'Environmental'),
-        ('ACC', 'Accounting'),
         ('NONE', 'Other')
     )
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
