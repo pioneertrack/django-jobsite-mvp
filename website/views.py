@@ -64,11 +64,11 @@ def index(request):
             phrase = True
         words= stem_remove_stop_words(query.translate({ord(c): None for c in string.punctuation}).lower().split())
         # words = stem_remove_stop_words(nltk.word_tokenize(query))
-        roles = request.POST.getlist('role')
-        years = request.POST.getlist('year')
+        roles = request.POST.getlist('role') + ['']
+        years = request.POST.getlist('year') +['']
         majors = request.POST.getlist('major')
-        fields = request.POST.getlist('field')
-        pos = request.POST.getlist('pos')
+        fields = request.POST.getlist('field') + ['']
+        pos = request.POST.getlist('pos') + [''] 
         if request.POST['select-category'] == 'people':
             if request.POST.get('startup', False) and request.POST.get('funding', False):
                 result = models.MyUser.objects.filter(is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_funding_exp = True, profile__has_startup_exp = True, profile__position__in=pos)
