@@ -35,7 +35,7 @@ class Profile(models.Model):
         ('AMATH', 'Applied Math'),
         ('CHEM', 'Chemistry'),
         ('PHYS', 'Physics'),
-        ('MECHE', 'Mechanical Engineering'),
+        ('MECH', 'Mechanical Engineering'),
         ('BIOE', 'Bioengineering'),
         ('CS', 'Computer Science'),
         ('STAT', 'Statistics'),
@@ -89,7 +89,6 @@ class Founder(models.Model):
     startup_name = models.CharField(max_length = 99)
     description = models.TextField(blank = True, null = False)
     website = models.URLField(blank = True, null = False)
-    hours_wanted = models.CharField(max_length = 1, choices = HOURS_AVAILABLE, blank = True, null = False)
     seeking = models.CharField(max_length = 1, choices = POSITION, blank = True, null = False)
 class Job(models.Model):
     LEVELS = (

@@ -9,6 +9,7 @@ from django.forms.models import inlineformset_factory
 from django import forms as f
 from django.views.decorators.csrf import csrf_exempt
 
+
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
@@ -18,7 +19,6 @@ import itertools
 from website import forms
 from website import models
 from website import profile as prof
-
 def merge_two_dicts(x, y):
     """Given two dicts, merge them into a new dict as a shallow copy."""
     z = x.copy()
@@ -127,7 +127,6 @@ def index(request):
             result = models.MyUser.objects.filter(is_founder=True)
             for r in result:
                 jobs = [stem_remove_stop_words(arr) for arr in [" ".join([x.description, x.title, str(x.get_level_display)]).lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in r.founder.job_set.all()]]
-                messages.info(request, str(jobs))
                 attr = [stem_remove_stop_words(arr) for arr in [x.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in [r.first_name+" " +r.last_name, r.founder.startup_name, r.founder.description]]]
                 total = list(itertools.chain.from_iterable(jobs + attr))
                 for i, word in enumerate(total):

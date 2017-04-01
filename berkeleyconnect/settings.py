@@ -25,7 +25,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap'
 SECRET_KEY = '(p-162^r(zek4z#9_7i79@*9162c^(-26%@qe5vwvlvq4a^o=5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 AUTH_USER_MODEL = 'website.MyUser'
 
@@ -33,16 +33,16 @@ ACCOUNT_ACTIVATION_DAYS = 1 # One-day activation window;
 AUTHENTICATION_BACKENDS = (
         'django.contrib.auth.backends.ModelBackend',
 )
-EMAIL_HOST = 'in-v3.mailjet.com'
-EMAIL_HOST_USER = '66ba929c6c90748f90dbf90e58e7174c'
-EMAIL_HOST_PASSWORD = '98b7fdc6d93db84995cef4fece9e7820'
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = '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'
 EMAIL_PORT = 587
 
 DEFAULT_FROM_EMAIL = 'webmaster@bearfounders.com'
 LOGIN_REDIRECT_URL = '/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.bearfounders.com', '54.215.142.223']
 
 NORECAPTCHA_SITE_KEY = '6LfCyBUUAAAAALk0rgRTQB3W6Az4oOoTtifEkiAa'
 NORECAPTCHA_SECRET_KEY = '6LfCyBUUAAAAAKUaBqh9zfDi7xtIOq5Oy8x7542D'

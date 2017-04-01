@@ -11,5 +11,5 @@ urlpatterns = [
   url(r'^users/(?P<id>\d+)/$',
                        views.get_user_view,
                        name='get_user_view'),
-  url(r'^connect/$', views.connect, name='connect')
+  url(r'^connect/$', views.connect, name='connect'),
 ]

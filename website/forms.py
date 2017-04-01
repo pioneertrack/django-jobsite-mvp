@@ -59,7 +59,8 @@ class ProfileForm(forms.ModelForm):
             'role': 'Primary role',
             'website': 'Personal website',
             'courses': 'Relevant coursework',
-            'major': 'Primary Major'
+            'major': 'Primary Major',
+	    'position': 'Seeking what type of position?',
         }
 class FounderForm(forms.ModelForm):
     logo = forms.ImageField(label='Logo',required=False, error_messages ={'invalid':"Image files only"}, widget = forms.FileInput)
@@ -68,7 +69,7 @@ class FounderForm(forms.ModelForm):
         return super(FounderForm, self).is_valid()
     class Meta:
         model = profile.Founder
-        fields = ('startup_name', 'logo', 'description', 'website', 'hours_wanted', 'seeking')
+        fields = ('startup_name', 'logo', 'description', 'website', 'seeking')
         labels = {
             'hours_wanted': 'Hours per week candidates should have available',
             'seeking': 'Looking for a partner or to hire/contract?'
