@@ -123,9 +123,8 @@ jQuery(document).ready(function($){
     var canvas = $(this)[0];
 
     var image = new Image();
-		image.crossOrigin = '';
+		image.crossOrigin = 'anonymous';
     image.src = sourceImages[index];
-
     image.onload = function() {
       drawBlur(canvas, image);
     }

@@ -28,17 +28,6 @@
 </div>
 <div class = "container">
   <div class = "row">
-    <div class = "col col-md-3 col-md-offset-2">
-      <h2>Seeking</h2>
-      {%if user.founder.seeking != "" %}
-      <h3>{{user.founder.get_seeking_display}}</h3>
-      {%else%}
-      <p>None</p>
-      {%endif%}
-      <hr>
-    </div>
-  </div>
-  <div class = "row">
      <div class = "col col-md-8 col-md-offset-2">
        <h2>About</h2>
        <p>{{user.founder.description|linebreaks}}</p>
@@ -70,6 +59,15 @@
      <div class = "col col-md-8 col-md-offset-2">
        <h2>Website</h2>
        <a target="_blank" href={{user.founder.website}}>{{user.founder.website}}</a>
+       <hr>
+     </div>
+  </div>
+  {%endif%}
+  {%if user.founder.facebook != "" %}
+  <div class = "row">
+     <div class = "col col-md-8 col-md-offset-2">
+       <h2>Facebook</h2>
+       <a target="_blank" href={{user.founder.facebook}}>{{user.founder.website}}</a>
        <hr>
      </div>
   </div>

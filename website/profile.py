@@ -111,7 +111,7 @@ class Founder(models.Model):
     startup_name = models.CharField(max_length = 99)
     description = models.TextField(blank = True, null = False)
     website = models.URLField(blank = True, null = False)
-    seeking = models.CharField(max_length = 1, choices = POSITION, blank = True, null = False)
+    facebook = models.URLField(blank=True, null=False)
     field = models.CharField(max_length = 4, choices = CATEGORY, blank = True, null = False)
 class Job(models.Model):
     LEVELS = (
@@ -121,7 +121,7 @@ class Job(models.Model):
     )
     founder = models.ForeignKey(Founder, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=40, blank=True, null=False)
-    pay = models.CharField(max_length=40, blank=True, null=False)
+    pay = models.CharField(max_length=1, choices = POSITION, default='1')
     description = models.TextField(max_length=500, blank = True, null = False)
     level = models.CharField(max_length = 2, choices = LEVELS, default="FT")
 @receiver(post_save, sender=user.MyUser)

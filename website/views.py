@@ -15,6 +15,7 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 import string
 import itertools
+from random import shuffle
 
 from website import forms
 from website import models
@@ -68,7 +69,7 @@ def index(request):
         years = request.POST.getlist('year') +['']
         majors = request.POST.getlist('major')
         fields = request.POST.getlist('field') + ['']
-        pos = request.POST.getlist('pos') + [''] 
+        pos = request.POST.getlist('pos') + ['']
         if request.POST['select-category'] == 'people':
             if request.POST.get('startup', False) and request.POST.get('funding', False):
                 result = models.MyUser.objects.filter(is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_funding_exp = True, profile__has_startup_exp = True, profile__position__in=pos)
@@ -103,6 +104,8 @@ def index(request):
                     skills = tuple([s for s in skillset if s in set(r.profile.skills.lower().replace(',','').split())])
                     to_return.add((r, skills))
                     count += 1
+                to_return = list(to_return)
+                shuffle(to_return)
             elif len(words) == 1:
                 if words[0] in search_index:
                     valid_users = set([k[0] for k in search_index[words[0]]])
@@ -128,9 +131,9 @@ def index(request):
                 'founder': False,
             }))
         else:
-            result = models.MyUser.objects.filter(is_founder=True, founder__field__in=fields, founder__seeking__in=pos)
+            result = models.MyUser.objects.filter(is_founder=True, founder__field__in=fields)
             for r in result:
-                jobs = [stem_remove_stop_words(arr) for arr in [" ".join([x.description, x.title, str(x.get_level_display)]).lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in r.founder.job_set.all()]]
+                jobs = [stem_remove_stop_words(arr) for arr in [" ".join([x.description, x.title, str(x.get_level_display), s.get_pay]).lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in r.founder.job_set.all()]]
                 attr = [stem_remove_stop_words(arr) for arr in [x.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in [r.first_name+" " +r.last_name, r.founder.startup_name, r.founder.description]]]
                 total = list(itertools.chain.from_iterable(jobs + attr))
                 for i, word in enumerate(total):
@@ -153,6 +156,8 @@ def index(request):
                         break
                     to_return.add((r, None))
                     count += 1
+                to_return = list(to_return)
+                shuffle(to_return)
             elif len(words) == 1:
                 if words[0] in search_index:
                     valid_users = set([k[0] for k in search_index[words[0]]])

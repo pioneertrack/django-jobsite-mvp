@@ -106,17 +106,17 @@
     </div>
     <div class = "col col-md-4">
       {%if user.profile.linkedin != ""%}<h2>Linked<i class="fa fa-linkedin-square" aria-hidden="true" style="color:#0077B5;"></i></h2>
-      <a href = "{{user.profile.linkedin}}">{{user.profile.linkedin}}</a>
+      <a target="_blank" href = "{{user.profile.linkedin}}">{{user.profile.linkedin}}</a>
       <hr>
       {%endif%}
       {%if user.profile.github != ""%}
       <h2>Github  <i class="fa fa-github" aria-hidden="true"></i></h2>
-      <a href = "{{user.profile.github}}">{{user.profile.github}} </a>
+      <a target="_blank" href = "{{user.profile.github}}">{{user.profile.github}} </a>
       <hr>
       {%endif%}
       {%if user.profile.website != ""%}
       <h2>Personal website</h2>
-      <a href = "{{user.profile.website}}">{{user.profile.website}}</a>
+      <a target="_blank" href = "{{user.profile.website}}">{{user.profile.website}}</a>
       <hr>
       {%endif%}
     </div>
