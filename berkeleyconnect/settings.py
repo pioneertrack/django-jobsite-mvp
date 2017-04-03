@@ -38,7 +38,7 @@ EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = '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'
 EMAIL_PORT = 587
 
-DEFAULT_FROM_EMAIL = 'webmaster@bearfounders.com'
+DEFAULT_FROM_EMAIL = 'noreply@bearfounders.com'
 LOGIN_REDIRECT_URL = '/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
