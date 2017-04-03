@@ -89,7 +89,7 @@
             <p>{{exp.start_date}} - {{exp.end_date}}</p>
             {%endif%}
             {%if exp.description %}
-            <p>{{exp.description}}</p>
+            <p>{{exp.description|linebreaks}}</p>
             {%endif%}
         </div>
         </div>
