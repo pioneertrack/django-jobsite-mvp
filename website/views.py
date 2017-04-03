@@ -72,13 +72,13 @@ def index(request):
         pos = request.POST.getlist('pos') + ['']
         if request.POST['select-category'] == 'people':
             if request.POST.get('startup', False) and request.POST.get('funding', False):
-                result = models.MyUser.objects.filter(is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_funding_exp = True, profile__has_startup_exp = True, profile__position__in=pos)
+                result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_funding_exp = True, profile__has_startup_exp = True, profile__position__in=pos)
             elif request.POST.get('startup', False):
-                result = models.MyUser.objects.filter(is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_startup_exp = True, profile__position__in=pos)
+                result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_startup_exp = True, profile__position__in=pos)
             elif request.POST.get('funding', False):
-                result = models.MyUser.objects.filter(is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_funding_exp = True, profile__position__in=pos)
+                result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_funding_exp = True, profile__position__in=pos)
             else:
-                result = models.MyUser.objects.filter(is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__position__in=pos)
+                result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__position__in=pos)
             for r in result:
                 experience = [stem_remove_stop_words(arr) for arr in [x.description.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in r.profile.experience_set.all()]]
                 attr = [stem_remove_stop_words(arr) for arr in [x.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in [r.first_name+" " +r.last_name, str(r.profile.get_major_display), r.profile.bio, r.profile.skills, r.profile.interests, r.profile.courses]]]
@@ -131,7 +131,7 @@ def index(request):
                 'founder': False,
             }))
         else:
-            result = models.MyUser.objects.filter(is_founder=True, founder__field__in=fields, founder__startup_name__gt='')
+            result = models.MyUser.objects.filter(is_active = True, is_founder=True, founder__field__in=fields, founder__startup_name__gt='')
             for r in result:
                 jobs = [stem_remove_stop_words(arr) for arr in [" ".join([x.description, x.title, str(x.get_level_display), str(x.get_pay_display)]).lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in r.founder.job_set.all()]]
                 jobs = [stem_remove_stop_words(arr) for arr in [" ".join([x.description, x.title, str(x.get_level_display), x.get_pay]).lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in r.founder.job_set.all()]]
