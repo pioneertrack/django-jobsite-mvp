@@ -18,7 +18,20 @@
             {%if user.is_founder%}
             <h2>{{user.founder.startup_name}}</h2>
             <hr>
+            <script type="text/javascript">
+              $(function(){
+                $(".your-div").each(function(i){
+                  len=$(this).text().length;
+                  if(len>300)
+                  {
+                    $(this).text($(this).text().substr(0,300)+'...');
+                  }
+                });
+              });
+            </script>
+            <div class="founderdescription">
             <p>{{user.founder.description}}<p>
+            </div>
             {%else%}
             <h2>{{user.first_name}} {{user.last_name}} {%if user.email == "apeng@berkeley.edu" %}<span class="badge"><i class="fa fa-star" aria-hidden="true"></i></span>{%endif%}</h2>
             <h3 style = "margin-top:0">{{user.profile.get_year_display}}</h3>

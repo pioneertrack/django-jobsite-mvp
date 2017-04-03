@@ -43,7 +43,7 @@
             <h2>{{job.title}}</h2>
             <p>{{job.get_level_display}}</p>
             {%if job.pay %}
-            <p>{{job.pay}}</p>
+            <p>{{job.get_pay_display}}</p>
             {%endif%}
             {%if job.description %}
             <p>{{job.description}}</p>
