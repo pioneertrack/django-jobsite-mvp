@@ -8,7 +8,7 @@
 <div class = 'container' style = "padding-top: 30px; padding-bottom:30px;">
   <div class = 'row'>
   {%for user, skills in searched%}
-    <div class = "col col-md-4" style="height:550px;">
+    <div class = "col col-md-4" style="height:500px;">
       <div class="card">
         <canvas class="header-bg" width="250" height="140" id="header-blur"></canvas>
         <div class="avatar">
@@ -20,7 +20,7 @@
             <hr>
             <script type="text/javascript">
               $(function(){
-                $(".your-div").each(function(i){
+                $(".founderdescription").each(function(i){
                   len=$(this).text().length;
                   if(len>300)
                   {
