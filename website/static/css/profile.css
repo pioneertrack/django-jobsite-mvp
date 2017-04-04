@@ -1,6 +1,6 @@
-@import url(http://fonts.googleapis.com/css?family=Roboto);
+@import url(https://fonts.googleapis.com/css?family=Roboto);
 #profile-hero {
-  background-color: #25283D;
+  background-color: white;
 }
 /*Bootstrap button outline override*/
 .btn-outline {

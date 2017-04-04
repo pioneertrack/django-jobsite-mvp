@@ -46,7 +46,7 @@
             <p>{{job.get_pay_display}}</p>
             {%endif%}
             {%if job.description %}
-            <p>{{job.description}}</p>
+            <p>{{job.description|linebreaks}}</p>
             {%endif%}
         </div>
         </div>
