@@ -93,10 +93,14 @@ def index(request):
             phrase = True
         words= stem_remove_stop_words(query.translate({ord(c): None for c in string.punctuation}).lower().split())
         # words = stem_remove_stop_words(nltk.word_tokenize(query))
-        roles = request.POST.getlist('role') + ['']
-        years = request.POST.getlist('year') +['']
+        roles = request.POST.getlist('role')
+        if 'NONE' in roles:
+            roles = roles + ['']
+        years = request.POST.getlist('year')
+        if len(years) == 5:
+            years = years + ['']
         majors = request.POST.getlist('major')
-        fields = request.POST.getlist('field') + ['']
+        fields = request.POST.getlist('field')
         pos = request.POST.getlist('pos') + ['']
         tokenized_users = []
         if request.POST['select-category'] == 'people':
@@ -148,7 +152,6 @@ def index(request):
                             if r.id in valid_users:
                                 skills = tuple([s for s in skillset if s in set(r.profile.skills.lower().replace(',','').split())])
                                 to_return.add((r, skills))
-            vals = roles + years + majors
             if len(words) > 0:
                 for user, skills in list(to_return):
                     experience = [stem_remove_stop_words(arr) for arr in [x.description.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in user.profile.experience_set.all()]]
@@ -164,7 +167,9 @@ def index(request):
                 shuffle(to_return)
             return render(request, 'search.html', merge_two_dicts(CONTEXT, {
                 'searched': to_return,
-                'oldvals': vals,
+                'oldroles': roles,
+                'oldmajors': majors,
+                'oldyears': years,
                 'startup': request.POST.get('startup', False),
                 'funding': request.POST.get('funding', False),
                 'posted': True,
@@ -224,7 +229,7 @@ def index(request):
                 shuffle(to_return)
             return render(request, 'search.html', merge_two_dicts(CONTEXT, {
                 'searched': to_return,
-                'oldvals': vals,
+                'oldfields': fields,
                 'startup': request.POST.get('startup', False),
                 'funding': request.POST.get('funding', False),
                 'posted': False,

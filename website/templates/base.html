@@ -93,7 +93,7 @@
                         <ul class="cd-dropdown-icons is-hidden">
                           <li class="go-back"><a href="#0">Menu</a></li>
                           {%for x in years%}
-                          <li class = "checkbox"><label><input type="checkbox" name="year" value="{{x.0}}" {%if not posted or x.0 in oldvals%}checked{%endif%}><span class = "cr"><i class="cr-icon fa fa-check"></i></span>{{x.1}}</label></li>
+                          <li class = "checkbox"><label><input type="checkbox" name="year" value="{{x.0}}" {%if not posted or x.0 in oldyears%}checked{%endif%}><span class = "cr"><i class="cr-icon fa fa-check"></i></span>{{x.1}}</label></li>
                           {%endfor%}
                           <li class = "see-all"><input type="submit" value="Update search"></li>
                         </ul>
@@ -103,7 +103,7 @@
                       <ul class="cd-dropdown-icons is-hidden">
                         <li class="go-back"><a href="#0">Menu</a></li>
                         {%for x in majors%}
-                        <li class = "checkbox"><label><input type="checkbox" name="major" value="{{x.0}}" {%if not posted or x.0 in oldvals%}checked{%endif%}><span class = "cr"><i class="cr-icon fa fa-check"></i></span>{{x.1}}</label></li>
+                        <li class = "checkbox"><label><input type="checkbox" name="major" value="{{x.0}}" {%if not posted or x.0 in oldmajors%}checked{%endif%}><span class = "cr"><i class="cr-icon fa fa-check"></i></span>{{x.1}}</label></li>
                         {%endfor%}
                         <li class = "see-all"><input class="regular-checkbox"type="submit" value="Update search"></li>
                       </ul>
@@ -113,7 +113,7 @@
                       <ul class="cd-dropdown-icons is-hidden">
                         <li class="go-back"><a href="#0">Menu</a></li>
                         {%for x in roles%}
-                        <li class = "checkbox"><label><input type="checkbox" name="role" value="{{x.0}}" {%if not posted or x.0 in oldvals%}checked{%endif%}><span class = "cr"><i class="cr-icon fa fa-check"></i></span>{{x.1}}</label></li>
+                        <li class = "checkbox"><label><input type="checkbox" name="role" value="{{x.0}}" {%if not posted or x.0 in oldroles%}checked{%endif%}><span class = "cr"><i class="cr-icon fa fa-check"></i></span>{{x.1}}</label></li>
                         {%endfor%}
                         <li class = "see-all"><input type="submit" value="Update search"></li>
                       </ul>
@@ -133,7 +133,7 @@
                       <ul class="cd-dropdown-icons is-hidden">
                         <li class="go-back"><a href="#0">Menu</a></li>
                         {%for x in fields%}
-                        <li class = "checkbox"><label><input type="checkbox" name="field" value="{{x.0}}" checked><span class = "cr"><i class="cr-icon fa fa-check"></i></span>{{x.1}}</label></li>
+                        <li class = "checkbox"><label><input type="checkbox" name="field" value="{{x.0}}" {%if posted or x.0 in oldfields%}checked{%endif%}><span class = "cr"><i class="cr-icon fa fa-check"></i></span>{{x.1}}</label></li>
                         {%endfor%}
                         <li class = "see-all"><input type="submit" value="Update search"></li>
                       </ul>
