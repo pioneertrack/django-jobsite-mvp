@@ -167,7 +167,7 @@ def index(request):
                 'oldvals': vals,
                 'startup': request.POST.get('startup', False),
                 'funding': request.POST.get('funding', False),
-                'posted': False,
+                'posted': True,
                 'founder': False,
             }))
         else:
