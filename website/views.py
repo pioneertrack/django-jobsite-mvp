@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.forms.models import inlineformset_factory
 from django import forms as f
 from django.views.decorators.csrf import csrf_exempt
-
+import numpy as np
 
 import nltk
 from nltk.corpus import stopwords
@@ -35,6 +35,34 @@ CONTEXT = {
 }
 def stem_remove_stop_words(arr):
     return [stemmer.stem(word) for word in arr if word not in stopwords.words('english')]
+def term_frequency(word, tokenized_str):
+    return tokenized_str.count(word)
+def idf_values(tokenized_users, term_index):
+    val = {}
+    for word in term_index:
+        count = sum([1 for x in tokenized_users if word in tokenized_users])
+        idf = np.log(len(term_index.keys()) / (count + 1))
+        val[word] = idf
+    return val
+def similarity(word_vector, query_vector):
+    return np.dot(np.array([word_vector]).T, np.array([query_vector]))[0][0]
+def tf_idf(tokenized_users, query, term_index):
+    idf_dict = idf_values([x[1] for x in tokenized_users], term_index)
+    all_users_tfidf = []
+    for user, tokens in tokenized_users:
+        user_tfidf = []
+        if len(tokens) == 0:
+            continue
+        for word in idf_dict.keys():
+            freq = term_frequency(word, tokens) / len(tokens)
+            user_tfidf.append(freq * idf_dict[word])
+        all_users_tfidf.append((user, user_tfidf))
+    search_vector = []
+    for word in idf_dict.keys():
+        freq = term_frequency(word, query) / len(query)
+        search_vector.append(freq * idf_dict[word])
+    return [tup[0] for tup in sorted(all_users_tfidf, key = lambda x: similarity(x[1], search_vector), reverse=True)]
+
 # Create your views here.
 @csrf_exempt
 @login_required(login_url='login/')
@@ -70,6 +98,7 @@ def index(request):
         majors = request.POST.getlist('major')
         fields = request.POST.getlist('field') + ['']
         pos = request.POST.getlist('pos') + ['']
+        tokenized_users = []
         if request.POST['select-category'] == 'people':
             if request.POST.get('startup', False) and request.POST.get('funding', False):
                 result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_funding_exp = True, profile__has_startup_exp = True, profile__position__in=pos)
@@ -104,8 +133,6 @@ def index(request):
                     skills = tuple([s for s in skillset if s in set(r.profile.skills.lower().replace(',','').split())])
                     to_return.add((r, skills))
                     count += 1
-                to_return = list(to_return)
-                shuffle(to_return)
             elif len(words) == 1:
                 if words[0] in search_index:
                     valid_users = set([k[0] for k in search_index[words[0]]])
@@ -122,12 +149,25 @@ def index(request):
                                 skills = tuple([s for s in skillset if s in set(r.profile.skills.lower().replace(',','').split())])
                                 to_return.add((r, skills))
             vals = roles + years + majors
+            if len(words) > 0:
+                for user, skills in list(to_return):
+                    experience = [stem_remove_stop_words(arr) for arr in [x.description.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in user.profile.experience_set.all()]]
+                    attr = [stem_remove_stop_words(arr) for arr in [x.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in [user.first_name+" " +user.last_name, str(user.profile.get_major_display), user.profile.bio, user.profile.skills, user.profile.interests, user.profile.courses]]]
+                    total = list(itertools.chain.from_iterable(attr+experience))
+                    tokenized_users.append((user, total))
+                to_return = []
+                for user in tf_idf(tokenized_users, words, search_index):
+                    skills = [s for s in skillset if s in set(r.profile.skills.lower().replace(',','').split())]
+                    to_return.append((user, skills))
+            else:
+                to_return = list(to_return)
+                shuffle(to_return)
             return render(request, 'search.html', merge_two_dicts(CONTEXT, {
                 'searched': to_return,
                 'oldvals': vals,
                 'startup': request.POST.get('startup', False),
                 'funding': request.POST.get('funding', False),
-                'posted': True,
+                'posted': False,
                 'founder': False,
             }))
         else:
@@ -172,9 +212,21 @@ def index(request):
                             if r.id in valid_users:
                                 to_return.add((r, None))
             vals = roles + years + majors
+            if len(words) > 0:
+                for user, skills in list(to_return):
+                    jobs = [stem_remove_stop_words(arr) for arr in [" ".join([x.description, x.title, str(x.get_level_display), str(x.get_pay_display)]).lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in user.founder.job_set.all()]]
+                    attr = [stem_remove_stop_words(arr) for arr in [x.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in [user.first_name+" " +user.last_name, user.founder.startup_name, user.founder.description]]]
+                    total = list(itertools.chain.from_iterable(jobs + attr))
+                    tokenized_users.append((user, total))
+                to_return = [(x, None) for x in tf_idf(tokenized_users, words, search_index)]
+            else:
+                to_return = list(to_return)
+                shuffle(to_return)
             return render(request, 'search.html', merge_two_dicts(CONTEXT, {
                 'searched': to_return,
                 'oldvals': vals,
+                'startup': request.POST.get('startup', False),
+                'funding': request.POST.get('funding', False),
                 'posted': False,
                 'founder': True,
             }))
