@@ -11,7 +11,7 @@
     <div class = "col col-md-4" style="height:500px;">
       <div class="card">
         <canvas class="header-bg" width="250" height="140" fillStyle="#25283D" id="header-blur"></canvas>
-        <div class="avatar"  {%if user.is_founder%}style ="background-size:contain;"{%else%}style ="background-size:cover;"{%endif%}>
+        <div class="avatar{%if user.is_founder%}founderavatar{%else%}otheravatar{%endif%}">
         </div>
         <div class="content">
             {%if user.is_founder%}
