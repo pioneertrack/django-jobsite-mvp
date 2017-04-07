@@ -107,7 +107,7 @@ jQuery(document).ready(function($){
   });
 
   $('.avatar').each(function(index){
-    $(this).css({'background': 'url(' + sourceImages[index] +') center center fixed', 'background-size': 'cover'});
+    $(this).css({'background': 'url(' + sourceImages[index] +') center center fixed', 'background-color': 'white'});
   });
 
   var drawBlur = function(canvas, image) {
