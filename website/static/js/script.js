@@ -106,8 +106,8 @@ jQuery(document).ready(function($){
     sourceImages.push($(this).attr('src'));
   });
 
-  $('.avatar img').each(function(index){
-    $(this).attr('src', sourceImages[index] );
+  $('.avatar').each(function(index){
+    $(this).css({'background': 'url(' + sourceImages[index] +') center center fixed', 'background-size': 'cover'});
   });
 
   var drawBlur = function(canvas, image) {
@@ -124,10 +124,10 @@ jQuery(document).ready(function($){
 
     var image = new Image();
 		image.crossOrigin = 'anonymous';
-    image.src = sourceImages[index];
-    image.onload = function() {
+		image.onload = function() {
       drawBlur(canvas, image);
     }
+		image.src = sourceImages[index];
   });
 
 	$("#connect").on('click', function(){

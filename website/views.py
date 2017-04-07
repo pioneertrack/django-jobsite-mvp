@@ -248,9 +248,9 @@ def index(request):
 def profile(request):
     if request.user.is_founder:
         jobs = request.user.founder.job_set.order_by('title')
-        return render(request, 'founder.html', merge_two_dicts(CONTEXT,{'profile': True, 'jobs': jobs}))
+        return render(request, 'founder.html', merge_two_dicts(CONTEXT,{'profile': True, 'jobs': jobs, 'reset': True}))
     experience = request.user.profile.experience_set.order_by('-start_date')
-    return render(request, 'profile.html', merge_two_dicts(CONTEXT, {'profile': True, 'experience': experience}))
+    return render(request, 'profile.html', merge_two_dicts(CONTEXT, {'profile': True, 'experience': experience, 'reset': True}))
 @login_required(login_url='login/')
 def profile_update(request):
     user = request.user
@@ -306,13 +306,15 @@ def profile_update(request):
         return render(request, 'profile_form.html', merge_two_dicts(CONTEXT, {
             'profile_form': profile_form,
             'experience': experience_form,
-            'show_exp': True
+            'show_exp': True,
+            'reset': True
         }))
     else:
         return render(request, 'profile_form.html', merge_two_dicts(CONTEXT, {
             'profile_form':profile_form,
             'jobs': job_form,
-            'show_exp': False
+            'show_exp': False,
+            'reset': True
         }))
 @login_required(login_url='login/')
 def get_user_view(request, id):
@@ -325,14 +327,16 @@ def get_user_view(request, id):
         return render(request, 'founder.html', merge_two_dicts(CONTEXT, {
             'user': user,
             'profile': False,
-            'jobs': jobs
+            'jobs': jobs,
+            'reset': True
         }))
     else:
         exp = user.profile.experience_set.order_by('-start_date')
         return render(request, 'profile.html', merge_two_dicts(CONTEXT, {
             'user': user,
             'profile': False,
-            'experience': exp
+            'experience': exp,
+            'reset': True
         }))
 class MyRegistrationView(RegistrationView):
     def dispatch(self, request, *args, **kwargs):
