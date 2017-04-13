@@ -238,11 +238,13 @@ def index(request):
     else:
         if user.is_founder:
             return render(request, 'home.html', merge_two_dicts(CONTEXT, {
-                'posted': False
+                'posted': False,
+                'reset': True,
             }))
         else:
             return render(request, 'home.html', merge_two_dicts(CONTEXT, {
-                'posted': False
+                'posted': False,
+                'reset': True,
             }))
 @login_required(login_url='login/')
 def profile(request):
