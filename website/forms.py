@@ -23,7 +23,7 @@ class NewRegistrationForm(RegistrationFormUniqueEmail):
 
     def clean_email(self):
         submitted_data = self.cleaned_data['email']
-        ALLOWED_DOMAINS = ['berkeley.edu']
+        ALLOWED_DOMAINS = ['berkeley.edu', 'bearfounders.com']
         if not ALLOWED_DOMAINS: # If we allow any domain
             return submitted_data
 
