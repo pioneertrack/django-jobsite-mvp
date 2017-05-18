@@ -8,10 +8,13 @@
 <div class = 'container' style = "padding-top: 30px; padding-bottom:30px;">
   <div class = 'row'>
   {%for user, skills in searched%}
-    <div class = "col col-md-4" style="height:500px;">
+
+    <div class = "col col-md-4" style="height:400px;">
+      <a href='/users/{{user.id}}'>
       <div class="card">
-        <canvas class="header-bg" width="250" height="140" fillStyle="#25283D" id="header-blur"></canvas>
-        <div class="avatar{%if user.is_founder%} founderavatar{%else%} otheravatar{%endif%}">
+        <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
+        <div>
+          <img class="avatar" src="{%if user.is_founder%}{{user.founder.logo.url}}{%else%}{{user.profile.image.url}}{%endif%}" style="top: calc(100px);"/>
         </div>
         <div class="content">
             {%if user.is_founder%}
@@ -32,7 +35,7 @@
             <p>{{user.founder.description}}<p>
             </div>
             {%else%}
-            <h2>{{user.first_name}} {{user.last_name}} {%if user.email == "apeng@berkeley.edu" %}<span class="badge"><i class="fa fa-star" aria-hidden="true"></i></span>{%endif%}</h2>
+            <h2>{{user.first_name}} {{user.last_name}}</h2>
             <h3 style = "margin-top:0">{{user.profile.get_year_display}}</h3>
             {%if user.profile.has_startup_exp %}<span class="label label-default">Has startup experience</span>{%endif%}
             {%if user.profile.has_funding_exp %}<span class="label label-default">Has funding experience</span>{%endif%}
@@ -48,12 +51,14 @@
             {%endfor%}
             <span class="label label-warning">{{user.profile.get_position_display}}</span>
             {%endif%}
-            <div style = "padding:10px;">
+            <!--<div style = "padding:10px;">
             <a href="/users/{{user.id}}" class="btn btn-primary btn-outline">View profile</a>
-            </div>
+          </div>-->
         </div>
       </div>
-      <img class="src-image" src="{%if user.is_founder%}{{user.founder.logo.url}}{%else%}{{user.profile.image.url}}{%endif%}"/>
+    </a>
+
+
     </div>
   {% empty %}
   <div class = "col col-md-12 text-center">

@@ -163,7 +163,7 @@ a:link , a:hover, a:visited, a:active {
   font-size: 40px;
   font-family: 'Times New Roman', sans-serif;
   display: inline-block;
-  max-height: 50px;
+  max-height: 70px;
   vertical-align: middle;
   padding-right: 10px;
 }

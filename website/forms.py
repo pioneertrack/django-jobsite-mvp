@@ -23,11 +23,13 @@ class NewRegistrationForm(RegistrationFormUniqueEmail):
 
     def clean_email(self):
         submitted_data = self.cleaned_data['email']
-        ALLOWED_DOMAINS = ['berkeley.edu', 'bearfounders.com']
+        ALLOWED_DOMAINS = ['berkeley.edu']
         if not ALLOWED_DOMAINS: # If we allow any domain
             return submitted_data
 
         domain = submitted_data.split('@')[1]
+        if domain == 'bearfounders.com':
+            return submitted_data
         if domain not in ALLOWED_DOMAINS:
             raise forms.ValidationError(
                 u'You must register using an email address with a valid '

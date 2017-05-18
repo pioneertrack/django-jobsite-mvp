@@ -108,6 +108,7 @@ class Founder(models.Model):
     )
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
     logo = models.ImageField(upload_to=company_logo_path, default = 'images/default/default-logo.jpg', blank=True, null=False)
+    # contact_email = models.EmailField(max_length=255)
     startup_name = models.CharField(max_length = 99)
     description = models.TextField(blank = True, null = False)
     website = models.URLField(blank = True, null = False)
@@ -134,6 +135,8 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=user.MyUser)
 def save_user_profile(sender, instance, **kwargs):
     if instance.is_founder:
+        if instance.profile:
+            Founder.objects.create(user=instance)
         instance.founder.save()
     else:
         instance.profile.save()
