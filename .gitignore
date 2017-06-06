@@ -11,7 +11,7 @@ berkeleyconnect/settings.py
 
 #more useless files
 .bowerrc
-__pycache__/*
+*/__pycache__/*
 *.sqlite3
 
 #for venv
