@@ -25,7 +25,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap'
 SECRET_KEY = '(p-162^r(zek4z#9_7i79@*9162c^(-26%@qe5vwvlvq4a^o=5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 AUTH_USER_MODEL = 'website.MyUser'
 
@@ -42,7 +42,7 @@ DEFAULT_FROM_EMAIL = 'noreply@bearfounders.com'
 LOGIN_REDIRECT_URL = '/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-ALLOWED_HOSTS = ['.bearfounders.com', '54.215.142.223']
+ALLOWED_HOSTS = ['.bearfounders.com', '54.215.142.223', 'localhost']
 
 NORECAPTCHA_SITE_KEY = '6LfCyBUUAAAAALk0rgRTQB3W6Az4oOoTtifEkiAa'
 NORECAPTCHA_SECRET_KEY = '6LfCyBUUAAAAAKUaBqh9zfDi7xtIOq5Oy8x7542D'
