@@ -1,17 +1,17 @@
-BearFounders
+# BearFounders
 
 Website overview:
 
  * Django 1.10 web app
-  * Basic HTML/CSS/JS (jQuery, Bootstrap) 
-   * PostgreSQL database
-    * Static files hosted on S3, webserver hosted on EC2 (nginx, gunicorn), and data stored on RDS
-     * Email backend uses https://sendgrid.com
+ * Basic HTML/CSS/JS (jQuery, Bootstrap) 
+ * PostgreSQL database
+ * Static files hosted on S3, webserver hosted on EC2 (nginx, gunicorn), and data stored on RDS
+ * Email backend uses https://sendgrid.com
 
 
-     Admin site can be accessed with the /admin url endpoint
+Admin site can be accessed with the /admin url endpoint
 
-     # Views
+# Views
 
      `connect`: asks for an AJAX POST with `text` and `user` parameters to send the connection email.
 
