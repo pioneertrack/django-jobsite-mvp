@@ -13,6 +13,7 @@ berkeleyconnect/settings.py
 .bowerrc
 */__pycache__/*
 *.sqlite3
+media/*
 
 #for venv
 venv/
