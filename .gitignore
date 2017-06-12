@@ -1,2 +1,21 @@
-./fabfile/
-*.pyc
+#fabric
+.fabfile/
+
+#useless files
+
+/*.pyc
+*.txt
+
+#keep prod settings and local separate
+berkeleyconnect/settings.py
+
+#more useless files
+.bowerrc
+*/__pycache__/*
+*.sqlite3
+media/*
+
+#for venv
+venv/
+
+website/migrations/*

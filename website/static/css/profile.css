@@ -182,11 +182,6 @@
   background-size: cover;
   background-position: center center;
 }
-
-.src-image {
-  display: none;
-}
-
 .card {
   overflow: hidden;
   position: relative;
@@ -199,6 +194,8 @@
 }
 .card:hover {
   transform: scale(1.05);
+  -webkit-transition-timing-function: linear; /* Safari and Chrome */
+  transition-timing-function: linear;
 }
 .card .header-bg {
   /* This stretches the canvas across the entire hero unit */
@@ -214,10 +211,11 @@
 }
 .card .avatar {
   position: absolute;
-  top: calc(100px);
+  top: calc(50px);
   /*transform: translateY(-50px);*/
   left: calc(50% - 50px);
   z-index: 100;
+  background-color: white;
 }
 
 .card .avatar {
