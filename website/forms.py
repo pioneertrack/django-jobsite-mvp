@@ -71,8 +71,10 @@ class FounderForm(forms.ModelForm):
         return super(FounderForm, self).is_valid()
     class Meta:
         model = profile.Founder
-        fields = ('startup_name', 'logo', 'description','field', 'website', 'facebook')
+        fields = ('startup_name', 'stage', 'display_funding', 'employee_count', 'logo', 'description','field', 'website', 'facebook')
         labels = {
+            'employee_count': 'Number of employees',
+            'stage': 'What stage is your startup in?',
             'hours_wanted': 'Hours per week candidates should have available',
             'seeking': 'Looking for a partner or to hire/contract?'
         }
@@ -87,10 +89,17 @@ class ExperienceForm(forms.ModelForm):
             'start_date': forms.DateInput(),
             'end_date': forms.DateInput()
         }
+class FundingForm(forms.ModelForm):
+    def is_valid(self):
+        log.info(force_text(self.errors))
+        return super(FundingForm, self).is_valid()
+    class Meta:
+        model = profile.Funding
+        fields=('stage', 'raised')
 class JobForm(forms.ModelForm):
     def is_valid(self):
         log.info(force_text(self.errors))
         return super(JobForm, self).is_valid()
     class Meta:
         model = profile.Job
-        fields=('title', 'level','pay', 'description')
+        fields=('title', 'level', 'pay', 'description')

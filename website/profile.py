@@ -14,6 +14,16 @@ POSITION = (
     ('0', 'Partnership'),
     ('1', 'Paid'),
 )
+STAGE = (
+    ('0', 'Idea'),
+    ('1', 'Prototype'),
+    ('2', 'Incorporated'),
+    ('3', 'Generating revenue'),
+    ('4', 'Seed'),
+    ('5', 'Series A'),
+    ('6', 'Series B'),
+    ('7', 'Series C'),
+)
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     return 'images/user_{0}/{1}.jpg'.format(instance.id, instance.id)
@@ -27,6 +37,9 @@ class Profile(models.Model):
         ('JR', 'Junior'),
         ('SR', 'Senior'),
         ('GR', 'Graduate'),
+        ('PH', 'PhD'),
+        ('PD', 'Post-Doc'),
+        ('AL', 'Alumni')
     )
     MAJORS = (
         ('EECS', 'Electrical Engineering and Computer Science'),
@@ -111,9 +124,16 @@ class Founder(models.Model):
     # contact_email = models.EmailField(max_length=255)
     startup_name = models.CharField(max_length = 99)
     description = models.TextField(blank = True, null = False)
+    stage = models.CharField(max_length = 1, choices = STAGE, default='0')
+    employee_count = models.IntegerField(default=1)
+    display_funding = models.BooleanField(blank=True, default=False)
     website = models.URLField(blank = True, null = False)
     facebook = models.URLField(blank=True, null=False)
     field = models.CharField(max_length = 4, choices = CATEGORY, blank = True, null = False)
+class Funding(models.Model):
+    founder = models.ForeignKey(Founder, on_delete=models.CASCADE, null=True)
+    stage = models.CharField(max_length=1, choices=STAGE, default='0', null=True)
+    raised = models.IntegerField(default=0)
 class Job(models.Model):
     LEVELS = (
         ('FT', 'Full-time'),

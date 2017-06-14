@@ -176,7 +176,11 @@ def index(request):
                 'founder': False,
             }))
         else:
-            result = models.MyUser.objects.filter(is_active = True, is_founder=True, founder__field__in=fields, founder__startup_name__gt='')
+            if request.POST.get('beenFunded', False):
+                funded_types = ['4','5','6','7'] #Seed, Series A-C
+                result = models.MyUser.objects.filter(is_active=True, is_founder=True, founder__stage__in=funded_types, founder__field__in=fields, founder__startup_name__gt='')
+            else:
+                result = models.MyUser.objects.filter(is_active=True, is_founder=True, founder__field__in=fields, founder__startup_name__gt='')
             for r in result:
                 jobs = [stem_remove_stop_words(arr) for arr in [" ".join([x.description, x.title, str(x.get_level_display), str(x.get_pay_display)]).lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in r.founder.job_set.all()]]
                 attr = [stem_remove_stop_words(arr) for arr in [x.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in [r.first_name+" " +r.last_name, r.founder.startup_name, r.founder.description]]]
@@ -259,6 +263,7 @@ def profile_update(request):
     ExperienceFormSet = inlineformset_factory(prof.Profile, prof.Experience, form=forms.ExperienceForm,
         widgets={'start_date': f.DateInput(), 'end_date': f.DateInput()},
         error_messages={'start_date': {'invalid':'Please enter a date with the form MM/DD/YY'}, 'end_date': {'invalid':'Please enter a date with the form MM/DD/YY'}}, max_num=5, extra=1)
+    FundingFormSet = inlineformset_factory(prof.Founder, prof.Funding, form=forms.FundingForm, labels={'stage': 'Funding round', 'raised': 'Amount raised'}, max_num=5, extra=1)
     JobFormSet = inlineformset_factory(prof.Founder, prof.Job, form=forms.JobForm, labels={'level': 'Job position', 'title': 'Job title', 'pay': 'Job pay', 'description': 'Job description'}, max_num=5, extra=1)
     if user.first_login:
         user.set_first_login()
@@ -283,15 +288,23 @@ def profile_update(request):
             messages.error(request, "There was an error processing your request")
     elif user.is_founder and request.method == 'POST':
         profile_form = forms.FounderForm(request.POST, request.FILES, instance=request.user.founder)
+        funding_form = FundingFormSet(request.POST, instance=request.user.founder)
         job_form = JobFormSet(request.POST, instance=request.user.founder)
-        if profile_form.is_valid() and job_form.is_valid():
+        if profile_form.is_valid() and job_form.is_valid() and funding_form.is_valid():
             for k in job_form.deleted_forms:
                 s = k.save(commit=False)
                 s.delete()
+            for l in funding_form.deleted_forms:
+                t = l.save(commit=False)
+                t.delete()
             objs = job_form.save(commit=False)
             for obj in objs:
                 if obj.title != '':
                     obj.save()
+            objs2 = funding_form.save(commit=False)
+            for obj2 in objs2:
+                if obj2.title != '':
+                    obj2.save()
             profile_form.save()
             messages.success(request, 'Your profile was successfully updated!')
             user.save()
@@ -300,6 +313,7 @@ def profile_update(request):
             messages.error(request, 'There was an error processing your request')
     elif user.is_founder:
         profile_form = forms.FounderForm(instance=request.user.founder)
+        funding_form = FundingFormSet(instance=request.user.founder)
         job_form = JobFormSet(instance=request.user.founder)
     else:
         profile_form = forms.ProfileForm(instance=request.user.profile)
@@ -314,6 +328,7 @@ def profile_update(request):
     else:
         return render(request, 'profile_form.html', merge_two_dicts(CONTEXT, {
             'profile_form':profile_form,
+            'funding': funding_form,
             'jobs': job_form,
             'show_exp': False,
             'reset': True

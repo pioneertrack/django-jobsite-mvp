@@ -211,8 +211,8 @@
 }
 .card .avatar {
   position: absolute;
-  top: calc(50px);
-  /*transform: translateY(-50px);*/
+  top: calc(100px);
+  transform: translateY(-50px);
   left: calc(50% - 50px);
   z-index: 100;
   background-color: white;

@@ -29,17 +29,26 @@
               deleteCssClass: 'remove',
               deleteText:'[&mdash;] remove',
               addCssClass:'add-another',
-              addText:'[+] Add work experience'
+              addText:'[+] Add work experience',
             });
           });
         {% else %}
           $(function() {
-              $('#profileform .set .forminstance').formset({
-                prefix: 'jobs_set',
+              $('#profileform .set #funding').formset({
+                prefx: 'founder_set1',
                 deleteCssClass: 'remove',
                 deleteText:'[&mdash;] remove',
                 addCssClass:'add-another',
-                addText:'[+] Add job opening'
+                addText:'[+] Add funding round',
+                formCssClass: 'dynamic-form1',
+              });
+              $('#profileform .set #jobs').formset({
+                prefix: 'founder_set2',
+                deleteCssClass: 'remove',
+                deleteText:'[&mdash;] remove',
+                addCssClass:'add-another',
+                addText:'[+] Add job opening',
+                formCssClass: 'dynamic-form2'
               });
             });
           {%endif%}
@@ -141,6 +150,7 @@
                     <hr style="margin-top:0;">
                     <li><div class = "checkbox"><label><input type="checkbox" name="startup" value ='True' {%if startup%}checked{%endif%}><span class = "cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>Has startup experience</label></div></li>
                     <li><div class = "checkbox"><label><input type="checkbox" name="funding" value='True' {%if funding%}checked{%endif%}><span class = "cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>Has funding experience</label></div></li>
+                    <li><div class = "checkbox"><label><input type="checkbox" name="beenFunded" value='True' {%if beenFunded%}checked{%endif%}><span class = "cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>Has recieved funding</label></div></li>
                 </ul>
               </nav>
             </div>

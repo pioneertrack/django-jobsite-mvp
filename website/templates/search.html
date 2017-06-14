@@ -19,6 +19,7 @@
         <div class="content">
             {%if user.is_founder%}
             <h2>{{user.founder.startup_name}}</h2>
+            <h4>{{user.founder.get_stage_display}} • {{user.founder.employee_count}} Employees</h4>
             <hr>
             <script type="text/javascript">
               $(function(){
