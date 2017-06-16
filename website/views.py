@@ -176,7 +176,7 @@ def index(request):
                 'founder': False,
             }))
         else:
-            if request.POST.get('beenFunded', False):
+            if request.POST.get('been_funded', False):
                 funded_types = ['4','5','6','7'] #Seed, Series A-C
                 result = models.MyUser.objects.filter(is_active=True, is_founder=True, founder__stage__in=funded_types, founder__field__in=fields, founder__startup_name__gt='')
             else:
