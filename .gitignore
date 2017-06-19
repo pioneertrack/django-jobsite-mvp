@@ -19,3 +19,4 @@ media/*
 venv/
 
 website/migrations/*
+/.idea/

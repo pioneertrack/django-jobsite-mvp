@@ -1,2 +1,2 @@
-psycopg==2.7.1
+psycopg2==2.7.1
 django-storages==1.1.8
