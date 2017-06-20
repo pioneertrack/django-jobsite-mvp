@@ -25,13 +25,16 @@ ALLOWED_HOSTS = ['.bearfounders.com', '54.215.142.223']
 
 #if DEBUG:
 #   INTERNAL_IPS = ['127.0.0.1']
-#   INSTALLED_APPS += ('debug_toolbar',)
-#   MIDDLEWARE += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
 #   STATIC_URL = '/static/'
 #   STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 #   STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-#   import debug_toolbar
-#   DEBUG_TOOLBAR_URLS = [url(r'^__debug__/', include(debug_toolbar.urls)),]
+#   try:
+#       import debug_toolbar
+#       MIDDLEWARE += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+#       INSTALLED_APPS += ('debug_toolbar',)
+#       DEBUG_TOOLBAR_URLS = [url(r'^__debug__/', include(debug_toolbar.urls)),]
+#   except ImportError:
+#       pass
 
 DEFAULT_FROM_EMAIL = 'webmaster@example.com'
 
