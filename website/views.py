@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.forms.models import inlineformset_factory
 from django import forms as f
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Sum
 import numpy as np
 
 import nltk
@@ -254,7 +255,8 @@ def index(request):
 def profile(request):
     if request.user.is_founder:
         jobs = request.user.founder.job_set.order_by('title')
-        return render(request, 'founder.html', merge_two_dicts(CONTEXT,{'profile': True, 'jobs': jobs, 'reset': True}))
+        total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
+        return render(request, 'founder.html', merge_two_dicts(CONTEXT,{'profile': True, 'jobs': jobs, 'reset': True, 'total_funding': total_funding.get('total') }))
     experience = request.user.profile.experience_set.order_by('-start_date')
     return render(request, 'profile.html', merge_two_dicts(CONTEXT, {'profile': True, 'experience': experience, 'reset': True}))
 @login_required(login_url='login/')
@@ -303,7 +305,7 @@ def profile_update(request):
                     obj.save()
             objs2 = funding_form.save(commit=False)
             for obj2 in objs2:
-                if obj2.title != '':
+                if obj2.raised > 0:
                     obj2.save()
             profile_form.save()
             messages.success(request, 'Your profile was successfully updated!')

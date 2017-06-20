@@ -30,7 +30,7 @@
   <div class = "row">
      <div class = "col col-md-8 col-md-offset-2">
        <h2>About</h2>
-       <p>{{user.founder.get_stage_display}} with {{user.founder.employee_count}} Employees</p>
+       <p>The company is currently in the {{user.founder.get_stage_display}} phase, with {{user.founder.employee_count}} employee{{ user.founder.employee_count|pluralize }}{% if user.founder.display_funding and total_funding > 0 %}and has raised ${{ total_funding }} total in funding{% endif %}.</p>
        <p>{{user.founder.description|linebreaks}}</p>
        <hr>
      </div>

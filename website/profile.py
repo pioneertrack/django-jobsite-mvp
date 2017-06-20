@@ -18,11 +18,17 @@ STAGE = (
     ('0', 'Idea'),
     ('1', 'Prototype'),
     ('2', 'Incorporated'),
-    ('3', 'Generating revenue'),
+    ('3', 'Generating Revenue'),
     ('4', 'Seed'),
     ('5', 'Series A'),
     ('6', 'Series B'),
     ('7', 'Series C'),
+)
+FUNDING_ROUNDS = (
+    ('0', 'Seed'),
+    ('1', 'Series A'),
+    ('2', 'Series B'),
+    ('3', 'Series C'),
 )
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
@@ -132,7 +138,7 @@ class Founder(models.Model):
     field = models.CharField(max_length = 4, choices = CATEGORY, blank = True, null = False)
 class Funding(models.Model):
     founder = models.ForeignKey(Founder, on_delete=models.CASCADE, null=True)
-    stage = models.CharField(max_length=1, choices=STAGE, default='0', null=True)
+    stage = models.CharField(max_length=1, choices=FUNDING_ROUNDS, default='0', null=True)
     raised = models.IntegerField(default=0)
 class Job(models.Model):
     LEVELS = (
