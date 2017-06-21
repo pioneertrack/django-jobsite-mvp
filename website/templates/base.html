@@ -87,7 +87,26 @@
               <a class="cd-dropdown-trigger" href="#0">Filter</a>
               <nav class="cd-dropdown">
                 <a href="#0" class="cd-close">Close</a>
-                <ul class="cd-dropdown-content">
+                <ul class="cd-dropdown-content jobs text-capitalize" style="display: none;">
+                  {% for item in job_context %}
+                    <li class="has-children">
+                      <a href="/">{{ item.0 }}</a>
+                      <ul class="cd-dropdown-icons is-hidden">
+                        <li class="go-back"><a href="#0">Menu</a></li>
+                        {% for subitem in item.1 %}
+                          <li class = "checkbox">
+                            <label>
+                              <input type="checkbox" name="{{ subitem.0 }}" value="{{ subitem.0 }}" {%if reset or not posted%}checked{%endif%}>
+                              <span class = "cr"><i class="cr-icon fa fa-check"></i></span>
+                              {{ subitem.1 }}</label>
+                          </li>
+                        {% endfor %}
+                        <li class="see-all"><input type="submit" value="Update search"></li>
+                      </ul>
+                    </li>
+                  {% endfor %}
+                </ul>
+                <ul class="cd-dropdown-content people">
                     <li class="has-children">
                         <a href="/">Year</a>
                         <ul class="cd-dropdown-icons is-hidden">
@@ -113,7 +132,9 @@
                       <ul class="cd-dropdown-icons is-hidden">
                         <li class="go-back"><a href="#0">Menu</a></li>
                         {%for x in roles%}
-                        <li class = "checkbox"><label><input type="checkbox" name="role" value="{{x.0}}" {%if reset or not posted or x.0 in oldroles%}checked{%endif%}><span class = "cr"><i class="cr-icon fa fa-check"></i></span>{{x.1}}</label></li>
+                            <li class="checkbox"><label><input type="checkbox" name="role" value="{{ x.0 }}"
+                                                               {% if reset or not posted or x.0 in oldroles %}checked{% endif %}><span
+                                    class="cr"><i class="cr-icon fa fa-check"></i></span>{{ x.1 }}</label></li>
                         {%endfor%}
                         <li class = "see-all"><input type="submit" value="Update search"></li>
                       </ul>
@@ -151,8 +172,9 @@
         		<div class="cd-select">
         			<span>in</span>
         			<select id="selector" name="select-category">
-                <option value="people" {%if not founder%}selected{%endif%}>People</option>
-                <option value="startups"{%if founder%}selected{%endif%}>Startups</option>
+                        <option value="people" {%if not founder%}selected{%endif%}>People</option>
+                        <option value="startups"{%if founder%}selected{%endif%}>Startups</option>
+                        <option value="jobs">Jobs</option>
         			</select>
         			<input name="category" type="hidden"><span class="selected-value" style="text-transform:capitalize;"></span></input>
               <i class = "fa fa-chevron-down"></i>
@@ -175,7 +197,7 @@
         </ul>
         <div style = "position:fixed;width:30%;z-index:1000;bottom:1.5%;right:1%;">
         {% for message in messages %}
-        <div class="message alert {% if message.tags %} alert-{{ message.tags }} {% endif %} fade in" style:"position:relative; z-index:1000; width:100%;">
+        <div class="message alert {% if message.tags %} alert-{{ message.tags }} {% endif %} fade in" style="position:relative; z-index:1000; width:100%;">
             <a href="#" class="close" data-dismiss="alert">&times;</a>
             {% if message.tags %}<strong>{{ message.tags|capfirst }}!</strong>{% endif %} {{message}}.
         </div>

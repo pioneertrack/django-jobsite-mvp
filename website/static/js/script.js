@@ -99,6 +99,7 @@ jQuery(document).ready(function($){
 		  	})
 		});
 	}
+
 	$("#connect").on('click', function(){
 		console.log('clicked')
 		swal({
@@ -147,6 +148,17 @@ jQuery(document).ready(function($){
 
 		})
 	})
+
+  $("#selector").on('change', function(e) {
+    if ($(this).val() === 'jobs') {
+      $('.cd-dropdown-content.people').hide();
+      $('.cd-dropdown-content.jobs').show();
+    } else {
+      $('.cd-dropdown-content.jobs').hide();
+      $('.cd-dropdown-content.people').show();
+    }
+  });
+
 });
 
 (function($) {
