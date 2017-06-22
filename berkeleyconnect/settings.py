@@ -35,7 +35,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 EMAIL_HOST = 'localhost'
-EMAIL_PORT = 8000
+EMAIL_PORT = 1025
 
 DEFAULT_FROM_EMAIL = 'noreply@bearfounders.com'
 LOGIN_REDIRECT_URL = '/'

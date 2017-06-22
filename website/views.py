@@ -177,8 +177,8 @@ def index(request):
                 'founder': False,
             }))
         else:
-            if request.POST.get('been_funded', False):
-                funded_types = ['4','5','6','7'] #Seed, Series A-C
+            funded_types = ['4','5','6','7'] #Seed, Series A-C
+            if request.POST.get('been_funded'):
                 result = models.MyUser.objects.filter(is_active=True, is_founder=True, founder__stage__in=funded_types, founder__field__in=fields, founder__startup_name__gt='')
             else:
                 result = models.MyUser.objects.filter(is_active=True, is_founder=True, founder__field__in=fields, founder__startup_name__gt='')
@@ -235,6 +235,7 @@ def index(request):
             return render(request, 'search.html', merge_two_dicts(CONTEXT, {
                 'searched': to_return,
                 'oldfields': fields,
+                'funded': request.POST.get('been_funded') in funded_types,
                 'startup': request.POST.get('startup', False),
                 'funding': request.POST.get('funding', False),
                 'posted': False,
@@ -265,7 +266,9 @@ def profile_update(request):
     ExperienceFormSet = inlineformset_factory(prof.Profile, prof.Experience, form=forms.ExperienceForm,
         widgets={'start_date': f.DateInput(), 'end_date': f.DateInput()},
         error_messages={'start_date': {'invalid':'Please enter a date with the form MM/DD/YY'}, 'end_date': {'invalid':'Please enter a date with the form MM/DD/YY'}}, max_num=5, extra=1)
-    FundingFormSet = inlineformset_factory(prof.Founder, prof.Funding, form=forms.FundingForm, labels={'stage': 'Funding round', 'raised': 'Amount raised'}, max_num=5, extra=1)
+    FundingFormSet = inlineformset_factory(prof.Founder, prof.Funding, form=forms.FundingForm,
+        error_messages={'raised': {'invalid': 'Please enter an amount greater than 0'}},
+        labels={'stage': 'Funding round', 'raised': 'Amount raised'}, max_num=5, extra=1)
     JobFormSet = inlineformset_factory(prof.Founder, prof.Job, form=forms.JobForm, labels={'level': 'Job position', 'title': 'Job title', 'pay': 'Job pay', 'description': 'Job description'}, max_num=5, extra=1)
     if user.first_login:
         user.set_first_login()
