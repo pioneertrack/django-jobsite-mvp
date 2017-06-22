@@ -42,7 +42,7 @@ JOB_CONTEXT = {
         ('category', list(prof.Founder.CATEGORY)),
         ('level', list(prof.Job.LEVELS)),
         ('pay', list(prof.POSITION))
-    ],
+    ]
 },
 
 
@@ -132,7 +132,7 @@ def index(request):
                 result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__position__in=pos)
             for r in result:
                 experience = [stem_remove_stop_words(arr) for arr in [x.description.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in r.profile.experience_set.all()]]
-                attr = [stem_remove_stop_words(arr) for arr in [x.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in [r.first_name+" " +r.last_name, str(r.profile.get_major_display), r.profile.bio, r.profile.skills, r.profile.interests, r.profile.courses]]]
+                attr = [stem_remove_stop_words(arr) for arr in [x.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in [r.first_name+" " +r.last_name, r.profile.get_major_display(), r.profile.bio, r.profile.skills, r.profile.interests, r.profile.courses]]]
                 total = list(itertools.chain.from_iterable(attr+experience))
                 for i, word in enumerate(total):
                     if word in search_index:
@@ -248,22 +248,40 @@ def index(request):
             else:
                 to_return = list(to_return)
                 shuffle(to_return)
-            return render(request, 'search.html', dict(
-                JOB_CONTEXT[0].items() +
-                CONTEXT.items() +
-                {
-                    'searched': to_return,
-                    'oldfields': fields,
-                    'startup': request.POST.get('startup', False),
-                    'funding': request.POST.get('funding', False),
-                    'posted': False,
-                    'founder': True,
-                }.items()))
+            return render(request, 'search.html',
+                          dict(CONTEXT.items() +
+                              JOB_CONTEXT[0].items() +
+                              {
+                                  'searched': to_return,
+                                  'oldfields': fields,
+                                  'startup': request.POST.get('startup', False),
+                                  'funding': request.POST.get('funding', False),
+                                  'posted': False,
+                                  'founder': True,
+                              }.items()))
         elif request.POST['select-category'] == 'jobs':
-            return render(request, 'home.html',
+            category = request.POST.getlist('category')
+            level = request.POST.getlist('level')
+            pay = request.POST.getlist('pay')
+
+            result = prof.Job.objects.filter(level__in=level, pay__in=pay, founder__field__in=category)
+            to_return = set()
+            count = 0
+            for r in result:
+                if count > 100:
+                    break
+                to_return.add((r, None))
+                count += 1
+            to_return = list(to_return)
+            shuffle(to_return)
+            return render(request, 'search.html',
                           dict(CONTEXT.items()
                                + JOB_CONTEXT[0].items()
                                + {
+                                   'searched': to_return,
+                                   'oldfields': fields,
+                                   'startup': request.POST.get('startup', False),
+                                   'funding': request.POST.get('funding', False),
                                    'posted': False,
                                    'reset': True,
                                }.items()))
@@ -288,8 +306,7 @@ def index(request):
             return render(request, 'home.html',
                           dict(CONTEXT.items()
                                + JOB_CONTEXT[0].items()
-                               + {
-                                   'posted': False,
+                               + {'posted': False,
                                    'reset': True,
                                }.items()))
 
@@ -299,7 +316,14 @@ def profile(request):
         jobs = request.user.founder.job_set.order_by('title')
         return render(request, 'founder.html', merge_two_dicts(CONTEXT,{'profile': True, 'jobs': jobs, 'reset': True}))
     experience = request.user.profile.experience_set.order_by('-start_date')
-    return render(request, 'profile.html', merge_two_dicts(CONTEXT, {'profile': True, 'experience': experience, 'reset': True}))
+    return render(request, 'profile.html',
+                  dict(CONTEXT.items()
+                       + JOB_CONTEXT[0].items()
+                       + {
+                           'profile': True,
+                           'experience': experience,
+                           'reset': True
+                       }.items()))
 
 @login_required(login_url='login/')
 def profile_update(request):
@@ -353,19 +377,26 @@ def profile_update(request):
         profile_form = forms.ProfileForm(instance=request.user.profile)
         experience_form = ExperienceFormSet(instance = request.user.profile)
     if not user.is_founder:
-        return render(request, 'profile_form.html', merge_two_dicts(CONTEXT, {
-            'profile_form': profile_form,
-            'experience': experience_form,
-            'show_exp': True,
-            'reset': True
-        }))
+        return render(request, 'profile_form.html',
+                      dict(CONTEXT.items()
+                           + JOB_CONTEXT[0].items()
+                           + {
+                               'profile_form': profile_form,
+                               'experience': experience_form,
+                               'show_exp': True,
+                               'reset': True
+                           }.items()))
     else:
-        return render(request, 'profile_form.html', merge_two_dicts(CONTEXT, {
-            'profile_form':profile_form,
-            'jobs': job_form,
-            'show_exp': False,
-            'reset': True
-        }))
+        return render(request, 'profile_form.html',
+                      dict(CONTEXT.items()
+                           + JOB_CONTEXT[0].items()
+                           +
+                           {
+                               'profile_form': profile_form,
+                               'jobs': job_form,
+                               'show_exp': False,
+                               'reset': True
+                           }.items()))
 
 @login_required(login_url='login/')
 def get_user_view(request, id):
@@ -375,20 +406,26 @@ def get_user_view(request, id):
         return HttpResponseRedirect('/')
     if user.is_founder:
         jobs = user.founder.job_set.order_by('title')
-        return render(request, 'founder.html', merge_two_dicts(CONTEXT, {
-            'user': user,
-            'profile': False,
-            'jobs': jobs,
-            'reset': True
-        }))
+        return render(request, 'founder.html',
+                      dict(CONTEXT.items()
+                           + JOB_CONTEXT[0].items()
+                           + {
+                               'user': user,
+                               'profile': False,
+                               'jobs': jobs,
+                               'reset': True
+                           }.items()))
     else:
         exp = user.profile.experience_set.order_by('-start_date')
-        return render(request, 'profile.html', merge_two_dicts(CONTEXT, {
-            'user': user,
-            'profile': False,
-            'experience': exp,
-            'reset': True
-        }))
+        return render(request, 'profile.html',
+                      dict(CONTEXT.items()
+                           + JOB_CONTEXT[0].items()
+                           + {
+                               'user': user,
+                               'profile': False,
+                               'experience': exp,
+                               'reset': True
+                           }.items()))
 
 class MyRegistrationView(RegistrationView):
     def dispatch(self, request, *args, **kwargs):

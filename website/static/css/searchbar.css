@@ -89,6 +89,7 @@
     -moz-transition: opacity 0.3s, visibility 0.3s;
     transition: opacity 0.3s, visibility 0.3s;
   }
+
   .cd-main-search .searchform {
     position: relative;
     height: 100%;
@@ -96,15 +97,17 @@
     /* 116px (margin right) takes into account the space occupied by the a.cd-search-trigger and a.close */
     margin: 0 calc(5% + 40px) 0 calc(5% + 110px);
   }
+
   .cd-main-search input[type="search"] {
     font-size: 2.4rem;
     height: 100%;
     background-color: transparent;
-    color:white;
+    color: white;
     /* don't overlap <select> element */
     padding-right: 170px;
   }
-  .cd-main-search .cd-select{
+
+  .cd-main-search .cd-select {
     display: inline-block;
     position: absolute;
     right: 50px;
@@ -119,14 +122,17 @@
     font-size: 1.4rem;
     overflow: hidden;
   }
+
   .cd-main-search span {
     display: inline-block;
   }
+
   .cd-main-search option {
     /* style <option> elements on Firefox */
     color: #333545;
     background-color: #ffffff;
   }
+
   .cd-main-search select {
     /* the <select> element is not visible (if the list of options is not open) -  it is covered by the .selected-value element */
     position: absolute;
@@ -141,12 +147,15 @@
     opacity: 0;
     color: transparent;
   }
+
   .cd-main-search select:focus {
     outline: none;
   }
+
   .cd-main-search select:focus + span.selected-value {
     background-color: #3d3f4e;
   }
+
   .cd-main-search .selected-value {
     /* this <span> element covers the <select> element - its content is changed (using JavaScript) and set equal to the selected <option> value */
     /* its width automatically changes according to the text of the selected <option> (not possible with a <select> element) */
@@ -157,17 +166,19 @@
     -moz-transition: background-color 0.3s;
     transition: background-color 0.3s;
   }
+
   .cd-main-search select, .cd-main-search .selected-value {
     padding: 0.5em .3em 0.5em .3em;
     font-size: 1.4rem;
     border-radius: 3px;
   }
+
   .cd-main-search.is-visible {
     /* search form open */
     opacity: 1;
     visibility: visible;
   }
-
+}
 
 .cd-top {
   display: inline-block;
@@ -216,4 +227,35 @@
     right: 30px;
     bottom: 30px;
   }
+}
+
+.card.job-card .avatar {
+  width: 80px;
+  height: 80px;
+  top: 10px;
+  left: 10px;
+  border: 5px solid rgba(63, 122, 183, 0.8);
+}
+.card.job-card .header-bg  {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+.card.job-card .header-bg h2 {
+  overflow: hidden;
+  white-space: nowrap;
+  padding-left: 100px;
+  color: rgba(68, 153, 219, 0.8);
+  margin: 0;
+  display: inline-block;
+  text-overflow: ellipsis;
+}
+.card.job-card .content {
+  height: 33%;
+  margin-top: 0;
+}
+.card.job-card .offer-content {
+  height: 33%;
+  margin-top: 0;
 }

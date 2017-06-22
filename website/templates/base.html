@@ -96,7 +96,7 @@
                         {% for subitem in item.1 %}
                           <li class = "checkbox">
                             <label>
-                              <input type="checkbox" name="{{ subitem.0 }}" value="{{ subitem.0 }}" {%if reset or not posted%}checked{%endif%}>
+                              <input type="checkbox" name="{{ item.0 }}" value="{{ subitem.0 }}" {%if reset or not posted%}checked{%endif%}>
                               <span class = "cr"><i class="cr-icon fa fa-check"></i></span>
                               {{ subitem.1 }}</label>
                           </li>
