@@ -43,7 +43,7 @@ JOB_CONTEXT = {
         ('level', list(prof.Job.LEVELS)),
         ('pay', list(prof.POSITION))
     ]
-},
+}
 
 
 def stem_remove_stop_words(arr):
@@ -288,7 +288,7 @@ def index(request):
         else:
             return render(request, 'home.html',
                           dict(CONTEXT.items()
-                               + JOB_CONTEXT[0].items()
+                               + JOB_CONTEXT.items()
                                + {
                                    'posted': False,
                                    'reset': True,
@@ -297,7 +297,7 @@ def index(request):
         if user.is_founder:
             return render(request, 'home.html',
                           dict(CONTEXT.items()
-                               + JOB_CONTEXT[0].items()
+                               + JOB_CONTEXT.items()
                                + {
                                    'posted': False,
                                    'reset': True,
@@ -305,7 +305,7 @@ def index(request):
         else:
             return render(request, 'home.html',
                           dict(CONTEXT.items()
-                               + JOB_CONTEXT[0].items()
+                               + JOB_CONTEXT.items()
                                + {'posted': False,
                                    'reset': True,
                                }.items()))
@@ -318,7 +318,7 @@ def profile(request):
     experience = request.user.profile.experience_set.order_by('-start_date')
     return render(request, 'profile.html',
                   dict(CONTEXT.items()
-                       + JOB_CONTEXT[0].items()
+                       + JOB_CONTEXT.items()
                        + {
                            'profile': True,
                            'experience': experience,
@@ -379,7 +379,7 @@ def profile_update(request):
     if not user.is_founder:
         return render(request, 'profile_form.html',
                       dict(CONTEXT.items()
-                           + JOB_CONTEXT[0].items()
+                           + JOB_CONTEXT.items()
                            + {
                                'profile_form': profile_form,
                                'experience': experience_form,
@@ -389,7 +389,7 @@ def profile_update(request):
     else:
         return render(request, 'profile_form.html',
                       dict(CONTEXT.items()
-                           + JOB_CONTEXT[0].items()
+                           + JOB_CONTEXT.items()
                            +
                            {
                                'profile_form': profile_form,
@@ -408,7 +408,7 @@ def get_user_view(request, id):
         jobs = user.founder.job_set.order_by('title')
         return render(request, 'founder.html',
                       dict(CONTEXT.items()
-                           + JOB_CONTEXT[0].items()
+                           + JOB_CONTEXT.items()
                            + {
                                'user': user,
                                'profile': False,
@@ -419,7 +419,7 @@ def get_user_view(request, id):
         exp = user.profile.experience_set.order_by('-start_date')
         return render(request, 'profile.html',
                       dict(CONTEXT.items()
-                           + JOB_CONTEXT[0].items()
+                           + JOB_CONTEXT.items()
                            + {
                                'user': user,
                                'profile': False,
