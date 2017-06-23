@@ -158,6 +158,14 @@ jQuery(document).ready(function($){
       $('.cd-dropdown-content.people').show();
     }
   });
+	
+	$("#view_type").on('change', function(e) {
+    if ($(this).prop('checked')) {
+      $('.job-card:first').parents('.container').addClass('list');
+    } else {
+      $('.job-card:first').parents('.container').removeClass('list');
+    }
+  });
 
 });
 

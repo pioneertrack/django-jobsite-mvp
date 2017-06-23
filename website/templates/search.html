@@ -10,14 +10,12 @@
   {%for item, skills in searched%}
     {% if item.level %}
       {% with user=item.founder.user %}
-        <div class="col col-md-4" style="height:400px;">
+        <div class="col col-md-4 item">
 
           <a class="card-hover" href='/users/{{ user.id }}'>
             <div class="card job-card">
               <div class="header-bg" style="height:100px; background-color:#25283D;">
                 <h2>{{ user.founder.startup_name }}</h2>
-              </div>
-              <div>
                 <img class="avatar" src="{{ user.founder.logo.url }}"/>
               </div>
               <div class="content">
@@ -34,25 +32,18 @@
                 <div class="founderdescription">
                   <p>{{ user.founder.description }}<p>
                 </div>
-                <!--<div style = "padding:10px;">
-                <a href="/users/{{user.id}}" class="btn btn-primary btn-outline">View profile</a>
-                </div>-->
               </div>
-              <div class="row offer-content">
-                <h3>{{ item.title }}</h3>
-                <div class="row">
-                  <div clas="col-md-12">
-                    <span  style="font-weight: bold;">Job position:</span><span>{{ item.get_level_display }}</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-12">
-                    <span style="font-weight: bold;">Compensation type:</span><span>{{ item.get_pay_display }}</span>
-                  </div>
+              <div class="offer-content">
+                <div class="info">
+                    <h3>{{ item.title }}</h3>
+                    <div class="pcomp">
+                      <span class="font-weight-bold">Job position:&nbsp;</span><span>{{ item.get_level_display }}</span>
+                      <span class="font-weight-bold">Compensation type:&nbsp;</span><span>{{ item.get_pay_display }}</span>
+                    </div>
                 </div>
                 <script type="text/javascript">
                     $(function() {
-                      $('.job-description').each(function(i) {
+                      $('.description').each(function(i) {
                         len = $(this).text().length;
                         if (len > 300) {
                           $(this).text($(this).text().substr(0, 200) + '...');
@@ -60,8 +51,8 @@
                       });
                     });
                 </script>
-                <div class="job-description">
-                  <p>{{ item.description }}<p>
+                <div class="description">
+                  <p>{{ item.description }}</p>
                 </div>
               </div>
             </div>
