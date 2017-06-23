@@ -348,14 +348,14 @@
   transform: scale(1.1);
 }
 .cd-switch-view #view_type + label .fa-list{
-  display: none;
+  display: block;
 }
 .cd-switch-view #view_type + label .fa-th-large{
-  display: block;
+  display: none;
 }
 .cd-switch-view #view_type:checked + label .fa-list {
-  display: block;
+  display: none;
 }
 .cd-switch-view #view_type:checked + label .fa-th-large{
-  display: none;
+  display: block;
 }
