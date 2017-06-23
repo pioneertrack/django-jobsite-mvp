@@ -185,7 +185,7 @@ def index(request):
                 shuffle(to_return)
             return render(request, 'search.html',
                           dict(CONTEXT.items()
-                               + JOB_CONTEXT[0].items()
+                               + JOB_CONTEXT.items()
                                + {
                                    'searched': to_return,
                                    'oldroles': roles,
@@ -250,7 +250,7 @@ def index(request):
                 shuffle(to_return)
             return render(request, 'search.html',
                           dict(CONTEXT.items() +
-                              JOB_CONTEXT[0].items() +
+                              JOB_CONTEXT.items() +
                               {
                                   'searched': to_return,
                                   'oldfields': fields,
@@ -276,7 +276,7 @@ def index(request):
             shuffle(to_return)
             return render(request, 'search.html',
                           dict(CONTEXT.items()
-                               + JOB_CONTEXT[0].items()
+                               + JOB_CONTEXT.items()
                                + {
                                    'searched': to_return,
                                    'oldfields': fields,
