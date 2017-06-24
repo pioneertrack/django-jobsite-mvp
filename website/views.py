@@ -177,11 +177,7 @@ def index(request):
                 'founder': False,
             }))
         else:
-            funded_types = ['4','5','6','7'] #Seed, Series A-C
-            if request.POST.get('been_funded'):
-                result = models.MyUser.objects.filter(is_active=True, is_founder=True, founder__stage__in=funded_types, founder__field__in=fields, founder__startup_name__gt='')
-            else:
-                result = models.MyUser.objects.filter(is_active=True, is_founder=True, founder__field__in=fields, founder__startup_name__gt='')
+            result = models.MyUser.objects.filter(is_active=True, is_founder=True, founder__field__in=fields, founder__startup_name__gt='')
             for r in result:
                 jobs = [stem_remove_stop_words(arr) for arr in [" ".join([x.description, x.title, str(x.get_level_display), str(x.get_pay_display)]).lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in r.founder.job_set.all()]]
                 attr = [stem_remove_stop_words(arr) for arr in [x.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in [r.first_name+" " +r.last_name, r.founder.startup_name, r.founder.description]]]
@@ -235,7 +231,7 @@ def index(request):
             return render(request, 'search.html', merge_two_dicts(CONTEXT, {
                 'searched': to_return,
                 'oldfields': fields,
-                'funded': request.POST.get('been_funded') in funded_types,
+                'funded': request.POST.get('been_funded', False),
                 'startup': request.POST.get('startup', False),
                 'funding': request.POST.get('funding', False),
                 'posted': False,
