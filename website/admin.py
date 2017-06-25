@@ -1,3 +1,6 @@
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
@@ -6,6 +9,8 @@ from website.models import MyUser
 from website.forms import NewRegistrationForm
 from website.profile import Profile
 from website.profile import Founder
+
+from website.profile import STAGE, LEVELS, CATEGORY, PRIMARY_ROLE, MAJORS, YEAR_IN_SCHOOL_CHOICES, FUNDING_ROUNDS, POSITION, HOURS_AVAILABLE
 # Register your models here.
 class ProfileInline(admin.StackedInline):
     model = Profile
@@ -54,5 +59,85 @@ class MyUserAdmin(BaseUserAdmin):
         return instance.profile.year
     get_year.short_description = 'Year'
 
+class FounderResource(resources.ModelResource):
+    class Meta:
+        model = Founder
+
+        fields = ('user__first_name', 'user__last_name', 'startup_name',
+                 'description', 'stage', 'employee_count',
+                 'website', 'facebook', 'field')
+
+        export_order = ('user__first_name', 'user__last_name', 'startup_name')
+
+    def dehydrate_stage(self, founder):
+        return STAGE[int(founder.stage)][1]
+
+    def dehydrate_field(self, founder):
+        return CATEGORY[int(founder.field)][1]
+
+    def get_export_headers(self):
+        headers = []
+        model_fields = self.Meta.model._meta.get_fields() + ProfileInline.model._meta.get_fields()
+        for field in self.get_fields():
+            header = ''
+            if field.column_name == 'user__last_name':
+                header = 'Last Name'
+            elif field.column_name == 'user__first_name':
+                header = 'First Name'
+            else:
+                header = next((x.verbose_name for x in model_fields if x.name == field.column_name), field.column_name)
+            headers.append(header)
+        return headers
+
+class FounderAdmin(ImportExportModelAdmin):
+    resource_class = FounderResource
+    pass
+
+class ProfileResource(resources.ModelResource):
+    class Meta:
+        model = Profile
+
+        fields = ('user__first_name', 'user__last_name', 'bio', 'position',
+                  'interests', 'skills', 'courses', 'year', 'hours_week',
+                  'has_startup_exp', 'has_funding_exp', 'linkedin', 'website',
+                  'github', 'major', 'role')
+
+        export_order = ('user__first_name', 'user__last_name')
+
+    def dehydrate_position(self, profile):
+        return POSITION[int(profile.position)][1]
+
+    def dehydrate_hours_week(self, profile):
+        return HOURS_AVAILABLE[int(profile.hours_week)][1]
+
+    def dehydrate_year(self, profile):
+        return YEAR_IN_SCHOOL_CHOICES[int(profile.year)][1]
+
+    def dehydrate_major(self, profile):
+        return MAJORS[int(profile.major)][1]
+
+    def dehydrate_role(self, profile):
+        return PRIMARY_ROLE[int(profile.role)]
+
+    def get_export_headers(self):
+        headers = []
+        model_fields = self.Meta.model._meta.get_fields() + ProfileInline.model._meta.get_fields()
+        for field in self.get_fields():
+            header = ''
+            if field.column_name == 'user__last_name':
+                header = 'Last Name'
+            elif field.column_name == 'user__first_name':
+                header = 'First Name'
+            else:
+                header = next((x.verbose_name for x in model_fields if x.name == field.column_name), field.column_name)
+            headers.append(header)
+        return headers
+
+class ProfileAdmin(ImportExportModelAdmin):
+    resource_class = ProfileResource
+    pass
+
 admin.site.register(MyUser, MyUserAdmin)
+admin.site.register(Founder, FounderAdmin)
+admin.site.register(Profile, ProfileAdmin)
 admin.site.unregister(Group)

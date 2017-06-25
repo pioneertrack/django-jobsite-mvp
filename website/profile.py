@@ -30,6 +30,71 @@ FUNDING_ROUNDS = (
     ('2', 'Series B'),
     ('3', 'Series C'),
 )
+YEAR_IN_SCHOOL_CHOICES = (
+    ('FR', 'Freshman'),
+    ('SO', 'Sophomore'),
+    ('JR', 'Junior'),
+    ('SR', 'Senior'),
+    ('GR', 'Graduate'),
+    ('PH', 'PhD'),
+    ('PD', 'Post-Doc'),
+    ('AL', 'Alumni')
+)
+MAJORS = (
+    ('EECS', 'Electrical Engineering and Computer Science'),
+    ('IEOR', 'Industrial Engineering and Operations Research'),
+    ('ECON', 'Economics'),
+    ('AMATH', 'Applied Math'),
+    ('CHEM', 'Chemistry'),
+    ('PHYS', 'Physics'),
+    ('MECH', 'Mechanical Engineering'),
+    ('BIOE', 'Bioengineering'),
+    ('CS', 'Computer Science'),
+    ('STAT', 'Statistics'),
+    ('HAAS', 'Business'),
+    ('PH', 'Public Health'),
+    ('MCB', 'MCB'),
+    ('BIO', 'Biology'),
+    ('UND', 'Undecided'),
+    ('NONE', 'Other')
+)
+PRIMARY_ROLE = (
+    ('MARK', 'Marketing'),
+    ('BIZ', 'Business/Administration'),
+    ('SALE', 'Sales'),
+    ('DES', 'Design'),
+    ('PM', 'Product Manager'),
+    ('CS', 'Software engineer'),
+    ('HARD', 'Hardware engineer'),
+    ('IOS', 'Mobile developer'),
+    ('CONS', 'Consulting'),
+    ('HR', 'Human resources'),
+    ('NONE', 'Other')
+)
+CATEGORY = (
+    ('EDUC', 'Education'),
+    ('TECH', 'Technology'),
+    ('RE', 'Retail'),
+    ('HEAL', 'Health Care'),
+    ('ECOM', 'E-Commerce'),
+    ('MARK', 'Marketplaces'),
+    ('FIN', 'Finance'),
+    ('HARD', 'Hardware'),
+    ('MANG', 'Management/Consulting'),
+    ('LEG', 'Legal'),
+    ('MED', 'Medical'),
+    ('HOUS', 'Real Estate'),
+    ('AUTO', 'Automotive'),
+    ('ENER', 'Energy'),
+    ('MACH', 'Machinery'),
+    ('ENV', 'Environmental'),
+    ('NONE', 'Other')
+)
+LEVELS = (
+    ('FT', 'Full-time'),
+    ('PT', 'Part-time'),
+    ('IN', 'Intern')
+)
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     return 'images/user_{0}/{1}.jpg'.format(instance.id, instance.id)
@@ -37,47 +102,6 @@ def company_logo_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     return 'images/company_logos/user_{0}/{1}.jpg'.format(instance.id, instance.id)
 class Profile(models.Model):
-    YEAR_IN_SCHOOL_CHOICES = (
-        ('FR', 'Freshman'),
-        ('SO', 'Sophomore'),
-        ('JR', 'Junior'),
-        ('SR', 'Senior'),
-        ('GR', 'Graduate'),
-        ('PH', 'PhD'),
-        ('PD', 'Post-Doc'),
-        ('AL', 'Alumni')
-    )
-    MAJORS = (
-        ('EECS', 'Electrical Engineering and Computer Science'),
-        ('IEOR', 'Industrial Engineering and Operations Research'),
-        ('ECON', 'Economics'),
-        ('AMATH', 'Applied Math'),
-        ('CHEM', 'Chemistry'),
-        ('PHYS', 'Physics'),
-        ('MECH', 'Mechanical Engineering'),
-        ('BIOE', 'Bioengineering'),
-        ('CS', 'Computer Science'),
-        ('STAT', 'Statistics'),
-        ('HAAS', 'Business'),
-        ('PH', 'Public Health'),
-        ('MCB', 'MCB'),
-        ('BIO', 'Biology'),
-        ('UND', 'Undecided'),
-        ('NONE', 'Other')
-    )
-    PRIMARY_ROLE = (
-        ('MARK', 'Marketing'),
-        ('BIZ', 'Business/Administration'),
-        ('SALE', 'Sales'),
-        ('DES', 'Design'),
-        ('PM', 'Product Manager'),
-        ('CS', 'Software engineer'),
-        ('HARD', 'Hardware engineer'),
-        ('IOS', 'Mobile developer'),
-        ('CONS', 'Consulting'),
-        ('HR', 'Human resources'),
-        ('NONE', 'Other')
-    )
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
     bio = models.TextField(verbose_name='Bio',max_length=500, blank=True, null=False)
     image = models.ImageField(upload_to=user_directory_path, default = 'images/default/default-profile.jpg', blank=True, null=False)
@@ -97,6 +121,9 @@ class Profile(models.Model):
     # second_major = models.CharField()
 
     role = models.CharField(max_length = 4, choices = PRIMARY_ROLE, blank = True, null = False)
+
+    def __str__(self):
+        return self.user.email
 class Experience(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
     company = models.CharField(verbose_name='Company',max_length=40, blank=True, null = False)
@@ -106,25 +133,6 @@ class Experience(models.Model):
     description = models.TextField(verbose_name='Description',max_length=500, blank=True,null=False)
 
 class Founder(models.Model):
-    CATEGORY = (
-        ('EDUC', 'Education'),
-        ('TECH', 'Technology'),
-        ('RE', 'Retail'),
-        ('HEAL', 'Health Care'),
-        ('ECOM', 'E-Commerce'),
-        ('MARK', 'Marketplaces'),
-        ('FIN', 'Finance'),
-        ('HARD', 'Hardware'),
-        ('MANG', 'Management/Consulting'),
-        ('LEG', 'Legal'),
-        ('MED', 'Medical'),
-        ('HOUS', 'Real Estate'),
-        ('AUTO', 'Automotive'),
-        ('ENER', 'Energy'),
-        ('MACH', 'Machinery'),
-        ('ENV', 'Environmental'),
-        ('NONE', 'Other')
-    )
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
     logo = models.ImageField(upload_to=company_logo_path, default = 'images/default/default-logo.jpg', blank=True, null=False)
     # contact_email = models.EmailField(max_length=255)
@@ -144,11 +152,6 @@ class Funding(models.Model):
     stage = models.CharField(verbose_name='Stage',max_length=1, choices=FUNDING_ROUNDS, default='0', null=True)
     raised = models.IntegerField(verbose_name='Raised',default=0)
 class Job(models.Model):
-    LEVELS = (
-        ('FT', 'Full-time'),
-        ('PT', 'Part-time'),
-        ('IN', 'Intern')
-    )
     founder = models.ForeignKey(Founder, on_delete=models.CASCADE, null=True)
     title = models.CharField(verbose_name='Job Title',max_length=40, blank=True, null=False)
     pay = models.CharField(verbose_name='Pay',max_length=1, choices = POSITION, default='1')

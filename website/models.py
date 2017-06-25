@@ -51,13 +51,13 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     )
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
-    first_name = models.CharField(max_length = 25)
-    last_name = models.CharField(max_length = 40)
+    first_name = models.CharField(verbose_name='First Name',max_length = 25)
+    last_name = models.CharField(verbose_name='Last Name',max_length = 40)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     first_login = models.BooleanField(blank = True, default=True)
-    is_founder = models.BooleanField(blank = True, default=False)
+    is_founder = models.BooleanField(verbose_name='Is Founder',blank = True, default=False)
     def set_first_login(self):
         self.first_login = False
 
