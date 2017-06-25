@@ -45,3 +45,4 @@ virtualenvwrapper-win==1.2.1
 wcwidth==0.1.7
 widgetsnbextension==1.2.6
 numpy==1.13.0
+django-import-export==0.5.1
