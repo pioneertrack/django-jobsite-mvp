@@ -307,9 +307,6 @@ def index(request):
                         for r in result:
                             if r.id in valid_users:
                                 to_return.add((r, None))
-            to_return = list(to_return)
-            shuffle(to_return)
-
             if len(words) > 0:
                 for job in list(to_return):
                     attr = [stem_remove_stop_words(arr) for arr in
