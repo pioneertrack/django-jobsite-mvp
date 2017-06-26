@@ -260,30 +260,79 @@ def index(request):
                                   'founder': True,
                               }.items()))
         elif request.POST['select-category'] == 'jobs':
+            tokenized_jobs = []
             category = request.POST.getlist('category')
             level = request.POST.getlist('level')
             pay = request.POST.getlist('pay')
-
             result = prof.Job.objects.filter(level__in=level, pay__in=pay, founder__field__in=category)
-            to_return = set()
-            count = 0
             for r in result:
-                if count > 100:
-                    break
-                to_return.add((r, None))
-                count += 1
+                attr = [stem_remove_stop_words(arr) for arr in
+                        [x.lower().replace('\n', ' ').replace('\r', '').translate(
+                            {ord(c): None for c in string.punctuation}).split() for x in
+                         [r.founder.startup_name, r.founder.description, r.title, r.description]]]
+                attr = list(itertools.chain.from_iterable(attr))
+                for i, word in enumerate(attr):
+                    if word in search_index:
+                        seen = False
+                        for k in search_index.get(word):
+                            if k[0] == r.id:
+                                k[1].append(i)
+                                seen = True
+                                break
+                        if not seen:
+                            search_index.get(word).append([r.id, [i]])
+                    else:
+                        search_index[word] = [[r.id, [i]]]
+
+            to_return = set();
+            if len(words) == 0:
+                count = 0
+                for r in result:
+                    if count > 100:
+                        break
+                    to_return.add((r, None))
+                    count += 1
+                to_return = list(to_return)
+                shuffle(to_return)
+            elif len(words) == 1:
+                if words[0] in search_index:
+                    valid_users = set([k[0] for k in search_index[words[0]]])
+                    for r in result:
+                        if r.id in valid_users:
+                            to_return.add((r, None))
+            elif len(words) > 1:
+                for word in words:
+                    if word in search_index:
+                        valid_users = set([k[0] for k in search_index[word]])
+                        for r in result:
+                            if r.id in valid_users:
+                                to_return.add((r, None))
             to_return = list(to_return)
             shuffle(to_return)
+
+            if len(words) > 0:
+                for job in list(to_return):
+                    attr = [stem_remove_stop_words(arr) for arr in
+                            [x.lower().replace('\n', ' ').replace('\r', '').translate(
+                                {ord(c): None for c in string.punctuation}).split() for x in
+                             [r.founder.startup_name, r.founder.description, r.title, r.description]]]
+                    attr = list(itertools.chain.from_iterable(attr))
+                    tokenized_jobs.append((job, attr))
+                to_return = tf_idf(tokenized_jobs, words, search_index)
+            else:
+                to_return = list(to_return)
+                shuffle(to_return)
             return render(request, 'search.html',
                           dict(CONTEXT.items()
                                + JOB_CONTEXT.items()
                                + {
                                    'searched': to_return,
-                                   'oldfields': fields,
-                                   'startup': request.POST.get('startup', False),
-                                   'funding': request.POST.get('funding', False),
-                                   'posted': False,
-                                   'reset': True,
+                                    'oldfields': fields,
+                                    'startup': request.POST.get('startup', False),
+                                    'funding': request.POST.get('funding', False),
+                                    'posted': False,
+                                    'reset': True,
+                                    'search_category': 'jobs'
                                }.items()))
         else:
             return render(request, 'home.html',
@@ -314,7 +363,14 @@ def index(request):
 def profile(request):
     if request.user.is_founder:
         jobs = request.user.founder.job_set.order_by('title')
-        return render(request, 'founder.html', merge_two_dicts(CONTEXT,{'profile': True, 'jobs': jobs, 'reset': True}))
+        return render(request, 'founder.html',
+                      dict(CONTEXT.items()
+                           + JOB_CONTEXT.items()
+                           + {
+                               'profile': True,
+                               'jobs': jobs,
+                               'reset': True
+                           }.items()))
     experience = request.user.profile.experience_set.order_by('-start_date')
     return render(request, 'profile.html',
                   dict(CONTEXT.items()

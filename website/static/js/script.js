@@ -1,5 +1,5 @@
 jQuery(document).ready(function($){
-	$('.selected-value').text($('#selector').val())
+	$('.selected-value').text($('#selector').val());
 	// browser window scroll (in pixels) after which the "back to top" link is shown
 	var offset = 300,
 		//duration of the top scrolling animation (in ms)
@@ -158,6 +158,8 @@ jQuery(document).ready(function($){
       $('.cd-dropdown-content.people').show();
     }
   });
+
+	$("#selector").trigger('change');
 	
 	$("#view_type").on('change', function(e) {
     if ($(this).prop('checked')) {
