@@ -151,6 +151,9 @@ class Funding(models.Model):
     founder = models.ForeignKey(Founder, on_delete=models.CASCADE, null=True)
     stage = models.CharField(verbose_name='Stage',max_length=1, choices=FUNDING_ROUNDS, default='0', null=True)
     raised = models.IntegerField(verbose_name='Raised',default=0)
+
+    def __str__(self):
+        return self.founder.user.email
 class Job(models.Model):
     founder = models.ForeignKey(Founder, on_delete=models.CASCADE, null=True)
     title = models.CharField(verbose_name='Job Title',max_length=40, blank=True, null=False)
