@@ -239,6 +239,7 @@
   top: 10px;
   left: 10px;
   border: 5px solid rgba(63, 122, 183, 0.8);
+  transform: translateY(0);
 }
 .card.job-card .header-bg  {
   display: flex;

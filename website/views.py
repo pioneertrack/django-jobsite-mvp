@@ -329,6 +329,7 @@ def index(request):
             return render(request, 'search.html',
                       merge_dicts(CONTEXT, JOB_CONTEXT, {
                           'searched': to_return,
+                          'search_category': request.POST['select-category'],
                           'oldfields': fields,
                           'funded': request.POST.get('been_funded', False),
                           'startup': request.POST.get('startup', False),
