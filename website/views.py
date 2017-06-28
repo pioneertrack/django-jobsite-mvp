@@ -27,6 +27,12 @@ def merge_two_dicts(x, y):
     z.update(y)
     return z
 
+def merge_dicts(*args):
+    dc = {}
+    for item in args:
+        dc.update(item)
+    return dc
+
 stemmer = PorterStemmer()
 
 CONTEXT = {
@@ -184,18 +190,17 @@ def index(request):
                 to_return = list(to_return)
                 shuffle(to_return)
             return render(request, 'search.html',
-                          dict(CONTEXT.items()
-                               + JOB_CONTEXT.items()
-                               + {
-                                   'searched': to_return,
-                                   'oldroles': roles,
-                                   'oldmajors': majors,
-                                   'oldyears': years,
-                                   'startup': request.POST.get('startup', False),
-                                   'funding': request.POST.get('funding', False),
-                                   'posted': True,
-                                   'founder': False,
-                               }.items()))
+                          merge_dicts(CONTEXT, JOB_CONTEXT,
+                                      {
+                                          'searched': to_return,
+                                          'oldroles': roles,
+                                          'oldmajors': majors,
+                                          'oldyears': years,
+                                          'startup': request.POST.get('startup', False),
+                                          'funding': request.POST.get('funding', False),
+                                          'posted': True,
+                                          'founder': False,
+                                      }))
         elif request.POST['select-category'] == 'startups':
             result = models.MyUser.objects.filter(is_active = True, is_founder=True, founder__field__in=fields, founder__startup_name__gt='')
             for r in result:
@@ -249,8 +254,8 @@ def index(request):
                 to_return = list(to_return)
                 shuffle(to_return)
             return render(request, 'search.html',
-                          dict(CONTEXT.items() +
-                              JOB_CONTEXT.items() +
+                          merge_dicts(
+                              CONTEXT, JOB_CONTEXT,
                               {
                                   'searched': to_return,
                                   'oldfields': fields,
@@ -258,7 +263,8 @@ def index(request):
                                   'funding': request.POST.get('funding', False),
                                   'posted': False,
                                   'founder': True,
-                              }.items()))
+                              }
+                          ))
         elif request.POST['select-category'] == 'jobs':
             tokenized_jobs = []
             category = request.POST.getlist('category')
@@ -320,63 +326,52 @@ def index(request):
                 to_return = list(to_return)
                 shuffle(to_return)
             return render(request, 'search.html',
-                          dict(CONTEXT.items()
-                               + JOB_CONTEXT.items()
-                               + {
-                                   'searched': to_return,
-                                    'oldfields': fields,
-                                    'startup': request.POST.get('startup', False),
-                                    'funding': request.POST.get('funding', False),
-                                    'posted': False,
-                                    'reset': True,
-                                    'search_category': 'jobs'
-                               }.items()))
+                          merge_dicts(CONTEXT, JOB_CONTEXT, {
+                              'searched': to_return,
+                              'oldfields': fields,
+                              'startup': request.POST.get('startup', False),
+                              'funding': request.POST.get('funding', False),
+                              'posted': False,
+                              'reset': True,
+                              'search_category': 'jobs'
+                          }))
         else:
             return render(request, 'home.html',
-                          dict(CONTEXT.items()
-                               + JOB_CONTEXT.items()
-                               + {
-                                   'posted': False,
-                                   'reset': True,
-                               }.items()))
+                          merge_dicts(CONTEXT, JOB_CONTEXT, {
+                              'posted': False,
+                              'reset': True,
+                          }))
     else:
         if user.is_founder:
             return render(request, 'home.html',
-                          dict(CONTEXT.items()
-                               + JOB_CONTEXT.items()
-                               + {
-                                   'posted': False,
-                                   'reset': True,
-                               }.items()))
+                          merge_dicts(CONTEXT, JOB_CONTEXT, {
+                              'posted': False,
+                              'reset': True,
+                          }))
         else:
             return render(request, 'home.html',
-                          dict(CONTEXT.items()
-                               + JOB_CONTEXT.items()
-                               + {'posted': False,
-                                   'reset': True,
-                               }.items()))
+                          merge_dicts(CONTEXT, JOB_CONTEXT, {
+                              'posted': False,
+                              'reset': True,
+                          }))
 
 @login_required(login_url='login/')
 def profile(request):
     if request.user.is_founder:
         jobs = request.user.founder.job_set.order_by('title')
         return render(request, 'founder.html',
-                      dict(CONTEXT.items()
-                           + JOB_CONTEXT.items()
-                           + {
-                               'profile': True,
-                               'jobs': jobs,
-                               'reset': True
-                           }.items()))
+                      merge_dicts(CONTEXT, JOB_CONTEXT, {
+                          'profile': True,
+                          'jobs': jobs,
+                          'reset': True
+                      }))
     experience = request.user.profile.experience_set.order_by('-start_date')
     return render(request, 'profile.html',
-                  dict(CONTEXT.items()
-                       + JOB_CONTEXT.items()
-                       + {
-                           'profile': True,
-                           'experience': experience,
-                           'reset': True
-                       }.items()))
+                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      'profile': True,
+                      'experience': experience,
+                      'reset': True
+                  }))
 
 @login_required(login_url='login/')
 def profile_update(request):
@@ -431,25 +426,20 @@ def profile_update(request):
         experience_form = ExperienceFormSet(instance = request.user.profile)
     if not user.is_founder:
         return render(request, 'profile_form.html',
-                      dict(CONTEXT.items()
-                           + JOB_CONTEXT.items()
-                           + {
-                               'profile_form': profile_form,
-                               'experience': experience_form,
-                               'show_exp': True,
-                               'reset': True
-                           }.items()))
+                      merge_dicts(CONTEXT, JOB_CONTEXT, {
+                          'profile_form': profile_form,
+                          'experience': experience_form,
+                          'show_exp': True,
+                          'reset': True
+                      }))
     else:
         return render(request, 'profile_form.html',
-                      dict(CONTEXT.items()
-                           + JOB_CONTEXT.items()
-                           +
-                           {
-                               'profile_form': profile_form,
-                               'jobs': job_form,
-                               'show_exp': False,
-                               'reset': True
-                           }.items()))
+                      merge_dicts(CONTEXT, JOB_CONTEXT, {
+                          'profile_form': profile_form,
+                          'jobs': job_form,
+                          'show_exp': False,
+                          'reset': True
+                      }))
 
 @login_required(login_url='login/')
 def get_user_view(request, id):
@@ -460,25 +450,21 @@ def get_user_view(request, id):
     if user.is_founder:
         jobs = user.founder.job_set.order_by('title')
         return render(request, 'founder.html',
-                      dict(CONTEXT.items()
-                           + JOB_CONTEXT.items()
-                           + {
-                               'user': user,
-                               'profile': False,
-                               'jobs': jobs,
-                               'reset': True
-                           }.items()))
+                      merge_dicts(CONTEXT, JOB_CONTEXT, {
+                          'user': user,
+                          'profile': False,
+                          'jobs': jobs,
+                          'reset': True
+                      }))
     else:
         exp = user.profile.experience_set.order_by('-start_date')
         return render(request, 'profile.html',
-                      dict(CONTEXT.items()
-                           + JOB_CONTEXT.items()
-                           + {
-                               'user': user,
-                               'profile': False,
-                               'experience': exp,
-                               'reset': True
-                           }.items()))
+                      merge_dicts(CONTEXT, JOB_CONTEXT, {
+                          'user': user,
+                          'profile': False,
+                          'experience': exp,
+                          'reset': True
+                      }))
 
 class MyRegistrationView(RegistrationView):
     def dispatch(self, request, *args, **kwargs):

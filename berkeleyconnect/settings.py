@@ -187,6 +187,6 @@ DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
 MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIA_ROOT)
 
 try:
-  from local_settings import *
+  from .local_settings import *
 except ImportError:
   pass
