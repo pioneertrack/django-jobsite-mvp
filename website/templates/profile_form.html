@@ -29,54 +29,74 @@
       <h1>Basic info</h1>
       <hr>
       {{ profile_form|crispy }}
-      {%if show_exp %}
-      <h1>Experience</h1>
-      <hr>
-        <div class ="set">
-            {% for form in experience.forms %}
-            <div class = "forminstance">
-              <strong>Company</strong>
-               <p>
-                  {{ form.company }}{% if form.instance.pk %}{{ form.DELETE }}{% endif %}
-               </p>
-               <p>{{form.id}}</p>
-               <strong>Position</strong>
-               <p>{{ form.position }}</p>
-               <strong>Start Date (MM/DD/YY)</strong>
-               <p>{{ form.start_date }}</p>
-               <strong>End Date (MM/DD/YY)</strong>
-               <p>{{ form.end_date }}</p>
-               <strong>Description</strong>
-               <p>{{ form.description }}</p>
-               <hr style = "width:100%;">
-            </div>
-            {% endfor %}
 
-          </div>
-          {{experience.management_form}}
-        {%else%}
+      {%if show_exp %}
+        <h1>Experience</h1>
+        <hr>
+        <div class ="set">
+          {% for form in experience.forms %}
+            <div class = "forminstance">
+                <strong>Company</strong>
+                <p>
+                  {{ form.company }}{% if form.instance.pk %}{{ form.DELETE }}{% endif %}
+                </p>
+                <p>{{form.id}}</p>
+                <strong>Position</strong>
+                <p>{{ form.position }}</p>
+                <strong>Start Date (MM/DD/YY)</strong>
+                <p>{{ form.start_date }}</p>
+                <strong>End Date (MM/DD/YY)</strong>
+                <p>{{ form.end_date }}</p>
+                <strong>Description</strong>
+                <p>{{ form.description }}</p>
+                <hr style = "width:100%;">
+            </div>
+          {% endfor %}
+        </div>
+        {{experience.management_form}}
+
+      {%else%}
+        <h1>Funding</h1>
+        <hr>
+        <div class="set">
+          {% for form in funding.forms %}
+            <div class="forminstance" id="funding">
+                <strong>Funding Rounds</strong>
+                <p>
+                  {{ form.stage }}{% if form.instance.pk %}{{ form.DELETE }}{% endif %}
+                </p>
+                <p>{{form.id}}</p>
+                <strong>Amount Raised</strong>
+                <p>{{ form.raised }}</p>
+                <hr style = "width:100%;">
+            </div>
+          {% endfor %}
+        </div>
+        {{funding.management_form}}
+
         <h1>Job openings</h1>
         <hr>
-          <div class ="set">
-            {% for form in jobs.forms %}
-            <div class = "forminstance">
-              <strong>Job title</strong>
-               <p>
+        <div class ="set">
+          {% for form in jobs.forms %}
+            <div class = "forminstance" id="jobs">
+                <strong>Job title</strong>
+                <p>
                   {{ form.title }}{% if form.instance.pk %}{{ form.DELETE }}{% endif %}
-               </p>
-               <p>{{form.id}}</p>
-               <strong>Job position</strong>
-               <p>{{ form.level }}</p>
-               <strong>Compensation type</strong>
-               <p>{{ form.pay }}</p>
-               <strong>Description</strong>
-               <p>{{ form.description }}</p>
-               <hr style = "width:100%;">
+                </p>
+                <p>{{form.id}}</p>
+                <strong>Job position</strong>
+                <p>{{ form.level }}</p>
+                <strong>Compensation type</strong>
+                <p>{{ form.pay }}</p>
+                <strong>Description</strong>
+                <p>{{ form.description }}</p>
+                <hr style = "width:100%;">
             </div>
-            {% endfor %}
-          </div>
-          {{jobs.management_form}}
-        {%endif%}
+          {% endfor %}
+        </div>
+        {{jobs.management_form}}
+      {%endif%}
+
       <input type="submit" name="save" class="profile-form-submit" value="Save changes">
     </form>
   </div>
