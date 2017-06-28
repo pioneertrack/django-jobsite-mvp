@@ -73,7 +73,8 @@
               <div class="content">
                 {% if user.is_founder %}
                   <h2>{{ user.founder.startup_name }}</h2>
-                  <hr>
+            <h4>{{user.founder.get_stage_display}} • {{user.founder.employee_count}} Employee{{ user.founder.employee_count|pluralize }}</h4>
+                 <hr>
                   <script type="text/javascript">
                     $(function() {
                       $('.founderdescription').each(function(i) {

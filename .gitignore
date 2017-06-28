@@ -5,6 +5,8 @@
 
 /*.pyc
 *.txt
+bf/
+errorlog.txt
 
 #keep prod settings and local separate
 berkeleyconnect/settings.py
