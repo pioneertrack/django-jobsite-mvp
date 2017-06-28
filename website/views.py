@@ -327,30 +327,15 @@ def index(request):
                 to_return = list(to_return)
                 shuffle(to_return)
             return render(request, 'search.html',
-                          merge_dicts(CONTEXT, JOB_CONTEXT, {
-                              'searched': to_return,
-                              'oldfields': fields,
-                              'startup': request.POST.get('startup', False),
-                              'funding': request.POST.get('funding', False),
-                              'posted': False,
-                              'reset': True,
-                              'search_category': 'jobs'
-                          }))
-        else:
-            return render(request, 'home.html',
-                          merge_dicts(CONTEXT, JOB_CONTEXT, {
-                              'posted': False,
-                              'reset': True,
-                          }))
-            return render(request, 'search.html', merge_two_dicts(CONTEXT, {
-                'searched': to_return,
-                'oldfields': fields,
-                'funded': request.POST.get('been_funded', False),
-                'startup': request.POST.get('startup', False),
-                'funding': request.POST.get('funding', False),
-                'posted': False,
-                'founder': True,
-            }))
+                      merge_dicts(CONTEXT, JOB_CONTEXT, {
+                          'searched': to_return,
+                          'oldfields': fields,
+                          'funded': request.POST.get('been_funded', False),
+                          'startup': request.POST.get('startup', False),
+                          'funding': request.POST.get('funding', False),
+                          'posted': False,
+                          'founder': True,
+                      }))
     else:
         if user.is_founder:
             return render(request, 'home.html',
@@ -370,12 +355,12 @@ def profile(request):
     if request.user.is_founder:
         jobs = request.user.founder.job_set.order_by('title')
         total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
-        return render(request, 'founder.html', merge_two_dicts(CONTEXT,{'profile': True, 'jobs': jobs, 'reset': True, 'total_funding': total_funding.get('total') }))
         return render(request, 'founder.html',
                       merge_dicts(CONTEXT, JOB_CONTEXT, {
                           'profile': True,
                           'jobs': jobs,
-                          'reset': True
+                          'reset': True,
+                          'total_funding': total_funding.get('total')
                       }))
     experience = request.user.profile.experience_set.order_by('-start_date')
     return render(request, 'profile.html',
@@ -460,18 +445,12 @@ def profile_update(request):
         return render(request, 'profile_form.html',
                       merge_dicts(CONTEXT, JOB_CONTEXT, {
                           'profile_form': profile_form,
+                          'funding': funding_form,
                           'jobs': job_form,
                           'show_exp': False,
                           'reset': True
                       }))
 
-        return render(request, 'profile_form.html', merge_two_dicts(CONTEXT, {
-            'profile_form':profile_form,
-            'funding': funding_form,
-            'jobs': job_form,
-            'show_exp': False,
-            'reset': True
-        }))
 @login_required(login_url='login/')
 def get_user_view(request, id):
     user = get_object_or_404(models.MyUser, pk = id)
