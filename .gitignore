@@ -7,6 +7,7 @@
 *.txt
 bf/
 errorlog.txt
+__pycache__/
 
 #keep prod settings and local separate
 berkeleyconnect/settings.py

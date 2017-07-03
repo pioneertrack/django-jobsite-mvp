@@ -115,7 +115,7 @@ def index(request):
                 result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__position__in=pos)
             for r in result:
                 experience = [stem_remove_stop_words(arr) for arr in [x.description.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in r.profile.experience_set.all()]]
-                attr = [stem_remove_stop_words(arr) for arr in [x.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in [r.first_name+" " +r.last_name, str(r.profile.get_major_display), r.profile.bio, r.profile.skills, r.profile.interests, r.profile.courses]]]
+                attr = [stem_remove_stop_words(arr) for arr in [x.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in [r.first_name+" " +r.last_name, str(r.profile.get_major_display()), r.profile.bio, r.profile.skills, r.profile.interests, r.profile.courses]]]
                 total = list(itertools.chain.from_iterable(attr+experience))
                 for i, word in enumerate(total):
                     if word in search_index:
@@ -156,7 +156,7 @@ def index(request):
             if len(words) > 0:
                 for user, skills in list(to_return):
                     experience = [stem_remove_stop_words(arr) for arr in [x.description.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in user.profile.experience_set.all()]]
-                    attr = [stem_remove_stop_words(arr) for arr in [x.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in [user.first_name+" " +user.last_name, str(user.profile.get_major_display), user.profile.bio, user.profile.skills, user.profile.interests, user.profile.courses]]]
+                    attr = [stem_remove_stop_words(arr) for arr in [x.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in [user.first_name+" " +user.last_name, str(user.profile.get_major_display()), user.profile.bio, user.profile.skills, user.profile.interests, user.profile.courses]]]
                     total = list(itertools.chain.from_iterable(attr+experience))
                     tokenized_users.append((user, total))
                 to_return = []
@@ -179,7 +179,7 @@ def index(request):
         else:
             result = models.MyUser.objects.filter(is_active=True, is_founder=True, founder__field__in=fields, founder__startup_name__gt='')
             for r in result:
-                jobs = [stem_remove_stop_words(arr) for arr in [" ".join([x.description, x.title, str(x.get_level_display), str(x.get_pay_display)]).lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in r.founder.job_set.all()]]
+                jobs = [stem_remove_stop_words(arr) for arr in [" ".join([x.description, x.title, str(x.get_level_display()), str(x.get_pay_display())]).lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in r.founder.job_set.all()]]
                 attr = [stem_remove_stop_words(arr) for arr in [x.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in [r.first_name+" " +r.last_name, r.founder.startup_name, r.founder.description]]]
                 total = list(itertools.chain.from_iterable(jobs + attr))
                 for i, word in enumerate(total):
@@ -220,7 +220,7 @@ def index(request):
             vals = roles + years + majors
             if len(words) > 0:
                 for user, skills in list(to_return):
-                    jobs = [stem_remove_stop_words(arr) for arr in [" ".join([x.description, x.title, str(x.get_level_display), str(x.get_pay_display)]).lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in user.founder.job_set.all()]]
+                    jobs = [stem_remove_stop_words(arr) for arr in [" ".join([x.description, x.title, str(x.get_level_display()), str(x.get_pay_display())]).lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in user.founder.job_set.all()]]
                     attr = [stem_remove_stop_words(arr) for arr in [x.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in [user.first_name+" " +user.last_name, user.founder.startup_name, user.founder.description]]]
                     total = list(itertools.chain.from_iterable(jobs + attr))
                     tokenized_users.append((user, total))
