@@ -18,35 +18,25 @@
                 <h2>{{ user.founder.startup_name }}</h2>
                 <img class="avatar" src="{{ user.founder.logo.url }}"/>
               </div>
-              <div class="content">
-                <script type="text/javascript">
-                    $(function() {
-                      $('.founderdescription').each(function(i) {
-                        len = $(this).text().length;
-                        if (len > 300) {
-                          $(this).text($(this).text().substr(0, 200) + '...');
-                        }
-                      });
-                    });
-                </script>
-                <div class="founderdescription">
-                  <p>{{ user.founder.description }}<p>
-                </div>
-              </div>
               <div class="offer-content">
                 <div class="info">
                     <h3>{{ item.title }}</h3>
                     <div class="pcomp">
-                      <span class="font-weight-bold">Job position:&nbsp;</span><span>{{ item.get_level_display }}</span>
-                      <span class="font-weight-bold">Compensation type:&nbsp;</span><span>{{ item.get_pay_display }}</span>
+                      <div class="mdata">
+                        <span class="font-weight-bold">Job position:&nbsp;</span><span>{{ item.get_level_display }}</span>
+                      </div>
+                      <div class="mdata">
+                        <span class="font-weight-bold">Compensation type:&nbsp;</span><span>{{ item.get_pay_display }}</span>
+                      </div>
                     </div>
                 </div>
                 <script type="text/javascript">
                     $(function() {
-                      $('.description').each(function(i) {
-                        len = $(this).text().length;
-                        if (len > 300) {
-                          $(this).text($(this).text().substr(0, 200) + '...');
+                      $('.description p').each(function(i) {
+                        var text = $(this).text().trim();
+                        len = text.length;
+                        if (len > 200) {
+                          $(this).text(text.substr(0, 200) + '...');
                         }
                       });
                     });
