@@ -11,7 +11,7 @@
 }
 .cd-main-search .cd-search-button {
   display: inline-block;
-  right: 40px;
+  right: 50px;
   top: 50%;
   bottom: auto;
   position: absolute;
@@ -104,13 +104,13 @@
     background-color: transparent;
     color: white;
     /* don't overlap <select> element */
-    padding-right: 210px;
+    padding-right: 220px;
   }
 
   .cd-main-search .cd-select {
     display: inline-block;
     position: absolute;
-    right: 90px;
+    right: 100px;
     top: 50%;
     bottom: auto;
     -webkit-transform: translateY(-50%);
@@ -251,7 +251,7 @@
   overflow: hidden;
   white-space: nowrap;
   padding-left: 100px;
-  color: rgba(68, 153, 219, 0.8);
+  color: rgb(233, 233, 233);
   margin: 0;
   display: inline-block;
   text-overflow: ellipsis;
@@ -265,6 +265,14 @@
 .card.job-card .offer-content {
   max-height: 33%;
   margin-top: 0;
+}
+.card.job-card .mdata {
+  display: block;
+  margin: 1rem 0;
+}
+.container.list .card.job-card .mdata {
+  display: inline-block;
+  margin: 0;
 }
 .card.job-card .offer-content .description {
   padding: .5rem 0 .5rem 0;
