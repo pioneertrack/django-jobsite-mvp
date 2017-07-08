@@ -13,7 +13,6 @@ a:link , a:hover, a:visited, a:active {
   width: 100% !important;
   background-color: #F7F7F7;
   margin: 0 auto;
-  margin-top: 50px;
   border-radius: 2px;
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
   overflow: hidden;
@@ -119,7 +118,7 @@ a:link , a:hover, a:visited, a:active {
   top: 0;
   left: 0;
   width: 100%;
-  height: 60px;
+  height: 70px;
   background-color: #ffffff;
   /* Force Hardware Acceleration */
   -webkit-transform: translateZ(0);
@@ -229,11 +228,11 @@ a:link , a:hover, a:visited, a:active {
       -ms-transform: translateY(6px);
           transform: translateY(6px);
 }
-@media only screen and (min-width: 1024px) {
+/*@media only screen and (min-width: 1024px) {
   .cd-auto-hide-header .nav-trigger {
     display: none;
   }
-}
+}*/
 
 .cd-auto-hide-header.nav-open .nav-trigger em {
   /* transform menu icon into a 'X' icon */
@@ -261,7 +260,7 @@ a:link , a:hover, a:visited, a:active {
 .cd-primary-nav > ul {
   position: absolute;
   z-index: 2;
-  top: 60px;
+  top: 70px;
   left: 0;
   width: 100%;
   background-color: #ffffff;
@@ -379,7 +378,7 @@ a:link , a:hover, a:visited, a:active {
 .cd-main-content {
   background-color: #d3d3d3;
   height: 100%;
-  padding-top: 55px;
+  padding-top:80px;
 }
 .messages {
   padding-top: 95px;

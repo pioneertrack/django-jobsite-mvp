@@ -2,6 +2,7 @@
 <!doctype html>
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="google-site-verification" content="nPkjkzj2J7V1MRk-0QBYC7GQnfKtWPBdCvvL0Y_qGbM" />
         <link rel='shortcut icon' type='image/x-icon' href='{% static 'favicon/favicon-connectdevelop.ico' %}?r=1' />
         <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" type="text/css">
@@ -63,12 +64,6 @@
       <header class="cd-auto-hide-header" style="z-index:1005;">
         <div class = "logo"><a href = "/"><img src = "{% static 'favicon/logo.jpg' %}"/></a></div>
       	<nav class="cd-primary-nav">
-      		<a href="#cd-navigation" class="nav-trigger">
-      			<span>
-      				<em aria-hidden="true"></em>
-      				Menu
-      			</span>
-      		</a> <!-- .nav-trigger -->
           {% if request.user.is_authenticated %}
 
       		<ul id="cd-navigation">
@@ -86,7 +81,7 @@
             </li>
       		</ul>
           {% endif %}
-      	</nav> <!-- .cd-primary-nav -->
+      	</nav> <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0">.cd-primary-nav -->
         {% if request.user.is_authenticated%}
         <nav class="cd-secondary-nav">
           <form id="mainform" action="/" autocomplete="off" method="POST">

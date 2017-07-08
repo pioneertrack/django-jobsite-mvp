@@ -17,6 +17,7 @@ berkeleyconnect/settings.py
 */__pycache__/*
 *.sqlite3
 media/*
+website/static/favicon/
 
 #for venv
 venv/
