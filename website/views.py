@@ -48,8 +48,8 @@ CONTEXT = {
 
 JOB_CONTEXT = {
     'job_context': [
-        ('category', list(prof.Founder.CATEGORY)),
-        ('level', list(prof.Job.LEVELS)),
+        ('category', list(prof.CATEGORY)),
+        ('level', list(prof.LEVELS)),
         ('pay', list(prof.POSITION))
     ]
 }
