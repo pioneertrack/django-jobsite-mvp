@@ -71,7 +71,7 @@ class FounderForm(forms.ModelForm):
         return super(FounderForm, self).is_valid()
     class Meta:
         model = profile.Founder
-        fields = ('startup_name', 'stage', 'display_funding', 'employee_count', 'logo', 'description','field', 'website', 'facebook')
+        fields = ('startup_name', 'stage', 'employee_count', 'logo', 'description', 'field', 'website', 'facebook', 'display_funding')
         labels = {
             'employee_count': 'Number of employees',
             'stage': 'What stage is your startup in?',
