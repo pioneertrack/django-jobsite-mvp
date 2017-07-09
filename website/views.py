@@ -9,6 +9,7 @@ from django.forms.models import inlineformset_factory
 from django import forms as f
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Sum
+from django.contrib import admin
 import numpy as np
 
 import nltk
@@ -37,17 +38,17 @@ def merge_dicts(*args):
 stemmer = PorterStemmer()
 
 CONTEXT = {
-    'years': prof.Profile.YEAR_IN_SCHOOL_CHOICES,
-    'majors': prof.Profile.MAJORS,
-    'roles': prof.Profile.PRIMARY_ROLE,
-    'fields': prof.Founder.CATEGORY,
+    'years': prof.YEAR_IN_SCHOOL_CHOICES,
+    'majors': prof.MAJORS,
+    'roles': prof.PRIMARY_ROLE,
+    'fields': prof.CATEGORY,
     'position': prof.POSITION
 }
 
 JOB_CONTEXT = {
     'job_context': [
-        ('category', list(prof.Founder.CATEGORY)),
-        ('level', list(prof.Job.LEVELS)),
+        ('category', list(prof.CATEGORY)),
+        ('level', list(prof.LEVELS)),
         ('pay', list(prof.POSITION))
     ]
 }
