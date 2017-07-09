@@ -7,6 +7,7 @@
 *.txt
 bf/
 errorlog.txt
+__pycache__/
 
 #keep prod settings and local separate
 berkeleyconnect/settings.py
@@ -21,3 +22,6 @@ media/*
 venv/
 
 website/migrations/*
+/.idea/
+/static/
+/berkeleyconnect/local_settings.py

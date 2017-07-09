@@ -1,5 +1,5 @@
 jQuery(document).ready(function($){
-	$('.selected-value').text($('#selector').val())
+	$('.selected-value').text($('#selector').val());
 	// browser window scroll (in pixels) after which the "back to top" link is shown
 	var offset = 300,
 		//duration of the top scrolling animation (in ms)
@@ -99,6 +99,7 @@ jQuery(document).ready(function($){
 		  	})
 		});
 	}
+
 	$("#connect").on('click', function(){
 		console.log('clicked')
 		swal({
@@ -147,6 +148,27 @@ jQuery(document).ready(function($){
 
 		})
 	})
+
+  $("#selector").on('change', function(e) {
+    if ($(this).val() === 'jobs') {
+      $('.cd-dropdown-content.people').hide();
+      $('.cd-dropdown-content.jobs').show();
+    } else {
+      $('.cd-dropdown-content.jobs').hide();
+      $('.cd-dropdown-content.people').show();
+    }
+  });
+
+	$("#selector").trigger('change');
+	
+	$("#view_type").on('change', function(e) {
+    if ($(this).prop('checked')) {
+      $('.job-card:first').parents('.container').addClass('list');
+    } else {
+      $('.job-card:first').parents('.container').removeClass('list');
+    }
+  });
+
 });
 
 (function($) {
