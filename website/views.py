@@ -10,6 +10,7 @@ from django import forms as f
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Sum
 from django.contrib import admin
+from django.conf import settings
 import numpy as np
 
 import nltk
@@ -261,6 +262,7 @@ def index(request):
                               {
                                   'searched': to_return,
                                   'oldfields': fields,
+                                  'funded': request.POST.get('been_funded', False),
                                   'startup': request.POST.get('startup', False),
                                   'funding': request.POST.get('funding', False),
                                   'posted': False,
@@ -483,3 +485,17 @@ class MyRegistrationView(RegistrationView):
         if request.user.is_authenticated():
             return HttpResponseRedirect('/')
         return super(MyRegistrationView, self).dispatch(request, *args, **kwargs)
+
+def google_analytics(request):
+    """
+    Use the variables returned in this function to
+    render your Google Analytics tracking code template.
+    """
+    ga_prop_id = getattr(settings, 'GOOGLE_ANALYTICS_PROPERTY_ID', False)
+    ga_domain = getattr(settings, 'GOOGLE_ANALYTICS_DOMAIN', False)
+    if not settings.DEBUG and ga_prop_id and ga_domain:
+        return {
+            'GOOGLE_ANALYTICS_PROPERTY_ID': ga_prop_id,
+            'GOOGLE_ANALYTICS_DOMAIN': ga_domain,
+        }
+    return {}
