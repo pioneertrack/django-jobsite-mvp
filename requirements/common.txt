@@ -8,6 +8,8 @@ Django==1.10.3
 django-crispy-forms==1.6.1
 django-nocaptcha-recaptcha==0.0.19
 django-registration==2.2
+django-storages==1.1.8
+django-storages-redux==1.3.3
 entrypoints==0.2.2
 html5lib==0.9999999
 MarkupSafe==0.23
@@ -45,3 +47,4 @@ virtualenvwrapper-win==1.2.1
 wcwidth==0.1.7
 widgetsnbextension==1.2.6
 django-import-export==0.5.1
+numpy==1.13.0
