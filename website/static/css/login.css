@@ -5,6 +5,15 @@
 a:link , a:hover, a:visited, a:active {
   text-decoration: none;
 }
+
+body {
+  background-color: #25283D;
+}
+html {
+  background-color: #25283D;
+}
+
+
 /****** LOGIN MODAL ******/
 .loginmodal-container {
 
@@ -228,11 +237,6 @@ a:link , a:hover, a:visited, a:active {
       -ms-transform: translateY(6px);
           transform: translateY(6px);
 }
-/*@media only screen and (min-width: 1024px) {
-  .cd-auto-hide-header .nav-trigger {
-    display: none;
-  }
-}*/
 
 .cd-auto-hide-header.nav-open .nav-trigger em {
   /* transform menu icon into a 'X' icon */
@@ -264,7 +268,6 @@ a:link , a:hover, a:visited, a:active {
   left: 0;
   width: 100%;
   background-color: #ffffff;
-  display: none;
   box-shadow: 0 14px 20px rgba(0, 0, 0, 0.2);
 }
 .cd-primary-nav > ul a {
@@ -280,43 +283,41 @@ a:link , a:hover, a:visited, a:active {
 .cd-primary-nav > ul a:hover, .cd-primary-nav > ul a.active {
   color: #8F3985;
 }
-@media only screen and (min-width: 1024px) {
-  .cd-primary-nav {
-    /* vertically align its content */
-    display: table;
-  }
-  .cd-primary-nav > ul {
-    /* vertically align inside parent element */
-    display: table-cell;
-    vertical-align: middle;
-    /* reset mobile style */
-    position: relative;
-    width: auto;
-    top: 0;
-    padding: 0;
-    background-color: transparent;
-    box-shadow: none;
-  }
-  .cd-primary-nav > ul::after {
-    clear: both;
-    content: "";
-    display: block;
-  }
-  .cd-primary-nav > ul li {
-    display: inline-block;
-    float: left;
-    margin-right: 1.5em;
-  }
-  .cd-primary-nav > ul li:last-of-type {
-    margin-right: 0;
-  }
-  .cd-primary-nav > ul a {
-    /* reset mobile style */
-    height: auto;
-    /*line-height: normal;*/
-    padding: 0;
-    border: none;
-  }
+.cd-primary-nav {
+  /* vertically align its content */
+  display: table;
+}
+.cd-primary-nav > ul {
+  /* vertically align inside parent element */
+  display: table-cell;
+  vertical-align: middle;
+  /* reset mobile style */
+  position: relative;
+  width: auto;
+  top: 0;
+  padding: 0;
+  background-color: transparent;
+  box-shadow: none;
+}
+.cd-primary-nav > ul::after {
+  clear: both;
+  content: "";
+  display: block;
+}
+.cd-primary-nav > ul li {
+  display: inline-block;
+  float: left;
+  margin-right: 1.5em;
+}
+.cd-primary-nav > ul li:last-of-type {
+  margin-right: 0;
+}
+.cd-primary-nav > ul a {
+  /* reset mobile style */
+  height: auto;
+  /*line-height: normal;*/
+  padding: 0;
+  border: none;
 }
 
 .nav-open .cd-primary-nav ul,
@@ -393,6 +394,14 @@ a:link , a:hover, a:visited, a:active {
 }
 .btn-register:hover, .btn-register:link, .btn-register:active, .btn-login:hover, .btn-login:link, .btn-login:active{
   background-color: #8F3985;
+  color: white;
+}
+.btn-theme, .btn-theme:visited {
+  background-color: #25283D;
+  color: white;
+}
+.btn-theme:hover, .btn-theme:link, .btn-theme:active {
+  background-color: #25283D;
   color: white;
 }
 #home {
