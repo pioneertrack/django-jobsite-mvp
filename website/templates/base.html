@@ -1,18 +1,22 @@
 {% load static from staticfiles %}
+{#{% load pipeline %}#}
 <!doctype html>
 <html>
     <head>
         <meta name="google-site-verification" content="nPkjkzj2J7V1MRk-0QBYC7GQnfKtWPBdCvvL0Y_qGbM" />
         <link rel='shortcut icon' type='image/x-icon' href='{% static 'favicon/favicon-connectdevelop.ico' %}?r=1' />
         <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" type="text/css">
+        <link rel="stylesheet" href="{%  static 'jquery-nice-select/css/nice-select.css' %}" type="text/css">
         <link rel="stylesheet" href="{% static 'css/login.css' %}" type="text/css">
         <link rel="stylesheet" href="{% static 'css/profile.css' %}" type="text/css">
         <link rel="stylesheet" href="{% static 'css/searchbar.css' %}" type="text/css">
         <link rel="stylesheet" href="{% static 'css/dropdown.css' %}" type="text/css">
         <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300" rel="stylesheet">
+{#        {% javascript 'components' %}#}
         <script src = "{% static 'jquery/dist/jquery.min.js' %}"></script>
         <script src = "{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+        <script src= "{%  static 'jquery-nice-select/js/jquery.nice-select.min.js' %}"></script>
         <script src = "{% static 'js/navbar.js' %}"></script>
         <script src = "{% static 'js/jquery_formset.js' %}"></script>
         <script src = "{% static 'js/script.js' %}"></script>
