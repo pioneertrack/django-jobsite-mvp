@@ -160,18 +160,19 @@ class Job(models.Model):
     pay = models.CharField(verbose_name='Pay',max_length=1, choices = POSITION, default='1')
     description = models.TextField(verbose_name='Description',max_length=500, blank = True, null = False)
     level = models.CharField(verbose_name='Level',max_length = 2, choices = LEVELS, default="FT")
-@receiver(post_save, sender=user.MyUser)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created and not instance.is_founder:
-        Profile.objects.create(user=instance)
-    elif created and instance.is_founder:
-        Founder.objects.create(user=instance)
 
-@receiver(post_save, sender=user.MyUser)
-def save_user_profile(sender, instance, **kwargs):
-    if instance.is_founder:
-        if hasattr(instance, 'profile'):
-            Founder.objects.create(user=instance)
-        instance.founder.save()
-    else:
-        instance.profile.save()
+# @receiver(post_save, sender=user.MyUser)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created and not instance.is_founder:
+#         Profile.objects.create(user=instance)
+#     elif created and instance.is_founder:
+#         Founder.objects.create(user=instance)
+#
+# @receiver(post_save, sender=user.MyUser)
+# def save_user_profile(sender, instance, **kwargs):
+#     if instance.is_founder:
+#         if hasattr(instance, 'profile'):
+#             Founder.objects.create(user=instance)
+#         instance.founder.save()
+#     else:
+#         instance.profile.save()
