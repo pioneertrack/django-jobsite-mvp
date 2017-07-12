@@ -1,7 +1,4 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto);
-#profile-hero {
-  background-color: white;
-}
 /*Bootstrap button outline override*/
 .btn-outline {
     background-color: transparent;
@@ -62,6 +59,29 @@
   border-radius: 2px;
   overflow: hidden;
   font-family: roboto;
+}
+
+.jumbotron {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+#profile-hero {
+  background-color: white;
+  margin-bottom: 0px;
+}
+
+@media all and (min-width: 768px) {
+  .jumbotron {
+    padding-top: 30px !important;
+    padding-bottom: 30px !important;
+    margin-bottom: 30px !important;
+  }
+
+  #profile-hero {
+    margin-bottom: 20px;
+  }
 }
 
 .profile-form-container h1 {
