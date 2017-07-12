@@ -368,3 +368,13 @@
 .cd-switch-view #view_type:checked + label .fa-th-large{
   display: block;
 }
+
+.cd-secondary-nav.cd-search-nav {
+  background-color: white;
+}
+.cd-secondary-nav.cd-search-nav::after {
+  background-color: white;
+}
+.filter-container {
+  display: inline-block;
+}

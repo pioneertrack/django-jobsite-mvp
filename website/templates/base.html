@@ -1,5 +1,5 @@
 {% load static from staticfiles %}
-{% load pipeline %}
+{#{% load pipeline %}#}
 <!doctype html>
 <html>
     <head>
@@ -13,9 +13,9 @@
         <link rel="stylesheet" href="{% static 'css/dropdown.css' %}" type="text/css">
         <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300" rel="stylesheet">
-        {% javascript 'components' %}
-{#        <script src = "{% static 'jquery/dist/jquery.min.js' %}"></script>#}
-{#        <script src = "{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>#}
+{#        {% javascript 'components' %}#}
+        <script src = "{% static 'jquery/dist/jquery.min.js' %}"></script>
+        <script src = "{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
         <script src= "{%  static 'jquery-nice-select/js/jquery.nice-select.min.js' %}"></script>
         <script src = "{% static 'js/navbar.js' %}"></script>
         <script src = "{% static 'js/jquery_formset.js' %}"></script>
@@ -228,6 +228,53 @@
           </form>
         </nav> <!-- .cd-secondary-nav -->
         {% endif %}
+
+        {% if request.user.is_authenticated%}
+        <nav class="cd-secondary-nav cd-search-nav">
+          <div class="container">
+
+            <form id="filterform" action="/" autocomplete="off" method="POST">
+              {% csrf_token %}
+              {% for item in job_context %}
+                <div class="selects">
+                  <div class="filter-container">
+                    <select class="filter small" name="{{ item.0 }}" multiple>
+                      {% for subitem in item.1 %}
+                        <option value="{{ subitem.0 }}">{{ subitem.1 }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+                <div class="tags">
+                  <div class="filter-container">
+
+                  </div>
+                </div>
+              {% endfor %}
+              {#                      <li class="has-children">#}
+              {#                        <a href="/">{{ item.0 }}</a>#}
+              {#                        <ul class="cd-dropdown-icons is-hidden">#}
+              {#                          <li class="go-back"><a href="#0">Menu</a></li>#}
+              {#                          {% for subitem in item.1 %}#}
+              {#                            <li class="checkbox">#}
+              {#                              <label>#}
+              {#                                <input type="checkbox" name="{{ item.0 }}" value="{{ subitem.0 }}"#}
+              {#                                       {% if reset or not posted %}checked{% endif %}>#}
+              {#                                <span class="cr"><i class="cr-icon fa fa-check"></i></span>#}
+              {#                                {{ subitem.1 }}</label>#}
+              {#                            </li>#}
+              {#                          {% endfor %}#}
+              {#                          <li class="see-all"><input type="submit" value="Update search"></li>#}
+              {#                        </ul>#}
+              {#                      </li>#}
+              {#                    {% endfor %}#}
+
+            </form>
+
+          </div>
+        </nav> <!-- .cd-secondary-nav -->
+        {% endif %}
+
       </header> <!-- .cd-auto-hide-header -->
       <main class="cd-main-content" style = "background-color:{% if not request.user.is_authenticated %} #25283D {% else %} white {% endif %}">
         {% if messages and request.user.is_authenticated %}

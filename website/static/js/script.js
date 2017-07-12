@@ -1,4 +1,8 @@
 jQuery(document).ready(function($){
+
+  $('select.filter').niceSelect();
+
+
 	$('.selected-value').text($('#selector').val());
 	// browser window scroll (in pixels) after which the "back to top" link is shown
 	var offset = 300,
