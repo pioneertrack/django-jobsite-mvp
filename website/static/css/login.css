@@ -148,11 +148,6 @@ html {
       -ms-transform: translateY(-100%);
           transform: translateY(-100%);
 }
-@media only screen and (min-width: 1024px) {
-  .cd-auto-hide-header {
-    height: 80px;
-  }
-}
 
 .cd-auto-hide-header .logo,
 .cd-auto-hide-header .nav-trigger{
@@ -267,6 +262,7 @@ html {
   top: 70px;
   left: 0;
   width: 100%;
+  display:none;
   background-color: #ffffff;
   box-shadow: 0 14px 20px rgba(0, 0, 0, 0.2);
 }
@@ -287,38 +283,6 @@ html {
   /* vertically align its content */
   display: table;
 }
-.cd-primary-nav > ul {
-  /* vertically align inside parent element */
-  display: table-cell;
-  vertical-align: middle;
-  /* reset mobile style */
-  position: relative;
-  width: auto;
-  top: 0;
-  padding: 0;
-  background-color: transparent;
-  box-shadow: none;
-}
-.cd-primary-nav > ul::after {
-  clear: both;
-  content: "";
-  display: block;
-}
-.cd-primary-nav > ul li {
-  display: inline-block;
-  float: left;
-  margin-right: 1.5em;
-}
-.cd-primary-nav > ul li:last-of-type {
-  margin-right: 0;
-}
-.cd-primary-nav > ul a {
-  /* reset mobile style */
-  height: auto;
-  /*line-height: normal;*/
-  padding: 0;
-  border: none;
-}
 
 .nav-open .cd-primary-nav ul,
 .cd-primary-nav ul:target {
@@ -328,12 +292,7 @@ html {
   */
   display: block;
 }
-@media only screen and (min-width: 1024px) {
-  .nav-open .cd-primary-nav ul,
-  .cd-primary-nav ul:target {
-    display: table-cell;
-  }
-}
+
 .cd-secondary-nav {
   position: relative;
   z-index: 1;
@@ -369,12 +328,6 @@ html {
 .cd-secondary-nav.nav-end::after {
   opacity: 0;
 }
-@media only screen and (min-width: 1024px) {
-  .cd-secondary-nav {
-    height: 70px;
-    overflow: visible;
-  }
-}
 
 .cd-main-content {
   background-color: #d3d3d3;
@@ -407,4 +360,54 @@ html {
 #home {
   position: relative;
   transform: translatey(15%);
+}
+
+@media all and (min-width: 1024px) {
+  .cd-primary-nav > ul {
+    /* vertically align inside parent element */
+    display: table-cell;
+    vertical-align: middle;
+    /* reset mobile style */
+    position: relative;
+    width: auto;
+    top: 0;
+    padding: 0;
+    background-color: transparent;
+    box-shadow: none;
+  }
+  .cd-primary-nav > ul::after {
+    clear: both;
+    content: "";
+    display: block;
+  }
+  .cd-primary-nav > ul li {
+    display: inline-block;
+    float: left;
+    margin-right: 1.5em;
+  }
+  .cd-primary-nav > ul li:last-of-type {
+    margin-right: 0;
+  }
+  .cd-primary-nav > ul a {
+    /* reset mobile style */
+    height: auto;
+    /*line-height: normal;*/
+    padding: 0;
+    border: none;
+  }
+  .nav-open .cd-primary-nav ul,
+  .cd-primary-nav ul:target {
+    display: table-cell;
+  }
+  .cd-auto-hide-header {
+    height: 80px;
+  }
+  .cd-auto-hide-header .nav-trigger {
+    display: none;
+  }
+
+  .cd-secondary-nav {
+    height: 70px;
+    overflow: visible;
+  }
 }
