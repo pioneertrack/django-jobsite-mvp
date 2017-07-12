@@ -3,6 +3,7 @@
 
 #useless files
 
+*.pyc
 /*.pyc
 *.txt
 bf/
