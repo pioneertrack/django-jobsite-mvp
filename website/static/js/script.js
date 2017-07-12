@@ -1,7 +1,8 @@
 jQuery(document).ready(function($){
 
-  $('select.filter').niceSelect();
+  $('.cd-search-nav.first select.filter').niceSelect();
 
+  $(".chosen-select").chosen({max_selected_options: 5, width: '100%'});
 
 	$('.selected-value').text($('#selector').val());
 	// browser window scroll (in pixels) after which the "back to top" link is shown

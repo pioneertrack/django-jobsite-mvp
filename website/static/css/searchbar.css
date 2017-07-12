@@ -375,6 +375,36 @@
 .cd-secondary-nav.cd-search-nav::after {
   background-color: white;
 }
-.filter-container {
+
+.cd-secondary-nav.cd-search-nav.first .filter-container {
   display: inline-block;
+}
+.cd-secondary-nav.cd-search-nav.first .tag [data-role="remove"] {
+    margin-left: 8px;
+    cursor: pointer;
+}
+.cd-secondary-nav.cd-search-nav.first .tag [data-role="remove"]:after {
+    content: "x";
+    padding: 0px 2px;
+}
+.cd-secondary-nav.cd-search-nav.first .nice-select {
+  text-transform: capitalize;
+}
+.cd-secondary-nav.cd-search-nav.second .filter-container {
+  display: inline-block;
+  width: 30%;
+}
+.filter-container .chosen-select {
+  width: 200px;
+}
+.cd-secondary-nav.cd-search-nav.second .tag [data-role="remove"] {
+    margin-left: 8px;
+    cursor: pointer;
+}
+.cd-secondary-nav.cd-search-nav.second .tag [data-role="remove"]:after {
+    content: "x";
+    padding: 0px 2px;
+}
+.cd-secondary-nav.cd-search-nav.second .nice-select {
+  text-transform: capitalize;
 }
