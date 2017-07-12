@@ -1,5 +1,5 @@
 {% load static from staticfiles %}
-{#{% load pipeline %}#}
+{% load pipeline %}
 <!doctype html>
 <html>
     <head>
@@ -13,9 +13,9 @@
         <link rel="stylesheet" href="{% static 'css/dropdown.css' %}" type="text/css">
         <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300" rel="stylesheet">
-{#        {% javascript 'components' %}#}
-        <script src = "{% static 'jquery/dist/jquery.min.js' %}"></script>
-        <script src = "{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+        {% javascript 'components' %}
+{#        <script src = "{% static 'jquery/dist/jquery.min.js' %}"></script>#}
+{#        <script src = "{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>#}
         <script src= "{%  static 'jquery-nice-select/js/jquery.nice-select.min.js' %}"></script>
         <script src = "{% static 'js/navbar.js' %}"></script>
         <script src = "{% static 'js/jquery_formset.js' %}"></script>
