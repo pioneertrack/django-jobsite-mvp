@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'nocaptcha_recaptcha',
     'crispy_forms',
     'storages',
-    'pipeline',
+    # 'pipeline',
 ]
 
 MIDDLEWARE = [

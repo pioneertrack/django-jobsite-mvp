@@ -375,9 +375,21 @@
 .cd-secondary-nav.cd-search-nav::after {
   background-color: white;
 }
-
+.cd-secondary-nav.cd-search-nav.first {
+  height: auto;
+  padding: 1rem;
+}
 .cd-secondary-nav.cd-search-nav.first .filter-container {
   display: inline-block;
+}
+.tags .filter-container{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+.cd-secondary-nav.cd-search-nav.first .tag {
+  margin-right: .2rem;
 }
 .cd-secondary-nav.cd-search-nav.first .tag [data-role="remove"] {
     margin-left: 8px;
@@ -390,21 +402,50 @@
 .cd-secondary-nav.cd-search-nav.first .nice-select {
   text-transform: capitalize;
 }
-.cd-secondary-nav.cd-search-nav.second .filter-container {
+
+.nice-select.small {
+  font-size: 1.2rem;
+  height: 2rem;
+  line-height: 2rem;
+  padding-left: 1.5rem;
+  padding-right: 1rem;
+}
+
+.nice-select.small::after {
   display: inline-block;
-  width: 30%;
+  content: '\f107';
+  margin-left: 1rem;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  border-bottom: none;
+  border-right: none;
+  /*display: block;*/
+  height: auto;
+  margin-top: 0;
+  pointer-events: none;
+  position: relative;
+  right: auto;
+  top: auto;
+
+  -webkit-transform-origin: 66% 66%;
+  -ms-transform-origin: 66% 66%;
+  transform-origin: 66% 66%;
+  -webkit-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: all 0.15s ease-in-out;
+  transition: all 0.15s ease-in-out;
+  width: 5px;
 }
-.filter-container .chosen-select {
-  width: 200px;
+
+.nice-select.open:after {
+  content: '\f106';
 }
-.cd-secondary-nav.cd-search-nav.second .tag [data-role="remove"] {
-    margin-left: 8px;
-    cursor: pointer;
-}
-.cd-secondary-nav.cd-search-nav.second .tag [data-role="remove"]:after {
-    content: "x";
-    padding: 0px 2px;
-}
-.cd-secondary-nav.cd-search-nav.second .nice-select {
-  text-transform: capitalize;
+
+.nice-select .list::before {
+  content: ' ';
 }

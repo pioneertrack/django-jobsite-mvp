@@ -2,7 +2,18 @@ jQuery(document).ready(function($){
 
   $('.cd-search-nav.first select.filter').niceSelect();
 
-  $(".chosen-select").chosen({max_selected_options: 5, width: '100%'});
+  $('.cd-search-nav.first select.filter option').bind('option_change.nice_select', function(e) {
+    if ($(this).prop('selected')) {
+      var tag = $('<span class="tag label label-info"></span>')
+      .attr('data-value', $(this).val())
+      .text($(this).text());
+      tag.append('<span data-role="remove"></span>');
+      tag.appendTo($('#tags .filter-container'));
+    } else {
+      $('#tags .tag[data-value="' + $(this).val() + '"]').remove();
+    }
+  })
+  // $(".chosen-select").extChosen({max_selected_options: 5, width: '100%'});
 
 	$('.selected-value').text($('#selector').val());
 	// browser window scroll (in pixels) after which the "back to top" link is shown
