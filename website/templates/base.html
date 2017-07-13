@@ -76,15 +76,13 @@
             <li ><a href="/logout/">Logout</a></li>
       		</ul>
           {% elif not request.user.is_authenticated %}
-          <ul id="cd-navigation">
-      			<li>
-              {% if request.path != '/register/' %}
-              <button type="button" class="btn btn-register">Register</button>
-              {%else%}
-              <button type="button" class="btn btn-login">Login</button>
-              {%endif%}
-            </li>
-      		</ul>
+          <div class="unauth-nav">
+            {% if request.path != '/register/' %}
+            <button type="button" class="btn btn-register">Register</button>
+            {%else%}
+            <button type="button" class="btn btn-login">Login</button>
+            {%endif%}
+          </div>
           {% endif %}
       	</nav> <!-- .cd-primary-nav -->
         {% if request.user.is_authenticated%}

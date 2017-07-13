@@ -13,8 +13,16 @@ html {
   background-color: #25283D;
 }
 
+@media all and (min-width: 1024px) {
+  .top-tile {
+    display: flex;
+    display: -webkit-flex;
+    flex-wrap: wrap;
+  }
+}
 
 /****** LOGIN MODAL ******/
+
 .loginmodal-container {
 
   padding: 30px;
@@ -282,6 +290,17 @@ html {
 .cd-primary-nav {
   /* vertically align its content */
   display: table;
+}
+
+.unauth-nav {
+  display: table-cell;
+  vertical-align: middle;
+  position: relative;
+  width: auto;
+  top: 0;
+  padding: 0;
+  background-color: transparent;
+  box-shadow: none;
 }
 
 .nav-open .cd-primary-nav ul,
