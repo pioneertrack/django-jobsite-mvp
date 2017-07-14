@@ -233,13 +233,19 @@
         {% if request.user.is_authenticated%}
         <nav class="cd-secondary-nav cd-search-nav first">
           <div class="container">
+
+            <div class="tags">
+              <div id="tags" class="filter-container">
+              </div>
+            </div>
+
             <form id="filterform" action="/" autocomplete="off" method="POST">
               {% csrf_token %}
               <div class="selects">
                 {% for item in job_context %}
                   <div class="filter-container">
                     <select class="filter small" name="{{ item.0 }}" multiple style="display: none;">
-                      <option class="text-capitalize" selected data-display="{{ item.0 }}"></option>
+                      <option class="text-capitalize" selected data-display="{{ item.0 }}">Select All</option>
                       {% for subitem in item.1 %}
                         <option value="{{ subitem.0 }}" class="text-capitalize">{{ subitem.1 }}</option>
                       {% endfor %}
@@ -248,17 +254,6 @@
                 {% endfor %}
               </div>
             </form>
-
-            <div id="tags" class="tags">
-              <div class="filter-container">
-{#                {% for item in job_context %}#}
-{#                  {% for subitem in item.1 %}#}
-{#                    <span class="tag label label-info" data-value="{{ subitem.0 }}">{{ subitem.1 }}<span data-role="remove"></span></span>#}
-{#                  {% endfor %}#}
-{#                {% endfor %}#}
-              </div>
-            </div>
-
           </div>
         </nav> <!-- .cd-secondary-nav -->
         {% endif %}

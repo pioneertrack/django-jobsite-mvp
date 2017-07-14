@@ -377,10 +377,23 @@
 }
 .cd-secondary-nav.cd-search-nav.first {
   height: auto;
-  padding: 1rem;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
 }
 .cd-secondary-nav.cd-search-nav.first .filter-container {
-  display: inline-block;
+  display: inline-flex;
+}
+.tags {
+  min-height: 0;
+  height: 0;
+  display: flex;
+  -webkit-transition: all .5s ease;
+  -moz-transition: all .5s ease;
+  transition: all .5s ease;
+}
+.tags.selected {
+  margin-bottom: .5rem;
+  height: auto;
 }
 .tags .filter-container{
   white-space: nowrap;

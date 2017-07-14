@@ -2,18 +2,43 @@ jQuery(document).ready(function($){
 
   $('.cd-search-nav.first select.filter').niceSelect();
 
+  $(document).on('change', 'select.filter', function(e) {
+    var a = $(this);
+    s= 1;
+  })
+
+  $(document).on('click', 'span.tag span[data-role="remove"]', function(e) {
+    var data_value = $(this).parent().data('value');
+    var data_name = $(this).parent().data('name');
+    var tags = $('#tags');
+    var select = $(`select[name="${data_name}"]`);
+    if (tags.children().length === 1) {
+      tags.parent().removeClass('selected');
+    }
+    $(this).parent().remove();
+    select.children(`option[value="${data_value}"]`).prop('selected', false);
+    select.next().find(`li[data-value="${data_value}"]`).removeClass('selected');
+  })
+
   $('.cd-search-nav.first select.filter option').bind('option_change.nice_select', function(e) {
+    var tags = $('#tags');
+    var data_value = $(this).val();
+    var data_name = $(this).parent().attr('name')
     if ($(this).prop('selected')) {
+      tags.parent().addClass('selected');
       var tag = $('<span class="tag label label-info"></span>')
-      .attr('data-value', $(this).val())
+      .attr('data-value', data_value)
+      .attr('data-name', data_name)
       .text($(this).text());
       tag.append('<span data-role="remove"></span>');
-      tag.appendTo($('#tags .filter-container'));
+      tag.appendTo(tags);
     } else {
-      $('#tags .tag[data-value="' + $(this).val() + '"]').remove();
+      if (tags.children().length === 1) {
+        tags.parent().removeClass('selected');
+      }
+      tags.find(`.tag[data-value="${data_value}"][data-name="${data_name}"]`).remove();
     }
   })
-  // $(".chosen-select").extChosen({max_selected_options: 5, width: '100%'});
 
 	$('.selected-value').text($('#selector').val());
 	// browser window scroll (in pixels) after which the "back to top" link is shown
