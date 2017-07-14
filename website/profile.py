@@ -95,12 +95,15 @@ LEVELS = (
     ('PT', 'Part-time'),
     ('IN', 'Intern')
 )
+
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     return 'images/user_{0}/{1}.jpg'.format(instance.id, instance.id)
+
 def company_logo_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     return 'images/company_logos/user_{0}/{1}.jpg'.format(instance.id, instance.id)
+
 class Profile(models.Model):
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
     bio = models.TextField(verbose_name='Bio',max_length=500, blank=True, null=False)
@@ -124,6 +127,7 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.email
+
 class Experience(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
     company = models.CharField(verbose_name='Company',max_length=40, blank=True, null = False)
@@ -147,6 +151,7 @@ class Founder(models.Model):
 
     def __str__(self):
         return self.user.email
+
 class Funding(models.Model):
     founder = models.ForeignKey(Founder, on_delete=models.CASCADE, null=True)
     stage = models.CharField(verbose_name='Stage',max_length=1, choices=FUNDING_ROUNDS, default='0', null=True)
@@ -154,12 +159,14 @@ class Funding(models.Model):
 
     def __str__(self):
         return self.founder.user.email
+
 class Job(models.Model):
     founder = models.ForeignKey(Founder, on_delete=models.CASCADE, null=True)
     title = models.CharField(verbose_name='Job Title',max_length=40, blank=True, null=False)
     pay = models.CharField(verbose_name='Pay',max_length=1, choices = POSITION, default='1')
     description = models.TextField(verbose_name='Description',max_length=500, blank = True, null = False)
     level = models.CharField(verbose_name='Level',max_length = 2, choices = LEVELS, default="FT")
+
 @receiver(post_save, sender=user.MyUser)
 def create_user_profile(sender, instance, created, **kwargs):
     if created and not instance.is_founder:
@@ -171,7 +178,11 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     if instance.is_founder:
         if hasattr(instance, 'profile'):
-            Founder.objects.create(user=instance)
+            try:
+                if (instance.founder is None):
+                    Founder.objects.create(user=instance)
+            except:
+                Founder.objects.create(user=instance)
         instance.founder.save()
     else:
         instance.profile.save()
