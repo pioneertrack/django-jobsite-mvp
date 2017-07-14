@@ -47,6 +47,17 @@ CONTEXT = {
 }
 
 JOB_CONTEXT = {
+    'p_context': [
+        ('years', list(prof.YEAR_IN_SCHOOL_CHOICES)),
+        ('majors', list(prof.MAJORS)),
+        ('roles', list(prof.PRIMARY_ROLE)),
+        ('fields', list(prof.CATEGORY)),
+        ('position', list(prof.POSITION))
+    ],
+    'f_context': [
+        ('stage', list(prof.STAGE)),
+        ('field', list(prof.CATEGORY))
+    ],
     'job_context': [
         ('category', list(prof.CATEGORY)),
         ('level', list(prof.LEVELS)),

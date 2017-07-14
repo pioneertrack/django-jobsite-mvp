@@ -476,3 +476,28 @@
 .nice-select .list::before {
   content: ' ';
 }
+
+.people, .startups, .jobs {
+  display: none;
+}
+.tags.people.is-visible, .tags.startups.is-visible, .tags.jobs.is-visible {
+  display: flex;
+}
+
+.selects.people.is-visible, .selects.startups.is-visible, .selects.jobs.is-visible {
+  display: block;
+}
+.tag {
+  position: relative;
+}
+.tag.outer::before {
+    content: '...';
+    background: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    color: black;
+    text-align: left;
+}

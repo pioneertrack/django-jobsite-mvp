@@ -2,26 +2,29 @@ jQuery(document).ready(function($){
 
   $('.cd-search-nav.first select.filter').niceSelect();
 
-  $(document).on('change', 'select.filter', function(e) {
-    var a = $(this);
-    s= 1;
-  })
-
   $(document).on('click', 'span.tag span[data-role="remove"]', function(e) {
     var data_value = $(this).parent().data('value');
     var data_name = $(this).parent().data('name');
-    var tags = $('#tags');
+    var selector = $("#selector").val();
+    var tags = $(`#tags_${selector}`);
     var select = $(`select[name="${data_name}"]`);
     if (tags.children().length === 1) {
       tags.parent().removeClass('selected');
     }
     $(this).parent().remove();
+    tags.children('.outer').each(function(i) {
+        var tag = $(this);
+        if (tag.offset().left + tag.outerWidth() < tags.offset().left + tags.outerWidth()) {
+          tag.removeClass('outer');
+        }
+    });
     select.children(`option[value="${data_value}"]`).prop('selected', false);
     select.next().find(`li[data-value="${data_value}"]`).removeClass('selected');
   })
 
   $('.cd-search-nav.first select.filter option').bind('option_change.nice_select', function(e) {
-    var tags = $('#tags');
+    var selector = $("#selector").val();
+    var tags = $(`#tags_${selector}`);
     var data_value = $(this).val();
     var data_name = $(this).parent().attr('name')
     if ($(this).prop('selected')) {
@@ -32,11 +35,20 @@ jQuery(document).ready(function($){
       .text($(this).text());
       tag.append('<span data-role="remove"></span>');
       tag.appendTo(tags);
+      if (tag.offset().left + tag.outerWidth() > tags.offset().left + tags.outerWidth()) {
+        tag.addClass('outer');
+      }
     } else {
       if (tags.children().length === 1) {
         tags.parent().removeClass('selected');
       }
       tags.find(`.tag[data-value="${data_value}"][data-name="${data_name}"]`).remove();
+      tags.children('.outer').each(function(i) {
+        var tag = $(this);
+        if (tag.offset().left + tag.outerWidth() < tags.offset().left + tags.outerWidth()) {
+          tag.removeClass('outer');
+        }
+      });
     }
   })
 
@@ -191,6 +203,14 @@ jQuery(document).ready(function($){
 	})
 
   $("#selector").on('change', function(e) {
+    var class_to_show = $(this).val();
+    var blocs_to_show = $(`.cd-search-nav.first .tags.${class_to_show}, .cd-search-nav.first .selects.${class_to_show}`);
+
+    $('.cd-search-nav.first .tags').removeClass('is-visible');
+    $('.cd-search-nav.first .selects').removeClass('is-visible');
+
+    blocs_to_show.addClass('is-visible');
+
     if ($(this).val() === 'jobs') {
       $('.cd-dropdown-content.people').hide();
       $('.cd-dropdown-content.jobs').show();

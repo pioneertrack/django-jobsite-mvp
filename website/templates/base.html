@@ -232,18 +232,28 @@
         <nav class="cd-secondary-nav cd-search-nav first">
           <div class="container">
 
-            <div class="tags">
-              <div id="tags" class="filter-container">
+            <div class="tags startups">
+              <div id="tags_startups" class="filter-container">
+              </div>
+            </div>
+
+            <div class="tags people">
+              <div id="tags_people" class="filter-container">
+              </div>
+            </div>
+
+            <div class="tags jobs">
+              <div id="tags_jobs" class="filter-container">
               </div>
             </div>
 
             <form id="filterform" action="/" autocomplete="off" method="POST">
               {% csrf_token %}
-              <div class="selects">
+              <div class="selects jobs">
                 {% for item in job_context %}
                   <div class="filter-container">
                     <select class="filter small" name="{{ item.0 }}" multiple style="display: none;">
-                      <option class="text-capitalize" selected data-display="{{ item.0 }}">Select All</option>
+                      <option class="text-capitalize" selected data-display="{{ item.0 }}" data-revert="Diselect All">Select All</option>
                       {% for subitem in item.1 %}
                         <option value="{{ subitem.0 }}" class="text-capitalize">{{ subitem.1 }}</option>
                       {% endfor %}
@@ -251,6 +261,33 @@
                   </div>
                 {% endfor %}
               </div>
+
+              <div class="selects people">
+                {% for item in p_context %}
+                  <div class="filter-container">
+                    <select class="filter small" name="{{ item.0 }}" multiple style="display: none;">
+                      <option class="text-capitalize" selected data-display="{{ item.0 }}" data-revert="Diselect All">Select All</option>
+                      {% for subitem in item.1 %}
+                        <option value="{{ subitem.0 }}" class="text-capitalize">{{ subitem.1 }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                {% endfor %}
+              </div>
+
+              <div class="selects startups">
+                {% for item in f_context %}
+                  <div class="filter-container">
+                    <select class="filter small" name="{{ item.0 }}" multiple style="display: none;">
+                      <option class="text-capitalize" selected data-display="{{ item.0 }}" data-revert="Diselect All">Select All</option>
+                      {% for subitem in item.1 %}
+                        <option value="{{ subitem.0 }}" class="text-capitalize">{{ subitem.1 }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                {% endfor %}
+              </div>
+
             </form>
           </div>
         </nav> <!-- .cd-secondary-nav -->
