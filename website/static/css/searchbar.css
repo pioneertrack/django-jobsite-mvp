@@ -11,7 +11,7 @@
 }
 .cd-main-search .cd-search-button {
   display: inline-block;
-  right: 50px;
+  right: 20px;
   top: 50%;
   bottom: auto;
   position: absolute;
@@ -45,6 +45,18 @@
   border-radius: 0;
   margin-top: 0;
   border-bottom: solid 3px #8F3985;
+  background-color: rgba(0,0,0,0);
+  width: 100%;
+  bottom: 0px;
+  position:absolute;
+  margin-left: 2%;
+}
+
+@media screen and (min-width: 1024px) {
+  #search input[type="search"] {
+    width: 100%;
+    margin-left: 0;
+  }
 }
 
 #search select {
@@ -52,8 +64,64 @@
   cursor: pointer;
 }
 .cd-main-search .cd-select {
-  /* hide select element on small devices */
-  display: none;
+  display: inline-block;
+  position: absolute;
+  right: 70px;
+  top: 50%;
+  bottom: auto;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+  transform: translateY(-50%);
+  color: #5c5d6a;
+  font-size: 1.4rem;
+  overflow: hidden;
+}
+.cd-main-search select, .cd-main-search .selected-value {
+  padding: 0.5em .3em 0.5em .3em;
+  font-size: 1.4rem;
+  border-radius: 3px;
+}
+.cd-main-search .selected-value {
+  /* this <span> element covers the <select> element - its content is changed (using JavaScript) and set equal to the selected <option> value */
+  /* its width automatically changes according to the text of the selected <option> (not possible with a <select> element) */
+  color: #ffffff;
+  /* clicking on this element will open the <select> drop-down list */
+  pointer-events: none;
+  -webkit-transition: background-color 0.3s;
+  -moz-transition: background-color 0.3s;
+  transition: background-color 0.3s;
+}
+.cd-main-search span {
+  display: inline-block;
+}
+.cd-main-search option {
+  /* style <option> elements on Firefox */
+  color: #333545;
+  background-color: #ffffff;
+}
+.cd-main-search select {
+  /* the <select> element is not visible (if the list of options is not open) -  it is covered by the .selected-value element */
+  position: absolute;
+  right: 0;
+  top: 50%;
+  bottom: auto;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+  transform: translateY(-50%);
+  opacity: 0;
+  color: transparent;
+}
+
+.cd-main-search select:focus {
+  outline: none;
+}
+
+.cd-main-search select:focus + span.selected-value {
+  background-color: #3d3f4e;
 }
 .cd-main-search input[type="search"] {
   width: 100%;
@@ -105,72 +173,6 @@
     color: white;
     /* don't overlap <select> element */
     padding-right: 220px;
-  }
-
-  .cd-main-search .cd-select {
-    display: inline-block;
-    position: absolute;
-    right: 100px;
-    top: 50%;
-    bottom: auto;
-    -webkit-transform: translateY(-50%);
-    -moz-transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
-    -o-transform: translateY(-50%);
-    transform: translateY(-50%);
-    color: #5c5d6a;
-    font-size: 1.4rem;
-    overflow: hidden;
-  }
-
-  .cd-main-search span {
-    display: inline-block;
-  }
-
-  .cd-main-search option {
-    /* style <option> elements on Firefox */
-    color: #333545;
-    background-color: #ffffff;
-  }
-
-  .cd-main-search select {
-    /* the <select> element is not visible (if the list of options is not open) -  it is covered by the .selected-value element */
-    position: absolute;
-    right: 0;
-    top: 50%;
-    bottom: auto;
-    -webkit-transform: translateY(-50%);
-    -moz-transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
-    -o-transform: translateY(-50%);
-    transform: translateY(-50%);
-    opacity: 0;
-    color: transparent;
-  }
-
-  .cd-main-search select:focus {
-    outline: none;
-  }
-
-  .cd-main-search select:focus + span.selected-value {
-    background-color: #3d3f4e;
-  }
-
-  .cd-main-search .selected-value {
-    /* this <span> element covers the <select> element - its content is changed (using JavaScript) and set equal to the selected <option> value */
-    /* its width automatically changes according to the text of the selected <option> (not possible with a <select> element) */
-    color: #ffffff;
-    /* clicking on this element will open the <select> drop-down list */
-    pointer-events: none;
-    -webkit-transition: background-color 0.3s;
-    -moz-transition: background-color 0.3s;
-    transition: background-color 0.3s;
-  }
-
-  .cd-main-search select, .cd-main-search .selected-value {
-    padding: 0.5em .3em 0.5em .3em;
-    font-size: 1.4rem;
-    border-radius: 3px;
   }
 
   .cd-main-search.is-visible {
@@ -329,21 +331,33 @@
   text-overflow: ellipsis;
 }
 .cd-switch-view {
-  display: inline-block;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  text-align: center;
-  width: 40px;
-  height: 40px;
-  bottom: auto;
-  color: white;
-  font-size: 3rem;
-  -webkit-transform: translateY(-50%);
-  -moz-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  -o-transform: translateY(-50%);
-  transform: translateY(-50%);
+  display: none;
+}
+
+@media screen and (min-width: 768px) {
+  .cd-switch-view {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    text-align: center;
+    width: 40px;
+    height: 40px;
+    bottom: auto;
+    color: white;
+    font-size: 3rem;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
+  .cd-main-search .cd-search-button {
+    right: 50px;
+  }
+  .cd-main-search .cd-select {
+    right: 100px;
+  }
 }
 
 
