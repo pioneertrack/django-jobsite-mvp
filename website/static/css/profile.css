@@ -241,9 +241,6 @@
 .card .avatar {
   width: 100px;
   height: 100px;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
   border: 5px solid rgba(0,0,30,0.8);
 }
 .card .founderavatar {
