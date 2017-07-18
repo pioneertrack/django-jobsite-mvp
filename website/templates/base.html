@@ -163,7 +163,7 @@
               <div class="selects jobs">
                 {% for item in job_context %}
                   <div class="filter-container">
-                    <select class="filter small" name="{{ item.0 }}" multiple style="display: none;">
+                    <select class="filter small" name="{{ item.0 }}" multiple style="display: none;" data-class="{% if item.2 %}{{ item.2 }}{% else %}label-info{% endif %}">
                       <option class="text-capitalize" selected data-display="{{ item.0 }}" data-revert="Diselect All">Select All</option>
                       {% for subitem in item.1 %}
                         <option value="{{ subitem.0 }}" class="text-capitalize">{{ subitem.1 }}</option>
@@ -176,7 +176,7 @@
               <div class="selects people">
                 {% for item in p_context %}
                   <div class="filter-container">
-                    <select class="filter small" name="{{ item.0 }}" multiple style="display: none;">
+                    <select class="filter small" name="{{ item.0 }}" multiple style="display: none;" data-class="{% if item.2 %}{{ item.2 }}{% else %}label-info{% endif %}">
                       <option class="text-capitalize" selected data-display="{{ item.0 }}" data-revert="Diselect All">Select All</option>
                       {% for subitem in item.1 %}
                         <option value="{{ subitem.0 }}" class="text-capitalize">{{ subitem.1 }}</option>
@@ -189,8 +189,8 @@
               <div class="selects startups">
                 {% for item in f_context %}
                   <div class="filter-container">
-                    <select class="filter small" name="{{ item.0 }}" multiple style="display: none;">
-                      <option class="text-capitalize" selected data-display="{{ item.0 }}" data-revert="Diselect All">Select All</option>
+                    <select class="filter small" name="{{ item.0 }}" multiple style="display: none;" data-class="{% if item.2 %}{{ item.2 }}{% else %}label-info{% endif %}">
+                      <option class="text-capitalize" selected data-display="{{ item.0 }}" data-revert="Diselect All" data-class="label-info">Select All</option>
                       {% for subitem in item.1 %}
                         <option value="{{ subitem.0 }}" class="text-capitalize">{{ subitem.1 }}</option>
                       {% endfor %}

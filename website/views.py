@@ -48,9 +48,9 @@ CONTEXT = {
 
 JOB_CONTEXT = {
     'p_context': [
-        ('year', list(prof.YEAR_IN_SCHOOL_CHOICES)),
-        ('major', list(prof.MAJORS)),
-        ('role', list(prof.PRIMARY_ROLE)),
+        ('year', list(prof.YEAR_IN_SCHOOL_CHOICES), 'label-success'),
+        ('major', list(prof.MAJORS), 'label-info'),
+        ('role', list(prof.PRIMARY_ROLE), 'label-success'),
         ('field', list(prof.CATEGORY)),
         ('position', list(prof.POSITION)),
         ('experience', [(0, 'Has startup experience'), (1, 'Has funding experience')]),

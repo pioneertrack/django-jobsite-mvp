@@ -507,3 +507,7 @@
     color: black;
     text-align: left;
 }
+
+.cd-secondary-nav.cd-search-nav.first::after {
+  content: normal;
+}

@@ -26,18 +26,23 @@ jQuery(document).ready(function($){
     var selector = $("#selector").val();
     var tags = $(`#tags_${selector}`);
     var data_value = $(this).val();
-    var data_name = $(this).parent().attr('name')
+    var data_name = $(this).parent().attr('name');
+    var data_class = $(this).parent().data('class');
     if ($(this).prop('selected')) {
       tags.parent().addClass('selected');
-      var tag = $('<span class="tag label label-info"></span>')
+      var tag = $(`<span class="tag label ${data_class}"></span>`)
       .attr('data-value', data_value)
       .attr('data-name', data_name)
       .text($(this).text());
       tag.append('<span data-role="remove"></span>');
-      tag.appendTo(tags);
-      if (tag.offset().left + tag.outerWidth() > tags.offset().left + tags.outerWidth()) {
-        tag.addClass('outer');
-      }
+      tag.prependTo(tags);
+
+      $(tags.children(':not(.outer)').get().reverse()).each(function (i) {
+        var tag = $(this);
+        if (tag.offset().left + tag.outerWidth() > tags.offset().left + tags.outerWidth()) {
+          tag.addClass('outer');
+        }
+      })
     } else {
       if (tags.children().length === 1) {
         tags.parent().removeClass('selected');
