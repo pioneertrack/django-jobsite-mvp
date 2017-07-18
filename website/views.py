@@ -48,21 +48,21 @@ CONTEXT = {
 
 JOB_CONTEXT = {
     'p_context': [
-        ('year', list(prof.YEAR_IN_SCHOOL_CHOICES), 'label-success'),
-        ('major', list(prof.MAJORS), 'label-info'),
-        ('role', list(prof.PRIMARY_ROLE), 'label-success'),
-        ('field', list(prof.CATEGORY)),
-        ('position', list(prof.POSITION)),
-        ('experience', [(0, 'Has startup experience'), (1, 'Has funding experience')]),
+        ('year', list(prof.YEAR_IN_SCHOOL_CHOICES), {'class': 'label-year'}),
+        ('major', list(prof.MAJORS), {'class': 'label-major'}),
+        ('role', list(prof.PRIMARY_ROLE), {'class': 'label-role'}),
+        ('field', list(prof.CATEGORY), {'class': 'label-field'}),
+        ('position', list(prof.POSITION), {'class': 'label-position'}),
+        ('experience', [(0, 'Has startup experience'), (1, 'Has funding experience')], {'class': 'label-experience'}),
     ],
     'f_context': [
-        ('stage', list(prof.STAGE)),
-        ('f_field', list(prof.CATEGORY))
+        ('stage', list(prof.STAGE), {'class': 'label-stage'}),
+        ('f_field', list(prof.CATEGORY), {'class': 'label-field', 'name': 'field'})
     ],
     'job_context': [
-        ('category', list(prof.CATEGORY)),
-        ('level', list(prof.LEVELS)),
-        ('pay', list(prof.POSITION))
+        ('category', list(prof.CATEGORY), {'class': 'label-category'}),
+        ('level', list(prof.LEVELS), {'class': 'label-level'}),
+        ('pay', list(prof.POSITION), {'class': 'label-pay'})
     ]
 }
 

@@ -511,3 +511,37 @@
 .cd-secondary-nav.cd-search-nav.first::after {
   content: normal;
 }
+
+.label-year {
+  background-color: #00b3ee;
+}
+.label-major {
+  background-color: #2aabd2;
+
+}
+.label-role {
+  background-color: #3e8f3e;
+}
+.label-field {
+  background-color: #7a43b6;
+}
+.label-position {
+  background-color: #47975f;
+}
+.label-experience {
+  background-color: #7a43b6;
+}
+
+.label-stage {
+  background-color: #ce8483;
+}
+
+.label-category {
+  background-color: #94b24d;
+}
+.label-level {
+  background-color: burlywood;
+}
+.label-pay {
+  background-color: red;
+}
