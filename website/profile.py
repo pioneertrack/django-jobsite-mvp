@@ -3,6 +3,7 @@ from django.db import models
 from website import models as user
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 HOURS_AVAILABLE = (
     ('0', '0 - 5'),
     ('1', '5 - 10'),
@@ -166,6 +167,7 @@ class Job(models.Model):
     pay = models.CharField(verbose_name='Pay',max_length=1, choices = POSITION, default='1')
     description = models.TextField(verbose_name='Description',max_length=500, blank = True, null = False)
     level = models.CharField(verbose_name='Level',max_length = 2, choices = LEVELS, default="FT")
+    created_date = models.DateTimeField(default=timezone.now)
 
 @receiver(post_save, sender=user.MyUser)
 def create_user_profile(sender, instance, created, **kwargs):

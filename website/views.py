@@ -23,6 +23,7 @@ from random import shuffle
 from website import forms
 from website import models
 from website import profile as prof
+from . profile import Founder, Job
 
 def merge_two_dicts(x, y):
     """Given two dicts, merge them into a new dict as a shallow copy."""
@@ -499,3 +500,8 @@ def google_analytics(request):
             'GOOGLE_ANALYTICS_DOMAIN': ga_domain,
         }
     return {}
+
+def job_list(request, pk):
+    founder = get_object_or_404(Founder, pk=pk)
+    jobs = Job.objects.filter(founder=founder).values().order_by('created_date')
+    return render(request, 'job_list.html', {'founder': founder, 'jobs':jobs})

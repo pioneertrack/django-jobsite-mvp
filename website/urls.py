@@ -12,4 +12,5 @@ urlpatterns = [
                        views.get_user_view,
                        name='get_user_view'),
   url(r'^connect/$', views.connect, name='connect'),
+  url(r'^(?P<pk>\d+)/jobs/$', views.job_list, name='job_list'),
 ]
