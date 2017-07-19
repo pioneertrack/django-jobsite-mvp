@@ -1,4 +1,5 @@
 {% load static from staticfiles %}
+{% load website_tags %}
 {#{% load pipeline %}#}
 <!doctype html>
 <html>
@@ -100,6 +101,10 @@
       <form id="mainform" action="/" autocomplete="off" method="POST">
         {% csrf_token %}
 
+        <input type="hidden" value="{% if jobs_hidden %}{{ jobs_hidden }}{% endif %}" name="filter_jobs" id="filter_jobs">
+        <input type="hidden" value="" name="filter_people" id="filter_people">
+        <input type="hidden" value="" name="filter_startup" id="filter_startup">
+
         <div id="search" class="cd-main-search is-visible">
 
           <div class="searchform">
@@ -121,8 +126,9 @@
                 <option value="jobs" {% if search_category and search_category == 'jobs' %}selected{% endif %}>Jobs
                 </option>
               </select>
-              <input name="category" type="hidden"><span class="selected-value"
-                                                         style="text-transform:capitalize;"></span></input>
+{#                                                         style="text-transform:capitalize;"></span></input>#}
+              {#              <input name="category" type="hidden"> #}
+              <span class="selected-value" style="text-transform:capitalize;"></span>
               <i class="fa fa-chevron-down"></i>
             </div>
 
@@ -146,84 +152,109 @@
     <nav class="cd-secondary-nav cd-search-nav first">
       <div class="container">
 
-        <div class="tags startups">
+        <div class="tags startups {% if filter_startups %}selected{% endif %}">
           <div id="tags_startups" class="filter-container">
+            {% if search_category == 'startups' %}
+              {% for item in filter_startups %}
+                <span class="tag label label-{{ item.0 }}" data-value="{{ item.1 }}"
+                      data-name="{{ item.0 }}">{{ item.2 }}<span
+                    data-role="remove"></span></span>
+              {% endfor %}
+            {% endif %}
           </div>
         </div>
 
-        <div class="tags people">
+        <div class="tags people {% if filter_people %}selected{% endif %}">
           <div id="tags_people" class="filter-container">
+            {% if search_category == 'people' %}
+              {% for item in filter_people %}
+                <span class="tag label label-{{ item.0 }}" data-value="{{ item.1 }}"
+                      data-name="{{ item.0 }}">{{ item.2 }}<span
+                    data-role="remove"></span></span>
+              {% endfor %}
+            {% endif %}
           </div>
         </div>
 
-        <div class="tags jobs">
+        <div class="tags jobs {% if filter_jobs %}selected{% endif %}">
           <div id="tags_jobs" class="filter-container">
+            {% if search_category == 'jobs' %}
+              {% for item in filter_jobs %}
+                <span class="tag label label-{{ item.0 }}" data-value="{{ item.1 }}"
+                      data-name="{{ item.0 }}">{{ item.2 }}<span
+                    data-role="remove"></span></span>
+              {% endfor %}
+            {% endif %}
           </div>
         </div>
 
-        <form id="filterform" action="/" autocomplete="off" method="POST">
-          {% csrf_token %}
-          <div class="selects jobs">
-            {% for item in job_context %}
-              <div class="filter-container">
-                <select class="filter small"
-                        name="{{ item.0 }}"
-                        multiple style="display: none;"
-                        data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
-                  <option class="text-capitalize" selected
-                          data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
-                          data-revert="Diselect All">
-                    Select All
-                  </option>
-                  {% for subitem in item.1 %}
-                    <option value="{{ subitem.0 }}" class="text-capitalize">{{ subitem.1 }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-            {% endfor %}
-          </div>
+        <div class="selects jobs">
+          {% for item in job_context %}
+            <div class="filter-container">
+              <select class="filter small"
+                      form="mainform"
+                      name="{{ item.0 }}"
+                      multiple style="display: none;"
+                      data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                <option class="text-capitalize" selected
+                        data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                        data-revert="Diselect All"
+                        data-text="Select All">
+                </option>
+                {% for subitem in item.1 %}
+                  {% make_list item.0 subitem.0 subitem.1 as tmp_list %}
+                  <option value="{{ subitem.0 }}"
+                          class="text-capitalize"
+                          {% if tmp_list in filter_jobs %}selected{% endif %}
+                  >{{ subitem.1 }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          {% endfor %}
+        </div>
 
-          <div class="selects people">
-            {% for item in p_context %}
-              <div class="filter-container">
-                <select class="filter small"
-                        name="{{ item.0 }}"
-                        multiple style="display: none;"
-                        data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
-                  <option class="text-capitalize" selected
-                          data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
-                          data-revert="Diselect All">
-                    Select All
-                  </option>
-                  {% for subitem in item.1 %}
-                    <option value="{{ subitem.0 }}" class="text-capitalize">{{ subitem.1 }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-            {% endfor %}
-          </div>
+        <div class="selects people">
+          {% for item in p_context %}
+            <div class="filter-container">
+              <select class="filter small"
+                      form="mainform"
+                      name="{{ item.0 }}"
+                      multiple style="display: none;"
+                      data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                <option class="text-capitalize" selected
+                        data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                        data-revert="Diselect All"
+                        data-text="Select All">
+                </option>
+                {% for subitem in item.1 %}
+                  <option value="{{ subitem.0 }}" class="text-capitalize">{{ subitem.1 }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          {% endfor %}
+        </div>
 
-          <div class="selects startups">
-            {% for item in f_context %}
-              <div class="filter-container">
-                <select class="filter small"
-                        name="{{ item.0 }}"
-                        multiple style="display: none;"
-                        data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
-                  <option class="text-capitalize" selected
-                          data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
-                          data-revert="Diselect All">
-                    Select All
-                  </option>
-                  {% for subitem in item.1 %}
-                    <option value="{{ subitem.0 }}" class="text-capitalize">{{ subitem.1 }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-            {% endfor %}
-          </div>
+        <div class="selects startups">
+          {% for item in f_context %}
+            <div class="filter-container">
+              <select class="filter small"
+                      form="mainform"
+                      name="{{ item.0 }}"
+                      multiple style="display: none;"
+                      data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                <option class="text-capitalize" selected
+                        data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                        data-revert="Diselect All"
+                        data-text="Select All">
+                </option>
+                {% for subitem in item.1 %}
+                  <option value="{{ subitem.0 }}" class="text-capitalize">{{ subitem.1 }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          {% endfor %}
+        </div>
 
-        </form>
       </div>
     </nav> <!-- .cd-secondary-nav -->
   {% endif %}

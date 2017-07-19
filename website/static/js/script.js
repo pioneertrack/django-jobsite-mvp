@@ -25,6 +25,7 @@ jQuery(document).ready(function($){
   $('.cd-search-nav.first select.filter option').bind('option_change.nice_select', function(e) {
     var selector = $("#selector").val();
     var tags = $(`#tags_${selector}`);
+    var filter_input = $(`#filter_${selector}`);
     var data_value = $(this).val();
     var data_name = $(this).parent().attr('name');
     var data_class = $(this).parent().data('class');
@@ -36,13 +37,15 @@ jQuery(document).ready(function($){
       .text($(this).text());
       tag.append('<span data-role="remove"></span>');
       tag.prependTo(tags);
-
       $(tags.children(':not(.outer)').get().reverse()).each(function (i) {
         var tag = $(this);
         if (tag.offset().left + tag.outerWidth() > tags.offset().left + tags.outerWidth()) {
           tag.addClass('outer');
         }
       })
+      //To store order of tags in filter
+      var punctuation = filter_input.val().length > 0 ? ',' : '';
+      filter_input.val(`["${data_name}", "${data_value}" , "${$(this).text()}"]${punctuation}` + filter_input.val());
     } else {
       if (tags.children().length === 1) {
         tags.parent().removeClass('selected');
