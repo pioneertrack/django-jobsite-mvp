@@ -1,16 +1,21 @@
 from registration.forms import RegistrationFormUniqueEmail
 from nocaptcha_recaptcha.fields import NoReCaptchaField
-from django.core.validators import EmailValidator
 from website import models, profile
 from django import forms
+from django.conf import settings
+
+from django.core.validators import EmailValidator
 from django import template
 from django.utils.safestring import mark_safe
 # get a way to log the errors:
 import logging
-log = logging.getLogger(__name__)
-logging.basicConfig(filename='errorlog.txt')
 # convert the errors to text
 from django.utils.encoding import force_text
+
+
+log = logging.getLogger(__name__)
+logging.basicConfig(filename='errorlog.txt')
+
 class NewRegistrationForm(RegistrationFormUniqueEmail):
     captcha = NoReCaptchaField()
     def __init__(self, *args, **kwargs):
@@ -23,7 +28,10 @@ class NewRegistrationForm(RegistrationFormUniqueEmail):
 
     def clean_email(self):
         submitted_data = self.cleaned_data['email']
-        ALLOWED_DOMAINS = ['berkeley.edu']
+        if hasattr(settings, 'ALLOWED_DOMAINS'):
+            ALLOWED_DOMAINS = settings.ALLOWED_DOMAINS
+        else:
+            ALLOWED_DOMAINS = ['berkeley.edu']
         if not ALLOWED_DOMAINS: # If we allow any domain
             return submitted_data
 
@@ -64,6 +72,7 @@ class ProfileForm(forms.ModelForm):
             'major': 'Primary Major',
 	    'position': 'Seeking what type of position?',
         }
+
 class FounderForm(forms.ModelForm):
     logo = forms.ImageField(label='Logo',required=False, error_messages ={'invalid':"Image files only"}, widget = forms.FileInput)
     def is_valid(self):
@@ -78,6 +87,7 @@ class FounderForm(forms.ModelForm):
             'hours_wanted': 'Hours per week candidates should have available',
             'seeking': 'Looking for a partner or to hire/contract?'
         }
+
 class ExperienceForm(forms.ModelForm):
     def is_valid(self):
         log.info(force_text(self.errors))
@@ -89,6 +99,7 @@ class ExperienceForm(forms.ModelForm):
             'start_date': forms.DateInput(),
             'end_date': forms.DateInput()
         }
+
 class FundingForm(forms.ModelForm):
     def is_valid(self):
         log.info(force_text(self.errors))
@@ -96,6 +107,7 @@ class FundingForm(forms.ModelForm):
     class Meta:
         model = profile.Funding
         fields=('stage', 'raised')
+
 class JobForm(forms.ModelForm):
     def is_valid(self):
         log.info(force_text(self.errors))

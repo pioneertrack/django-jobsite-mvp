@@ -76,6 +76,8 @@ DEFAULT_FROM_EMAIL = 'webmaster@example.com'
 
 if DEBUG:
 
+    ALLOWED_DOMAINS = []
+
     INTERNAL_IPS = ['127.0.0.1']
 
     try:
