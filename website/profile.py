@@ -4,6 +4,7 @@ from website import models as user
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from datetime import datetime
 HOURS_AVAILABLE = (
     ('0', '0 - 5'),
     ('1', '5 - 10'),
@@ -134,9 +135,10 @@ class Experience(models.Model):
     company = models.CharField(verbose_name='Company',max_length=40, blank=True, null = False)
     position = models.CharField(verbose_name='Position',max_length=50, blank=True, null = False)
     start_date = models.DateField(verbose_name='Start Date',blank=True, null = True)
-    end_date = models.DateField(verbose_name='End Date',blank=True, null = True)
     description = models.TextField(verbose_name='Description',max_length=500, blank=True,null=False)
-
+    currently_working = models.BooleanField(default=False)
+    end_date = models.DateField(verbose_name='End Date',default=timezone.now)
+    
 class Founder(models.Model):
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
     logo = models.ImageField(upload_to=company_logo_path, default = 'images/default/default-logo.jpg', blank=True, null=False)

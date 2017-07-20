@@ -84,7 +84,7 @@ class ExperienceForm(forms.ModelForm):
         return super(ExperienceForm, self).is_valid()
     class Meta:
         model = profile.Experience
-        fields=('company', 'position','start_date', 'end_date', 'description')
+        fields=('company', 'position','start_date', 'currently_working','end_date', 'description')
         widgets = {
             'start_date': forms.DateInput(),
             'end_date': forms.DateInput()
