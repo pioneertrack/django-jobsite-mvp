@@ -102,8 +102,8 @@
         {% csrf_token %}
 
         <input type="hidden" value="{% if jobs_hidden %}{{ jobs_hidden }}{% endif %}" name="filter_jobs" id="filter_jobs">
-        <input type="hidden" value="" name="filter_people" id="filter_people">
-        <input type="hidden" value="" name="filter_startup" id="filter_startup">
+        <input type="hidden" value="{% if people_hidden %}{{ people_hidden }}{% endif %}" name="filter_people" id="filter_people">
+        <input type="hidden" value="{% if startups_hidden %}{{ startups_hidden }}{% endif %}" name="filter_startups" id="filter_startups">
 
         <div id="search" class="cd-main-search is-visible">
 
@@ -121,9 +121,23 @@
             <div class="cd-select">
               <span>in</span>
               <select id="selector" name="select-category">
-                <option value="people" {% if not founder and not search_category %}selected{% endif %}>People</option>
-                <option value="startups" {% if founder and not search_category %}selected{% endif %}>Startups</option>
-                <option value="jobs" {% if search_category and search_category == 'jobs' %}selected{% endif %}>Jobs
+                <option value="people"
+                    {% if not founder and not search_category %}
+                        selected
+                    {% elif search_category == 'people' %}
+                        selected
+                    {% endif %}
+                >People
+                </option>
+                <option value="startups"
+                    {% if founder and not search_category %}
+                        selected
+                    {% elif search_category == 'startups' %}
+                        selected
+                    {% endif %}>Startups
+                </option>
+                <option value="jobs"
+                        {% if search_category and search_category == 'jobs' %}selected{% endif %}>Jobs
                 </option>
               </select>
 {#                                                         style="text-transform:capitalize;"></span></input>#}
@@ -202,7 +216,7 @@
                         data-text="Select All">
                 </option>
                 {% for subitem in item.1 %}
-                  {% make_list item.0 subitem.0 subitem.1 as tmp_list %}
+                  {% to_list item.0 subitem.0 subitem.1  as tmp_list %}
                   <option value="{{ subitem.0 }}"
                           class="text-capitalize"
                           {% if tmp_list in filter_jobs %}selected{% endif %}
@@ -227,7 +241,11 @@
                         data-text="Select All">
                 </option>
                 {% for subitem in item.1 %}
-                  <option value="{{ subitem.0 }}" class="text-capitalize">{{ subitem.1 }}</option>
+                  {% to_list item.0 subitem.0 subitem.1  as tmp_list %}
+                  <option value="{{ subitem.0 }}"
+                          class="text-capitalize"
+                          {% if tmp_list in filter_people %}selected{% endif %}
+                  >{{ subitem.1 }}</option>
                 {% endfor %}
               </select>
             </div>
@@ -248,7 +266,11 @@
                         data-text="Select All">
                 </option>
                 {% for subitem in item.1 %}
-                  <option value="{{ subitem.0 }}" class="text-capitalize">{{ subitem.1 }}</option>
+                  {% to_list item.0 subitem.0 subitem.1  as tmp_list %}
+                  <option value="{{ subitem.0 }}"
+                          class="text-capitalize"
+                          {% if tmp_list in filter_startups %}selected{% endif %}
+                  >{{ subitem.1 }}</option>
                 {% endfor %}
               </select>
             </div>

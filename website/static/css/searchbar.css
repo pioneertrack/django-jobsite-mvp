@@ -512,17 +512,17 @@
   content: normal;
 }
 
-.label-year {
+.label-year, .label-years {
   background-color: #00b3ee;
 }
-.label-major {
+.label-major, .label-majors {
   background-color: #2aabd2;
 
 }
-.label-role {
+.label-role, .label-roles  {
   background-color: #3e8f3e;
 }
-.label-field {
+.label-field, .label-f_fields, .label-fields {
   background-color: #7a43b6;
 }
 .label-position {

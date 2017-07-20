@@ -45,7 +45,7 @@ jQuery(document).ready(function($){
       })
       //To store order of tags in filter
       var punctuation = filter_input.val().length > 0 ? ',' : '';
-      filter_input.val(`["${data_name}", "${data_value}" , "${$(this).text()}"]${punctuation}` + filter_input.val());
+      filter_input.val(`["${data_name}","${data_value}","${$(this).text()}"]${punctuation}` + filter_input.val());
     } else {
       if (tags.children().length === 1) {
         tags.parent().removeClass('selected');
@@ -57,6 +57,17 @@ jQuery(document).ready(function($){
           tag.removeClass('outer');
         }
       });
+      var str = `["${data_name}","${data_value}","${$(this).text()}"]`;
+      var value = filter_input.val();
+      value = value.replace(str, '');
+      value = value.replace(',,', ',');
+      if (value.length > 0 && value[0] == ',') {
+        value = value.substr(1);
+      }
+      if (value.length > 0 && value[value.length - 1] == ',') {
+        value = value.substr(0, value.length -1);
+      }
+      filter_input.val(value);
     }
   })
 

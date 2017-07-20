@@ -26,13 +26,6 @@ from website import models
 from website import profile as prof
 
 
-def merge_two_dicts(x, y):
-    """Given two dicts, merge them into a new dict as a shallow copy."""
-    z = x.copy()
-    z.update(y)
-    return z
-
-
 def merge_dicts(*args):
     dc = {}
     for item in args:
@@ -157,26 +150,31 @@ def index(request):
             years = years + ['']
         majors = request.POST.getlist('major')
         fields = request.POST.getlist('field')
-        pos = request.POST.getlist('pos') + ['']
         tokenized_users = []
         if request.POST['select-category'] == 'people':
-            if request.POST.get('startup', False) and request.POST.get('funding', False):
-                result = models.MyUser.objects.filter(is_active=True, is_founder=False, profile__major__in=majors,
-                                                      profile__role__in=roles, profile__year__in=years,
-                                                      profile__has_funding_exp=True, profile__has_startup_exp=True,
-                                                      profile__position__in=pos)
-            elif request.POST.get('startup', False):
-                result = models.MyUser.objects.filter(is_active=True, is_founder=False, profile__major__in=majors,
-                                                      profile__role__in=roles, profile__year__in=years,
-                                                      profile__has_startup_exp=True, profile__position__in=pos)
-            elif request.POST.get('funding', False):
-                result = models.MyUser.objects.filter(is_active=True, is_founder=False, profile__major__in=majors,
-                                                      profile__role__in=roles, profile__year__in=years,
-                                                      profile__has_funding_exp=True, profile__position__in=pos)
-            else:
-                result = models.MyUser.objects.filter(is_active=True, is_founder=False, profile__major__in=majors,
-                                                      profile__role__in=roles, profile__year__in=years,
-                                                      profile__position__in=pos)
+
+            kwargs = {}
+            kwargs['is_active'] = True
+            kwargs['is_founder'] = False
+
+            position = request.POST.get('position')
+            experience = request.POST.get('experience')
+            filter_hidden = request.POST.get('filter_people')
+            filter = json.loads('[' + filter_hidden + ']')
+
+            if len(majors) > 1: kwargs['profile__major__in'] = majors
+            if len(roles) > 1: kwargs['profile__role__in'] = roles
+            if len(years) > 1: kwargs['profile__year__in'] = years
+            if len(position) > 1: kwargs['profile__position__in'] = position
+            if len(experience) > 1:
+                for item in experience:
+                    if item == 0:
+                        kwargs['profile__has_funding_exp'] = True
+                    elif item == 1:
+                        kwargs['profile__has_startup_exp'] = True
+
+            result = models.MyUser.objects.filter(**kwargs)
+
             for r in result:
                 experience = [stem_remove_stop_words(arr) for arr in [
                     x.description.lower().replace('\n', ' ').replace('\r', '').translate(
@@ -246,7 +244,7 @@ def index(request):
                 to_return = list(to_return)
                 shuffle(to_return)
             return render(request, 'search.html',
-                          merge_dicts(CONTEXT, JOB_CONTEXT,
+                          merge_dicts(JOB_CONTEXT,
                                       {
                                           'searched': to_return,
                                           'oldroles': roles,
@@ -256,10 +254,27 @@ def index(request):
                                           'funding': request.POST.get('funding', False),
                                           'posted': True,
                                           'founder': False,
+                                          'filter_people': filter,
+                                          'people_hidden': filter_hidden,
+                                          'search_category': request.POST['select-category'],
                                       }))
         elif request.POST['select-category'] == 'startups':
-            result = models.MyUser.objects.filter(is_active=True, is_founder=True, founder__field__in=fields,
-                                                  founder__startup_name__gt='')
+
+            kwargs = {}
+            kwargs['is_active'] = True
+            kwargs['is_founder'] = True
+            kwargs['founder__startup_name__gt'] = ''
+
+            filter_hidden = request.POST.get('filter_startups')
+            f_fields = request.POST.getlist('f_fields')
+            stage = request.POST.getlist('stage')
+
+            filter = json.loads('[' + filter_hidden + ']')
+
+            if len(f_fields) > 1: kwargs['founder__field__in'] = f_fields
+            if len(stage) > 1: kwargs['founder__stage__in'] = stage
+
+            result = models.MyUser.objects.filter(**kwargs)
             for r in result:
                 jobs = [stem_remove_stop_words(arr) for arr in [
                     " ".join([x.description, x.title, x.get_level_display(), x.get_pay_display()]).lower().replace('\n',
@@ -324,8 +339,7 @@ def index(request):
                 to_return = list(to_return)
                 shuffle(to_return)
             return render(request, 'search.html',
-                          merge_dicts(
-                              CONTEXT, JOB_CONTEXT,
+                          merge_dicts(JOB_CONTEXT,
                               {
                                   'searched': to_return,
                                   'oldfields': fields,
@@ -334,6 +348,9 @@ def index(request):
                                   'funding': request.POST.get('funding', False),
                                   'posted': False,
                                   'founder': True,
+                                  'filter_startups': filter,
+                                  'startups_hidden': filter_hidden,
+                                  'search_category': request.POST['select-category'],
                               }
                           ))
         elif request.POST['select-category'] == 'jobs':
@@ -342,9 +359,9 @@ def index(request):
             category = request.POST.getlist('category')
             level = request.POST.getlist('level')
             pay = request.POST.getlist('pay')
-            filter = request.POST.get('filter_jobs')
+            filter_hidden = request.POST.get('filter_jobs')
 
-            filter = json.loads('[' + filter + ']')
+            filter = json.loads('[' + filter_hidden + ']')
 
             if len(level) > 1: kwargs['level__in'] = level
             if len(pay) > 1: kwargs['pay__in'] = pay
@@ -406,8 +423,6 @@ def index(request):
             else:
                 to_return = list(to_return)
                 shuffle(to_return)
-            regex = r"(\[\[|\]\])"
-            filter_hidden = '[' + re.sub(regex, '', json.dumps(filter), 0) + ']'
 
             return render(request, 'search.html',
                           merge_dicts(JOB_CONTEXT, {
