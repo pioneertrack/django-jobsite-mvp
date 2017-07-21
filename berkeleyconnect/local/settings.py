@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'nocaptcha_recaptcha',
     'crispy_forms',
     'storages',
+    'import_export'
     # 'pipeline',
 ]
 
@@ -68,6 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'website.views.google_analytics',
             ],
         },
     },
