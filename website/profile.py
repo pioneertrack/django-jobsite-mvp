@@ -114,6 +114,7 @@ class Profile(models.Model):
     interests = models.TextField(verbose_name='Interests',max_length=500, blank = True, null = False)
     skills = models.TextField(verbose_name='Skills',max_length=500, blank = True, null = False)
     courses = models.TextField(verbose_name='Courses',max_length=400, blank = True, null = False)
+    alt_email= models.EmailField(max_length=255,unique=True)
     # experience = []
     year = models.CharField(verbose_name='Year',max_length = 2, choices = YEAR_IN_SCHOOL_CHOICES, blank = True, null = False)
     hours_week = models.CharField(verbose_name='Hours per Week',max_length = 1, choices= HOURS_AVAILABLE, default='0')
@@ -142,7 +143,6 @@ class Experience(models.Model):
 class Founder(models.Model):
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
     logo = models.ImageField(upload_to=company_logo_path, default = 'images/default/default-logo.jpg', blank=True, null=False)
-    # contact_email = models.EmailField(max_length=255)
     startup_name = models.CharField(verbose_name='Startup Name',max_length = 99)
     description = models.TextField(verbose_name='Description',blank = True, null = False)
     stage = models.CharField(verbose_name='Stage',max_length = 1, choices = STAGE, default='0')

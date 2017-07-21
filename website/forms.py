@@ -53,7 +53,7 @@ class ProfileForm(forms.ModelForm):
         return super(ProfileForm, self).is_valid()
     class Meta:
         model = profile.Profile
-        fields = ('image', 'bio', 'position', 'role', 'interests', 'skills', 'major', 'courses', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'linkedin', 'website', 'github')
+        fields = ('image', 'bio', 'position', 'role','alt_email', 'interests', 'skills', 'major', 'courses', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'linkedin', 'website', 'github')
         labels = {
             'has_startup_exp': 'I have worked at a startup before',
             'has_funding_exp': 'I have experience with funding a startup',
