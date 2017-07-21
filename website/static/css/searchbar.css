@@ -147,7 +147,7 @@
 @media only screen and (min-width: 1024px) {
   .cd-main-search {
     position: absolute;
-    z-index: 2;
+    /*z-index: 2;*/
     top: 0;
     left: 0;
     height: 100%;
@@ -401,12 +401,18 @@
   padding-top: .5rem;
   padding-bottom: .5rem;
 }
+.cd-secondary-nav.cd-search-nav.tags {
+  height: auto;
+}
+
+
 @media handheld {
   .cd-secondary-nav.cd-search-nav.first {
     display: none;
   }
 }
-.cd-secondary-nav.cd-search-nav.first .filter-container {
+.cd-secondary-nav.cd-search-nav.first .filter-container,
+.cd-secondary-nav.cd-search-nav.tags .filter-container {
   display: inline-flex;
 }
 .tags {
@@ -418,6 +424,7 @@
   transition: all .5s ease;
 }
 .tags.selected {
+  margin-top: .5rem;
   margin-bottom: .5rem;
   height: auto;
 }
@@ -427,14 +434,18 @@
   text-overflow: ellipsis;
   width: 100%;
 }
-.cd-secondary-nav.cd-search-nav.first .tag {
+.cd-secondary-nav.cd-search-nav.tags .tags .filter-container:hover {
+  white-space: normal;
+  display: block;
+}
+.cd-secondary-nav.cd-search-nav.tags .tag {
   margin-right: .2rem;
 }
-.cd-secondary-nav.cd-search-nav.first .tag [data-role="remove"] {
+.cd-secondary-nav.cd-search-nav.tags .tag [data-role="remove"] {
     margin-left: 8px;
     cursor: pointer;
 }
-.cd-secondary-nav.cd-search-nav.first .tag [data-role="remove"]:after {
+.cd-secondary-nav.cd-search-nav.tags .tag [data-role="remove"]:after {
     content: "x";
     padding: 0px 2px;
 }
@@ -443,9 +454,9 @@
 }
 
 .nice-select.small {
-  font-size: 1.2rem;
-  height: 2rem;
-  line-height: 2rem;
+  font-size: 1.5rem;
+  height: 2.5rem;
+  line-height: 2.4rem;
   padding-left: 1.5rem;
   padding-right: 1rem;
 }
@@ -518,38 +529,23 @@
   content: normal;
 }
 
-.label-year, .label-years {
-  background-color: #00b3ee;
+.label-year, .label-years, .label-stage, .label-category {
+  background-color: #6f6f9f;
 }
-.label-major, .label-majors {
-  background-color: #2aabd2;
-
+.label-major, .label-majors, .label-level {
+  background-color: #9f6f6f;
 }
-.label-role, .label-roles  {
-  background-color: #3e8f3e;
+.label-role, .label-roles, .label-pay {
+  background-color: #6f9f9f;
 }
 .label-field, .label-f_fields, .label-fields {
-  background-color: #7a43b6;
+  background-color: #9f9f6f;
 }
 .label-position {
-  background-color: #47975f;
+  background-color: #b8860b;
 }
 .label-experience {
-  background-color: #7a43b6;
-}
-
-.label-stage {
-  background-color: #ce8483;
-}
-
-.label-category {
-  background-color: #94b24d;
-}
-.label-level {
-  background-color: burlywood;
-}
-.label-pay {
-  background-color: red;
+  background-color: #da8ff8;
 }
 
 .messages {

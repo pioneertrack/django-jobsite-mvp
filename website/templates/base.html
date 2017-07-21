@@ -67,7 +67,7 @@
   </script>
 </head>
 <body>
-<header class="cd-auto-hide-header" style="z-index:1005;">
+<header class="cd-auto-hide-header">
   <div class="logo"><a href="/"><img src="{% static 'favicon/logo.jpg' %}"/></a></div>
   <nav class="cd-primary-nav">
     {% if request.user.is_authenticated %}
@@ -94,109 +94,9 @@
     {% endif %}
   </nav> <!-- .cd-primary-nav -->
   {% if request.user.is_authenticated %}
-    <nav class="cd-secondary-nav">
-
-      <form id="mainform" action="/" autocomplete="off" method="POST">
-        {% csrf_token %}
-
-        <input type="hidden" value="{% if jobs_hidden %}{{ jobs_hidden }}{% endif %}" name="filter_jobs" id="filter_jobs">
-        <input type="hidden" value="{% if people_hidden %}{{ people_hidden }}{% endif %}" name="filter_people" id="filter_people">
-        <input type="hidden" value="{% if startups_hidden %}{{ startups_hidden }}{% endif %}" name="filter_startups" id="filter_startups">
-
-        <div id="search" class="cd-main-search is-visible">
-
-          <div class="searchform">
-
-            <div class="cd-switch-view">
-              <input type="checkbox" name="view_type" id="view_type">
-              <label for="view_type">
-                <i class="fa fa-list" aria-hidden="true"></i>
-                <i class="fa fa-th-large" aria-hidden="true"></i>
-              </label>
-            </div>
-
-            <input type="search" name="query" placeholder="Search... ">
-            <div class="cd-select">
-              <span>Find</span>
-
-              <select id="selector" name="select-category">
-                <option value="people"
-                    {% if not founder and not search_category %}
-                        selected
-                    {% elif search_category == 'people' %}
-                        selected
-                    {% endif %}
-                >People
-                </option>
-                <option value="startups"
-                    {% if founder and not search_category %}
-                        selected
-                    {% elif search_category == 'startups' %}
-                        selected
-                    {% endif %}>Startups
-                </option>
-                <option value="jobs"
-                        {% if search_category and search_category == 'jobs' %}selected{% endif %}>Jobs
-                </option>
-              </select>
-
-              <span class="selected-value" style="text-transform:capitalize;"></span>
-              <i class="fa fa-chevron-down"></i>
-            </div>
-
-            <div class="cd-search-button">
-              <button id="searchbutton" type="submit" class="btn btn-success">
-                <i class="fa fa-search"></i>
-              </button>
-            </div>
-
-          </div>
-        </div>
-
-      </form>
-
-    </nav> <!-- .cd-secondary-nav -->
-  {% endif %}
-
   {% if request.user.is_authenticated %}
     <nav class="cd-secondary-nav cd-search-nav first">
       <div class="container">
-
-        <div class="tags startups {% if filter_startups %}selected{% endif %}">
-          <div id="tags_startups" class="filter-container">
-            {% if search_category == 'startups' %}
-              {% for item in filter_startups %}
-                <span class="tag label label-{{ item.0 }}" data-value="{{ item.1 }}"
-                      data-name="{{ item.0 }}">{{ item.2 }}<span
-                    data-role="remove"></span></span>
-              {% endfor %}
-            {% endif %}
-          </div>
-        </div>
-
-        <div class="tags people {% if filter_people %}selected{% endif %}">
-          <div id="tags_people" class="filter-container">
-            {% if search_category == 'people' %}
-              {% for item in filter_people %}
-                <span class="tag label label-{{ item.0 }}" data-value="{{ item.1 }}"
-                      data-name="{{ item.0 }}">{{ item.2 }}<span
-                    data-role="remove"></span></span>
-              {% endfor %}
-            {% endif %}
-          </div>
-        </div>
-
-        <div class="tags jobs {% if filter_jobs %}selected{% endif %}">
-          <div id="tags_jobs" class="filter-container">
-            {% if search_category == 'jobs' %}
-              {% for item in filter_jobs %}
-                <span class="tag label label-{{ item.0 }}" data-value="{{ item.1 }}"
-                      data-name="{{ item.0 }}">{{ item.2 }}<span
-                    data-role="remove"></span></span>
-              {% endfor %}
-            {% endif %}
-          </div>
-        </div>
 
         <div class="selects jobs">
           {% for item in job_context %}
@@ -271,6 +171,114 @@
               </select>
             </div>
           {% endfor %}
+        </div>
+
+      </div>
+    </nav> <!-- .cd-secondary-nav -->
+  {% endif %}
+
+    <nav class="cd-secondary-nav">
+
+      <form id="mainform" action="/" autocomplete="off" method="POST">
+        {% csrf_token %}
+
+        <input type="hidden" value="{% if jobs_hidden %}{{ jobs_hidden }}{% endif %}" name="filter_jobs" id="filter_jobs">
+        <input type="hidden" value="{% if people_hidden %}{{ people_hidden }}{% endif %}" name="filter_people" id="filter_people">
+        <input type="hidden" value="{% if startups_hidden %}{{ startups_hidden }}{% endif %}" name="filter_startups" id="filter_startups">
+
+        <div id="search" class="cd-main-search is-visible">
+
+          <div class="searchform">
+
+            <div class="cd-switch-view">
+              <input type="checkbox" name="view_type" id="view_type">
+              <label for="view_type">
+                <i class="fa fa-list" aria-hidden="true"></i>
+                <i class="fa fa-th-large" aria-hidden="true"></i>
+              </label>
+            </div>
+
+            <input type="search" name="query" placeholder="Search... ">
+            <div class="cd-select">
+              <span>Find</span>
+
+              <select id="selector" name="select-category">
+                <option value="people"
+                    {% if not founder and not search_category %}
+                        selected
+                    {% elif search_category == 'people' %}
+                        selected
+                    {% endif %}
+                >People
+                </option>
+                <option value="startups"
+                    {% if founder and not search_category %}
+                        selected
+                    {% elif search_category == 'startups' %}
+                        selected
+                    {% endif %}>Startups
+                </option>
+                <option value="jobs"
+                        {% if search_category and search_category == 'jobs' %}selected{% endif %}>Jobs
+                </option>
+              </select>
+
+              <span class="selected-value" style="text-transform:capitalize;"></span>
+              <i class="fa fa-chevron-down"></i>
+            </div>
+
+            <div class="cd-search-button">
+              <button id="searchbutton" type="submit" class="btn btn-success">
+                <i class="fa fa-search"></i>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </form>
+
+    </nav> <!-- .cd-secondary-nav -->
+  {% endif %}
+
+  {% if request.user.is_authenticated %}
+    <nav class="cd-secondary-nav cd-search-nav tags">
+      <div class="container">
+
+        <div class="tags startups {% if filter_startups %}selected{% endif %}">
+          <div id="tags_startups" class="filter-container">
+            {% if search_category == 'startups' %}
+              {% for item in filter_startups %}
+                <span class="tag label label-{{ item.0 }}" data-value="{{ item.1 }}"
+                      data-name="{{ item.0 }}">{{ item.2 }}<span
+                    data-role="remove"></span></span>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="tags people {% if filter_people %}selected{% endif %}">
+          <div id="tags_people" class="filter-container">
+            {% if search_category == 'people' %}
+              {% for item in filter_people %}
+                <span class="tag label label-{{ item.0 }}" data-value="{{ item.1 }}"
+                      data-name="{{ item.0 }}">{{ item.2 }}<span
+                    data-role="remove"></span></span>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="tags jobs {% if filter_jobs %}selected{% endif %}">
+          <div id="tags_jobs" class="filter-container">
+            {% if search_category == 'jobs' %}
+              {% for item in filter_jobs %}
+                <span class="tag label label-{{ item.0 }}" data-value="{{ item.1 }}"
+                      data-name="{{ item.0 }}">{{ item.2 }}<span
+                    data-role="remove"></span></span>
+              {% endfor %}
+            {% endif %}
+          </div>
         </div>
 
       </div>
