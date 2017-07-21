@@ -2,14 +2,33 @@ jQuery(document).ready(function($){
 
   $('.cd-search-nav.first select.filter').niceSelect();
 
+  showDropdown = function (element) {
+      var event;
+      event = document.createEvent('MouseEvents');
+      event.initMouseEvent('mousedown', true, true, window);
+      element.dispatchEvent(event);
+  };
+
+  $(document).on('mouseenter', '#selector', function(e) {
+    var dropdown = document.getElementById('selector');
+    showDropdown(dropdown);
+  })
+
+  // $(document).on('click', '#selector', function(e) {
+  //   console.log('click');
+  // })
+
   $(document).on('click', 'span.tag span[data-role="remove"]', function(e) {
     var data_value = $(this).parent().data('value');
     var data_name = $(this).parent().data('name');
     var selector = $("#selector").val();
     var tags = $(`#tags_${selector}`);
     var select = $(`select[name="${data_name}"]`);
+    var filter_input = $(`#filter_${selector}`);
+
     if (tags.children().length === 1) {
       tags.parent().removeClass('selected');
+      $('.messages.tags').removeClass('tags');
     }
     $(this).parent().remove();
     tags.children('.outer').each(function(i) {
@@ -20,6 +39,19 @@ jQuery(document).ready(function($){
     });
     select.children(`option[value="${data_value}"]`).prop('selected', false);
     select.next().find(`li[data-value="${data_value}"]`).removeClass('selected');
+
+    //Remove data about tags from associated hidden field
+    var str = `["${data_name}","${data_value}","${$(this).parent().text()}"]`;
+    var value = filter_input.val();
+    value = value.replace(str, '');
+    value = value.replace(',,', ',');
+    if (value.length > 0 && value[0] == ',') {
+      value = value.substr(1);
+    }
+    if (value.length > 0 && value[value.length - 1] == ',') {
+      value = value.substr(0, value.length -1);
+    }
+    filter_input.val(value);
   })
 
   $('.cd-search-nav.first select.filter option').bind('option_change.nice_select', function(e) {
@@ -31,6 +63,9 @@ jQuery(document).ready(function($){
     var data_class = $(this).parent().data('class');
     if ($(this).prop('selected')) {
       tags.parent().addClass('selected');
+      if ($('.messages').hasClass('tags') === false) {
+        $('.messages').addClass('tags');
+      }
       var tag = $(`<span class="tag label ${data_class}"></span>`)
       .attr('data-value', data_value)
       .attr('data-name', data_name)
@@ -49,6 +84,7 @@ jQuery(document).ready(function($){
     } else {
       if (tags.children().length === 1) {
         tags.parent().removeClass('selected');
+        $('.messages.tags').removeClass('tags');
       }
       tags.find(`.tag[data-value="${data_value}"][data-name="${data_name}"]`).remove();
       tags.children('.outer').each(function(i) {

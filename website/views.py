@@ -50,7 +50,7 @@ JOB_CONTEXT = {
         ('roles', list(prof.PRIMARY_ROLE), {'class': 'label-role', 'name': 'role'}),
         ('fields', list(prof.CATEGORY), {'class': 'label-field', 'name': 'field'}),
         ('position', list(prof.POSITION), {'class': 'label-position'}),
-        ('experience', [(0, 'Has startup experience'), (1, 'Has funding experience')], {'class': 'label-experience'}),
+        ('experience', [('0', 'Has startup experience'), ('1', 'Has funding experience')], {'class': 'label-experience'}),
     ],
     'f_context': [
         ('stage', list(prof.STAGE), {'class': 'label-stage'}),
@@ -168,9 +168,9 @@ def index(request):
             if len(position) > 1: kwargs['profile__position__in'] = position
             if len(experience) > 1:
                 for item in experience:
-                    if item == 0:
+                    if item == '0':
                         kwargs['profile__has_funding_exp'] = True
-                    elif item == 1:
+                    elif item == '1':
                         kwargs['profile__has_startup_exp'] = True
 
             result = models.MyUser.objects.filter(**kwargs)

@@ -335,6 +335,7 @@
 }
 .cd-switch-view {
   display: none;
+  z-index: 1;
 }
 
 @media screen and (min-width: 768px) {
@@ -399,6 +400,11 @@
   height: auto;
   padding-top: .5rem;
   padding-bottom: .5rem;
+}
+@media handheld {
+  .cd-secondary-nav.cd-search-nav.first {
+    display: none;
+  }
 }
 .cd-secondary-nav.cd-search-nav.first .filter-container {
   display: inline-flex;
@@ -545,3 +551,15 @@
 .label-pay {
   background-color: red;
 }
+
+.messages {
+  padding-top: 125px;
+  -webkit-transition: all .5s ease;
+  -moz-transition: all .5s ease;
+  transition: all .5s ease;
+}
+.messages.tags {
+  padding-top: 145px;
+}
+
+

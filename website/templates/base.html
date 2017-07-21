@@ -95,8 +95,6 @@
   </nav> <!-- .cd-primary-nav -->
   {% if request.user.is_authenticated %}
     <nav class="cd-secondary-nav">
-      {#          <div class="container">#}
-      {#            <div class="row">#}
 
       <form id="mainform" action="/" autocomplete="off" method="POST">
         {% csrf_token %}
@@ -119,7 +117,8 @@
 
             <input type="search" name="query" placeholder="Search... ">
             <div class="cd-select">
-              <span>in</span>
+              <span>Find</span>
+
               <select id="selector" name="select-category">
                 <option value="people"
                     {% if not founder and not search_category %}
@@ -140,8 +139,7 @@
                         {% if search_category and search_category == 'jobs' %}selected{% endif %}>Jobs
                 </option>
               </select>
-{#                                                         style="text-transform:capitalize;"></span></input>#}
-              {#              <input name="category" type="hidden"> #}
+
               <span class="selected-value" style="text-transform:capitalize;"></span>
               <i class="fa fa-chevron-down"></i>
             </div>
@@ -157,8 +155,6 @@
 
       </form>
 
-      {#            </div>#}
-      {#          </div>#}
     </nav> <!-- .cd-secondary-nav -->
   {% endif %}
 
@@ -285,7 +281,7 @@
 <main class="cd-main-content"
       style="background-color:{% if not request.user.is_authenticated %} #25283D {% else %} white {% endif %}">
   {% if messages and request.user.is_authenticated %}
-    <ul class="messages">
+    <ul class="messages {% if  filter_startups or filter_people or filter_jobs %}tags{% endif %}">
     </ul>
     <div style="position:fixed;width:30%;z-index:1000;bottom:1.5%;right:1%;">
       {% for message in messages %}
