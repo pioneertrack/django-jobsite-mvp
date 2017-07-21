@@ -23,6 +23,7 @@ from random import shuffle
 from website import forms
 from website import models
 from website import profile as prof
+from . profile import Founder, Job
 
 def merge_two_dicts(x, y):
     """Given two dicts, merge them into a new dict as a shallow copy."""
@@ -357,7 +358,7 @@ def index(request):
 @login_required(login_url='login/')
 def profile(request):
     if request.user.is_founder:
-        jobs = request.user.founder.job_set.order_by('title')
+        jobs = request.user.founder.job_set.order_by('created_date')
         total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
         return render(request, 'founder.html',
                       merge_dicts(CONTEXT, JOB_CONTEXT, {
@@ -366,7 +367,7 @@ def profile(request):
                           'reset': True,
                           'total_funding': total_funding.get('total')
                       }))
-    experience = request.user.profile.experience_set.order_by('-start_date')
+    experience = request.user.profile.experience_set.order_by('-end_date')
     return render(request, 'profile.html',
                   merge_dicts(CONTEXT, JOB_CONTEXT, {
                       'profile': True,
@@ -471,7 +472,7 @@ def get_user_view(request, id):
                           'reset': True
                       }))
     else:
-        exp = user.profile.experience_set.order_by('-start_date')
+        exp = user.profile.experience_set.order_by('-end_date')
         return render(request, 'profile.html',
                       merge_dicts(CONTEXT, JOB_CONTEXT, {
                           'user': user,
@@ -499,3 +500,9 @@ def google_analytics(request):
             'GOOGLE_ANALYTICS_DOMAIN': ga_domain,
         }
     return {}
+
+def job_list(request, pk):
+    founder = get_object_or_404(Founder, pk=pk)
+    jobs = Job.objects.filter(founder=founder).values().order_by('created_date')
+    return render(request, 'job_list.html', {'founder': founder, 'jobs':jobs})
+
