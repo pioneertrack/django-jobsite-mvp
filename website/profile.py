@@ -114,7 +114,7 @@ class Profile(models.Model):
     interests = models.TextField(verbose_name='Interests',max_length=500, blank = True, null = False)
     skills = models.TextField(verbose_name='Skills',max_length=500, blank = True, null = False)
     courses = models.TextField(verbose_name='Courses',max_length=400, blank = True, null = False)
-    alt_email= models.EmailField(max_length=255,unique=True)
+    alt_email= models.EmailField(max_length=255,unique=True, null = True)
     # experience = []
     year = models.CharField(verbose_name='Year',max_length = 2, choices = YEAR_IN_SCHOOL_CHOICES, blank = True, null = False)
     hours_week = models.CharField(verbose_name='Hours per Week',max_length = 1, choices= HOURS_AVAILABLE, default='0')
