@@ -23,7 +23,6 @@ from random import shuffle
 from website import forms
 from website import models
 from website import profile as prof
-from . profile import Founder, Job
 
 def merge_two_dicts(x, y):
     """Given two dicts, merge them into a new dict as a shallow copy."""
@@ -357,6 +356,7 @@ def index(request):
 
 @login_required(login_url='login/')
 def profile(request):
+    last_login = request.user.last_login
     if request.user.is_founder:
         jobs = request.user.founder.job_set.order_by('created_date')
         total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
@@ -365,14 +365,16 @@ def profile(request):
                           'profile': True,
                           'jobs': jobs,
                           'reset': True,
-                          'total_funding': total_funding.get('total')
+                          'total_funding': total_funding.get('total'),
+                          'last_login': last_login,
                       }))
     experience = request.user.profile.experience_set.order_by('-end_date')
     return render(request, 'profile.html',
                   merge_dicts(CONTEXT, JOB_CONTEXT, {
                       'profile': True,
                       'experience': experience,
-                      'reset': True
+                      'reset': True,
+                      'last_login': last_login,
                   }))
 
 @login_required(login_url='login/')
@@ -459,6 +461,7 @@ def profile_update(request):
 @login_required(login_url='login/')
 def get_user_view(request, id):
     user = get_object_or_404(models.MyUser, pk = id)
+    last_login = user.last_login
     # user = models.MyUser.objects.get(pk = id)
     if user is None:
         return HttpResponseRedirect('/')
@@ -469,7 +472,8 @@ def get_user_view(request, id):
                           'user': user,
                           'profile': False,
                           'jobs': jobs,
-                          'reset': True
+                          'reset': True,
+                          'last_login':last_login,
                       }))
     else:
         exp = user.profile.experience_set.order_by('-end_date')
@@ -478,7 +482,8 @@ def get_user_view(request, id):
                           'user': user,
                           'profile': False,
                           'experience': exp,
-                          'reset': True
+                          'reset': True,
+                          'last_login':last_login,
                       }))
 
 class MyRegistrationView(RegistrationView):
