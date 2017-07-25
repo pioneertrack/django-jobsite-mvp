@@ -104,7 +104,7 @@
                         {% for work in user.profile.experience_set.all %}
                         <span class="label label-danger">Worked at {{ work.company }}</span>
                         {% endfor %}
-                        <span class="label label-warning">{{ user.profile.get_position_display }}</span>
+                        <!-- <span class="label label-warning">{{ user.profile.get_position_display }}</span> -->
                         {% endif %}
                         <!--<div style = "padding:10px;">
                         <a href="/users/{{user.id}}" class="btn btn-primary btn-outline">View profile</a>

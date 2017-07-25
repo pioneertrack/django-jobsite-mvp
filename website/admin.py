@@ -200,7 +200,7 @@ class ProfileResource(resources.ModelResource):
         fields = ('user', 'user__first_name', 'user__last_name', 'bio', 'position',
                   'interests', 'skills', 'courses', 'year', 'hours_week',
                   'has_startup_exp', 'has_funding_exp', 'linkedin', 'website',
-                  'github', 'major', 'role')
+                  'github', 'major', 'role', 'partner', 'team_member')
 
         export_order = ('user', 'user__first_name', 'user__last_name')
 
@@ -252,11 +252,12 @@ class ProfileResource(resources.ModelResource):
         return headers
 
 class ProfileAdmin(ImportExportModelAdmin):
-    list_display = ('user', 'major', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp')
-    list_filter = ('major','year','has_startup_exp','has_funding_exp')
+    list_display = ('user', 'major', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp','team_member','partner')
+    list_filter = ('major','year','has_startup_exp','has_funding_exp','team_member','partner')
     fieldsets = (
         (None,         {'fields': ['user','bio','interests']}),
         ('School',     {'fields': ['year', 'role', 'major', 'courses']}),
+        ('Seeking',    {'fields': ['partner', 'team_member']}),
         ('Work',       {'fields': ['hours_week','position']}),
         ('Experience', {'fields': ['has_startup_exp','has_funding_exp','skills']}),
         ('Contact',    {'fields': ['linkedin','website','github']})

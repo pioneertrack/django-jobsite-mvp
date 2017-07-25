@@ -53,8 +53,10 @@ class ProfileForm(forms.ModelForm):
         return super(ProfileForm, self).is_valid()
     class Meta:
         model = profile.Profile
-        fields = ('image', 'bio', 'position', 'role', 'interests', 'skills', 'major', 'courses', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'linkedin', 'website', 'github')
+        fields = ('image', 'bio', 'position', 'role', 'team_member', 'partner', 'interests', 'skills', 'major', 'courses', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'linkedin', 'website', 'github')
         labels = {
+            'team_member': 'Looking to join an existing team',
+            'partner': 'Looking to start a new partnership',
             'has_startup_exp': 'I have worked at a startup before',
             'has_funding_exp': 'I have experience with funding a startup',
             'bio': 'About me',
@@ -62,7 +64,7 @@ class ProfileForm(forms.ModelForm):
             'website': 'Personal website',
             'courses': 'Relevant coursework',
             'major': 'Primary Major',
-	    'position': 'Seeking what type of position?',
+	        'position': 'Seeking what type of position?',
         }
 class FounderForm(forms.ModelForm):
     logo = forms.ImageField(label='Logo',required=False, error_messages ={'invalid':"Image files only"}, widget = forms.FileInput)

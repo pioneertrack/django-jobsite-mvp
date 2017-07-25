@@ -195,7 +195,8 @@
                 <div class="cd-select">
                   <span>in</span>
                   <select id="selector" name="select-category">
-                    <option value="people" {% if not founder and not search_category %}selected{% endif %}>People</option>
+                    <option value="team_members" {% if not founder and not search_category %}selected{% endif %}>Team Members</option>
+                    <option value="partners" {% if not founder and not search_catagory %}selected{% endif %}>Partners</option>
                     <option value="startups" {% if founder and not search_category %}selected{% endif %}>Startups</option>
                     <option value="jobs" {% if search_category and search_category == 'jobs' %}selected{% endif %}>Jobs</option>
                   </select>

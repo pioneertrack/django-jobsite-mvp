@@ -121,6 +121,9 @@ class Profile(models.Model):
     website = models.URLField(verbose_name='Website',null = False, blank = True)
     github = models.URLField(verbose_name='Github',null = False, blank = True)
     major = models.CharField(verbose_name='Major',max_length = 4, choices=MAJORS, default = 'UND')
+
+    team_member = models.BooleanField(verbose_name="Team Member", blank = True, default=True)
+    partner = models.BooleanField(verbose_name="Partner", blank = True, default=False)
     # second_major = models.CharField()
 
     role = models.CharField(max_length = 4, choices = PRIMARY_ROLE, blank = True, null = False)

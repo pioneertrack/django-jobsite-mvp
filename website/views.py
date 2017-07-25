@@ -130,7 +130,11 @@ def index(request):
         fields = request.POST.getlist('field')
         pos = request.POST.getlist('pos') + ['']
         tokenized_users = []
-        if request.POST['select-category'] == 'people':
+        print(request.POST['select-category'])
+        if request.POST['select-category'] == 'team_members' or request.POST['select-category'] == 'partners':
+
+            print(request.POST['select-category'])
+
             if request.POST.get('startup', False) and request.POST.get('funding', False):
                 result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_funding_exp = True, profile__has_startup_exp = True, profile__position__in=pos)
             elif request.POST.get('startup', False):
@@ -139,6 +143,16 @@ def index(request):
                 result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_funding_exp = True, profile__position__in=pos)
             else:
                 result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__position__in=pos)
+
+            print('\n'+str(len(result))+'\n')
+
+            if (request.POST['select-category'] == 'team_members'):
+                result = result.filter(profile__team_member=True)
+            elif (request.POST['select-category'] == 'partners'):
+                result = result.filter(profile__partner=True)
+
+            print('\n'+str(len(result))+'\n')
+
             for r in result:
                 experience = [stem_remove_stop_words(arr) for arr in [x.description.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in r.profile.experience_set.all()]]
                 attr = [stem_remove_stop_words(arr) for arr in [x.lower().replace('\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in [r.first_name+" " +r.last_name, r.profile.get_major_display(), r.profile.bio, r.profile.skills, r.profile.interests, r.profile.courses]]]
