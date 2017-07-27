@@ -23,6 +23,7 @@ from random import shuffle
 from website import forms
 from website import models
 from website import profile as prof
+from . profile import Founder, Job
 
 def merge_two_dicts(x, y):
     """Given two dicts, merge them into a new dict as a shallow copy."""
