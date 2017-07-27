@@ -1,6 +1,8 @@
 jQuery(document).ready(function($){
 
+  $('#selector').niceSelect();
   $('.cd-search-nav.first select.filter').niceSelect();
+
 
   showDropdown = function (element) {
       var event;
