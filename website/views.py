@@ -239,13 +239,13 @@ def index(request):
                     tokenized_users.append((user, total))
                 to_return = []
                 for user in tf_idf(tokenized_users, words, search_index):
-                    skills = [s for s in skillset if s in set(r.profile.skills.lower().replace(',', '').split())]
+                    skills = [s for s in skillset if s in set(r.profile.skills.lower().replace(',','').split())]
                     to_return.append((user, skills))
             else:
                 to_return = list(to_return)
                 shuffle(to_return)
             return render(request, 'search.html',
-                          merge_dicts(JOB_CONTEXT,
+                          merge_dicts(CONTEXT, JOB_CONTEXT,
                                       {
                                           'searched': to_return,
                                           'oldroles': roles,
@@ -455,6 +455,7 @@ def index(request):
 
 @login_required(login_url='login/')
 def profile(request):
+    last_login = request.user.last_login
     if request.user.is_founder:
         jobs = request.user.founder.job_set.order_by('created_date')
         total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
@@ -463,14 +464,16 @@ def profile(request):
                           'profile': True,
                           'jobs': jobs,
                           'reset': True,
-                          'total_funding': total_funding.get('total')
+                          'total_funding': total_funding.get('total'),
+                          'last_login': last_login,
                       }))
     experience = request.user.profile.experience_set.order_by('-end_date')
     return render(request, 'profile.html',
                   merge_dicts(CONTEXT, JOB_CONTEXT, {
                       'profile': True,
                       'experience': experience,
-                      'reset': True
+                      'reset': True,
+                      'last_login': last_login,
                   }))
 
 
@@ -567,7 +570,7 @@ def profile_update(request):
 @login_required(login_url='login/')
 def get_user_view(request, id):
     user = get_object_or_404(models.MyUser, pk=id)
-    # user = models.MyUser.objects.get(pk = id)
+    last_login = user.last_login
     if user is None:
         return HttpResponseRedirect('/')
     if user.is_founder:
@@ -577,7 +580,8 @@ def get_user_view(request, id):
                           'user': user,
                           'profile': False,
                           'jobs': jobs,
-                          'reset': True
+                          'reset': True,
+                          'last_login':last_login,
                       }))
     else:
         exp = user.profile.experience_set.order_by('-end_date')
@@ -586,7 +590,8 @@ def get_user_view(request, id):
                           'user': user,
                           'profile': False,
                           'experience': exp,
-                          'reset': True
+                          'reset': True,
+                          'last_login':last_login,
                       }))
 
 
