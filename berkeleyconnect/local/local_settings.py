@@ -6,6 +6,8 @@ DEBUG = True
 
 # TEMPLATE_DEBUG = DEBUG
 
+ALLOWED_HOSTS = ['127.0.0.1']
+
 # DATABASES = {
 #      'default': {
 #          'ENGINE': 'django.db.backends.sqlite3',
@@ -13,56 +15,17 @@ DEBUG = True
 #      }
 # }
 
-ALLOWED_HOSTS = ['.bearfounders.com', '54.215.142.223', '127.0.0.1']
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'userdb',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'NAME': 'bearfounders',
+        'USER': '',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '5432',
     }
 }
-
-STATIC_URL = '/static/'
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-STATICFILES_DIRS = (
-    os.path.join(os.path.dirname(__file__), '..', 'bower_components'),
-)
-
-# STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
-
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    # 'pipeline.finders.FileSystemFinder',
-)
-#
-# PIPELINE = {
-#     'PIPELINE_ENABLED': True,
-#     'JS_COMPRESSOR': 'pipeline.compressors.yuglify.YuglifyCompressor',
-#     'JAVASCRIPT': {
-#         'components': {
-#             'source_filenames': (
-#                 'bower_components/jquery/dist/jquery.min.js',
-#                 'bower_components/bootstrap/dist/js/bootstrap.min.js',
-#             ),
-#             'output_filename': 'js/components.js',
-#         }
-#     }
-# }
-
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-MEDIA_URL = '/media/'
-
-DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 EMAIL_HOST = 'localhost'
 
@@ -93,4 +56,3 @@ if DEBUG:
 
     except ImportError:
         pass
-

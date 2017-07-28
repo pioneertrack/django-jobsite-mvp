@@ -35,3 +35,23 @@ Admin site can be accessed with the /admin url endpoint
 Main search algorithm uses tf-idf ranking based on the query string and the users attributes. First I create the search index as a dictionary of `Key => Words` and `Values => list of [id, [word positions]]`. Using the search index, find all users that correspond to the query. Then rank with tf-idf and return the list.
 
 CSS/JS is a main navbar with a secondary navbar under it. The main nav will hide when the mouse scrolls. Entirely built without data-binding, so just vanilla JS and jQuery.
+
+# Local deployment
+
+1. Clone git repository
+
+2. Install application requirements:</br>
+`pip install -r requirements/common.txt`</br>
+`pip install -r requirements/prod.txt`
+
+3. Setup your local development environment by copying</br>
+`./berkleyconnect/local/local_setting.py` to `./berkleyconnect` directory and adjust settings (DATABASES, EMAIL Settings, etc.) in that file to meet your needs.
+
+4. Create local migrations</br>
+`./manage.py makemigrations`</br>
+After that apply migrations for database from you local settings</br>
+`./manage.py migrate`
+
+5. I add bower support to manage assets libraries. So the nodejs+bower must be installed on the computer. Bower must be installed globally. For install static assets run:</br>
+`bower install`</br>
+In the root folder for the project

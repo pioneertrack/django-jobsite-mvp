@@ -11,7 +11,7 @@ errorlog.txt
 __pycache__/
 
 #keep prod settings and local separate
-berkeleyconnect/settings.py
+#berkeleyconnect/settings.py
 
 #more useless files
 .bowerrc
