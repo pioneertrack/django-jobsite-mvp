@@ -46,16 +46,15 @@ CONTEXT = {
 
 JOB_CONTEXT = {
     'p_context': [
-        ('years', list(prof.YEAR_IN_SCHOOL_CHOICES), {'class': 'label-year'}),
-        ('majors', list(prof.MAJORS), {'class': 'label-major'}),
+        ('years', list(prof.YEAR_IN_SCHOOL_CHOICES), {'class': 'label-year', 'name': 'year'}),
+        ('majors', list(prof.MAJORS), {'class': 'label-major', 'name': 'major'}),
         ('roles', list(prof.PRIMARY_ROLE), {'class': 'label-role', 'name': 'role'}),
-        ('fields', list(prof.CATEGORY), {'class': 'label-field', 'name': 'field'}),
         ('position', list(prof.POSITION), {'class': 'label-position'}),
         ('experience', [('0', 'Has startup experience'), ('1', 'Has funding experience')], {'class': 'label-experience'}),
     ],
     'f_context': [
         ('stage', list(prof.STAGE), {'class': 'label-stage'}),
-        ('f_fields', list(prof.CATEGORY), {'class': 'label-field', 'name': 'field'})
+        ('fields', list(prof.CATEGORY), {'class': 'label-field', 'name': 'field'})
     ],
     'job_context': [
         ('category', list(prof.CATEGORY), {'class': 'label-category'}),
@@ -163,11 +162,22 @@ def index(request):
             filter_hidden = request.POST.get('filter_people')
             filter = json.loads('[' + filter_hidden + ']')
 
-            if len(majors) > 1: kwargs['profile__major__in'] = majors
-            if len(roles) > 1: kwargs['profile__role__in'] = roles
-            if len(years) > 1: kwargs['profile__year__in'] = years
-            if len(position) > 1: kwargs['profile__position__in'] = position
+            active_selects = []
+
+            if len(majors) > 1:
+                kwargs['profile__major__in'] = majors
+                active_selects.append('majors');
+            if len(roles) > 1:
+                kwargs['profile__role__in'] = roles
+                active_selects.append('roles');
+            if len(years) > 1:
+                kwargs['profile__year__in'] = years
+                active_selects.append('years')
+            if len(position) > 1:
+                kwargs['profile__position__in'] = position
+                active_selects.append('position')
             if len(experience) > 1:
+                active_selects.append('experience')
                 for item in experience:
                     if item == '0':
                         kwargs['profile__has_funding_exp'] = True
@@ -258,6 +268,7 @@ def index(request):
                                           'filter_people': filter,
                                           'people_hidden': filter_hidden,
                                           'search_category': request.POST['select-category'],
+                                          'active_selects': active_selects,
                                       }))
         elif request.POST['select-category'] == 'startups':
 
@@ -267,13 +278,19 @@ def index(request):
             kwargs['founder__startup_name__gt'] = ''
 
             filter_hidden = request.POST.get('filter_startups')
-            f_fields = request.POST.getlist('f_fields')
+            fields = request.POST.getlist('fields')
             stage = request.POST.getlist('stage')
 
             filter = json.loads('[' + filter_hidden + ']')
 
-            if len(f_fields) > 1: kwargs['founder__field__in'] = f_fields
-            if len(stage) > 1: kwargs['founder__stage__in'] = stage
+            active_selects = []
+
+            if len(fields) > 1:
+                active_selects.append('fields')
+                kwargs['founder__field__in'] = fields
+            if len(stage) > 1:
+                active_selects.append('stage')
+                kwargs['founder__stage__in'] = stage
 
             result = models.MyUser.objects.filter(**kwargs)
             for r in result:
@@ -339,6 +356,7 @@ def index(request):
             else:
                 to_return = list(to_return)
                 shuffle(to_return)
+
             return render(request, 'search.html',
                           merge_dicts(JOB_CONTEXT,
                               {
@@ -352,6 +370,7 @@ def index(request):
                                   'filter_startups': filter,
                                   'startups_hidden': filter_hidden,
                                   'search_category': request.POST['select-category'],
+                                  'active_selects': active_selects,
                               }
                           ))
         elif request.POST['select-category'] == 'jobs':
@@ -364,9 +383,17 @@ def index(request):
 
             filter = json.loads('[' + filter_hidden + ']')
 
-            if len(level) > 1: kwargs['level__in'] = level
-            if len(pay) > 1: kwargs['pay__in'] = pay
-            if len(category) > 1: kwargs['founder__field__in'] = category
+            active_selects = []
+
+            if len(level) > 1:
+                active_selects.append('level')
+                kwargs['level__in'] = level
+            if len(pay) > 1:
+                active_selects.append('pay')
+                kwargs['pay__in'] = pay
+            if len(category) > 1:
+                active_selects.append('category')
+                kwargs['founder__field__in'] = category
 
 
             result = prof.Job.objects.filter(**kwargs)
@@ -437,6 +464,7 @@ def index(request):
                               'founder': True,
                               'filter_jobs': filter,
                               'jobs_hidden': filter_hidden,
+                              'active_selects': active_selects,
                           }))
     else:
         if user.is_founder:

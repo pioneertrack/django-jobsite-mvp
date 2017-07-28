@@ -496,10 +496,14 @@
   padding-right: 1rem;
   background-color: #25283d;
   color: white;
+  border: none;
 }
 
 .nice-select.small .list {
   color: #333;
+  max-height: 60vh;
+  overflow-y: auto;
+
 }
 
 .nice-select.small::after {
@@ -603,7 +607,10 @@
 .label-experience {
   background-color: #da8ff8;
 }
-
+.label-clear {
+  background-color: red;
+  cursor: pointer;
+}
 .messages {
   padding-top: 125px;
   -webkit-transition: all .5s ease;
