@@ -11,14 +11,13 @@ errorlog.txt
 __pycache__/
 
 #keep prod settings and local separate
-berkeleyconnect/settings.py
+#berkeleyconnect/settings.py
 
 #more useless files
 .bowerrc
 */__pycache__/*
 *.sqlite3
 media/*
-website/static/favicon/
 
 #for venv
 venv/
@@ -27,3 +26,4 @@ website/migrations/*
 /.idea/
 /static/
 /berkeleyconnect/local_settings.py
+/bower_components/
