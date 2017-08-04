@@ -112,7 +112,7 @@ class Profile(models.Model):
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
     bio = models.TextField(verbose_name='Bio',max_length=500, blank=True, null=False)
     image = models.ImageField(upload_to=user_directory_path, default = 'images/default/default-profile.jpg', blank=True, null=False)
-    position = models.CharField(verbose_name='Position',max_length = 4, choices = POSITION, blank = True, null = False)
+    position = models.CharField(verbose_name='Position',max_length = 4, choices = POSITION, blank = True, null = False, default='NONE')
     interests = models.TextField(verbose_name='Interests',max_length=500, blank = True, null = False)
     skills = models.TextField(verbose_name='Skills',max_length=500, blank = True, null = False)
     courses = models.TextField(verbose_name='Courses',max_length=400, blank = True, null = False)

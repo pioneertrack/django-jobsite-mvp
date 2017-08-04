@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='profile',
             name='position',
-            field=models.CharField(blank=True, choices=[('0', 'Partnership'), ('1', 'Paid')], max_length=4, verbose_name='Position'),
+            field=models.CharField(blank=True, choices=[('0', 'Partnership'), ('1', 'Paid'), ('NONE', 'Other')], max_length=4, verbose_name='Position'),
         ),
         migrations.AlterField(
             model_name='profile',
