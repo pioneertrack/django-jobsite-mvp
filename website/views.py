@@ -142,14 +142,14 @@ def index(request):
             phrase = True
         words = stem_remove_stop_words(query.translate({ord(c): None for c in string.punctuation}).lower().split())
         # words = stem_remove_stop_words(nltk.word_tokenize(query))
-        roles = request.POST.getlist('role')
+        roles = request.POST.getlist('roles')
         if 'NONE' in roles:
             roles = roles + ['']
-        years = request.POST.getlist('year')
+        years = request.POST.getlist('years')
         if len(years) == 5:
             years = years + ['']
-        majors = request.POST.getlist('major')
-        fields = request.POST.getlist('field')
+        majors = request.POST.getlist('majors')
+        fields = request.POST.getlist('fields')
         tokenized_users = []
         if request.POST['select-category'] == 'people':
 
