@@ -1,8 +1,11 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
+from django.views import generic
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.template import Context, loader, RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
+from django.urls import reverse_lazy
 from registration.backends.hmac.views import RegistrationView
 from django.contrib import messages
 from django.forms.models import inlineformset_factory
@@ -644,8 +647,30 @@ def google_analytics(request):
         }
     return {}
 
+
 def job_list(request, pk):
     founder = get_object_or_404(Founder, pk=pk)
     jobs = Job.objects.filter(founder=founder).values().order_by('created_date')
     return render(request, 'job_list.html', {'founder': founder, 'jobs':jobs})
 
+
+class Settings(LoginRequiredMixin, generic.FormView):
+    success_url = reverse_lazy('website:settings')
+    form_class = forms.ChangePasswordForm
+    template_name = 'settings.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(Settings, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(Settings, self).get_context_data(**kwargs)
+        context.update(**CONTEXT)
+        context.update(**JOB_CONTEXT)
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Password updated')
+        return super(Settings, self).form_valid(form)

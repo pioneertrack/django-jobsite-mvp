@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %} Settings {% endblock %}
+{% block content %}
+<div class = "settings-page">
+<div class = "container">
+    <div class = "row">
+        <div class="col col-md-5">
+            <div class="loginmodal-container" style="max-width: inherit; width: inherit;">
+                <h3>Change Password</h3><br/>
+
+              <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <input type="submit" name="login" class="btn btn-default" value="Update">
+              </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+{%endblock%}

@@ -3,7 +3,7 @@ from nocaptcha_recaptcha.fields import NoReCaptchaField
 from website import models, profile
 from django import forms
 from django.conf import settings
-
+from django.contrib.auth.forms import PasswordChangeForm
 from django.core.validators import EmailValidator
 from django import template
 from django.utils.safestring import mark_safe
@@ -115,3 +115,10 @@ class JobForm(forms.ModelForm):
     class Meta:
         model = profile.Job
         fields=('title', 'level', 'pay', 'description')
+
+
+class ChangePasswordForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super(ChangePasswordForm, self).__init__(*args, **kwargs)
+        self.fields['new_password1'].help_text = ''
+

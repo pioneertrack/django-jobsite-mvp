@@ -81,6 +81,8 @@
         <li><a href="/profile/"><img id="headerthumbnail" src="
             {% if not request.user.is_founder %}{{ request.user.profile.image.url }}{% else %}{{ request.user.founder.logo.url }}{% endif %}">
           My Profile</a></li>
+
+        <li><a href="{% url 'website:settings' %}">Settings</a></li>
         <li><a href="/logout/">Logout</a></li>
       </ul>
     {% elif not request.user.is_authenticated %}
