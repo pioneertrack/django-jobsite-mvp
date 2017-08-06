@@ -102,8 +102,10 @@
 
         <input type="hidden" value="{% if jobs_hidden %}{{ jobs_hidden }}{% endif %}" name="filter_jobs"
                id="filter_jobs">
-        <input type="hidden" value="{% if people_hidden %}{{ people_hidden }}{% endif %}" name="filter_people"
-               id="filter_people">
+        <input type="hidden" value="{% if people_hidden %}{{ people_hidden }}{% endif %}" name="filter_partners"
+               id="filter_partners">
+        <input type="hidden" value="{% if people_hidden %}{{ people_hidden }}{% endif %}" name="filter_team_members"
+               id="filter_team_members">
         <input type="hidden" value="{% if startups_hidden %}{{ startups_hidden }}{% endif %}" name="filter_startups"
                id="filter_startups">
 
@@ -152,7 +154,38 @@
                 {% endfor %}
               </div>
 
-              <div class="selects people">
+              <div class="selects team_members">
+                {% for item in tm_context %}
+                  <div class="filter-container">
+                    <select class="filter small"
+                            form="mainform"
+                            name="{{ item.0 }}"
+                            multiple style="display: none;"
+                            data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                      <option class="text-capitalize" selected
+                              data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                          {% if item.0 in active_selects %}
+                              data-revert="Select All"
+                              data-text="Diselect All"
+                          {% else %}
+                              data-revert="Diselect All"
+                              data-text="Select All"
+                          {% endif %}
+                      >
+                      </option>
+                      {% for subitem in item.1 %}
+                        {% to_list item.0 subitem.0 subitem.1 as tmp_list %}
+                        <option value="{{ subitem.0 }}"
+                                class="text-capitalize"
+                                {% if tmp_list in filter_people %}selected{% endif %}
+                        >{{ subitem.1 }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                {% endfor %}
+              </div>
+
+              <div class="selects partners">
                 {% for item in p_context %}
                   <div class="filter-container">
                     <select class="filter small"
@@ -216,19 +249,27 @@
 
             </nav> <!-- .cd-secondary-nav -->
 
-                <input type="search" name="query" placeholder="Search... ">
-                <div class="cd-selectfilter-container">
+            <input type="search" name="query" placeholder="Search... ">
+            <div class="cd-select filter-container">
                   <div>Find</div>
-                  <select id="selector" name="select-category"class="filter small">
-                    <option value="team_members" {% if not founder and not search_category %}selected{% elif search_category == 'people' %}
-                        selected{% endif %}>Team Members</option>
-                    <option value="partners" {% if not founder and not search_catagory %}selected{% endif %}>Partners</option>
-                    <option value="startups" {% if founder and not search_category %}selected{% elif search_category == 'startups' %}
-                        selected{% endif %}>Startups</option>
-                    <option value="jobs" {% if search_category and search_category == 'jobs' %}selected{% endif %}>Jobs</option>
+                  <select id="selector" name="select-category" class="filter small">
+                      <option value="team_members"
+                              {% if not founder and not search_category %}selected{% elif search_category == 'people' %}
+                              selected{% endif %}>Team Members
+                      </option>
+                      <option value="partners" {% if not founder and not search_category %}selected{% endif %}>
+                          Partners
+                      </option>
+                      <option value="startups"
+                              {% if founder and not search_category %}selected{% elif search_category == 'startups' %}
+                              selected{% endif %}>Startups
+                      </option>
+                      <option value="jobs" {% if search_category and search_category == 'jobs' %}selected{% endif %}>
+                          Jobs
+                      </option>
                   </select>
 
-                </div>
+              </div>
 
             <div class="cd-search-button">
               <button id="searchbutton" type="submit" class="btn btn-success">
@@ -263,9 +304,24 @@
           </div>
         </div>
 
-        <div class="tags people {% if filter_people %}selected{% endif %}">
-          <div id="tags_people" class="filter-container">
-            {% if search_category == 'people' %}
+        <div class="tags partners {% if filter_people %}selected{% endif %}">
+          <div id="tags_partners" class="filter-container">
+            {% if search_category == 'partners' %}
+              {% if filter_people %}
+                <span class="tag label label-clear">Clear All</span>
+              {% endif %}
+              {% for item in filter_people %}
+                <span class="tag label label-{{ item.0 }}" data-value="{{ item.1 }}"
+                      data-name="{{ item.0 }}">{{ item.2 }}<span
+                    data-role="remove"></span></span>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="tags team_members {% if filter_people %}selected{% endif %}">
+          <div id="tags_team_members" class="filter-container">
+            {% if search_category == 'partners' %}
               {% if filter_people %}
                 <span class="tag label label-clear">Clear All</span>
               {% endif %}
@@ -298,6 +354,7 @@
   {% endif %}
 
 </header> <!-- .cd-auto-hide-header -->
+
 <main class="cd-main-content"
       style="background-color:{% if not request.user.is_authenticated %} #25283D {% else %} white {% endif %}">
   {% if messages and request.user.is_authenticated %}
@@ -317,15 +374,17 @@
   {% endif %}
   {% block content %}{% endblock %}
 </main> <!-- .cd-main-content -->
+
 <a href="#0" class="cd-top"></a>
 </body>
+
 {% if request.user.first_name %}
   <script type="text/javascript">
-
     name = {%if not user.is_founder%}'{{user.first_name|safe}}'{%else%}'{{user.founder.startup_name|safe}}';{%endif%}
     user = '{{user.id|safe}}';
   </script>
 {% endif %}
+
 {% if GOOGLE_ANALYTICS_PROPERTY_ID %}
   <script>
     (function(i, s, o, g, r, a, m) {
@@ -345,4 +404,5 @@
 
   </script>
 {% endif %}
+
 </html>

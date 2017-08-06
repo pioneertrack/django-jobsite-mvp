@@ -545,14 +545,22 @@
   content: ' ';
 }
 
-.people, .startups, .jobs {
+.people, .startups, .jobs, .team_members, .partners {
   display: none;
 }
-.tags.people.is-visible, .tags.startups.is-visible, .tags.jobs.is-visible {
+.tags.people.is-visible,
+.tags.startups.is-visible,
+.tags.jobs.is-visible,
+.tags.team_members.is-visible,
+.tags.partners.is-visible {
   display: flex;
 }
 
-.selects.people.is-visible, .selects.startups.is-visible, .selects.jobs.is-visible {
+.selects.people.is-visible,
+.selects.startups.is-visible,
+.selects.jobs.is-visible,
+.selects.team_members.is-visible,
+.selects.partners.is-visible {
   /*display: block;*/
   display: flex;
   flex-flow: row nowrap;

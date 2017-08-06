@@ -45,6 +45,13 @@ CONTEXT = {
 }
 
 JOB_CONTEXT = {
+    'tm_context': [
+        ('years', list(prof.YEAR_IN_SCHOOL_CHOICES), {'class': 'label-year', 'name': 'year'}),
+        ('majors', list(prof.MAJORS), {'class': 'label-major', 'name': 'major'}),
+        ('roles', list(prof.PRIMARY_ROLE), {'class': 'label-role', 'name': 'role'}),
+        ('position', list(prof.POSITION), {'class': 'label-position'}),
+        ('experience', [('0', 'Has startup experience'), ('1', 'Has funding experience')], {'class': 'label-experience'}),
+    ],
     'p_context': [
         ('years', list(prof.YEAR_IN_SCHOOL_CHOICES), {'class': 'label-year', 'name': 'year'}),
         ('majors', list(prof.MAJORS), {'class': 'label-major', 'name': 'major'}),
@@ -151,26 +158,31 @@ def index(request):
         majors = request.POST.getlist('majors')
         fields = request.POST.getlist('fields')
         tokenized_users = []
-        if request.POST['select-category'] == 'people':
+        if request.POST['select-category'] == 'team_members' or request.POST['select-category'] == 'partners':
+        # if request.POST['select-category'] == 'people':
 
-            kwargs = {}
-            kwargs['is_active'] = True
-            kwargs['is_founder'] = False
+            kwargs = {'is_active': True, 'is_founder': False}
+
+            if request.POST['select-category'] == 'team_members':
+                kwargs['profile__team_member'] = True
+                filter_hidden = request.POST.get('filter_team_members')
+            elif request.POST['select-category'] == 'partners':
+                kwargs['profile__partner'] = True
+                filter_hidden = request.POST.get('filter_partners')
 
             years = request.POST.getlist('years')
             position = request.POST.getlist('position')
             experience = request.POST.getlist('experience')
-            filter_hidden = request.POST.get('filter_people')
             filter = json.loads('[' + filter_hidden + ']')
 
             active_selects = []
 
             if len(majors) > 1:
                 kwargs['profile__major__in'] = majors
-                active_selects.append('majors');
+                active_selects.append('majors')
             if len(roles) > 1:
                 kwargs['profile__role__in'] = roles
-                active_selects.append('roles');
+                active_selects.append('roles')
             if len(years) > 1:
                 kwargs['profile__year__in'] = years
                 active_selects.append('years')
@@ -187,28 +199,28 @@ def index(request):
 
             result = models.MyUser.objects.filter(**kwargs)
 
-        print(request.POST['select-category'])
-        if request.POST['select-category'] == 'team_members' or request.POST['select-category'] == 'partners':
-
-            print(request.POST['select-category'])
-
-            if request.POST.get('startup', False) and request.POST.get('funding', False):
-                result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_funding_exp = True, profile__has_startup_exp = True, profile__position__in=pos)
-            elif request.POST.get('startup', False):
-                result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_startup_exp = True, profile__position__in=pos)
-            elif request.POST.get('funding', False):
-                result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_funding_exp = True, profile__position__in=pos)
-            else:
-                result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__position__in=pos)
-
-            print('\n'+str(len(result))+'\n')
-
-            if (request.POST['select-category'] == 'team_members'):
-                result = result.filter(profile__team_member=True)
-            elif (request.POST['select-category'] == 'partners'):
-                result = result.filter(profile__partner=True)
-
-            print('\n'+str(len(result))+'\n')
+        # print(request.POST['select-category'])
+        # if request.POST['select-category'] == 'team_members' or request.POST['select-category'] == 'partners':
+        #
+        #     print(request.POST['select-category'])
+        #
+        #     if request.POST.get('startup', False) and request.POST.get('funding', False):
+        #         result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_funding_exp = True, profile__has_startup_exp = True, profile__position__in=pos)
+        #     elif request.POST.get('startup', False):
+        #         result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_startup_exp = True, profile__position__in=pos)
+        #     elif request.POST.get('funding', False):
+        #         result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_funding_exp = True, profile__position__in=pos)
+        #     else:
+        #         result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__position__in=pos)
+        #
+        #     print('\n'+str(len(result))+'\n')
+        #
+        #     if (request.POST['select-category'] == 'team_members'):
+        #         result = result.filter(profile__team_member=True)
+        #     elif (request.POST['select-category'] == 'partners'):
+        #         result = result.filter(profile__partner=True)
+        #
+        #     print('\n'+str(len(result))+'\n')
 
             for r in result:
                 experience = [stem_remove_stop_words(arr) for arr in [
