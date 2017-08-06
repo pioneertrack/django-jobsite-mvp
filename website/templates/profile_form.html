@@ -6,11 +6,16 @@
 {% trans "Update profile" %}
 {% endblock %}
 {% block content %}
+
 <div class = "profile-form">
+
   <div class="modal-dialog">
   <div id = "updateprofile" class = "profile-form-container">
+    {% if request.user.first_login %}
+        <a href="{{ next_url }}" class="pull-right fill-out-later">Fill out later</a>
+    {% endif %}
     <h1> Update your profile </h1><br>
-    <form id = "profileform"method="post" enctype="multipart/form-data">
+    <form id = "profileform" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {% for dict in experience.errors %}
           {% for error in dict.values %}

@@ -163,6 +163,7 @@ class Funding(models.Model):
     def __str__(self):
         return self.founder.user.email
 
+
 class Job(models.Model):
     founder = models.ForeignKey(Founder, on_delete=models.CASCADE, null=True)
     title = models.CharField(verbose_name='Job Title',max_length=40, blank=True, null=False)
@@ -171,22 +172,26 @@ class Job(models.Model):
     level = models.CharField(verbose_name='Level',max_length = 2, choices = LEVELS, default="FT")
     created_date = models.DateTimeField(default=timezone.now)
 
-@receiver(post_save, sender=user.MyUser)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created and not instance.is_founder:
-        Profile.objects.create(user=instance)
-    elif created and instance.is_founder:
-        Founder.objects.create(user=instance)
 
 @receiver(post_save, sender=user.MyUser)
-def save_user_profile(sender, instance, **kwargs):
-    if instance.is_founder:
-        if hasattr(instance, 'profile'):
-            try:
-                if (instance.founder is None):
-                    Founder.objects.create(user=instance)
-            except:
-                Founder.objects.create(user=instance)
-        instance.founder.save()
-    else:
-        instance.profile.save()
+def create_user_profile(sender, instance, created, **kwargs):
+    if created and instance.is_individual:
+        Profile.objects.create(user=instance)
+    if created and instance.is_founder:
+        Founder.objects.create(user=instance)
+
+
+# i don't think we need this signal. we are creating both profile and startup profile in above signal
+
+# @receiver(post_save, sender=user.MyUser)
+# def save_user_profile(sender, instance, **kwargs):
+#     if instance.is_founder:
+#         if hasattr(instance, 'profile'):
+#             try:
+#                 if instance.founder is None:
+#                     Founder.objects.create(user=instance)
+#             except:
+#                 Founder.objects.create(user=instance)
+#         instance.founder.save()
+#     else:
+#         instance.profile.save()

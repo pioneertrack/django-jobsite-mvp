@@ -78,9 +78,19 @@
       			</span>
       </a><!-- .nav-trigger -->
       <ul id="cd-navigation">
-        <li><a href="/profile/"><img id="headerthumbnail" src="
-            {% if not request.user.is_founder %}{{ request.user.profile.image.url }}{% else %}{{ request.user.founder.logo.url }}{% endif %}">
-          My Profile</a></li>
+        <li>
+            <select class="filter small" style="display: none;">
+                <option data-display="My Profiles">Nothing</option>
+                {% if request.user.is_individual %}
+                    <option data-value="{% url 'website:profile' %}">My Profile</option>
+                {% endif %}
+
+                {% if request.user.is_founder %}
+                    <option data-value="{% url 'website:startup_profile' %}">Startup Profile</option>
+                {% endif %}
+            </select>
+        </li>
+
         <li><a href="/logout/">Logout</a></li>
       </ul>
     {% elif not request.user.is_authenticated %}

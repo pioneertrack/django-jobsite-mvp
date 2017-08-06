@@ -1,11 +1,12 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.template import Context, loader, RequestContext
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from registration.backends.hmac.views import RegistrationView
 from django.contrib import messages
 from django.forms.models import inlineformset_factory
+from django.urls import reverse
 from django import forms as f
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Sum
@@ -133,7 +134,8 @@ def index(request):
     user = request.user
     if user.first_login:
         messages.success(request, "Welcome to BearFounders! Please update your profile.")
-        return HttpResponseRedirect('/profile/update')
+        redirect_url = 'website:profile_update' if user.is_individual else 'website:startup_update'
+        return redirect(redirect_url)
     if request.method == 'POST':
         query = request.POST['query']
         phrase = False
@@ -482,19 +484,9 @@ def index(request):
 
 
 @login_required(login_url='login/')
-def profile(request):
+@user_passes_test(lambda user: user.is_individual, login_url='/')
+def user_profile(request):
     last_login = request.user.last_login
-    if request.user.is_founder:
-        jobs = request.user.founder.job_set.order_by('created_date')
-        total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
-        return render(request, 'founder.html',
-                      merge_dicts(CONTEXT, JOB_CONTEXT, {
-                          'profile': True,
-                          'jobs': jobs,
-                          'reset': True,
-                          'total_funding': total_funding.get('total'),
-                          'last_login': last_login,
-                      }))
     experience = request.user.profile.experience_set.order_by('-end_date')
     return render(request, 'profile.html',
                   merge_dicts(CONTEXT, JOB_CONTEXT, {
@@ -506,8 +498,26 @@ def profile(request):
 
 
 @login_required(login_url='login/')
+@user_passes_test(lambda user: user.is_founder, login_url='/')
+def startup_profile(request):
+    last_login = request.user.last_login
+    jobs = request.user.founder.job_set.order_by('created_date')
+    total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
+    return render(request, 'founder.html',
+                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      'profile': False,
+                      'jobs': jobs,
+                      'reset': True,
+                      'total_funding': total_funding.get('total'),
+                      'last_login': last_login,
+                  }))
+
+
+@login_required(login_url='login/')
+@user_passes_test(lambda user: user.is_individual, login_url='/')
 def profile_update(request):
     user = request.user
+
     ExperienceFormSet = inlineformset_factory(prof.Profile, prof.Experience, form=forms.ExperienceForm,
                                               widgets={'start_date': f.DateInput(), 'end_date': f.DateInput()},
                                               error_messages={'start_date': {
@@ -515,17 +525,14 @@ def profile_update(request):
                                                               'end_date': {
                                                                   'invalid': 'Please enter a date with the form MM/DD/YY'}},
                                               max_num=5, extra=1)
-    FundingFormSet = inlineformset_factory(prof.Founder, prof.Funding, form=forms.FundingForm,
-                                           error_messages={
-                                               'raised': {'invalid': 'Please enter an amount greater than 0'}},
-                                           labels={'stage': 'Funding round', 'raised': 'Amount raised'}, max_num=5,
-                                           extra=1)
-    JobFormSet = inlineformset_factory(prof.Founder, prof.Job, form=forms.JobForm,
-                                       labels={'level': 'Job position', 'title': 'Job title', 'pay': 'Job pay',
-                                               'description': 'Job description'}, max_num=5, extra=1)
+
+    profile_form = forms.ProfileForm(instance=request.user.profile)
+    experience_form = ExperienceFormSet(instance=request.user.profile)
+
     if user.first_login:
         user.set_first_login()
-    if not user.is_founder and request.method == 'POST':
+
+    if request.method == 'POST':
         profile_form = forms.ProfileForm(request.POST, request.FILES, instance=request.user.profile)
         experience_form = ExperienceFormSet(request.POST, instance=request.user.profile)
         if profile_form.is_valid() and experience_form.is_valid():
@@ -541,10 +548,46 @@ def profile_update(request):
             profile_form.save()
             messages.success(request, 'Your profile was successfully updated!')
             user.save()
+
+            if user.is_founder and user.first_login:
+                return redirect('website:startup_update')
+
             return HttpResponseRedirect('/profile')
         else:
             messages.error(request, "There was an error processing your request")
-    elif user.is_founder and request.method == 'POST':
+
+    return render(request, 'profile_form.html',
+                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      'profile_form': profile_form,
+                      'experience': experience_form,
+                      'show_exp': True,
+                      'reset': True,
+                      'next_url': reverse('website:startup_update') if user.is_founder else reverse('website:profile')
+                  }))
+
+
+@login_required(login_url='login/')
+@user_passes_test(lambda user: user.is_founder, login_url='/')
+def startup_update(request):
+    user = request.user
+
+    FundingFormSet = inlineformset_factory(prof.Founder, prof.Funding, form=forms.FundingForm,
+                                           error_messages={
+                                               'raised': {'invalid': 'Please enter an amount greater than 0'}},
+                                           labels={'stage': 'Funding round', 'raised': 'Amount raised'}, max_num=5,
+                                           extra=1)
+    JobFormSet = inlineformset_factory(prof.Founder, prof.Job, form=forms.JobForm,
+                                       labels={'level': 'Job position', 'title': 'Job title', 'pay': 'Job pay',
+                                               'description': 'Job description'}, max_num=5, extra=1)
+
+    startup_form = forms.FounderForm(instance=request.user.founder)
+    funding_form = FundingFormSet(instance=request.user.founder)
+    job_form = JobFormSet(instance=request.user.founder)
+
+    if user.first_login:
+        user.set_first_login()
+
+    if request.method == 'POST':
         profile_form = forms.FounderForm(request.POST, request.FILES, instance=request.user.founder)
         funding_form = FundingFormSet(request.POST, instance=request.user.founder)
         job_form = JobFormSet(request.POST, instance=request.user.founder)
@@ -569,30 +612,16 @@ def profile_update(request):
             return HttpResponseRedirect('/profile')
         else:
             messages.error(request, 'There was an error processing your request')
-    elif user.is_founder:
-        profile_form = forms.FounderForm(instance=request.user.founder)
-        funding_form = FundingFormSet(instance=request.user.founder)
-        job_form = JobFormSet(instance=request.user.founder)
-    else:
-        profile_form = forms.ProfileForm(instance=request.user.profile)
-        experience_form = ExperienceFormSet(instance=request.user.profile)
-    if not user.is_founder:
-        return render(request, 'profile_form.html',
-                      merge_dicts(CONTEXT, JOB_CONTEXT, {
-                          'profile_form': profile_form,
-                          'experience': experience_form,
-                          'show_exp': True,
-                          'reset': True
-                      }))
-    else:
-        return render(request, 'profile_form.html',
-                      merge_dicts(CONTEXT, JOB_CONTEXT, {
-                          'profile_form': profile_form,
-                          'funding': funding_form,
-                          'jobs': job_form,
-                          'show_exp': False,
-                          'reset': True
-                      }))
+
+    return render(request, 'profile_form.html',
+                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      'profile_form': startup_form,
+                      'funding': funding_form,
+                      'jobs': job_form,
+                      'show_exp': False,
+                      'reset': True,
+                      'next_url': reverse('website:profile')
+                  }))
 
 
 @login_required(login_url='login/')
