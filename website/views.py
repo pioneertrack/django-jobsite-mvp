@@ -515,7 +515,7 @@ def startup_profile(request):
 
     return render(request, 'founder.html',
                   merge_dicts(CONTEXT, JOB_CONTEXT, {
-                      'profile': False,
+                      'profile': True,
                       'jobs': jobs,
                       'reset': True,
                       'total_funding': total_funding.get('total'),
