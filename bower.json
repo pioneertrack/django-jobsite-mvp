@@ -1,0 +1,28 @@
+{
+  "name": "Bear Founders",
+  "authors": [
+    "Jeremy Hammer <jeremy@bearfounders.com>"
+  ],
+  "description": "Job search for smart people",
+  "main": "",
+  "keywords": [
+    "job",
+    "search",
+    "startup",
+    "education"
+  ],
+  "license": "MIT",
+  "homepage": "https://www.bearfounders.com",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "nice-select": "https://github.com/hazarin/jquery-nice-select.git#master"
+  }
+}

@@ -313,15 +313,15 @@ html {
 
 .cd-secondary-nav {
   position: relative;
-  z-index: 1;
+  /*z-index: 1;*/
   clear: both;
   width: 100%;
   height: 50px;
   background-color: #25283D;
   /* Force Hardware Acceleration */
-  -webkit-transform: translateZ(0);
-          transform: translateZ(0);
-  will-change: transform;
+  /*-webkit-transform: translateZ(0);*/
+          /*transform: translateZ(0);*/
+  /*will-change: transform;*/
   -webkit-transition: -webkit-transform .5s;
   transition: -webkit-transform .5s;
   transition: transform .5s;
@@ -331,7 +331,7 @@ html {
   /* gradient on the right - to indicate it's possible to scroll */
   content: '';
   position: absolute;
-  z-index: 1;
+  /*z-index: 1;*/
   top: 0;
   right: 0;
   height: 100%;

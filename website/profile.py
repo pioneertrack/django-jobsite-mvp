@@ -3,6 +3,8 @@ from django.db import models
 from website import models as user
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
+from datetime import datetime
 HOURS_AVAILABLE = (
     ('0', '0 - 5'),
     ('1', '5 - 10'),
@@ -13,6 +15,7 @@ HOURS_AVAILABLE = (
 POSITION = (
     ('0', 'Partnership'),
     ('1', 'Paid'),
+    ('NONE', 'Other',)
 )
 STAGE = (
     ('0', 'Idea'),
@@ -38,7 +41,8 @@ YEAR_IN_SCHOOL_CHOICES = (
     ('GR', 'Graduate'),
     ('PH', 'PhD'),
     ('PD', 'Post-Doc'),
-    ('AL', 'Alumni')
+    ('AL', 'Alumni'),
+    ('NONE', 'Other')
 )
 MAJORS = (
     ('EECS', 'Electrical Engineering and Computer Science'),
@@ -108,12 +112,13 @@ class Profile(models.Model):
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
     bio = models.TextField(verbose_name='Bio',max_length=500, blank=True, null=False)
     image = models.ImageField(upload_to=user_directory_path, default = 'images/default/default-profile.jpg', blank=True, null=False)
-    position = models.CharField(verbose_name='Position',max_length = 1, choices = POSITION, blank = True, null = False)
+    position = models.CharField(verbose_name='Position',max_length = 4, choices = POSITION, blank = True, null = False, default='NONE')
     interests = models.TextField(verbose_name='Interests',max_length=500, blank = True, null = False)
     skills = models.TextField(verbose_name='Skills',max_length=500, blank = True, null = False)
     courses = models.TextField(verbose_name='Courses',max_length=400, blank = True, null = False)
+    alt_email= models.EmailField(max_length=255,unique=True, null = True)
     # experience = []
-    year = models.CharField(verbose_name='Year',max_length = 2, choices = YEAR_IN_SCHOOL_CHOICES, blank = True, null = False)
+    year = models.CharField(verbose_name='Year',max_length = 4, choices = YEAR_IN_SCHOOL_CHOICES, default='NONE', blank = True, null = False)
     hours_week = models.CharField(verbose_name='Hours per Week',max_length = 1, choices= HOURS_AVAILABLE, default='0')
     has_startup_exp = models.BooleanField(verbose_name='Startup Experience',blank = True, default = False)
     has_funding_exp = models.BooleanField(verbose_name='Funding Experience',blank = True, default = False)
@@ -126,7 +131,7 @@ class Profile(models.Model):
     partner = models.BooleanField(verbose_name="Partner", blank = True, default=False)
     # second_major = models.CharField()
 
-    role = models.CharField(max_length = 4, choices = PRIMARY_ROLE, blank = True, null = False)
+    role = models.CharField(max_length = 4, choices = PRIMARY_ROLE, default='NONE', blank = True, null = False)
 
     def __str__(self):
         return self.user.email
@@ -136,13 +141,13 @@ class Experience(models.Model):
     company = models.CharField(verbose_name='Company',max_length=40, blank=True, null = False)
     position = models.CharField(verbose_name='Position',max_length=50, blank=True, null = False)
     start_date = models.DateField(verbose_name='Start Date',blank=True, null = True)
-    end_date = models.DateField(verbose_name='End Date',blank=True, null = True)
     description = models.TextField(verbose_name='Description',max_length=500, blank=True,null=False)
-
+    currently_working = models.BooleanField(default=False)
+    end_date = models.DateField(verbose_name='End Date', default=timezone.now, null= True)
+    
 class Founder(models.Model):
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
     logo = models.ImageField(upload_to=company_logo_path, default = 'images/default/default-logo.jpg', blank=True, null=False)
-    # contact_email = models.EmailField(max_length=255)
     startup_name = models.CharField(verbose_name='Startup Name',max_length = 99)
     description = models.TextField(verbose_name='Description',blank = True, null = False)
     stage = models.CharField(verbose_name='Stage',max_length = 1, choices = STAGE, default='0')
@@ -169,6 +174,7 @@ class Job(models.Model):
     pay = models.CharField(verbose_name='Pay',max_length=1, choices = POSITION, default='1')
     description = models.TextField(verbose_name='Description',max_length=500, blank = True, null = False)
     level = models.CharField(verbose_name='Level',max_length = 2, choices = LEVELS, default="FT")
+    created_date = models.DateTimeField(default=timezone.now)
 
 @receiver(post_save, sender=user.MyUser)
 def create_user_profile(sender, instance, created, **kwargs):
