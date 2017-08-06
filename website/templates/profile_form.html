@@ -11,7 +11,7 @@
 
   <div class="modal-dialog">
   <div id = "updateprofile" class = "profile-form-container">
-    {% if request.user.first_login %}
+    {% if is_first_login %}
         <a href="{{ next_url }}" class="pull-right fill-out-later">Fill out later</a>
     {% endif %}
     <h1> Update your profile </h1><br>

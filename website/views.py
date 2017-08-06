@@ -488,6 +488,11 @@ def index(request):
 def user_profile(request):
     last_login = request.user.last_login
     experience = request.user.profile.experience_set.order_by('-end_date')
+
+    # in case user click on fill out later button in profile update
+    if request.user.first_login:
+        request.user.set_first_login()
+
     return render(request, 'profile.html',
                   merge_dicts(CONTEXT, JOB_CONTEXT, {
                       'profile': True,
@@ -503,6 +508,11 @@ def startup_profile(request):
     last_login = request.user.last_login
     jobs = request.user.founder.job_set.order_by('created_date')
     total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
+    
+    # in case user click on fill out later button in profile update
+    if request.user.first_login:
+        request.user.set_first_login()
+
     return render(request, 'founder.html',
                   merge_dicts(CONTEXT, JOB_CONTEXT, {
                       'profile': False,
@@ -517,6 +527,7 @@ def startup_profile(request):
 @user_passes_test(lambda user: user.is_individual, login_url='/')
 def profile_update(request):
     user = request.user
+    is_first_login = user.first_login
 
     ExperienceFormSet = inlineformset_factory(prof.Profile, prof.Experience, form=forms.ExperienceForm,
                                               widgets={'start_date': f.DateInput(), 'end_date': f.DateInput()},
@@ -528,9 +539,6 @@ def profile_update(request):
 
     profile_form = forms.ProfileForm(instance=request.user.profile)
     experience_form = ExperienceFormSet(instance=request.user.profile)
-
-    if user.first_login:
-        user.set_first_login()
 
     if request.method == 'POST':
         profile_form = forms.ProfileForm(request.POST, request.FILES, instance=request.user.profile)
@@ -552,6 +560,7 @@ def profile_update(request):
             if user.is_founder and user.first_login:
                 return redirect('website:startup_update')
 
+            user.set_first_login()
             return HttpResponseRedirect('/profile')
         else:
             messages.error(request, "There was an error processing your request")
@@ -562,6 +571,7 @@ def profile_update(request):
                       'experience': experience_form,
                       'show_exp': True,
                       'reset': True,
+                      'is_first_login': is_first_login,
                       'next_url': reverse('website:startup_update') if user.is_founder else reverse('website:profile')
                   }))
 
@@ -570,6 +580,7 @@ def profile_update(request):
 @user_passes_test(lambda user: user.is_founder, login_url='/')
 def startup_update(request):
     user = request.user
+    is_first_login = user.first_login
 
     FundingFormSet = inlineformset_factory(prof.Founder, prof.Funding, form=forms.FundingForm,
                                            error_messages={
@@ -583,9 +594,6 @@ def startup_update(request):
     startup_form = forms.FounderForm(instance=request.user.founder)
     funding_form = FundingFormSet(instance=request.user.founder)
     job_form = JobFormSet(instance=request.user.founder)
-
-    if user.first_login:
-        user.set_first_login()
 
     if request.method == 'POST':
         profile_form = forms.FounderForm(request.POST, request.FILES, instance=request.user.founder)
@@ -609,7 +617,8 @@ def startup_update(request):
             profile_form.save()
             messages.success(request, 'Your profile was successfully updated!')
             user.save()
-            return HttpResponseRedirect('/profile')
+            user.set_first_login()
+            return redirect('website:startup_profile')
         else:
             messages.error(request, 'There was an error processing your request')
 
@@ -620,7 +629,8 @@ def startup_update(request):
                       'jobs': job_form,
                       'show_exp': False,
                       'reset': True,
-                      'next_url': reverse('website:profile')
+                      'is_first_login': is_first_login,
+                      'next_url': reverse('website:startup_profile')
                   }))
 
 

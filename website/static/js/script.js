@@ -11,13 +11,7 @@ jQuery(document).ready(function($){
   $('ul#cd-navigation ul.list li:first').hide();
 
   $('ul#cd-navigation ul.list li').on('click', function(){
-       if ($(this).attr('data-value') === 'My Profile'){
-            window.location.href = '/profile/';
-       }
-
-       if ($(this).attr('data-value') === 'Startup Profile'){
-            window.location.href = '/startup_profile/';
-       }
+       window.location.href = $(this).attr('data-value');
   });
 
   $(document).on('mouseleave', '.tags', function(e) {
