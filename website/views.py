@@ -19,8 +19,12 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 import string
 import itertools
+from django.core import signing
 from random import shuffle
-
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from . models import MyUser
+from . forms import ResendActivationEmailForm
 from website import forms
 from website import models
 from website import profile as prof
@@ -528,6 +532,9 @@ def profile_update(request):
     if not user.is_founder and request.method == 'POST':
         profile_form = forms.ProfileForm(request.POST, request.FILES, instance=request.user.profile)
         experience_form = ExperienceFormSet(request.POST, instance=request.user.profile)
+        alt_email = profile_form["alt_email"]
+        if user.email == alt_email:
+                profile_form._errors["alt_email"] = ["Account for email address is not registered or already activated."]
         if profile_form.is_valid() and experience_form.is_valid():
             for k in experience_form.deleted_forms:
                 s = k.save(commit=False)
@@ -643,6 +650,51 @@ def google_analytics(request):
             'GOOGLE_ANALYTICS_DOMAIN': ga_domain,
         }
     return {}
+def resend_activation_email(request):
+    email_body_template = 'registration/activation_email.txt'
+    email_subject_template = 'registration/activation_email_subject.txt'
+
+    if not request.user.is_anonymous():
+        return HttpResponseRedirect('/')
+
+    context = Context()
+
+    form = None
+    if request.method == 'POST':
+        form = ResendActivationEmailForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            users = MyUser.objects.filter(email=email, is_active=0)
+
+            if not users.count():
+                form._errors["email"] = ["Account for email address is not registered or already activated."]
+
+            REGISTRATION_SALT = getattr(settings, 'REGISTRATION_SALT', 'registration')
+            for user in users:
+                activation_key = signing.dumps(
+                    obj=getattr(user, user.USERNAME_FIELD),
+                    salt=REGISTRATION_SALT,
+                    )
+                context = {}
+                context['activation_key'] = activation_key
+                context['expiration_days'] = settings.ACCOUNT_ACTIVATION_DAYS
+                context['site'] = get_current_site(request)
+
+                subject = render_to_string(email_subject_template,
+                                   context)
+                # Force subject to a single line to avoid header-injection
+                # issues.
+                subject = ''.join(subject.splitlines())
+                message = render_to_string(email_body_template,
+                                           context)
+                user.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)
+                return render(request, 'registration/resend_activation_email_done.html')
+
+    if not form:
+        form = ResendActivationEmailForm()
+
+    context.update({"form" : form})
+    return render(request, 'registration/resend_activation_email_form.html', context)
 
 def job_list(request, pk):
     founder = get_object_or_404(Founder, pk=pk)
