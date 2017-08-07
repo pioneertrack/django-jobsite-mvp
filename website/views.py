@@ -1,10 +1,10 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from django.views import generic
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth import authenticate, login
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.template import Context, loader, RequestContext
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from registration.backends.hmac.views import RegistrationView
 from django.contrib import messages
@@ -657,6 +657,7 @@ def job_list(request, pk):
 class Settings(LoginRequiredMixin, generic.FormView):
     success_url = reverse_lazy('website:settings')
     form_class = forms.ChangePasswordForm
+    alternate_email_form_class = forms.ChangeAlternateEmailForm
     template_name = 'settings.html'
 
     def get_form_kwargs(self):
@@ -666,11 +667,32 @@ class Settings(LoginRequiredMixin, generic.FormView):
 
     def get_context_data(self, **kwargs):
         context = super(Settings, self).get_context_data(**kwargs)
+        context['alternate_email_form'] = self.alternate_email_form_class(initial=self.request.user.profile.__dict__)
         context.update(**CONTEXT)
         context.update(**JOB_CONTEXT)
         return context
 
     def form_valid(self, form):
         form.save()
+        update_session_auth_hash(self.request, form.user)
         messages.success(self.request, 'Password updated')
         return super(Settings, self).form_valid(form)
+
+
+# add class based user test pass for individual
+class ChangeAlternateEmail(Settings, UserPassesTestMixin):
+    form_class = forms.ChangeAlternateEmailForm
+    http_method_names = ['post']
+
+    def test_func(self):
+        return self.request.user.is_individual
+
+    def get_form_kwargs(self):
+        kwargs = super(Settings, self).get_form_kwargs()
+        kwargs['instance'] = self.request.user.profile
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Alternate email updated')
+        return redirect(self.get_success_url())

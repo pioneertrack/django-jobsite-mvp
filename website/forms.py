@@ -122,3 +122,10 @@ class ChangePasswordForm(PasswordChangeForm):
         super(ChangePasswordForm, self).__init__(*args, **kwargs)
         self.fields['new_password1'].help_text = ''
 
+
+class ChangeAlternateEmailForm(forms.ModelForm):
+
+    class Meta:
+        model = profile.Profile
+        fields = ('alt_email',)
+

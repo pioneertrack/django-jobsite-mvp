@@ -12,4 +12,5 @@ urlpatterns = [
   url(r'^connect/$', views.connect, name='connect'),
   url(r'^(?P<pk>\d+)/jobs/$', views.job_list, name='job_list'),
   url(r'^settings/$', views.Settings.as_view(), name='settings'),
+  url(r'^settings/change_alternate_email/$', views.ChangeAlternateEmail.as_view(), name='change_alternate_email'),
 ]
