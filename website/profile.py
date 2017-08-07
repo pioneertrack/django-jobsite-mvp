@@ -15,6 +15,7 @@ HOURS_AVAILABLE = (
 POSITION = (
     ('0', 'Partnership'),
     ('1', 'Paid'),
+    ('NONE', 'Other',)
 )
 STAGE = (
     ('0', 'Idea'),
@@ -40,7 +41,8 @@ YEAR_IN_SCHOOL_CHOICES = (
     ('GR', 'Graduate'),
     ('PH', 'PhD'),
     ('PD', 'Post-Doc'),
-    ('AL', 'Alumni')
+    ('AL', 'Alumni'),
+    ('NONE', 'Other')
 )
 MAJORS = (
     ('EECS', 'Electrical Engineering and Computer Science'),
@@ -110,13 +112,13 @@ class Profile(models.Model):
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
     bio = models.TextField(verbose_name='Bio',max_length=500, blank=True, null=False)
     image = models.ImageField(upload_to=user_directory_path, default = 'images/default/default-profile.jpg', blank=True, null=False)
-    position = models.CharField(verbose_name='Position',max_length = 1, choices = POSITION, blank = True, null = False)
+    position = models.CharField(verbose_name='Position',max_length = 4, choices = POSITION, blank = True, null = False, default='NONE')
     interests = models.TextField(verbose_name='Interests',max_length=500, blank = True, null = False)
     skills = models.TextField(verbose_name='Skills',max_length=500, blank = True, null = False)
     courses = models.TextField(verbose_name='Courses',max_length=400, blank = True, null = False)
     alt_email = models.EmailField(max_length=255,unique=True, null = True)
     # experience = []
-    year = models.CharField(verbose_name='Year',max_length = 2, choices = YEAR_IN_SCHOOL_CHOICES, blank = True, null = False)
+    year = models.CharField(verbose_name='Year',max_length = 4, choices = YEAR_IN_SCHOOL_CHOICES, default='NONE', blank = True, null = False)
     hours_week = models.CharField(verbose_name='Hours per Week',max_length = 1, choices= HOURS_AVAILABLE, default='0')
     has_startup_exp = models.BooleanField(verbose_name='Startup Experience',blank = True, default = False)
     has_funding_exp = models.BooleanField(verbose_name='Funding Experience',blank = True, default = False)
@@ -126,7 +128,7 @@ class Profile(models.Model):
     major = models.CharField(verbose_name='Major',max_length = 4, choices=MAJORS, default = 'UND')
     # second_major = models.CharField()
 
-    role = models.CharField(max_length = 4, choices = PRIMARY_ROLE, blank = True, null = False)
+    role = models.CharField(max_length = 4, choices = PRIMARY_ROLE, default='NONE', blank = True, null = False)
 
     def __str__(self):
         return self.user.email
@@ -163,6 +165,7 @@ class Funding(models.Model):
     def __str__(self):
         return self.founder.user.email
 
+
 class Job(models.Model):
     founder = models.ForeignKey(Founder, on_delete=models.CASCADE, null=True)
     title = models.CharField(verbose_name='Job Title',max_length=40, blank=True, null=False)
@@ -171,22 +174,26 @@ class Job(models.Model):
     level = models.CharField(verbose_name='Level',max_length = 2, choices = LEVELS, default="FT")
     created_date = models.DateTimeField(default=timezone.now)
 
-@receiver(post_save, sender=user.MyUser)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created and not instance.is_founder:
-        Profile.objects.create(user=instance)
-    elif created and instance.is_founder:
-        Founder.objects.create(user=instance)
 
 @receiver(post_save, sender=user.MyUser)
-def save_user_profile(sender, instance, **kwargs):
-    if instance.is_founder:
-        if hasattr(instance, 'profile'):
-            try:
-                if (instance.founder is None):
-                    Founder.objects.create(user=instance)
-            except:
-                Founder.objects.create(user=instance)
-        instance.founder.save()
-    else:
-        instance.profile.save()
+def create_user_profile(sender, instance, created, **kwargs):
+    if created and instance.is_individual:
+        Profile.objects.create(user=instance)
+    if created and instance.is_founder:
+        Founder.objects.create(user=instance)
+
+
+# i don't think we need this signal. we are creating both profile and startup profile in above signal
+
+# @receiver(post_save, sender=user.MyUser)
+# def save_user_profile(sender, instance, **kwargs):
+#     if instance.is_founder:
+#         if hasattr(instance, 'profile'):
+#             try:
+#                 if instance.founder is None:
+#                     Founder.objects.create(user=instance)
+#             except:
+#                 Founder.objects.create(user=instance)
+#         instance.founder.save()
+#     else:
+#         instance.profile.save()

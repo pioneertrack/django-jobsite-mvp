@@ -16,12 +16,17 @@ from django.utils.encoding import force_text
 log = logging.getLogger(__name__)
 logging.basicConfig(filename='errorlog.txt')
 
+
 class NewRegistrationForm(RegistrationFormUniqueEmail):
     captcha = NoReCaptchaField()
+    create_both_profiles = forms.BooleanField(label='Both', required=False,
+                                             widget=forms.CheckboxInput(attrs={'id': 'select-both-profiles'}))
+
     def __init__(self, *args, **kwargs):
         super(RegistrationFormUniqueEmail, self).__init__(*args, **kwargs)
         self.fields['captcha'].label = ''
         self.fields['email'].help_text = "Must be a @berkeley.edu email address"
+
     def is_valid(self):
         log.info(force_text(self.errors))
         return super(NewRegistrationForm, self).is_valid()
@@ -45,12 +50,20 @@ class NewRegistrationForm(RegistrationFormUniqueEmail):
                 .format(', '.join(ALLOWED_DOMAINS))
             )
         return submitted_data
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        if not cleaned_data.get('is_individual') and not cleaned_data.get('is_founder'):
+            self.add_error('create_both_profiles', 'You must be representing an individual profile or startup')
+        return cleaned_data
+
     class Meta:
         model = models.MyUser
-        fields = ['first_name', 'last_name', 'email', 'is_founder', 'password1', 'password2']
+        fields = ['first_name', 'last_name', 'email', 'is_individual', 'is_founder', 'create_both_profiles', 'password1', 'password2']
         labels = {
-            'is_founder' : 'Are you representing a company/startup?',
-            'captcha' : '',
+            'is_individual': 'Create individual profile',
+            'is_founder': 'Create startup profile',
+            'captcha': '',
         }
 
 

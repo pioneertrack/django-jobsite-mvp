@@ -57,9 +57,12 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     first_login = models.BooleanField(blank = True, default=True)
-    is_founder = models.BooleanField(verbose_name='Is Founder',blank = True, default=False)
+    is_individual = models.BooleanField(blank=True, default=False)
+    is_founder = models.BooleanField(verbose_name='Is Founder', blank=True, default=False)
+
     def set_first_login(self):
         self.first_login = False
+        self.save()
 
     def get_username(self):
         return self.email
@@ -77,6 +80,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         # The user is identified by their email address
         return self.email
+
     def get_is_founder(self):
         return self.is_founder
 

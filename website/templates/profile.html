@@ -22,7 +22,7 @@
         <hr>
 	<h5>Last Login: {{ last_login }}</h5>
         {%if profile %}
-        <button id="update" class = "btn btn-lg btn-success btn-outline">Update your profile</button>
+        <button id="update" data-href="{% url 'website:profile_update' %}" class = "btn btn-lg btn-success btn-outline">Update your profile</button>
         {%else%}
         <button id="connect" class = "btn btn-lg btn-primary btn-outline">Connect</button>
         {%endif%}

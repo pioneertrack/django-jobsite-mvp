@@ -2,13 +2,14 @@ from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth import authenticate, login, update_session_auth_hash
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.template import Context, loader, RequestContext
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from registration.backends.hmac.views import RegistrationView
 from django.contrib import messages
 from django.forms.models import inlineformset_factory
+from django.urls import reverse
 from django import forms as f
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Sum
@@ -136,7 +137,8 @@ def index(request):
     user = request.user
     if user.first_login:
         messages.success(request, "Welcome to BearFounders! Please update your profile.")
-        return HttpResponseRedirect('/profile/update')
+        redirect_url = 'website:profile_update' if user.is_individual else 'website:startup_update'
+        return redirect(redirect_url)
     if request.method == 'POST':
         query = request.POST['query']
         phrase = False
@@ -145,14 +147,14 @@ def index(request):
             phrase = True
         words = stem_remove_stop_words(query.translate({ord(c): None for c in string.punctuation}).lower().split())
         # words = stem_remove_stop_words(nltk.word_tokenize(query))
-        roles = request.POST.getlist('role')
-        if 'NONE' in roles:
-            roles = roles + ['']
-        years = request.POST.getlist('year')
-        if len(years) == 5:
-            years = years + ['']
-        majors = request.POST.getlist('major')
-        fields = request.POST.getlist('field')
+        roles = request.POST.getlist('roles')
+        # if 'NONE' in roles:
+        #     roles = roles + ['']
+        years = request.POST.getlist('years')
+        # if len(years) == 10:
+        #     years = years + ['']
+        majors = request.POST.getlist('majors')
+        fields = request.POST.getlist('fields')
         tokenized_users = []
         if request.POST['select-category'] == 'people':
 
@@ -160,8 +162,9 @@ def index(request):
             kwargs['is_active'] = True
             kwargs['is_founder'] = False
 
-            position = request.POST.get('position')
-            experience = request.POST.get('experience')
+            years = request.POST.getlist('years')
+            position = request.POST.getlist('position')
+            experience = request.POST.getlist('experience')
             filter_hidden = request.POST.get('filter_people')
             filter = json.loads('[' + filter_hidden + ']')
 
@@ -182,9 +185,9 @@ def index(request):
             if len(experience) > 1:
                 active_selects.append('experience')
                 for item in experience:
-                    if item == '0':
+                    if item == '1':
                         kwargs['profile__has_funding_exp'] = True
-                    elif item == '1':
+                    elif item == '0':
                         kwargs['profile__has_startup_exp'] = True
 
             result = models.MyUser.objects.filter(**kwargs)
@@ -485,20 +488,15 @@ def index(request):
 
 
 @login_required(login_url='login/')
-def profile(request):
+@user_passes_test(lambda user: user.is_individual, login_url='/')
+def user_profile(request):
     last_login = request.user.last_login
-    if request.user.is_founder:
-        jobs = request.user.founder.job_set.order_by('created_date')
-        total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
-        return render(request, 'founder.html',
-                      merge_dicts(CONTEXT, JOB_CONTEXT, {
-                          'profile': True,
-                          'jobs': jobs,
-                          'reset': True,
-                          'total_funding': total_funding.get('total'),
-                          'last_login': last_login,
-                      }))
     experience = request.user.profile.experience_set.order_by('-end_date')
+
+    # in case user click on fill out later button in profile update
+    if request.user.first_login:
+        request.user.set_first_login()
+
     return render(request, 'profile.html',
                   merge_dicts(CONTEXT, JOB_CONTEXT, {
                       'profile': True,
@@ -509,8 +507,32 @@ def profile(request):
 
 
 @login_required(login_url='login/')
+@user_passes_test(lambda user: user.is_founder, login_url='/')
+def startup_profile(request):
+    last_login = request.user.last_login
+    jobs = request.user.founder.job_set.order_by('created_date')
+    total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
+    
+    # in case user click on fill out later button in profile update
+    if request.user.first_login:
+        request.user.set_first_login()
+
+    return render(request, 'founder.html',
+                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      'profile': True,
+                      'jobs': jobs,
+                      'reset': True,
+                      'total_funding': total_funding.get('total'),
+                      'last_login': last_login,
+                  }))
+
+
+@login_required(login_url='login/')
+@user_passes_test(lambda user: user.is_individual, login_url='/')
 def profile_update(request):
     user = request.user
+    is_first_login = user.first_login
+
     ExperienceFormSet = inlineformset_factory(prof.Profile, prof.Experience, form=forms.ExperienceForm,
                                               widgets={'start_date': f.DateInput(), 'end_date': f.DateInput()},
                                               error_messages={'start_date': {
@@ -518,17 +540,11 @@ def profile_update(request):
                                                               'end_date': {
                                                                   'invalid': 'Please enter a date with the form MM/DD/YY'}},
                                               max_num=5, extra=1)
-    FundingFormSet = inlineformset_factory(prof.Founder, prof.Funding, form=forms.FundingForm,
-                                           error_messages={
-                                               'raised': {'invalid': 'Please enter an amount greater than 0'}},
-                                           labels={'stage': 'Funding round', 'raised': 'Amount raised'}, max_num=5,
-                                           extra=1)
-    JobFormSet = inlineformset_factory(prof.Founder, prof.Job, form=forms.JobForm,
-                                       labels={'level': 'Job position', 'title': 'Job title', 'pay': 'Job pay',
-                                               'description': 'Job description'}, max_num=5, extra=1)
-    if user.first_login:
-        user.set_first_login()
-    if not user.is_founder and request.method == 'POST':
+
+    profile_form = forms.ProfileForm(instance=request.user.profile)
+    experience_form = ExperienceFormSet(instance=request.user.profile)
+
+    if request.method == 'POST':
         profile_form = forms.ProfileForm(request.POST, request.FILES, instance=request.user.profile)
         experience_form = ExperienceFormSet(request.POST, instance=request.user.profile)
         if profile_form.is_valid() and experience_form.is_valid():
@@ -544,10 +560,46 @@ def profile_update(request):
             profile_form.save()
             messages.success(request, 'Your profile was successfully updated!')
             user.save()
+
+            if user.is_founder and user.first_login:
+                return redirect('website:startup_update')
+
+            user.set_first_login()
             return HttpResponseRedirect('/profile')
         else:
             messages.error(request, "There was an error processing your request")
-    elif user.is_founder and request.method == 'POST':
+
+    return render(request, 'profile_form.html',
+                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      'profile_form': profile_form,
+                      'experience': experience_form,
+                      'show_exp': True,
+                      'reset': True,
+                      'is_first_login': is_first_login,
+                      'next_url': reverse('website:startup_update') if user.is_founder else reverse('website:profile')
+                  }))
+
+
+@login_required(login_url='login/')
+@user_passes_test(lambda user: user.is_founder, login_url='/')
+def startup_update(request):
+    user = request.user
+    is_first_login = user.first_login
+
+    FundingFormSet = inlineformset_factory(prof.Founder, prof.Funding, form=forms.FundingForm,
+                                           error_messages={
+                                               'raised': {'invalid': 'Please enter an amount greater than 0'}},
+                                           labels={'stage': 'Funding round', 'raised': 'Amount raised'}, max_num=5,
+                                           extra=1)
+    JobFormSet = inlineformset_factory(prof.Founder, prof.Job, form=forms.JobForm,
+                                       labels={'level': 'Job position', 'title': 'Job title', 'pay': 'Job pay',
+                                               'description': 'Job description'}, max_num=5, extra=1)
+
+    startup_form = forms.FounderForm(instance=request.user.founder)
+    funding_form = FundingFormSet(instance=request.user.founder)
+    job_form = JobFormSet(instance=request.user.founder)
+
+    if request.method == 'POST':
         profile_form = forms.FounderForm(request.POST, request.FILES, instance=request.user.founder)
         funding_form = FundingFormSet(request.POST, instance=request.user.founder)
         job_form = JobFormSet(request.POST, instance=request.user.founder)
@@ -569,33 +621,21 @@ def profile_update(request):
             profile_form.save()
             messages.success(request, 'Your profile was successfully updated!')
             user.save()
-            return HttpResponseRedirect('/profile')
+            user.set_first_login()
+            return redirect('website:startup_profile')
         else:
             messages.error(request, 'There was an error processing your request')
-    elif user.is_founder:
-        profile_form = forms.FounderForm(instance=request.user.founder)
-        funding_form = FundingFormSet(instance=request.user.founder)
-        job_form = JobFormSet(instance=request.user.founder)
-    else:
-        profile_form = forms.ProfileForm(instance=request.user.profile)
-        experience_form = ExperienceFormSet(instance=request.user.profile)
-    if not user.is_founder:
-        return render(request, 'profile_form.html',
-                      merge_dicts(CONTEXT, JOB_CONTEXT, {
-                          'profile_form': profile_form,
-                          'experience': experience_form,
-                          'show_exp': True,
-                          'reset': True
-                      }))
-    else:
-        return render(request, 'profile_form.html',
-                      merge_dicts(CONTEXT, JOB_CONTEXT, {
-                          'profile_form': profile_form,
-                          'funding': funding_form,
-                          'jobs': job_form,
-                          'show_exp': False,
-                          'reset': True
-                      }))
+
+    return render(request, 'profile_form.html',
+                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      'profile_form': startup_form,
+                      'funding': funding_form,
+                      'jobs': job_form,
+                      'show_exp': False,
+                      'reset': True,
+                      'is_first_login': is_first_login,
+                      'next_url': reverse('website:startup_profile')
+                  }))
 
 
 @login_required(login_url='login/')
@@ -667,7 +707,9 @@ class Settings(LoginRequiredMixin, generic.FormView):
 
     def get_context_data(self, **kwargs):
         context = super(Settings, self).get_context_data(**kwargs)
-        context['alternate_email_form'] = self.alternate_email_form_class(initial=self.request.user.profile.__dict__)
+        if self.request.user.is_individual and hasattr(self.request.user, 'profile'):
+            context['alternate_email_form'] = self.alternate_email_form_class(
+                initial={'alt_email': self.request.user.profile.alt_email})
         context.update(**CONTEXT)
         context.update(**JOB_CONTEXT)
         return context
@@ -679,7 +721,6 @@ class Settings(LoginRequiredMixin, generic.FormView):
         return super(Settings, self).form_valid(form)
 
 
-# add class based user test pass for individual
 class ChangeAlternateEmail(Settings, UserPassesTestMixin):
     form_class = forms.ChangeAlternateEmailForm
     http_method_names = ['post']

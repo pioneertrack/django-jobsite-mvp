@@ -1,7 +1,18 @@
 jQuery(document).ready(function($){
 
+  $('input#select-both-profiles').on('change', function() {
+        console.log($(this).is(":checked"));
+        $('input#id_is_founder, input#id_is_individual').prop('checked', $(this).is(":checked"));
+    });
+
   $('#selector').niceSelect();
   $('.cd-search-nav.first select.filter').niceSelect();
+  $('ul#cd-navigation select.filter').niceSelect();
+  $('ul#cd-navigation ul.list li:first').hide();
+
+  $('ul#cd-navigation ul.list li').on('click', function(){
+       window.location.href = $(this).attr('data-value');
+  });
 
   $(document).on('mouseleave', '.tags', function(e) {
     var tags = $(this).children('.filter-container');
@@ -555,4 +566,5 @@ jQuery(document).ready(function($){
         $(document).mousemove(mousemoveDocument);
 
     };
+
 })(jQuery);
