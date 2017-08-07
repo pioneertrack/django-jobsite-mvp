@@ -58,7 +58,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_admin = models.BooleanField(default=False)
     first_login = models.BooleanField(blank = True, default=True)
     is_individual = models.BooleanField(blank=True, default=False)
-    is_founder = models.BooleanField(verbose_name='Is Founder',blank = True, default=False)
+    is_founder = models.BooleanField(verbose_name='Is Founder', blank=True, default=False)
 
     def set_first_login(self):
         self.first_login = False
