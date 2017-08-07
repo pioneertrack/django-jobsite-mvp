@@ -144,14 +144,14 @@ def index(request):
             phrase = True
         words = stem_remove_stop_words(query.translate({ord(c): None for c in string.punctuation}).lower().split())
         # words = stem_remove_stop_words(nltk.word_tokenize(query))
-        roles = request.POST.getlist('role')
-        if 'NONE' in roles:
-            roles = roles + ['']
-        years = request.POST.getlist('year')
-        if len(years) == 5:
-            years = years + ['']
-        majors = request.POST.getlist('major')
-        fields = request.POST.getlist('field')
+        roles = request.POST.getlist('roles')
+        # if 'NONE' in roles:
+        #     roles = roles + ['']
+        years = request.POST.getlist('years')
+        # if len(years) == 10:
+        #     years = years + ['']
+        majors = request.POST.getlist('majors')
+        fields = request.POST.getlist('fields')
         tokenized_users = []
         if request.POST['select-category'] == 'people':
 
@@ -159,8 +159,9 @@ def index(request):
             kwargs['is_active'] = True
             kwargs['is_founder'] = False
 
-            position = request.POST.get('position')
-            experience = request.POST.get('experience')
+            years = request.POST.getlist('years')
+            position = request.POST.getlist('position')
+            experience = request.POST.getlist('experience')
             filter_hidden = request.POST.get('filter_people')
             filter = json.loads('[' + filter_hidden + ']')
 
@@ -181,9 +182,9 @@ def index(request):
             if len(experience) > 1:
                 active_selects.append('experience')
                 for item in experience:
-                    if item == '0':
+                    if item == '1':
                         kwargs['profile__has_funding_exp'] = True
-                    elif item == '1':
+                    elif item == '0':
                         kwargs['profile__has_startup_exp'] = True
 
             result = models.MyUser.objects.filter(**kwargs)
