@@ -534,8 +534,8 @@ def profile_update(request):
         profile_form = forms.ProfileForm(request.POST, request.FILES, instance=request.user.profile)
         experience_form = ExperienceFormSet(request.POST, instance=request.user.profile)
         alt_email = profile_form["alt_email"]
-        if user.email == alt_email:
-                profile_form._errors["alt_email"] = ["Account for email address is not registered or already activated."]
+        if request.user.email == alt_email:
+            profile_form._errors["alt_email"] = ["Account for email address is not registered or already activated."]
         if profile_form.is_valid() and experience_form.is_valid():
             for k in experience_form.deleted_forms:
                 s = k.save(commit=False)
