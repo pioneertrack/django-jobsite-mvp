@@ -3,6 +3,8 @@ from nocaptcha_recaptcha.fields import NoReCaptchaField
 from website import models, profile
 from django import forms
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
+from django.db.models import IntegerField
 from django.core.validators import EmailValidator
 from django import template
 from django.utils.safestring import mark_safe
@@ -10,7 +12,6 @@ from django.utils.safestring import mark_safe
 import logging
 # convert the errors to text
 from django.utils.encoding import force_text
-
 
 log = logging.getLogger(__name__)
 logging.basicConfig(filename='errorlog.txt')
@@ -66,10 +67,10 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = profile.Profile
-        fields = ('image', 'bio', 'position', 'role', 'alt_email', 'team_member', 'partner', 'interests', 'skills', 'major', 'courses', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'linkedin', 'website', 'github')
+        fields = (
+        'image', 'bio', 'positions', 'role', 'alt_email', 'interests', 'skills',
+        'major', 'courses', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'linkedin', 'website', 'github')
         labels = {
-            'team_member': 'Looking to join an existing team',
-            'partner': 'Looking to start a new partnership',
             'has_startup_exp': 'I have worked at a startup before',
             'has_funding_exp': 'I have experience with funding a startup',
             'bio': 'About me',
@@ -77,7 +78,7 @@ class ProfileForm(forms.ModelForm):
             'website': 'Personal website',
             'courses': 'Relevant coursework',
             'major': 'Primary Major',
-            'position': 'Seeking what type of position?',
+            'positions': 'Seeking what type of position?',
         }
 
 

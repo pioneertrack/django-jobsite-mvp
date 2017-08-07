@@ -252,12 +252,11 @@ class ProfileResource(resources.ModelResource):
         return headers
 
 class ProfileAdmin(ImportExportModelAdmin):
-    list_display = ('user', 'major', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp','team_member','partner')
-    list_filter = ('major','year','has_startup_exp','has_funding_exp','team_member','partner')
+    list_display = ('user', 'major', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp')
+    list_filter = ('major','year','has_startup_exp','has_funding_exp')
     fieldsets = (
         (None,         {'fields': ['user','bio','interests']}),
         ('School',     {'fields': ['year', 'role', 'major', 'courses']}),
-        ('Seeking',    {'fields': ['partner', 'team_member']}),
         ('Work',       {'fields': ['hours_week','position', 'positions']}),
         ('Experience', {'fields': ['has_startup_exp','has_funding_exp','skills']}),
         ('Contact',    {'fields': ['linkedin','website','github']})

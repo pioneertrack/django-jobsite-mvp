@@ -6,6 +6,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.contrib.postgres.fields import ArrayField
 from datetime import datetime
+from django import forms
 
 HOURS_AVAILABLE = (
     ('0', '0 - 5'),
@@ -102,10 +103,31 @@ LEVELS = (
     ('IN', 'Intern')
 )
 POSITIONS = (
-    (0, 'Paid'),
-    (1, 'Partnership'),
+    (0, 'Partnership'),
+    (1, 'Paid'),
     (2, 'Contract'),
 )
+
+
+class ChoiceArrayField(ArrayField):
+    """
+    A field that allows us to store an array of choices.
+
+    Uses Django 1.9's postgres ArrayField
+    and a MultipleChoiceField for its formfield.
+    """
+
+    def formfield(self, **kwargs):
+        defaults = {
+            'widget': forms.CheckboxSelectMultiple,
+            'form_class': forms.ChoiceField,
+            'choices': self.base_field.choices,
+        }
+        defaults.update(kwargs)
+        # Skip our parent's formfield implementation completely as we don't
+        # care for it.
+        # pylint:disable=bad-super-call
+        return super(ArrayField, self).formfield(**defaults)
 
 
 def user_directory_path(instance, filename):
@@ -139,12 +161,7 @@ class Profile(models.Model):
     website = models.URLField(verbose_name='Website', null=False, blank=True)
     github = models.URLField(verbose_name='Github', null=False, blank=True)
     major = models.CharField(verbose_name='Major', max_length=4, choices=MAJORS, default='UND')
-
-    positions = ArrayField(models.IntegerField(choices=POSITIONS, default=0), default=list)
-
-    team_member = models.BooleanField(verbose_name="Team Member", blank=True, default=True)
-    partner = models.BooleanField(verbose_name="Partner", blank=True, default=False)
-    partner = models.BooleanField(verbose_name="Partner", blank=True, default=False)
+    positions = ChoiceArrayField(models.IntegerField(choices=POSITIONS, default=0), default=[0])
 
     # second_major = models.CharField()
 
