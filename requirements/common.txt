@@ -49,3 +49,4 @@ widgetsnbextension==1.2.6
 django-import-export==0.5.1
 numpy==1.13.0
 simplejson==3.11.1
+django-extensions==1.8.1
