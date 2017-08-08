@@ -737,3 +737,14 @@ class ChangeAlternateEmail(Settings, UserPassesTestMixin):
         form.save()
         messages.success(self.request, 'Alternate email updated')
         return redirect(self.get_success_url())
+
+
+class DisableAccount(LoginRequiredMixin, generic.RedirectView):
+    url = reverse_lazy('website:settings')
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        user.is_account_disabled = True if kwargs.get('status') == 'disable' else False
+        user.save()
+        messages.success(request, 'Your account has been {}d'.format(kwargs.get('status')))
+        return super(DisableAccount, self).post(request, *args, **kwargs)

@@ -14,6 +14,18 @@ jQuery(document).ready(function($){
        window.location.href = $(this).attr('data-value');
   });
 
+  $('button#disable-account').on('click', function(){
+        if (confirm('Are you sure you want to disable your account?')){
+            $(this).parent().find('form').submit();
+        }
+    });
+
+  $('button#enable-account').on('click', function(){
+        if (confirm('Are you sure you want to enable your account?')){
+            $(this).parent().find('form').submit();
+        }
+    });
+
   $(document).on('mouseleave', '.tags', function(e) {
     var tags = $(this).children('.filter-container');
     var children = $(tags.children(':not(.outer)').get().reverse());
