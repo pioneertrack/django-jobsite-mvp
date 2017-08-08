@@ -15,5 +15,5 @@ urlpatterns = [
   url(r'^(?P<pk>\d+)/jobs/$', views.job_list, name='job_list'),
   url(r'^settings/$', views.Settings.as_view(), name='settings'),
   url(r'^settings/change_alternate_email/$', views.ChangeAlternateEmail.as_view(), name='change_alternate_email'),
-  url(r'^settings/change_account_status/(?P<status>(enable|disable))$', views.DisableAccount.as_view(), name='change_account_status'),
+  url(r'^settings/change_account_status/(?P<status>(enable|disable))$', views.ChangeAccountStatus.as_view(), name='change_account_status'),
 ]
