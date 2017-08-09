@@ -22,6 +22,7 @@ media/*
 #for venv
 venv/
 
+website/migrations/*
 /.idea/
 /static/
 /berkeleyconnect/local_settings.py
