@@ -136,3 +136,5 @@ class JobForm(forms.ModelForm):
     class Meta:
         model = profile.Job
         fields=('title', 'level', 'pay', 'description')
+class ResendActivationEmailForm(forms.Form):
+    email = forms.EmailField(required=True)

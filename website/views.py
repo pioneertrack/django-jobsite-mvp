@@ -5,6 +5,7 @@ from django.template import Context, loader, RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from registration.backends.hmac.views import RegistrationView
 from django.contrib import messages
+from django.utils import timezone
 from django.forms.models import inlineformset_factory
 from django import forms as f
 from django.views.decorators.csrf import csrf_exempt
@@ -19,8 +20,12 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 import string
 import itertools
+from django.core import signing
 from random import shuffle
-
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from . models import MyUser
+from . forms import ResendActivationEmailForm
 from website import forms
 from website import models
 from website import profile as prof
@@ -520,6 +525,7 @@ def index(request):
 @login_required(login_url='login/')
 def profile(request):
     last_login = request.user.last_login
+    f= "Now"
     if request.user.is_founder:
         jobs = request.user.founder.job_set.order_by('created_date')
         total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
@@ -529,7 +535,7 @@ def profile(request):
                           'jobs': jobs,
                           'reset': True,
                           'total_funding': total_funding.get('total'),
-                          'last_login': last_login,
+                          'last_login': f,
                       }))
     experience = request.user.profile.experience_set.order_by('-end_date')
     return render(request, 'profile.html',
@@ -537,7 +543,7 @@ def profile(request):
                       'profile': True,
                       'experience': experience,
                       'reset': True,
-                      'last_login': last_login,
+                      'last_login': f,
                   }))
 
 
@@ -564,6 +570,9 @@ def profile_update(request):
     if not user.is_founder and request.method == 'POST':
         profile_form = forms.ProfileForm(request.POST, request.FILES, instance=request.user.profile)
         experience_form = ExperienceFormSet(request.POST, instance=request.user.profile)
+        alt_email = profile_form["alt_email"]
+        if request.user.email == alt_email:
+            profile_form._errors["alt_email"] = ["Account for email address is not registered or already activated."]
         if profile_form.is_valid() and experience_form.is_valid():
             for k in experience_form.deleted_forms:
                 s = k.save(commit=False)
@@ -635,6 +644,21 @@ def profile_update(request):
 def get_user_view(request, id):
     user = get_object_or_404(models.MyUser, pk=id)
     last_login = user.last_login
+    current_time= timezone.now()
+    cr= current_time - last_login
+    cr= cr.total_seconds()
+    if cr<3600.00:
+        f= "AN HOUR AGO"
+    elif cr> 3600.00 and cr< 86400.00:
+        f= "Today"
+    elif cr> 86400.00 and cr< 172800.00:
+        f= "Yesterday"
+    elif cr> 172800.00 and cr< 604800.00:
+        f= "A week ago"
+    elif cr>608400.00 and cr< 2592000.00:
+        f= "A month Ago"
+    else:
+        f= "A year ago"
     if user is None:
         return HttpResponseRedirect('/')
     if user.is_founder:
@@ -645,7 +669,7 @@ def get_user_view(request, id):
                           'profile': False,
                           'jobs': jobs,
                           'reset': True,
-                          'last_login':last_login,
+                          'last_login':f,
                       }))
     else:
         exp = user.profile.experience_set.order_by('-end_date')
@@ -655,7 +679,7 @@ def get_user_view(request, id):
                           'profile': False,
                           'experience': exp,
                           'reset': True,
-                          'last_login':last_login,
+                          'last_login':f,
                       }))
 
 
@@ -679,6 +703,51 @@ def google_analytics(request):
             'GOOGLE_ANALYTICS_DOMAIN': ga_domain,
         }
     return {}
+def resend_activation_email(request):
+    email_body_template = 'registration/activation_email.txt'
+    email_subject_template = 'registration/activation_email_subject.txt'
+
+    if not request.user.is_anonymous():
+        return HttpResponseRedirect('/')
+
+    context = Context()
+
+    form = None
+    if request.method == 'POST':
+        form = ResendActivationEmailForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            users = MyUser.objects.filter(email=email, is_active=0)
+
+            if not users.count():
+                form._errors["email"] = ["Account for email address is not registered or already activated."]
+
+            REGISTRATION_SALT = getattr(settings, 'REGISTRATION_SALT', 'registration')
+            for user in users:
+                activation_key = signing.dumps(
+                    obj=getattr(user, user.USERNAME_FIELD),
+                    salt=REGISTRATION_SALT,
+                    )
+                context = {}
+                context['activation_key'] = activation_key
+                context['expiration_days'] = settings.ACCOUNT_ACTIVATION_DAYS
+                context['site'] = get_current_site(request)
+
+                subject = render_to_string(email_subject_template,
+                                   context)
+                # Force subject to a single line to avoid header-injection
+                # issues.
+                subject = ''.join(subject.splitlines())
+                message = render_to_string(email_body_template,
+                                           context)
+                user.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)
+                return render(request, 'registration/resend_activation_email_done.html')
+
+    if not form:
+        form = ResendActivationEmailForm()
+
+    context.update({"form" : form})
+    return render(request, 'registration/resend_activation_email_form.html', context)
 
 def job_list(request, pk):
     founder = get_object_or_404(Founder, pk=pk)
