@@ -15,7 +15,7 @@
                       <form method="post">
                         {% csrf_token %}
                         {{ form|crispy }}
-                        <input type="submit" name="login" class="btn btn-default" value="Update">
+                        <input type="submit" class="profile-form-submit" value="Update">
                       </form>
                   </div>
             </div>
@@ -31,7 +31,7 @@
                         <form method="post" action="{% url 'website:change_alternate_email' %}">
                             {% csrf_token %}
                             {{ alternate_email_form|crispy }}
-                            <input type="submit" class="btn btn-default" value="Update">
+                            <input type="submit" class="profile-form-submit" value="Update">
                         </form>
                     </div>
                 </div>
