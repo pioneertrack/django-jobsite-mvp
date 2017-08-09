@@ -4,43 +4,34 @@
 
 {% block title %} Settings {% endblock %}
 {% block content %}
-<div class = "settings-page">
-<div class = "container">
-    <div class = "row">
-
-        <div class="col-md-6 centered">
-            <div class="loginmodal-container" style="max-width: inherit; width: inherit;">
-                  <div class="col-md-8 centered">
-                      <h4>Change Password</h4><br/>
-                      <form method="post">
-                        {% csrf_token %}
-                        {{ form|crispy }}
-                        <input type="submit" class="profile-form-submit" value="Update">
-                      </form>
-                  </div>
-            </div>
-        </div>
+<div class = "profile-form">
+      <div class="modal-dialog">
+          <div id="updateprofile" class = "profile-form-container">
+              <h1>Change Password</h1><br/>
+              <form id="profileform" method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <input type="submit" class="profile-form-submit" value="Update">
+              </form>
+          </div>
 
         <div class="clear30" ></div>
 
+
         {% if alternate_email_form %}
-            <div class="col-md-6 centered">
-                <div class="loginmodal-container" style="max-width: inherit; width: inherit;">
-                    <div class="col-md-8 centered">
-                        <h4>Change Alternate Email</h4><br/>
-                        <form method="post" action="{% url 'website:change_alternate_email' %}">
-                            {% csrf_token %}
-                            {{ alternate_email_form|crispy }}
-                            <input type="submit" class="profile-form-submit" value="Update">
-                        </form>
-                    </div>
-                </div>
-            </div>
+          <div id = "updateprofile" class = "profile-form-container">
+            <h1>Change Alternate Email</h1><br/>
+            <form id="profileform" method="post" action="{% url 'website:change_alternate_email' %}">
+                {% csrf_token %}
+                {{ alternate_email_form|crispy }}
+                <input type="submit" class="profile-form-submit" value="Update">
+            </form>
+          </div>
         {% endif %}
 
         <div class="clear30"></div>
 
-        <div class="col-md-6 centered">
+        <div class="col-md-6 pull-left">
             {% if request.user.is_account_disabled %}
                 <form method="post" action="{% url 'website:change_account_status' 'enable' %}">{% csrf_token %}</form>
                 <button class="btn btn-primary" id="enable-account">Enable Account</button>
