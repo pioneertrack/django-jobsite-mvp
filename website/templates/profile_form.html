@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-{% trans "Update profile" %}
+{% trans title %}
 {% endblock %}
 {% block content %}
 
@@ -14,7 +14,7 @@
     {% if is_first_login %}
         <a href="{{ next_url }}" class="pull-right fill-out-later">Fill out later</a>
     {% endif %}
-    <h1> Update your profile </h1><br>
+    <h1> {{ title }} </h1><br>
     <form id = "profileform" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {% for dict in experience.errors %}

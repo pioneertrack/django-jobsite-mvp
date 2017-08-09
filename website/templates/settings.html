@@ -6,7 +6,18 @@
 {% block content %}
 <div class = "profile-form">
       <div class="modal-dialog">
-          <div id="updateprofile" class = "profile-form-container">
+
+          {% if not request.user.is_individual %}
+            <a href="{% url 'website:add_profile' %}" class="btn btn-primary pull-right">Add Profile</a>
+          {% endif %}
+
+          {% if not request.user.is_founder %}
+            <a href="{% url 'website:add_startup' %}" class="btn btn-primary pull-right">Add Startup</a>
+          {% endif %}
+
+          <div class="clear20"></div>
+
+          <div id="updateprofile" class="profile-form-container">
               <h1>Change Password</h1><br/>
               <form id="profileform" method="post">
                 {% csrf_token %}
@@ -19,7 +30,7 @@
 
 
         {% if alternate_email_form %}
-          <div id = "updateprofile" class = "profile-form-container">
+          <div id = "updateprofile" classs="profile-form-container">
             <h1>Change Alternate Email</h1><br/>
             <form id="profileform" method="post" action="{% url 'website:change_alternate_email' %}">
                 {% csrf_token %}

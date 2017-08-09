@@ -528,6 +528,51 @@ def startup_profile(request):
 
 
 @login_required(login_url='login/')
+@user_passes_test(lambda user: not user.is_individual, login_url=reverse_lazy('website:settings'))
+def add_profile(request):
+    user = request.user
+
+    ExperienceFormSet = inlineformset_factory(prof.Profile, prof.Experience, form=forms.ExperienceForm,
+                                              widgets={'start_date': f.DateInput(), 'end_date': f.DateInput()},
+                                              error_messages={'start_date': {
+                                                  'invalid': 'Please enter a date with the form MM/DD/YY'},
+                                                              'end_date': {
+                                                                  'invalid': 'Please enter a date with the form MM/DD/YY'}},
+                                              max_num=5, extra=1)
+
+    profile_form = forms.ProfileForm(instance=request.user.profile)
+    experience_form = ExperienceFormSet(instance=request.user.profile)
+
+    if request.method == 'POST':
+        profile_form = forms.ProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        experience_form = ExperienceFormSet(request.POST, instance=request.user.profile)
+        if profile_form.is_valid() and experience_form.is_valid():
+            for k in experience_form.deleted_forms:
+                s = k.save(commit=False)
+                s.delete()
+            objs = experience_form.save(commit=False)
+            for obj in objs:
+                if obj.company != '':
+                    obj.save()
+            profile_form.save()
+            messages.success(request, 'Your profile was successfully added')
+            user.is_individual = True
+            user.save()
+            return redirect('website:profile')
+        else:
+            messages.error(request, "There was an error processing your request")
+
+    return render(request, 'profile_form.html',
+                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      'profile_form': profile_form,
+                      'experience': experience_form,
+                      'show_exp': True,
+                      'reset': True,
+                      'title': 'Add Profile'
+                  }))
+
+
+@login_required(login_url='login/')
 @user_passes_test(lambda user: user.is_individual, login_url='/')
 def profile_update(request):
     user = request.user
@@ -575,8 +620,65 @@ def profile_update(request):
                       'experience': experience_form,
                       'show_exp': True,
                       'reset': True,
+                      'title': 'Update your profile',
                       'is_first_login': is_first_login,
                       'next_url': reverse('website:startup_update') if user.is_founder else reverse('website:profile')
+                  }))
+
+
+@login_required(login_url='login/')
+@user_passes_test(lambda user: not user.is_founder, login_url=reverse_lazy('website:settings'))
+def add_startup(request):
+    user = request.user
+
+    FundingFormSet = inlineformset_factory(prof.Founder, prof.Funding, form=forms.FundingForm,
+                                           error_messages={
+                                               'raised': {'invalid': 'Please enter an amount greater than 0'}},
+                                           labels={'stage': 'Funding round', 'raised': 'Amount raised'}, max_num=5,
+                                           extra=1)
+    JobFormSet = inlineformset_factory(prof.Founder, prof.Job, form=forms.JobForm,
+                                       labels={'level': 'Job position', 'title': 'Job title', 'pay': 'Job pay',
+                                               'description': 'Job description'}, max_num=5, extra=1)
+
+    startup_form = forms.FounderForm(instance=request.user.founder)
+    funding_form = FundingFormSet(instance=request.user.founder)
+    job_form = JobFormSet(instance=request.user.founder)
+
+    if request.method == 'POST':
+        profile_form = forms.FounderForm(request.POST, request.FILES, instance=request.user.founder)
+        funding_form = FundingFormSet(request.POST, instance=request.user.founder)
+        job_form = JobFormSet(request.POST, instance=request.user.founder)
+        if profile_form.is_valid() and job_form.is_valid() and funding_form.is_valid():
+            for k in job_form.deleted_forms:
+                s = k.save(commit=False)
+                s.delete()
+            for l in funding_form.deleted_forms:
+                t = l.save(commit=False)
+                t.delete()
+            objs = job_form.save(commit=False)
+            for obj in objs:
+                if obj.title != '':
+                    obj.save()
+            objs2 = funding_form.save(commit=False)
+            for obj2 in objs2:
+                if obj2.raised > 0:
+                    obj2.save()
+            profile_form.save()
+            messages.success(request, 'Your profile was successfully added')
+            user.is_founder = True
+            user.save()
+            return redirect('website:startup_profile')
+        else:
+            messages.error(request, 'There was an error processing your request')
+
+    return render(request, 'profile_form.html',
+                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      'profile_form': startup_form,
+                      'funding': funding_form,
+                      'jobs': job_form,
+                      'show_exp': False,
+                      'reset': True,
+                      'title': 'Add Startup'
                   }))
 
 
@@ -634,6 +736,7 @@ def startup_update(request):
                       'show_exp': False,
                       'reset': True,
                       'is_first_login': is_first_login,
+                      'title': 'Update Startup',
                       'next_url': reverse('website:startup_profile')
                   }))
 
