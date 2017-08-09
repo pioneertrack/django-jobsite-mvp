@@ -5,6 +5,7 @@ from django.template import Context, loader, RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from registration.backends.hmac.views import RegistrationView
 from django.contrib import messages
+from django.utils import timezone
 from django.forms.models import inlineformset_factory
 from django import forms as f
 from django.views.decorators.csrf import csrf_exempt
@@ -489,6 +490,7 @@ def index(request):
 @login_required(login_url='login/')
 def profile(request):
     last_login = request.user.last_login
+    f= "Now"
     if request.user.is_founder:
         jobs = request.user.founder.job_set.order_by('created_date')
         total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
@@ -498,7 +500,7 @@ def profile(request):
                           'jobs': jobs,
                           'reset': True,
                           'total_funding': total_funding.get('total'),
-                          'last_login': last_login,
+                          'last_login': f,
                       }))
     experience = request.user.profile.experience_set.order_by('-end_date')
     return render(request, 'profile.html',
@@ -506,7 +508,7 @@ def profile(request):
                       'profile': True,
                       'experience': experience,
                       'reset': True,
-                      'last_login': last_login,
+                      'last_login': f,
                   }))
 
 
@@ -607,6 +609,21 @@ def profile_update(request):
 def get_user_view(request, id):
     user = get_object_or_404(models.MyUser, pk=id)
     last_login = user.last_login
+    current_time= timezone.now()
+    cr= current_time - last_login
+    cr= cr.total_seconds()
+    if cr<3600.00:
+        f= "AN HOUR AGO"
+    elif cr> 3600.00 and cr< 86400.00:
+        f= "Today"
+    elif cr> 86400.00 and cr< 172800.00:
+        f= "Yesterday"
+    elif cr> 172800.00 and cr< 604800.00:
+        f= "A week ago"
+    elif cr>608400.00 and cr< 2592000.00:
+        f= "A month Ago"
+    else:
+        f= "A year ago"
     if user is None:
         return HttpResponseRedirect('/')
     if user.is_founder:
@@ -617,7 +634,7 @@ def get_user_view(request, id):
                           'profile': False,
                           'jobs': jobs,
                           'reset': True,
-                          'last_login':last_login,
+                          'last_login':f,
                       }))
     else:
         exp = user.profile.experience_set.order_by('-end_date')
@@ -627,7 +644,7 @@ def get_user_view(request, id):
                           'profile': False,
                           'experience': exp,
                           'reset': True,
-                          'last_login':last_login,
+                          'last_login':f,
                       }))
 
 
