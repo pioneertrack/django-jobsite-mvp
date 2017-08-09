@@ -20,7 +20,7 @@
         <h3>{%if user.profile.year != ""%}{{user.profile.get_year_display}}{%else%}Student{%endif%} at UC Berkeley</h3>
         {%if user.profile.position != ""%} <p>Looking for a <strong> {{user.profile.get_position_display}} </strong> position</p> {%endif%}
         <hr>
-	<h5>Last Login: {{ last_login }}</h5>
+	<h5>Active: {{ last_login }}</h5>
         {%if profile %}
         <button id="update" class = "btn btn-lg btn-success btn-outline">Update your profile</button>
         {%else%}
