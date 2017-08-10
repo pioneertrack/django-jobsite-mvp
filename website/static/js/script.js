@@ -27,6 +27,7 @@ jQuery(document).ready(function($){
     var selector = $("#selector").val();
     var tags = $(`#tags_${selector}`);
     var select = $(`select[name="${data_name}"]`);
+    var data_class = select.data('class');
     var filter_input = $(`#filter_${selector}`);
 
     if (tags.children().length === 2) {
@@ -54,7 +55,7 @@ jQuery(document).ready(function($){
     }
 
     //Remove data about tags from associated hidden field
-    var str = `["${data_name}","${data_value}","${$(this).parent().text()}"]`;
+    var str = `["${data_name}","${data_value}","${$(this).parent().text()}","${data_class}"]`;
     var value = filter_input.val();
     value = value.replace(str, '');
     value = value.replace(',,', ',');
@@ -112,7 +113,7 @@ jQuery(document).ready(function($){
           tag.removeClass('outer');
         }
       });
-      var str = `["${data_name}","${data_value}","${$(this).text()}"]`;
+      var str = `["${data_name}","${data_value}","${$(this).text()}","${data_class}"]`;
       var value = filter_input.val();
       value = value.replace(str, '');
       value = value.replace(',,', ',');
