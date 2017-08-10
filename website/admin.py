@@ -200,7 +200,7 @@ class ProfileResource(resources.ModelResource):
         fields = ('user', 'user__first_name', 'user__last_name', 'bio', 'position',
                   'interests', 'skills', 'courses', 'year', 'hours_week',
                   'has_startup_exp', 'has_funding_exp', 'linkedin', 'website',
-                  'github', 'major', 'role', 'partner', 'team_member')
+                  'github', 'major', 'role')
 
         export_order = ('user', 'user__first_name', 'user__last_name')
 

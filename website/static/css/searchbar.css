@@ -545,22 +545,22 @@
   content: ' ';
 }
 
-.people, .startups, .jobs, .team_members, .partners {
+.startups, .jobs, .partners, .employees, .freelancers {
   display: none;
 }
-.tags.people.is-visible,
 .tags.startups.is-visible,
 .tags.jobs.is-visible,
-.tags.team_members.is-visible,
-.tags.partners.is-visible {
+.tags.partners.is-visible,
+.tags.employees.is-visible,
+.tags.freelancers.is-visible {
   display: flex;
 }
 
-.selects.people.is-visible,
 .selects.startups.is-visible,
 .selects.jobs.is-visible,
-.selects.team_members.is-visible,
-.selects.partners.is-visible {
+.selects.partners.is-visible,
+.selects.employees.is-visible,
+.selects.freelancers.is-visible {
   /*display: block;*/
   display: flex;
   flex-flow: row nowrap;

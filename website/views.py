@@ -41,27 +41,12 @@ def merge_dicts(*args):
 
 stemmer = PorterStemmer()
 
-CONTEXT = {
-    'years': prof.YEAR_IN_SCHOOL_CHOICES,
-    'majors': prof.MAJORS,
-    'roles': prof.PRIMARY_ROLE,
-    'fields': prof.CATEGORY,
-    'position': prof.POSITION
-}
 
 JOB_CONTEXT = {
-    'tm_context': [
-        ('years', list(prof.YEAR_IN_SCHOOL_CHOICES), {'class': 'label-year', 'name': 'year'}),
-        ('majors', list(prof.MAJORS), {'class': 'label-major', 'name': 'major'}),
-        ('roles', list(prof.PRIMARY_ROLE), {'class': 'label-role', 'name': 'role'}),
-        ('position', list(prof.POSITION), {'class': 'label-position'}),
-        ('experience', [('0', 'Has startup experience'), ('1', 'Has funding experience')], {'class': 'label-experience'}),
-    ],
     'p_context': [
-        ('years', list(prof.YEAR_IN_SCHOOL_CHOICES), {'class': 'label-year', 'name': 'year'}),
-        ('majors', list(prof.MAJORS), {'class': 'label-major', 'name': 'major'}),
-        ('roles', list(prof.PRIMARY_ROLE), {'class': 'label-role', 'name': 'role'}),
-        ('position', list(prof.POSITION), {'class': 'label-position'}),
+        ('year', list(prof.YEAR_IN_SCHOOL_CHOICES), {'class': 'label-year', 'name': 'year'}),
+        ('major', list(prof.MAJORS), {'class': 'label-major', 'name': 'major'}),
+        ('role', list(prof.PRIMARY_ROLE), {'class': 'label-role', 'name': 'role'}),
         ('experience', [('0', 'Has startup experience'), ('1', 'Has funding experience')], {'class': 'label-experience'}),
     ],
     'f_context': [
@@ -153,49 +138,43 @@ def index(request):
                 query) > 1:
             phrase = True
         words = stem_remove_stop_words(query.translate({ord(c): None for c in string.punctuation}).lower().split())
-        # words = stem_remove_stop_words(nltk.word_tokenize(query))
-        roles = request.POST.getlist('roles')
-        # if 'NONE' in roles:
-        #     roles = roles + ['']
-        years = request.POST.getlist('years')
-        # if len(years) == 10:
-        #     years = years + ['']
-        majors = request.POST.getlist('majors')
+
         fields = request.POST.getlist('fields')
         tokenized_users = []
-        if request.POST['select-category'] == 'team_members' or request.POST['select-category'] == 'partners':
-        # if request.POST['select-category'] == 'people':
+        people = ['partners', 'employees', 'freelancers']
+        if request.POST['select-category'] in people:
 
             kwargs = {'is_active': True, 'is_founder': False}
+            category = request.POST['select-category']
 
-            if request.POST['select-category'] == 'team_members':
-                kwargs['profile__team_member'] = True
-                filter_hidden = request.POST.get('filter_team_members')
-            elif request.POST['select-category'] == 'partners':
-                kwargs['profile__partner'] = True
-                filter_hidden = request.POST.get('filter_partners')
+            if category == 'partners':
+                kwargs['profile__positions__contains'] = ['0']
+            elif category == 'employees':
+                kwargs['profile__positions__overlap'] = ['1', '2', '3']
+            else:
+                kwargs['profile__positions__contains'] = ['4']
 
-            years = request.POST.getlist('years')
-            position = request.POST.getlist('position')
-            experience = request.POST.getlist('experience')
+            filter_hidden = request.POST.get('filter_'+category)
+
+            years = request.POST.getlist('year_'+category)
+            majors = request.POST.getlist('major_'+category)
+            roles = request.POST.getlist('role_'+category)
+            experience = request.POST.getlist('experience_'+category)
             filter = json.loads('[' + filter_hidden + ']')
 
             active_selects = []
 
-            if len(majors) > 1:
-                kwargs['profile__major__in'] = majors
-                active_selects.append('majors')
-            if len(roles) > 1:
-                kwargs['profile__role__in'] = roles
-                active_selects.append('roles')
             if len(years) > 1:
                 kwargs['profile__year__in'] = years
-                active_selects.append('years')
-            if len(position) > 1:
-                kwargs['profile__position__in'] = position
-                active_selects.append('position')
+                active_selects.append('year_'+category)
+            if len(majors) > 1:
+                kwargs['profile__major__in'] = majors
+                active_selects.append('major_'+category)
+            if len(roles) > 1:
+                kwargs['profile__role__in'] = roles
+                active_selects.append('role_'+category)
             if len(experience) > 1:
-                active_selects.append('experience')
+                active_selects.append('experience_'+category)
                 for item in experience:
                     if item == '1':
                         kwargs['profile__has_funding_exp'] = True
@@ -203,29 +182,6 @@ def index(request):
                         kwargs['profile__has_startup_exp'] = True
 
             result = models.MyUser.objects.filter(**kwargs)
-
-        # print(request.POST['select-category'])
-        # if request.POST['select-category'] == 'team_members' or request.POST['select-category'] == 'partners':
-        #
-        #     print(request.POST['select-category'])
-        #
-        #     if request.POST.get('startup', False) and request.POST.get('funding', False):
-        #         result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_funding_exp = True, profile__has_startup_exp = True, profile__position__in=pos)
-        #     elif request.POST.get('startup', False):
-        #         result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_startup_exp = True, profile__position__in=pos)
-        #     elif request.POST.get('funding', False):
-        #         result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__has_funding_exp = True, profile__position__in=pos)
-        #     else:
-        #         result = models.MyUser.objects.filter(is_active=True, is_founder = False, profile__major__in=majors, profile__role__in=roles, profile__year__in=years, profile__position__in=pos)
-        #
-        #     print('\n'+str(len(result))+'\n')
-        #
-        #     if (request.POST['select-category'] == 'team_members'):
-        #         result = result.filter(profile__team_member=True)
-        #     elif (request.POST['select-category'] == 'partners'):
-        #         result = result.filter(profile__partner=True)
-        #
-        #     print('\n'+str(len(result))+'\n')
 
             for r in result:
                 experience = [stem_remove_stop_words(arr) for arr in [
@@ -296,7 +252,7 @@ def index(request):
                 to_return = list(to_return)
                 shuffle(to_return)
             return render(request, 'search.html',
-                          merge_dicts(CONTEXT, JOB_CONTEXT,
+                          merge_dicts(JOB_CONTEXT,
                                       {
                                           'searched': to_return,
                                           'oldroles': roles,
@@ -306,8 +262,8 @@ def index(request):
                                           'funding': request.POST.get('funding', False),
                                           'posted': True,
                                           'founder': False,
-                                          'filter_people': filter,
-                                          'people_hidden': filter_hidden,
+                                          'filter_'+category: filter,
+                                          category+'_hidden': filter_hidden,
                                           'search_category': request.POST['select-category'],
                                           'active_selects': active_selects,
                                       }))
@@ -380,7 +336,7 @@ def index(request):
                         for r in result:
                             if r.id in valid_users:
                                 to_return.add((r, None))
-            vals = roles + years + majors
+            # vals = roles + years + majors
             if len(words) > 0:
                 for user, skills in list(to_return):
                     jobs = [stem_remove_stop_words(arr) for arr in [
@@ -510,13 +466,13 @@ def index(request):
     else:
         if user.is_founder:
             return render(request, 'home.html',
-                          merge_dicts(CONTEXT, JOB_CONTEXT, {
+                          merge_dicts(JOB_CONTEXT, {
                               'posted': False,
                               'reset': True,
                           }))
         else:
             return render(request, 'home.html',
-                          merge_dicts(CONTEXT, JOB_CONTEXT, {
+                          merge_dicts(JOB_CONTEXT, {
                               'posted': False,
                               'reset': True,
                           }))
@@ -530,7 +486,7 @@ def profile(request):
         jobs = request.user.founder.job_set.order_by('created_date')
         total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
         return render(request, 'founder.html',
-                      merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      merge_dicts(JOB_CONTEXT, {
                           'profile': True,
                           'jobs': jobs,
                           'reset': True,
@@ -539,7 +495,7 @@ def profile(request):
                       }))
     experience = request.user.profile.experience_set.order_by('-end_date')
     return render(request, 'profile.html',
-                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+                  merge_dicts(JOB_CONTEXT, {
                       'profile': True,
                       'experience': experience,
                       'reset': True,
@@ -623,7 +579,7 @@ def profile_update(request):
         experience_form = ExperienceFormSet(instance=request.user.profile)
     if not user.is_founder:
         return render(request, 'profile_form.html',
-                      merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      merge_dicts(JOB_CONTEXT, {
                           'profile_form': profile_form,
                           'experience': experience_form,
                           'show_exp': True,
@@ -631,7 +587,7 @@ def profile_update(request):
                       }))
     else:
         return render(request, 'profile_form.html',
-                      merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      merge_dicts(JOB_CONTEXT, {
                           'profile_form': profile_form,
                           'funding': funding_form,
                           'jobs': job_form,
@@ -664,7 +620,7 @@ def get_user_view(request, id):
     if user.is_founder:
         jobs = user.founder.job_set.order_by('title')
         return render(request, 'founder.html',
-                      merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      merge_dicts(JOB_CONTEXT, {
                           'user': user,
                           'profile': False,
                           'jobs': jobs,
@@ -674,7 +630,7 @@ def get_user_view(request, id):
     else:
         exp = user.profile.experience_set.order_by('-end_date')
         return render(request, 'profile.html',
-                      merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      merge_dicts(JOB_CONTEXT, {
                           'user': user,
                           'profile': False,
                           'experience': exp,

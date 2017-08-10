@@ -100,12 +100,14 @@
       <form id="mainform" action="/" autocomplete="off" method="POST">
         {% csrf_token %}
 
+        <input type="hidden" value="{% if partners_hidden %}{{ partners_hidden }}{% endif %}" name="filter_partners"
+               id="filter_partners">
+        <input type="hidden" value="{% if employees_hidden %}{{ employees_hidden }}{% endif %}" name="filter_employees"
+               id="filter_employees">
+        <input type="hidden" value="{% if freelancers_hidden %}{{ freelancers_hidden }}{% endif %}" name="filter_freelancers"
+               id="filter_freelancers">
         <input type="hidden" value="{% if jobs_hidden %}{{ jobs_hidden }}{% endif %}" name="filter_jobs"
                id="filter_jobs">
-        <input type="hidden" value="{% if people_hidden %}{{ people_hidden }}{% endif %}" name="filter_partners"
-               id="filter_partners">
-        <input type="hidden" value="{% if people_hidden %}{{ people_hidden }}{% endif %}" name="filter_team_members"
-               id="filter_team_members">
         <input type="hidden" value="{% if startups_hidden %}{{ startups_hidden }}{% endif %}" name="filter_startups"
                id="filter_startups">
 
@@ -122,6 +124,100 @@
             </div>
 
             <nav class="cd-secondary-nav cd-search-nav first">
+
+              <div class="selects partners">
+                {% for item in p_context %}
+                  <div class="filter-container">
+                    <select class="filter small"
+                            form="mainform"
+                            name="{{ item.0 }}_partners"
+                            multiple style="display: none;"
+                            data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                      <option class="text-capitalize" selected
+                              data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                          {% if item.0|add:"_partners" in active_selects %}
+                              data-revert="Select All"
+                              data-text="Diselect All"
+                          {% else %}
+                              data-revert="Diselect All"
+                              data-text="Select All"
+                          {% endif %}
+                      >
+                      </option>
+                      {% for subitem in item.1 %}
+                        {% to_list item.0|add:"_partners" subitem.0 subitem.1 item.2.class as tmp_list %}
+                        <option value="{{ subitem.0 }}"
+                                class="text-capitalize"
+                                {% if tmp_list in filter_partners %}selected{% endif %}
+                        >{{ subitem.1 }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                {% endfor %}
+              </div>
+
+              <div class="selects employees">
+                {% for item in p_context %}
+                  <div class="filter-container">
+                    <select class="filter small"
+                            form="mainform"
+                            name="{{ item.0 }}_employees"
+                            multiple style="display: none;"
+                            data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                      <option class="text-capitalize" selected
+                              data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                          {% if item.0|add:"_employees" in active_selects %}
+                              data-revert="Select All"
+                              data-text="Diselect All"
+                          {% else %}
+                              data-revert="Diselect All"
+                              data-text="Select All"
+                          {% endif %}
+                      >
+                      </option>
+                      {% for subitem in item.1 %}
+                        {% to_list item.0|add:"_employees" subitem.0 subitem.1 item.2.class as tmp_list %}
+                        <option value="{{ subitem.0 }}"
+                                class="text-capitalize"
+                                {% if tmp_list in filter_employees %}selected{% endif %}
+                        >{{ subitem.1 }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                {% endfor %}
+              </div>
+
+
+              <div class="selects freelancers">
+                {% for item in p_context %}
+                  <div class="filter-container">
+                    <select class="filter small"
+                            form="mainform"
+                            name="{{ item.0 }}_freelancers"
+                            multiple style="display: none;"
+                            data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                      <option class="text-capitalize" selected
+                              data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                          {% if item.0|add:"_freelancers" in active_selects %}
+                              data-revert="Select All"
+                              data-text="Diselect All"
+                          {% else %}
+                              data-revert="Diselect All"
+                              data-text="Select All"
+                          {% endif %}
+                      >
+                      </option>
+                      {% for subitem in item.1 %}
+                        {% to_list item.0|add:"_freelancers" subitem.0 subitem.1 item.2.class as tmp_list %}
+                        <option value="{{ subitem.0 }}"
+                                class="text-capitalize"
+                                {% if tmp_list in filter_freelancers %}selected{% endif %}
+                        >{{ subitem.1 }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                {% endfor %}
+              </div>
 
               <div class="selects jobs">
                 {% for item in job_context %}
@@ -143,72 +239,10 @@
                       >
                       </option>
                       {% for subitem in item.1 %}
-                        {% to_list item.0 subitem.0 subitem.1 as tmp_list %}
+                        {% to_list item.0 subitem.0 subitem.1 item.2.class as tmp_list %}
                         <option value="{{ subitem.0 }}"
                                 class="text-capitalize"
                                 {% if tmp_list in filter_jobs %}selected{% endif %}
-                        >{{ subitem.1 }}</option>
-                      {% endfor %}
-                    </select>
-                  </div>
-                {% endfor %}
-              </div>
-
-              <div class="selects team_members">
-                {% for item in tm_context %}
-                  <div class="filter-container">
-                    <select class="filter small"
-                            form="mainform"
-                            name="{{ item.0 }}"
-                            multiple style="display: none;"
-                            data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
-                      <option class="text-capitalize" selected
-                              data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
-                          {% if item.0 in active_selects %}
-                              data-revert="Select All"
-                              data-text="Diselect All"
-                          {% else %}
-                              data-revert="Diselect All"
-                              data-text="Select All"
-                          {% endif %}
-                      >
-                      </option>
-                      {% for subitem in item.1 %}
-                        {% to_list item.0 subitem.0 subitem.1 as tmp_list %}
-                        <option value="{{ subitem.0 }}"
-                                class="text-capitalize"
-                                {% if tmp_list in filter_people %}selected{% endif %}
-                        >{{ subitem.1 }}</option>
-                      {% endfor %}
-                    </select>
-                  </div>
-                {% endfor %}
-              </div>
-
-              <div class="selects partners">
-                {% for item in p_context %}
-                  <div class="filter-container">
-                    <select class="filter small"
-                            form="mainform"
-                            name="{{ item.0 }}"
-                            multiple style="display: none;"
-                            data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
-                      <option class="text-capitalize" selected
-                              data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
-                          {% if item.0 in active_selects %}
-                              data-revert="Select All"
-                              data-text="Diselect All"
-                          {% else %}
-                              data-revert="Diselect All"
-                              data-text="Select All"
-                          {% endif %}
-                      >
-                      </option>
-                      {% for subitem in item.1 %}
-                        {% to_list item.0 subitem.0 subitem.1 as tmp_list %}
-                        <option value="{{ subitem.0 }}"
-                                class="text-capitalize"
-                                {% if tmp_list in filter_people %}selected{% endif %}
                         >{{ subitem.1 }}</option>
                       {% endfor %}
                     </select>
@@ -236,7 +270,7 @@
                       >
                       </option>
                       {% for subitem in item.1 %}
-                        {% to_list item.0 subitem.0 subitem.1 as tmp_list %}
+                        {% to_list item.0 subitem.0 subitem.1 item.2.class as tmp_list %}
                         <option value="{{ subitem.0 }}"
                                 class="text-capitalize"
                                 {% if tmp_list in filter_startups %}selected{% endif %}
@@ -253,18 +287,22 @@
             <div class="cd-select filter-container">
                   <div>Find</div>
                   <select id="selector" name="select-category" class="filter small">
-                      <option value="team_members"
-                              {% if not founder and not search_category %}selected{% elif search_category == 'people' %}
-                              selected{% endif %}>Team Members
+                      <option value="partners"
+                              {% if not founder and not search_category %}selected{% elif search_category == 'partners' %}
+                              selected{% endif %}>
+                        Partners
                       </option>
-                      <option value="partners" {% if not founder and not search_category %}selected{% endif %}>
-                          Partners
+                      <option value="employees" {% if search_category == 'employees' %}selected{% endif %}>
+                        Employees
+                      </option>
+                      <option value="freelancers" {% if search_category == 'freelancers' %}selected{% endif %}>
+                        Freelancers
                       </option>
                       <option value="startups"
                               {% if founder and not search_category %}selected{% elif search_category == 'startups' %}
                               selected{% endif %}>Startups
                       </option>
-                      <option value="jobs" {% if search_category and search_category == 'jobs' %}selected{% endif %}>
+                      <option value="jobs" {% if search_category == 'jobs' %}selected{% endif %}>
                           Jobs
                       </option>
                   </select>
@@ -296,7 +334,7 @@
                 <span class="tag label label-clear">Clear All</span>
               {% endif %}
               {% for item in filter_startups %}
-                <span class="tag label label-{{ item.0 }}" data-value="{{ item.1 }}"
+                <span class="tag label {{ item.3 }}" data-value="{{ item.1 }}"
                       data-name="{{ item.0 }}">{{ item.2 }}<span
                     data-role="remove"></span></span>
               {% endfor %}
@@ -304,14 +342,14 @@
           </div>
         </div>
 
-        <div class="tags partners {% if filter_people %}selected{% endif %}">
+        <div class="tags partners {% if filter_partners %}selected{% endif %}">
           <div id="tags_partners" class="filter-container">
             {% if search_category == 'partners' %}
-              {% if filter_people %}
+              {% if filter_partners %}
                 <span class="tag label label-clear">Clear All</span>
               {% endif %}
-              {% for item in filter_people %}
-                <span class="tag label label-{{ item.0 }}" data-value="{{ item.1 }}"
+              {% for item in filter_partners %}
+                <span class="tag label {{ item.3 }}" data-value="{{ item.1 }}"
                       data-name="{{ item.0 }}">{{ item.2 }}<span
                     data-role="remove"></span></span>
               {% endfor %}
@@ -319,14 +357,29 @@
           </div>
         </div>
 
-        <div class="tags team_members {% if filter_people %}selected{% endif %}">
-          <div id="tags_team_members" class="filter-container">
-            {% if search_category == 'partners' %}
-              {% if filter_people %}
+        <div class="tags employees {% if filter_employees %}selected{% endif %}">
+          <div id="tags_employees" class="filter-container">
+            {% if search_category == 'employees' %}
+              {% if filter_employees %}
                 <span class="tag label label-clear">Clear All</span>
               {% endif %}
-              {% for item in filter_people %}
-                <span class="tag label label-{{ item.0 }}" data-value="{{ item.1 }}"
+              {% for item in filter_employees %}
+                <span class="tag label {{ item.3 }}" data-value="{{ item.1 }}"
+                      data-name="{{ item.0 }}">{{ item.2 }}<span
+                    data-role="remove"></span></span>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="tags freelancers {% if filter_freelancers %}selected{% endif %}">
+          <div id="tags_freelancers" class="filter-container">
+            {% if search_category == 'freelancers' %}
+              {% if filter_freelancers %}
+                <span class="tag label label-clear">Clear All</span>
+              {% endif %}
+              {% for item in filter_freelancers %}
+                <span class="tag label {{ item.3 }}" data-value="{{ item.1 }}"
                       data-name="{{ item.0 }}">{{ item.2 }}<span
                     data-role="remove"></span></span>
               {% endfor %}
@@ -341,7 +394,7 @@
                 <span class="tag label label-clear">Clear All</span>
               {% endif %}
               {% for item in filter_jobs %}
-                <span class="tag label label-{{ item.0 }}" data-value="{{ item.1 }}"
+                <span class="tag label {{ item.3 }}" data-value="{{ item.1 }}"
                       data-name="{{ item.0 }}">{{ item.2 }}<span
                     data-role="remove"></span></span>
               {% endfor %}

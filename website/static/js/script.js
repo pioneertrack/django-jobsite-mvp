@@ -99,7 +99,7 @@ jQuery(document).ready(function($){
       })
       //To store order of tags in filter
       var punctuation = filter_input.val().length > 0 ? ',' : '';
-      filter_input.val(`["${data_name}","${data_value}","${$(this).text()}"]${punctuation}` + filter_input.val());
+      filter_input.val(`["${data_name}","${data_value}","${$(this).text()}","${data_class}"]${punctuation}` + filter_input.val());
     } else {
       if (tags.children().length === 2) {
         tags.parent().removeClass('selected');

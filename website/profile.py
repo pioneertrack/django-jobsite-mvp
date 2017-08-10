@@ -1,4 +1,3 @@
-import uuid as uuid4
 from django.db import models
 from website import models as user
 from django.db.models.signals import post_save
@@ -103,9 +102,11 @@ LEVELS = (
     ('IN', 'Intern')
 )
 POSITIONS = (
-    (0, 'Partnership'),
-    (1, 'Paid'),
-    (2, 'Contract'),
+    ('0', 'Partnership'),
+    ('1', 'Intern'),
+    ('2', 'Part-Time'),
+    ('3', 'Full-Time'),
+    ('4', 'Contract'),
 )
 
 
@@ -120,7 +121,7 @@ class ChoiceArrayField(ArrayField):
     def formfield(self, **kwargs):
         defaults = {
             'widget': forms.CheckboxSelectMultiple,
-            'form_class': forms.ChoiceField,
+            'form_class': forms.MultipleChoiceField,
             'choices': self.base_field.choices,
         }
         defaults.update(kwargs)
@@ -131,7 +132,6 @@ class ChoiceArrayField(ArrayField):
 
 
 def user_directory_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     return 'images/user_{0}/{1}.jpg'.format(instance.id, instance.id)
 
 
@@ -151,7 +151,6 @@ class Profile(models.Model):
     skills = models.TextField(verbose_name='Skills', max_length=500, blank=True, null=False)
     courses = models.TextField(verbose_name='Courses', max_length=400, blank=True, null=False)
     alt_email = models.EmailField(max_length=255, unique=True, null=True)
-    # experience = []
     year = models.CharField(verbose_name='Year', max_length=4, choices=YEAR_IN_SCHOOL_CHOICES, default='NONE',
                             blank=True, null=False)
     hours_week = models.CharField(verbose_name='Hours per Week', max_length=1, choices=HOURS_AVAILABLE, default='0')
@@ -161,11 +160,8 @@ class Profile(models.Model):
     website = models.URLField(verbose_name='Website', null=False, blank=True)
     github = models.URLField(verbose_name='Github', null=False, blank=True)
     major = models.CharField(verbose_name='Major', max_length=4, choices=MAJORS, default='UND')
-    positions = ChoiceArrayField(models.IntegerField(choices=POSITIONS, default=0), default=[0])
-
-    # second_major = models.CharField()
-
     role = models.CharField(max_length=4, choices=PRIMARY_ROLE, default='NONE', blank=True, null=False)
+    positions = ChoiceArrayField(models.CharField(choices=POSITIONS, max_length=1, default='0'), default=['0'])
 
     def __str__(self):
         return self.user.email

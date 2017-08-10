@@ -10,8 +10,8 @@ def forwards_func(apps, schema_editor):
     profile = apps.get_model("website", "Profile")
 
     db_alias = schema_editor.connection.alias
-    profile.objects.using(db_alias).filter(position='0').update(positions=[0])
-    profile.objects.using(db_alias).filter(position='1').update(positions=[1])
+    profile.objects.using(db_alias).filter(position='0').update(positions=['0'])
+    profile.objects.using(db_alias).filter(position='1').update(positions=['1'])
     profile.objects.using(db_alias).filter(position='NONE').update(positions=[])
 
 
@@ -19,14 +19,15 @@ def reverse_func(apps, schema_editor):
     profile = apps.get_model("website", "Profile")
 
     db_alias = schema_editor.connection.alias
-    profile.objects.using(db_alias).filter(positions=[0]).update(position='0')
-    profile.objects.using(db_alias).filter(positions=[1]).update(position='1')
+    profile.objects.using(db_alias).filter(positions=['0']).update(position='0')
+    profile.objects.using(db_alias).filter(positions=['1']).update(position='1')
+    profile.objects.using(db_alias).filter(positions=[]).update(position='NONE')
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('website', '0004_profile_default_values_fix'),
+        ('website', '0001_initial'),
     ]
 
     operations = [
@@ -36,8 +37,8 @@ class Migration(migrations.Migration):
             model_name='profile',
             name='positions',
             field=django.contrib.postgres.fields.ArrayField(
-                base_field=models.IntegerField(choices=[(0, 'Paid'), (1, 'Partnership'), (2, 'Contract')], default=0),
-                default=[0], size=None),
+                base_field=models.CharField(choices=[('0', 'Partnership'), ('1', 'Intern'), ('2', 'Part-Time'), ('3', 'Full-Time'), ('4', 'Contract')], max_length=1, default='0'),
+                default=['0'], size=None),
         ),
         migrations.RunPython(forwards_func, reverse_func, atomic=True),
         migrations.RunSQL(migrations.RunSQL.noop,
