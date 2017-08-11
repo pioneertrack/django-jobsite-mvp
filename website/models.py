@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 
+
 class UserManager(BaseUserManager):
     use_in_migrations = True
 

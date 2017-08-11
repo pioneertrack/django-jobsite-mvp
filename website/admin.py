@@ -258,7 +258,7 @@ class ProfileAdmin(ImportExportModelAdmin):
     fieldsets = (
         (None,         {'fields': ['user','bio','interests']}),
         ('School',     {'fields': ['year', 'role', 'major', 'courses']}),
-        ('Work',       {'fields': ['hours_week','position']}),
+        ('Work',       {'fields': ['hours_week','position', 'positions']}),
         ('Experience', {'fields': ['has_startup_exp','has_funding_exp','skills']}),
         ('Contact',    {'fields': ['linkedin','website','github']})
     )

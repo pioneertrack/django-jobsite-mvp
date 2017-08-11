@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'nocaptcha_recaptcha',
     'crispy_forms',
     'storages',
-    'import_export'
+    'import_export',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

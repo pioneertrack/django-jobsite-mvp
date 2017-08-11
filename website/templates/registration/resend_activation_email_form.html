@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+{% trans "Register" %}
+{% endblock %}
+{% block content %}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<div id="login-modal" style="padding-bottom: 20px;">
+    <div class="modal-dialog">
+				<div class="loginmodal-container">
+          <form method="post">
+            <h1>Enter the e-mail id:</h1><br>
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" name="send email" class="loginmodal-submit" value="email" style = "margin-top: 10px;">
+          </form>
+				</div>
+    </div>
+</div>
+{% endblock %} 

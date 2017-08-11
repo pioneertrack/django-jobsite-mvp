@@ -8,6 +8,7 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from registration.backends.hmac.views import RegistrationView
 from django.contrib import messages
+from django.utils import timezone
 from django.forms.models import inlineformset_factory
 from django.urls import reverse
 from django import forms as f
@@ -23,8 +24,12 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 import string
 import itertools
+from django.core import signing
 from random import shuffle
-
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from . models import MyUser
+from . forms import ResendActivationEmailForm
 from website import forms
 from website import models
 from website import profile as prof
@@ -50,10 +55,9 @@ CONTEXT = {
 
 JOB_CONTEXT = {
     'p_context': [
-        ('years', list(prof.YEAR_IN_SCHOOL_CHOICES), {'class': 'label-year', 'name': 'year'}),
-        ('majors', list(prof.MAJORS), {'class': 'label-major', 'name': 'major'}),
-        ('roles', list(prof.PRIMARY_ROLE), {'class': 'label-role', 'name': 'role'}),
-        ('position', list(prof.POSITION), {'class': 'label-position'}),
+        ('year', list(prof.YEAR_IN_SCHOOL_CHOICES), {'class': 'label-year', 'name': 'year'}),
+        ('major', list(prof.MAJORS), {'class': 'label-major', 'name': 'major'}),
+        ('role', list(prof.PRIMARY_ROLE), {'class': 'label-role', 'name': 'role'}),
         ('experience', [('0', 'Has startup experience'), ('1', 'Has funding experience')], {'class': 'label-experience'}),
     ],
     'f_context': [
@@ -146,44 +150,43 @@ def index(request):
                 query) > 1:
             phrase = True
         words = stem_remove_stop_words(query.translate({ord(c): None for c in string.punctuation}).lower().split())
-        # words = stem_remove_stop_words(nltk.word_tokenize(query))
-        roles = request.POST.getlist('roles')
-        # if 'NONE' in roles:
-        #     roles = roles + ['']
-        years = request.POST.getlist('years')
-        # if len(years) == 10:
-        #     years = years + ['']
-        majors = request.POST.getlist('majors')
+
         fields = request.POST.getlist('fields')
         tokenized_users = []
-        if request.POST['select-category'] == 'people':
+        people = ['partners', 'employees', 'freelancers']
+        if request.POST['select-category'] in people:
 
-            kwargs = {}
-            kwargs['is_active'] = True
-            kwargs['is_founder'] = False
+            kwargs = {'is_active': True, 'is_founder': False}
+            category = request.POST['select-category']
 
-            years = request.POST.getlist('years')
-            position = request.POST.getlist('position')
-            experience = request.POST.getlist('experience')
-            filter_hidden = request.POST.get('filter_people')
+            if category == 'partners':
+                kwargs['profile__positions__contains'] = ['0']
+            elif category == 'employees':
+                kwargs['profile__positions__overlap'] = ['1', '2', '3']
+            else:
+                kwargs['profile__positions__contains'] = ['4']
+
+            filter_hidden = request.POST.get('filter_'+category)
+
+            years = request.POST.getlist('year_'+category)
+            majors = request.POST.getlist('major_'+category)
+            roles = request.POST.getlist('role_'+category)
+            experience = request.POST.getlist('experience_'+category)
             filter = json.loads('[' + filter_hidden + ']')
 
             active_selects = []
 
-            if len(majors) > 1:
-                kwargs['profile__major__in'] = majors
-                active_selects.append('majors');
-            if len(roles) > 1:
-                kwargs['profile__role__in'] = roles
-                active_selects.append('roles');
             if len(years) > 1:
                 kwargs['profile__year__in'] = years
-                active_selects.append('years')
-            if len(position) > 1:
-                kwargs['profile__position__in'] = position
-                active_selects.append('position')
+                active_selects.append('year_'+category)
+            if len(majors) > 1:
+                kwargs['profile__major__in'] = majors
+                active_selects.append('major_'+category)
+            if len(roles) > 1:
+                kwargs['profile__role__in'] = roles
+                active_selects.append('role_'+category)
             if len(experience) > 1:
-                active_selects.append('experience')
+                active_selects.append('experience_'+category)
                 for item in experience:
                     if item == '1':
                         kwargs['profile__has_funding_exp'] = True
@@ -261,7 +264,7 @@ def index(request):
                 to_return = list(to_return)
                 shuffle(to_return)
             return render(request, 'search.html',
-                          merge_dicts(CONTEXT, JOB_CONTEXT,
+                          merge_dicts(JOB_CONTEXT,
                                       {
                                           'searched': to_return,
                                           'oldroles': roles,
@@ -271,8 +274,8 @@ def index(request):
                                           'funding': request.POST.get('funding', False),
                                           'posted': True,
                                           'founder': False,
-                                          'filter_people': filter,
-                                          'people_hidden': filter_hidden,
+                                          'filter_'+category: filter,
+                                          category+'_hidden': filter_hidden,
                                           'search_category': request.POST['select-category'],
                                           'active_selects': active_selects,
                                       }))
@@ -345,7 +348,7 @@ def index(request):
                         for r in result:
                             if r.id in valid_users:
                                 to_return.add((r, None))
-            vals = roles + years + majors
+            # vals = roles + years + majors
             if len(words) > 0:
                 for user, skills in list(to_return):
                     jobs = [stem_remove_stop_words(arr) for arr in [
@@ -475,22 +478,33 @@ def index(request):
     else:
         if user.is_founder:
             return render(request, 'home.html',
-                          merge_dicts(CONTEXT, JOB_CONTEXT, {
+                          merge_dicts(JOB_CONTEXT, {
                               'posted': False,
                               'reset': True,
                           }))
         else:
             return render(request, 'home.html',
-                          merge_dicts(CONTEXT, JOB_CONTEXT, {
+                          merge_dicts(JOB_CONTEXT, {
                               'posted': False,
                               'reset': True,
                           }))
 
 
-@login_required(login_url='login/')
+@login_required
 @user_passes_test(lambda user: user.is_individual, login_url='/')
 def user_profile(request):
     last_login = request.user.last_login
+    if request.user.is_founder:
+        jobs = request.user.founder.job_set.order_by('created_date')
+        total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
+        return render(request, 'founder.html',
+                      merge_dicts(JOB_CONTEXT, {
+                          'profile': True,
+                          'jobs': jobs,
+                          'reset': True,
+                          'total_funding': total_funding.get('total'),
+                          'last_login': f,
+                      }))
     experience = request.user.profile.experience_set.order_by('-end_date')
 
     # in case user click on fill out later button in profile update
@@ -498,7 +512,7 @@ def user_profile(request):
         request.user.set_first_login()
 
     return render(request, 'profile.html',
-                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+                  merge_dicts(JOB_CONTEXT, {
                       'profile': True,
                       'experience': experience,
                       'reset': True,
@@ -506,7 +520,7 @@ def user_profile(request):
                   }))
 
 
-@login_required(login_url='login/')
+@login_required
 @user_passes_test(lambda user: user.is_founder, login_url='/')
 def startup_profile(request):
     last_login = request.user.last_login
@@ -577,7 +591,7 @@ def add_profile(request):
                   }))
 
 
-@login_required(login_url='login/')
+@login_required
 @user_passes_test(lambda user: user.is_individual and hasattr(user, 'profile'),
                   login_url=reverse_lazy('website:settings'))
 def profile_update(request):
@@ -598,6 +612,9 @@ def profile_update(request):
     if request.method == 'POST':
         profile_form = forms.ProfileForm(request.POST, request.FILES, instance=request.user.profile)
         experience_form = ExperienceFormSet(request.POST, instance=request.user.profile)
+        alt_email = profile_form["alt_email"]
+        if request.user.email == alt_email:
+            profile_form._errors["alt_email"] = ["Account for email address is not registered or already activated."]
         if profile_form.is_valid() and experience_form.is_valid():
             profile = profile_form.save()
 
@@ -633,7 +650,7 @@ def profile_update(request):
                   }))
 
 
-@login_required(login_url='login/')
+@login_required
 @user_passes_test(lambda user: not user.is_founder, login_url=reverse_lazy('website:settings'))
 def add_startup(request):
     user = request.user
@@ -695,7 +712,7 @@ def add_startup(request):
                   }))
 
 
-@login_required(login_url='login/')
+@login_required
 @user_passes_test(lambda user: user.is_founder and hasattr(user, 'founder'), login_url=reverse_lazy('website:settings'))
 def startup_update(request):
     user = request.user
@@ -754,31 +771,46 @@ def startup_update(request):
                   }))
 
 
-@login_required(login_url='login/')
+@login_required
 def get_user_view(request, id):
     user = get_object_or_404(models.MyUser, pk=id)
     last_login = user.last_login
+    current_time= timezone.now()
+    cr= current_time - last_login
+    cr= cr.total_seconds()
+    if cr<3600.00:
+        f= "AN HOUR AGO"
+    elif cr> 3600.00 and cr< 86400.00:
+        f= "Today"
+    elif cr> 86400.00 and cr< 172800.00:
+        f= "Yesterday"
+    elif cr> 172800.00 and cr< 604800.00:
+        f= "A week ago"
+    elif cr>608400.00 and cr< 2592000.00:
+        f= "A month Ago"
+    else:
+        f= "A year ago"
     if user is None:
         return HttpResponseRedirect('/')
     if user.is_founder:
         jobs = user.founder.job_set.order_by('title')
         return render(request, 'founder.html',
-                      merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      merge_dicts(JOB_CONTEXT, {
                           'user': user,
                           'profile': False,
                           'jobs': jobs,
                           'reset': True,
-                          'last_login':last_login,
+                          'last_login':f,
                       }))
     else:
         exp = user.profile.experience_set.order_by('-end_date')
         return render(request, 'profile.html',
-                      merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      merge_dicts(JOB_CONTEXT, {
                           'user': user,
                           'profile': False,
                           'experience': exp,
                           'reset': True,
-                          'last_login':last_login,
+                          'last_login':f,
                       }))
 
 
@@ -802,6 +834,53 @@ def google_analytics(request):
             'GOOGLE_ANALYTICS_DOMAIN': ga_domain,
         }
     return {}
+
+
+def resend_activation_email(request):
+    email_body_template = 'registration/activation_email.txt'
+    email_subject_template = 'registration/activation_email_subject.txt'
+
+    if not request.user.is_anonymous():
+        return HttpResponseRedirect('/')
+
+    context = Context()
+
+    form = None
+    if request.method == 'POST':
+        form = ResendActivationEmailForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            users = MyUser.objects.filter(email=email, is_active=0)
+
+            if not users.count():
+                form._errors["email"] = ["Account for email address is not registered or already activated."]
+
+            REGISTRATION_SALT = getattr(settings, 'REGISTRATION_SALT', 'registration')
+            for user in users:
+                activation_key = signing.dumps(
+                    obj=getattr(user, user.USERNAME_FIELD),
+                    salt=REGISTRATION_SALT,
+                    )
+                context = {}
+                context['activation_key'] = activation_key
+                context['expiration_days'] = settings.ACCOUNT_ACTIVATION_DAYS
+                context['site'] = get_current_site(request)
+
+                subject = render_to_string(email_subject_template,
+                                   context)
+                # Force subject to a single line to avoid header-injection
+                # issues.
+                subject = ''.join(subject.splitlines())
+                message = render_to_string(email_body_template,
+                                           context)
+                user.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)
+                return render(request, 'registration/resend_activation_email_done.html')
+
+    if not form:
+        form = ResendActivationEmailForm()
+
+    context.update({"form" : form})
+    return render(request, 'registration/resend_activation_email_form.html', context)
 
 
 def job_list(request, pk):

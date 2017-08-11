@@ -50,6 +50,7 @@ jQuery(document).ready(function($){
     var selector = $("#selector").val();
     var tags = $(`#tags_${selector}`);
     var select = $(`select[name="${data_name}"]`);
+    var data_class = select.data('class');
     var filter_input = $(`#filter_${selector}`);
 
     if (tags.children().length === 2) {
@@ -77,7 +78,7 @@ jQuery(document).ready(function($){
     }
 
     //Remove data about tags from associated hidden field
-    var str = `["${data_name}","${data_value}","${$(this).parent().text()}"]`;
+    var str = `["${data_name}","${data_value}","${$(this).parent().text()}","${data_class}"]`;
     var value = filter_input.val();
     value = value.replace(str, '');
     value = value.replace(',,', ',');
@@ -122,7 +123,7 @@ jQuery(document).ready(function($){
       })
       //To store order of tags in filter
       var punctuation = filter_input.val().length > 0 ? ',' : '';
-      filter_input.val(`["${data_name}","${data_value}","${$(this).text()}"]${punctuation}` + filter_input.val());
+      filter_input.val(`["${data_name}","${data_value}","${$(this).text()}","${data_class}"]${punctuation}` + filter_input.val());
     } else {
       if (tags.children().length === 2) {
         tags.parent().removeClass('selected');
@@ -135,7 +136,7 @@ jQuery(document).ready(function($){
           tag.removeClass('outer');
         }
       });
-      var str = `["${data_name}","${data_value}","${$(this).text()}"]`;
+      var str = `["${data_name}","${data_value}","${$(this).text()}","${data_class}"]`;
       var value = filter_input.val();
       value = value.replace(str, '');
       value = value.replace(',,', ',');

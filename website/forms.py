@@ -4,6 +4,8 @@ from website import models, profile
 from django import forms
 from django.conf import settings
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.postgres.fields import ArrayField
+from django.db.models import IntegerField
 from django.core.validators import EmailValidator
 from django import template
 from django.utils.safestring import mark_safe
@@ -11,7 +13,6 @@ from django.utils.safestring import mark_safe
 import logging
 # convert the errors to text
 from django.utils.encoding import force_text
-
 
 log = logging.getLogger(__name__)
 logging.basicConfig(filename='errorlog.txt')
@@ -69,13 +70,16 @@ class NewRegistrationForm(RegistrationFormUniqueEmail):
 
 class ProfileForm(forms.ModelForm):
     image = forms.ImageField(label='Profile image',required=False, error_messages ={'invalid':"Image files only"}, widget = forms.FileInput)
+
     def is_valid(self):
         log.info(force_text(self.errors))
         return super(ProfileForm, self).is_valid()
 
     class Meta:
         model = profile.Profile
-        fields = ('image', 'bio', 'position', 'role','alt_email', 'interests', 'skills', 'major', 'courses', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'linkedin', 'website', 'github')
+        fields = (
+        'image', 'bio', 'positions', 'role', 'alt_email', 'interests', 'skills',
+        'major', 'courses', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'linkedin', 'website', 'github')
         labels = {
             'has_startup_exp': 'I have worked at a startup before',
             'has_funding_exp': 'I have experience with funding a startup',
@@ -84,17 +88,21 @@ class ProfileForm(forms.ModelForm):
             'website': 'Personal website',
             'courses': 'Relevant coursework',
             'major': 'Primary Major',
-	    'position': 'Seeking what type of position?',
+            'positions': 'Seeking what type of position?',
         }
+
 
 class FounderForm(forms.ModelForm):
     logo = forms.ImageField(label='Logo',required=False, error_messages ={'invalid':"Image files only"}, widget = forms.FileInput)
+
     def is_valid(self):
         log.info(force_text(self.errors))
         return super(FounderForm, self).is_valid()
+
     class Meta:
         model = profile.Founder
-        fields = ('startup_name', 'stage', 'employee_count', 'logo', 'description', 'field', 'website', 'facebook', 'display_funding')
+        fields = ('startup_name', 'stage', 'employee_count', 'logo', 'description',
+                  'field', 'website', 'facebook', 'display_funding')
         labels = {
             'employee_count': 'Number of employees',
             'stage': 'What stage is your startup in?',
@@ -102,10 +110,13 @@ class FounderForm(forms.ModelForm):
             'seeking': 'Looking for a partner or to hire/contract?'
         }
 
+
 class ExperienceForm(forms.ModelForm):
+
     def is_valid(self):
         log.info(force_text(self.errors))
         return super(ExperienceForm, self).is_valid()
+
     class Meta:
         model = profile.Experience
         fields=('company', 'position','start_date', 'currently_working','end_date', 'description')
@@ -114,18 +125,24 @@ class ExperienceForm(forms.ModelForm):
             'end_date': forms.DateInput()
         }
 
+
 class FundingForm(forms.ModelForm):
+
     def is_valid(self):
         log.info(force_text(self.errors))
         return super(FundingForm, self).is_valid()
+
     class Meta:
         model = profile.Funding
         fields=('stage', 'raised')
 
+
 class JobForm(forms.ModelForm):
+
     def is_valid(self):
         log.info(force_text(self.errors))
         return super(JobForm, self).is_valid()
+
     class Meta:
         model = profile.Job
         fields=('title', 'level', 'pay', 'description')
@@ -143,3 +160,6 @@ class ChangeAlternateEmailForm(forms.ModelForm):
         model = profile.Profile
         fields = ('alt_email',)
 
+
+class ResendActivationEmailForm(forms.Form):
+    email = forms.EmailField(required=True)
