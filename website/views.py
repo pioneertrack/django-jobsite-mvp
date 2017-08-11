@@ -494,17 +494,6 @@ def index(request):
 @user_passes_test(lambda user: user.is_individual, login_url='/')
 def user_profile(request):
     last_login = request.user.last_login
-    if request.user.is_founder:
-        jobs = request.user.founder.job_set.order_by('created_date')
-        total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
-        return render(request, 'founder.html',
-                      merge_dicts(JOB_CONTEXT, {
-                          'profile': True,
-                          'jobs': jobs,
-                          'reset': True,
-                          'total_funding': total_funding.get('total'),
-                          'last_login': f,
-                      }))
     experience = request.user.profile.experience_set.order_by('-end_date')
 
     # in case user click on fill out later button in profile update
@@ -512,7 +501,7 @@ def user_profile(request):
         request.user.set_first_login()
 
     return render(request, 'profile.html',
-                  merge_dicts(JOB_CONTEXT, {
+                  merge_dicts(CONTEXT, JOB_CONTEXT, {
                       'profile': True,
                       'experience': experience,
                       'reset': True,
@@ -615,6 +604,7 @@ def profile_update(request):
         alt_email = profile_form["alt_email"]
         if request.user.email == alt_email:
             profile_form._errors["alt_email"] = ["Account for email address is not registered or already activated."]
+
         if profile_form.is_valid() and experience_form.is_valid():
             profile = profile_form.save()
 
@@ -634,8 +624,9 @@ def profile_update(request):
                 return redirect('website:startup_update')
 
             user.set_first_login()
-            return HttpResponseRedirect('/profile')
+            return redirect('website:profile')
         else:
+            print(profile_form.errors, experience_form.errors)
             messages.error(request, "There was an error processing your request")
 
     return render(request, 'profile_form.html',
