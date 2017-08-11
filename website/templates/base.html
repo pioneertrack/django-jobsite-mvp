@@ -286,18 +286,20 @@
             <input type="search" name="query" placeholder="Search... ">
             <div class="cd-select filter-container">
                   <div>Find</div>
-                  <select id="selector" name="select-category" class="filter small">
-                      <option value="partners"
-                              {% if not founder and not search_category %}selected{% elif search_category == 'partners' %}
-                              selected{% endif %}>
-                        Partners
-                      </option>
-                      <option value="employees" {% if search_category == 'employees' %}selected{% endif %}>
-                        Employees
-                      </option>
-                      <option value="freelancers" {% if search_category == 'freelancers' %}selected{% endif %}>
-                        Freelancers
-                      </option>
+                  <select id="selector" name="select-category" class="filter small no-overflow">
+                      <optgroup label="People">
+                        <option value="partners"
+                                {% if not founder and not search_category %}selected{% elif search_category == 'partners' %}
+                                selected{% endif %}>
+                          Partners
+                        </option>
+                        <option value="employees" {% if search_category == 'employees' %}selected{% endif %}>
+                          Employees
+                        </option>
+                        <option value="freelancers" {% if search_category == 'freelancers' %}selected{% endif %}>
+                          Freelancers
+                        </option>
+                      </optgroup>
                       <option value="startups"
                               {% if founder and not search_category %}selected{% elif search_category == 'startups' %}
                               selected{% endif %}>Startups

@@ -544,6 +544,29 @@
 .nice-select .list::before {
   content: ' ';
 }
+.nice-select .option:first-child {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+.nice-select.no-overflow .list{
+  overflow: visible;
+}
+.nice-select .option.optgroup:after {
+  margin-left: 1rem;
+  font: normal normal normal 14px/1 FontAwesome;
+  content: '\f105';
+}
+.nice-select .option {
+  position: relative;
+}
+.nice-select.no-overflow .list .option .list{
+  display: none;
+  top: 50%;
+  left: 80%;
+}
+.nice-select.no-overflow .list .option:hover .list{
+  display: block;
+}
 
 .startups, .jobs, .partners, .employees, .freelancers {
   display: none;
