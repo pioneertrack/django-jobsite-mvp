@@ -527,7 +527,7 @@ def startup_profile(request):
                   }))
 
 
-@login_required(login_url='login/')
+@login_required
 @user_passes_test(lambda user: not user.is_individual, login_url=reverse_lazy('website:settings'))
 def add_profile(request):
     user = request.user
@@ -540,21 +540,26 @@ def add_profile(request):
                                                                   'invalid': 'Please enter a date with the form MM/DD/YY'}},
                                               max_num=5, extra=1)
 
-    profile_form = forms.ProfileForm(instance=request.user.profile)
-    experience_form = ExperienceFormSet(instance=request.user.profile)
+    profile_form = forms.ProfileForm()
+    experience_form = ExperienceFormSet()
 
     if request.method == 'POST':
-        profile_form = forms.ProfileForm(request.POST, request.FILES, instance=request.user.profile)
-        experience_form = ExperienceFormSet(request.POST, instance=request.user.profile)
+        profile_form = forms.ProfileForm(request.POST, request.FILES)
+        experience_form = ExperienceFormSet(request.POST)
         if profile_form.is_valid() and experience_form.is_valid():
+            profile = profile_form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+
             for k in experience_form.deleted_forms:
                 s = k.save(commit=False)
                 s.delete()
             objs = experience_form.save(commit=False)
             for obj in objs:
                 if obj.company != '':
+                    obj.profile = profile
                     obj.save()
-            profile_form.save()
+
             messages.success(request, 'Your profile was successfully added')
             user.is_individual = True
             user.save()
@@ -573,7 +578,8 @@ def add_profile(request):
 
 
 @login_required(login_url='login/')
-@user_passes_test(lambda user: user.is_individual, login_url='/')
+@user_passes_test(lambda user: user.is_individual and hasattr(user, 'profile'),
+                  login_url=reverse_lazy('website:settings'))
 def profile_update(request):
     user = request.user
     is_first_login = user.first_login
@@ -593,16 +599,17 @@ def profile_update(request):
         profile_form = forms.ProfileForm(request.POST, request.FILES, instance=request.user.profile)
         experience_form = ExperienceFormSet(request.POST, instance=request.user.profile)
         if profile_form.is_valid() and experience_form.is_valid():
+            profile = profile_form.save()
+
             for k in experience_form.deleted_forms:
                 s = k.save(commit=False)
-                # messages.success(request, "Removed " +str(s.company) + " from experience")
                 s.delete()
             objs = experience_form.save(commit=False)
             for obj in objs:
-                # messages.success(request, "Added " +str(obj.company) + " to experience")
                 if obj.company != '':
+                    obj.profile = profile
                     obj.save()
-            profile_form.save()
+
             messages.success(request, 'Your profile was successfully updated!')
             user.save()
 
@@ -640,15 +647,19 @@ def add_startup(request):
                                        labels={'level': 'Job position', 'title': 'Job title', 'pay': 'Job pay',
                                                'description': 'Job description'}, max_num=5, extra=1)
 
-    startup_form = forms.FounderForm(instance=request.user.founder)
-    funding_form = FundingFormSet(instance=request.user.founder)
-    job_form = JobFormSet(instance=request.user.founder)
+    startup_form = forms.FounderForm()
+    funding_form = FundingFormSet()
+    job_form = JobFormSet()
 
     if request.method == 'POST':
-        profile_form = forms.FounderForm(request.POST, request.FILES, instance=request.user.founder)
-        funding_form = FundingFormSet(request.POST, instance=request.user.founder)
-        job_form = JobFormSet(request.POST, instance=request.user.founder)
+        profile_form = forms.FounderForm(request.POST, request.FILES)
+        funding_form = FundingFormSet(request.POST)
+        job_form = JobFormSet(request.POST)
         if profile_form.is_valid() and job_form.is_valid() and funding_form.is_valid():
+            profile = profile_form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+
             for k in job_form.deleted_forms:
                 s = k.save(commit=False)
                 s.delete()
@@ -658,12 +669,14 @@ def add_startup(request):
             objs = job_form.save(commit=False)
             for obj in objs:
                 if obj.title != '':
+                    obj.founder = request.user.founder
                     obj.save()
             objs2 = funding_form.save(commit=False)
             for obj2 in objs2:
                 if obj2.raised > 0:
+                    obj2.founder = request.user.founder
                     obj2.save()
-            profile_form.save()
+
             messages.success(request, 'Your profile was successfully added')
             user.is_founder = True
             user.save()
@@ -683,7 +696,7 @@ def add_startup(request):
 
 
 @login_required(login_url='login/')
-@user_passes_test(lambda user: user.is_founder, login_url='/')
+@user_passes_test(lambda user: user.is_founder and hasattr(user, 'founder'), login_url=reverse_lazy('website:settings'))
 def startup_update(request):
     user = request.user
     is_first_login = user.first_login

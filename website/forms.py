@@ -72,6 +72,7 @@ class ProfileForm(forms.ModelForm):
     def is_valid(self):
         log.info(force_text(self.errors))
         return super(ProfileForm, self).is_valid()
+
     class Meta:
         model = profile.Profile
         fields = ('image', 'bio', 'position', 'role','alt_email', 'interests', 'skills', 'major', 'courses', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'linkedin', 'website', 'github')

@@ -109,7 +109,7 @@ def company_logo_path(instance, filename):
     return 'images/company_logos/user_{0}/{1}.jpg'.format(instance.id, instance.id)
 
 class Profile(models.Model):
-    user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
+    user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE, unique=True)
     bio = models.TextField(verbose_name='Bio',max_length=500, blank=True, null=False)
     image = models.ImageField(upload_to=user_directory_path, default = 'images/default/default-profile.jpg', blank=True, null=False)
     position = models.CharField(verbose_name='Position',max_length = 4, choices = POSITION, blank = True, null = False, default='NONE')
