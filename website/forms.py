@@ -163,3 +163,4 @@ class ChangeAlternateEmailForm(forms.ModelForm):
 
 class ResendActivationEmailForm(forms.Form):
     email = forms.EmailField(required=True)
+

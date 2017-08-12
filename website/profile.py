@@ -44,6 +44,7 @@ YEAR_IN_SCHOOL_CHOICES = (
     ('PH', 'PhD'),
     ('PD', 'Post-Doc'),
     ('AL', 'Alumni'),
+    ('FC', 'Faculty'),
     ('NONE', 'Other')
 )
 MAJORS = (

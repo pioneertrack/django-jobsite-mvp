@@ -19,4 +19,5 @@ urlpatterns = [
   url(r'^settings/change_alternate_email/$', views.ChangeAlternateEmail.as_view(), name='change_alternate_email'),
   url(r'^settings/change_account_status/(?P<status>(enable|disable))$', views.ChangeAccountStatus.as_view(), name='change_account_status'),
   url(r'^resend/$', views.resend_activation_email, name='resend'),
+  url(r'^settings/delete_profile/$', views.DeleteProfile.as_view(), name='delete_profile'),
 ]

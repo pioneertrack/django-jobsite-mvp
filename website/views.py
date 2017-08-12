@@ -941,3 +941,21 @@ class ChangeAccountStatus(LoginRequiredMixin, generic.RedirectView):
         user.save()
         messages.success(request, 'Your account has been {}d'.format(kwargs.get('status')))
         return super(ChangeAccountStatus, self).post(request, *args, **kwargs)
+
+
+class DeleteProfile(LoginRequiredMixin, generic.RedirectView):
+    url = reverse_lazy('website:settings')
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        selected_account = request.POST.get('selected_account')
+        if selected_account == 'personal':
+            user.profile.delete()
+            user.is_individual = False
+        if selected_account == 'startup':
+            user.founder.delete()
+            user.is_founder = False
+
+        user.save()
+        messages.success(request, 'Your {} profile has been deleted'.format(selected_account.capitalize()))
+        return super(DeleteProfile, self).post(request, *args, **kwargs)
