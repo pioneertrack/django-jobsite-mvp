@@ -491,7 +491,8 @@ def index(request):
 
 
 @login_required
-@user_passes_test(lambda user: user.is_individual, login_url='/')
+@user_passes_test(lambda user: user.is_individual and hasattr(user, 'profile'),
+                  login_url=reverse_lazy('website:add_profile'))
 def user_profile(request):
     last_login = request.user.last_login
     experience = request.user.profile.experience_set.order_by('-end_date')
@@ -510,7 +511,8 @@ def user_profile(request):
 
 
 @login_required
-@user_passes_test(lambda user: user.is_founder, login_url='/')
+@user_passes_test(lambda user: user.is_founder and hasattr(user, 'founder'),
+                  login_url=reverse_lazy('website:add_startup'))
 def startup_profile(request):
     last_login = request.user.last_login
     jobs = request.user.founder.job_set.order_by('created_date')
@@ -531,7 +533,8 @@ def startup_profile(request):
 
 
 @login_required
-@user_passes_test(lambda user: not user.is_individual, login_url=reverse_lazy('website:settings'))
+@user_passes_test(lambda user: not user.is_individual or not hasattr(user, 'profile'),
+                  login_url=reverse_lazy('website:settings'))
 def add_profile(request):
     user = request.user
 
@@ -543,12 +546,14 @@ def add_profile(request):
                                                                   'invalid': 'Please enter a date with the form MM/DD/YY'}},
                                               max_num=5, extra=1)
 
-    profile_form = forms.ProfileForm()
-    experience_form = ExperienceFormSet()
+    profile = user.profile if hasattr(user, 'profile') else None
+    profile_form = forms.ProfileForm(instance=profile)
+    experience_form = ExperienceFormSet(instance=profile)
 
     if request.method == 'POST':
-        profile_form = forms.ProfileForm(request.POST, request.FILES)
-        experience_form = ExperienceFormSet(request.POST)
+        profile_form = forms.ProfileForm(request.POST, request.FILES, instance=profile)
+        experience_form = ExperienceFormSet(request.POST, instance=profile)
+
         if profile_form.is_valid() and experience_form.is_valid():
             profile = profile_form.save(commit=False)
             profile.user = request.user
@@ -642,7 +647,8 @@ def profile_update(request):
 
 
 @login_required
-@user_passes_test(lambda user: not user.is_founder, login_url=reverse_lazy('website:settings'))
+@user_passes_test(lambda user: not user.is_founder or not hasattr(user, 'founder'),
+                  login_url=reverse_lazy('website:settings'))
 def add_startup(request):
     user = request.user
 
@@ -655,14 +661,15 @@ def add_startup(request):
                                        labels={'level': 'Job position', 'title': 'Job title', 'pay': 'Job pay',
                                                'description': 'Job description'}, max_num=5, extra=1)
 
-    startup_form = forms.FounderForm()
-    funding_form = FundingFormSet()
-    job_form = JobFormSet()
+    founder = user.founder if hasattr(user, 'founder') else None
+    startup_form = forms.FounderForm(instance=founder)
+    funding_form = FundingFormSet(instance=founder)
+    job_form = JobFormSet(instance=founder)
 
     if request.method == 'POST':
-        profile_form = forms.FounderForm(request.POST, request.FILES)
-        funding_form = FundingFormSet(request.POST)
-        job_form = JobFormSet(request.POST)
+        profile_form = forms.FounderForm(request.POST, request.FILES, instance=founder)
+        funding_form = FundingFormSet(request.POST, instance=founder)
+        job_form = JobFormSet(request.POST, instance=founder)
         if profile_form.is_valid() and job_form.is_valid() and funding_form.is_valid():
             profile = profile_form.save(commit=False)
             profile.user = request.user

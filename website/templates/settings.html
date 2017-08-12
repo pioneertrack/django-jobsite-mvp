@@ -7,12 +7,12 @@
 <div class = "profile-form">
       <div class="modal-dialog">
 
-          {% if not request.user.is_individual %}
-            <a href="{% url 'website:add_profile' %}" class="btn btn-primary pull-right">Add Profile</a>
+          {% if not request.user.is_individual or not request.user.profile %}
+            <a href="{% url 'website:add_profile' %}" class="btn btn-primary pull-left" style="margin-right: 20px;">Add Profile</a>
           {% endif %}
 
-          {% if not request.user.is_founder %}
-            <a href="{% url 'website:add_startup' %}" class="btn btn-primary pull-right">Add Startup</a>
+          {% if not request.user.is_founder or not request.user.founder %}
+            <a href="{% url 'website:add_startup' %}" class="btn btn-primary pull-left">Add Startup</a>
           {% endif %}
 
           <div class="clear20"></div>
@@ -42,7 +42,7 @@
 
         <div class="clear30"></div>
 
-        <div class="col-md-6 pull-left">
+        <div class="pull-left">
             {% if request.user.is_account_disabled %}
                 <form method="post" action="{% url 'website:change_account_status' 'enable' %}">{% csrf_token %}</form>
                 <button class="btn btn-primary" id="enable-account">Enable Account</button>
