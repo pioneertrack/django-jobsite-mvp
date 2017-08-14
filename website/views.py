@@ -742,6 +742,7 @@ def startup_update(request):
                 t.delete()
             objs = job_form.save(commit=False)
             for obj in objs:
+                print(obj.__dict__)
                 if obj.title != '':
                     obj.save()
             objs2 = funding_form.save(commit=False)
@@ -890,7 +891,7 @@ def job_list(request, pk):
 class Settings(LoginRequiredMixin, generic.FormView):
     success_url = reverse_lazy('website:settings')
     form_class = forms.ChangePasswordForm
-    alternate_email_form_class = forms.ChangeAlternateEmailForm
+    # alternate_email_form_class = forms.ChangeAlternateEmailForm
     template_name = 'settings.html'
 
     def get_form_kwargs(self):
@@ -900,9 +901,9 @@ class Settings(LoginRequiredMixin, generic.FormView):
 
     def get_context_data(self, **kwargs):
         context = super(Settings, self).get_context_data(**kwargs)
-        if self.request.user.is_individual and hasattr(self.request.user, 'profile'):
-            context['alternate_email_form'] = self.alternate_email_form_class(
-                initial={'alt_email': self.request.user.profile.alt_email})
+        # if self.request.user.is_individual and hasattr(self.request.user, 'profile'):
+        #     context['alternate_email_form'] = self.alternate_email_form_class(
+        #         initial={'alt_email': self.request.user.profile.alt_email})
         context.update(**CONTEXT)
         context.update(**JOB_CONTEXT)
         return context
@@ -914,22 +915,22 @@ class Settings(LoginRequiredMixin, generic.FormView):
         return super(Settings, self).form_valid(form)
 
 
-class ChangeAlternateEmail(Settings, UserPassesTestMixin):
-    form_class = forms.ChangeAlternateEmailForm
-    http_method_names = ['post']
-
-    def test_func(self):
-        return self.request.user.is_individual
-
-    def get_form_kwargs(self):
-        kwargs = super(Settings, self).get_form_kwargs()
-        kwargs['instance'] = self.request.user.profile
-        return kwargs
-
-    def form_valid(self, form):
-        form.save()
-        messages.success(self.request, 'Alternate email updated')
-        return redirect(self.get_success_url())
+# class ChangeAlternateEmail(Settings, UserPassesTestMixin):
+#     form_class = forms.ChangeAlternateEmailForm
+#     http_method_names = ['post']
+#
+#     def test_func(self):
+#         return self.request.user.is_individual
+#
+#     def get_form_kwargs(self):
+#         kwargs = super(Settings, self).get_form_kwargs()
+#         kwargs['instance'] = self.request.user.profile
+#         return kwargs
+#
+#     def form_valid(self, form):
+#         form.save()
+#         messages.success(self.request, 'Alternate email updated')
+#         return redirect(self.get_success_url())
 
 
 class ChangeAccountStatus(LoginRequiredMixin, generic.RedirectView):

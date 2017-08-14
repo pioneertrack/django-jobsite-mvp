@@ -89,6 +89,7 @@ class ProfileForm(forms.ModelForm):
             'courses': 'Relevant coursework',
             'major': 'Primary Major',
             'positions': 'Seeking what type of position?',
+            'alt_email': 'Alternate Contact Email',
         }
 
 
@@ -108,6 +109,7 @@ class FounderForm(forms.ModelForm):
             'stage': 'What stage is your startup in?',
             'hours_wanted': 'Hours per week candidates should have available',
             'seeking': 'Looking for a partner or to hire/contract?',
+            'alt_email': 'Alternate Contact Email',
         }
 
 

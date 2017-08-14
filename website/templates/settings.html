@@ -33,16 +33,17 @@
         <div class="clear30" ></div>
 
 
-        {% if alternate_email_form %}
-          <div id="updateprofile" class="profile-form-container">
-            <h1>Change Alternate Email</h1><br/>
-            <form id="profileform" method="post" action="{% url 'website:change_alternate_email' %}">
-                {% csrf_token %}
-                {{ alternate_email_form|crispy }}
-                <input type="submit" class="profile-form-submit" value="Update">
-            </form>
-          </div>
-        {% endif %}
+            <!--repalced by Alternate Contact Email in personal profile update and startup profile update-->
+        <!--{% if alternate_email_form %}-->
+          <!--<div id="updateprofile" class="profile-form-container">-->
+            <!--<h1>Change Alternate Email</h1><br/>-->
+            <!--<form id="profileform" method="post" action="{% url 'website:change_alternate_email' %}">-->
+                <!--{% csrf_token %}-->
+                <!--{{ alternate_email_form|crispy }}-->
+                <!--<input type="submit" class="profile-form-submit" value="Update">-->
+            <!--</form>-->
+          <!--</div>-->
+        <!--{% endif %}-->
 
         <div class="clear30"></div>
         <div class="clear10"></div>
