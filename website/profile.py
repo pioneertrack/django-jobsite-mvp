@@ -161,7 +161,7 @@ class Profile(models.Model):
     linkedin = models.URLField(verbose_name='Linkedin', null=False, blank=True)
     website = models.URLField(verbose_name='Website', null=False, blank=True)
     github = models.URLField(verbose_name='Github', null=False, blank=True)
-    major = models.CharField(verbose_name='Major', max_length=4, choices=MAJORS, default='UND')
+    major = models.CharField(verbose_name='Major', max_length=5, choices=MAJORS, default='UND')
     role = models.CharField(max_length=4, choices=PRIMARY_ROLE, default='NONE', blank=True, null=False)
     positions = ChoiceArrayField(models.CharField(choices=POSITIONS, max_length=1, default='0'), default=['0'])
 
