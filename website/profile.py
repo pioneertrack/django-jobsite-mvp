@@ -185,6 +185,7 @@ class Founder(models.Model):
                              null=False)
     startup_name = models.CharField(verbose_name='Startup Name', max_length=99)
     description = models.TextField(verbose_name='Description', blank=True, null=False)
+    alt_email = models.EmailField(max_length=255, unique=True, null=True, blank=True)
     stage = models.CharField(verbose_name='Stage', max_length=1, choices=STAGE, default='0')
     employee_count = models.IntegerField(verbose_name='Employees', default=1)
     display_funding = models.BooleanField(blank=True, default=False)

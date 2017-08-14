@@ -34,7 +34,7 @@
 
 
         {% if alternate_email_form %}
-          <div id = "updateprofile" classs="profile-form-container">
+          <div id="updateprofile" class="profile-form-container">
             <h1>Change Alternate Email</h1><br/>
             <form id="profileform" method="post" action="{% url 'website:change_alternate_email' %}">
                 {% csrf_token %}
@@ -45,6 +45,7 @@
         {% endif %}
 
         <div class="clear30"></div>
+        <div class="clear10"></div>
 
         <div class="pull-left">
             <!--
@@ -52,7 +53,7 @@
             from.
 
             If user has single account i.e personal or startup then simply show disable account button so user can
-            disable his account as the user has single profile and deleting that profile doesn;t make sense because
+            disable his account as the user has single profile and deleting that profile doesn't make sense because
             a user is nothing without a profile (personal or startup)
             -->
             {% if request.user.profile and request.user.founder %}
@@ -64,15 +65,20 @@
                         <option value="startup">Startup Profile</option>
                     </select>
                 </form>
-            {% else %}
-                {% if request.user.is_account_disabled %}
-                    <form method="post" action="{% url 'website:change_account_status' 'enable' %}">{% csrf_token %}</form>
-                    <button class="btn btn-primary" id="enable-account">Enable Account</button>
-                {% else %}
-                    <form method="post" action="{% url 'website:change_account_status' 'disable' %}">{% csrf_token %}</form>
-                    <button class="btn btn-primary" id="disable-account">Disable Account</button>
-                {% endif %}
+
+                <div class="clear30"></div>
+                <div class="clear10"></div>
+
             {% endif %}
+
+            {% if request.user.is_account_disabled %}
+                <form method="post" action="{% url 'website:change_account_status' 'enable' %}">{% csrf_token %}</form>
+                <button class="btn btn-primary" id="enable-account">Enable Account</button>
+            {% else %}
+                <form method="post" action="{% url 'website:change_account_status' 'disable' %}">{% csrf_token %}</form>
+                <button class="btn btn-primary" id="disable-account">Disable Account</button>
+            {% endif %}
+
         </div>
 
         <div class="clear30"></div>
@@ -81,4 +87,4 @@
 </div>
 
 </div>
-{%endblock%}
+{% endblock %}

@@ -101,13 +101,13 @@ class FounderForm(forms.ModelForm):
 
     class Meta:
         model = profile.Founder
-        fields = ('startup_name', 'stage', 'employee_count', 'logo', 'description',
+        fields = ('startup_name', 'stage', 'employee_count', 'logo', 'description', 'alt_email',
                   'field', 'website', 'facebook', 'display_funding')
         labels = {
             'employee_count': 'Number of employees',
             'stage': 'What stage is your startup in?',
             'hours_wanted': 'Hours per week candidates should have available',
-            'seeking': 'Looking for a partner or to hire/contract?'
+            'seeking': 'Looking for a partner or to hire/contract?',
         }
 
 
