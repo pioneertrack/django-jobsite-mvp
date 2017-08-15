@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='founder',
             name='alt_email',
-            field=models.EmailField(blank=True, max_length=255, null=True, unique=True),
+            field=models.EmailField(blank=True, max_length=255, null=True, db_index=True),
         ),
         migrations.AddField(
             model_name='myuser',
@@ -52,7 +52,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='profile',
             name='alt_email',
-            field=models.EmailField(blank=True, max_length=255, null=True, unique=True),
+            field=models.EmailField(blank=True, max_length=255, null=True, db_index=True),
         ),
         migrations.AlterField(
             model_name='profile',

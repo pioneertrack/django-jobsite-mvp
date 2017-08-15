@@ -4,7 +4,7 @@ from website import models, profile
 from django import forms
 from django.conf import settings
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.postgres.fields import ArrayField
+from django.forms.fields import ValidationError
 from django.db.models import IntegerField
 from django.core.validators import EmailValidator
 from django import template
@@ -71,9 +71,21 @@ class NewRegistrationForm(RegistrationFormUniqueEmail):
 class ProfileForm(forms.ModelForm):
     image = forms.ImageField(label='Profile image',required=False, error_messages ={'invalid':"Image files only"}, widget = forms.FileInput)
 
+    def __init__(self, *args, **kwargs):
+        super(ProfileForm, self).__init__(*args, **kwargs)
+        self.initial['alt_email'] = None
+
     def is_valid(self):
         log.info(force_text(self.errors))
         return super(ProfileForm, self).is_valid()
+
+    def clean_alt_email(self):
+        email = self.cleaned_data['alt_email']
+        if email != None and email != '':
+            result = profile.Profile.objects.filter(alt_email=email)
+            if result.count() > 1 or (result.count() == 1 and result[0].id != self.instance.id):
+                raise ValidationError(message='Alt email already used')
+        return email
 
     class Meta:
         model = profile.Profile
@@ -95,6 +107,14 @@ class ProfileForm(forms.ModelForm):
 
 class FounderForm(forms.ModelForm):
     logo = forms.ImageField(label='Logo',required=False, error_messages ={'invalid':"Image files only"}, widget = forms.FileInput)
+
+    def clean_alt_email(self):
+        email = self.cleaned_data['alt_email']
+        if email != None and email != '':
+            result = profile.Founder.objects.filter(alt_email=email)
+            if result.count() > 1 or (result.count() == 1 and result[0].id != self.instance.id):
+                raise ValidationError(message='Alt email already used')
+        return email
 
     def is_valid(self):
         log.info(force_text(self.errors))
