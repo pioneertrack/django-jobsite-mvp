@@ -495,6 +495,7 @@ def index(request):
                   login_url=reverse_lazy('website:add_profile'))
 def user_profile(request):
     last_login = request.user.last_login
+    current_time= timezone.now()
     experience = request.user.profile.experience_set.order_by('-end_date')
 
     # in case user click on fill out later button in profile update
@@ -507,6 +508,7 @@ def user_profile(request):
                       'experience': experience,
                       'reset': True,
                       'last_login': last_login,
+                      'current_time': current_time,
                   }))
 
 
@@ -517,20 +519,6 @@ def startup_profile(request):
     user = get_object_or_404(models.MyUser, pk=request.user.id)
     last_login = user.last_login
     current_time= timezone.now()
-    cr= current_time - last_login
-    cr= cr.total_seconds()
-    if cr<3600.00:
-        f= "AN HOUR AGO"
-    elif cr> 3600.00 and cr< 86400.00:
-        f= "Today"
-    elif cr> 86400.00 and cr< 172800.00:
-        f= "Yesterday"
-    elif cr> 172800.00 and cr< 604800.00:
-        f= "A week ago"
-    elif cr>608400.00 and cr< 2592000.00:
-        f= "A month Ago"
-    else:
-        f= "A year ago"
     jobs = request.user.founder.job_set.order_by('created_date')
     total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
     
@@ -544,7 +532,8 @@ def startup_profile(request):
                       'jobs': jobs,
                       'reset': True,
                       'total_funding': total_funding.get('total'),
-                      'last_login': f,
+                      'last_login': last_login,
+                      'current_time': current_time,
                   }))
 
 
@@ -791,20 +780,6 @@ def get_user_view(request, id):
     user = get_object_or_404(models.MyUser, pk=id)
     last_login = user.last_login
     current_time= timezone.now()
-    cr= current_time - last_login
-    cr= cr.total_seconds()
-    if cr<3600.00:
-        f= "AN HOUR AGO"
-    elif cr> 3600.00 and cr< 86400.00:
-        f= "Today"
-    elif cr> 86400.00 and cr< 172800.00:
-        f= "Yesterday"
-    elif cr> 172800.00 and cr< 604800.00:
-        f= "A week ago"
-    elif cr>608400.00 and cr< 2592000.00:
-        f= "A month Ago"
-    else:
-        f= "A year ago"
     if user is None:
         return HttpResponseRedirect('/')
     if user.is_founder:
@@ -815,7 +790,9 @@ def get_user_view(request, id):
                           'profile': False,
                           'jobs': jobs,
                           'reset': True,
-                          'last_login':f,
+                          'last_login':last_login,
+                          'current_time': current_time,
+                          
                       }))
     else:
         exp = user.profile.experience_set.order_by('-end_date')
@@ -825,7 +802,8 @@ def get_user_view(request, id):
                           'profile': False,
                           'experience': exp,
                           'reset': True,
-                          'last_login':f,
+                          'last_login':last_login,
+                          'current_time': current_time,
                       }))
 
 
