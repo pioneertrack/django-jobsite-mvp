@@ -1,0 +1,31 @@
+
+.centered{
+    margin: 0 auto;
+    float: none;
+}
+
+.clear10, .clear20, .clear30{
+    clear: both;
+    display: block;
+}
+
+.clear10{
+    height: 10px;
+}
+
+.clear20{
+    height: 20px;
+}
+
+.clear30{
+    height: 30px;
+}
+
+select[id^='id_'] {
+    margin-bottom: 10px;
+}
+
+div#div_id_logo, div#div_id_image {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}

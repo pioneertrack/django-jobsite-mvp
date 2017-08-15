@@ -1,11 +1,12 @@
 from django.db import models
 from website import models as user
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.contrib.postgres.fields import ArrayField
 from datetime import datetime
 from django import forms
+from django.core.exceptions import ValidationError
 
 HOURS_AVAILABLE = (
     ('0', '0 - 5'),
@@ -44,6 +45,7 @@ YEAR_IN_SCHOOL_CHOICES = (
     ('PH', 'PhD'),
     ('PD', 'Post-Doc'),
     ('AL', 'Alumni'),
+    ('FC', 'Faculty'),
     ('NONE', 'Other')
 )
 MAJORS = (
@@ -142,6 +144,7 @@ def company_logo_path(instance, filename):
 
 
 class Profile(models.Model):
+    role = models.CharField(max_length = 4, choices = PRIMARY_ROLE, default='NONE', blank = True, null = False)
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
     bio = models.TextField(verbose_name='Bio', max_length=500, blank=True, null=False)
     image = models.ImageField(upload_to=user_directory_path, default='images/default/default-profile.jpg', blank=True,
@@ -151,7 +154,7 @@ class Profile(models.Model):
     interests = models.TextField(verbose_name='Interests', max_length=500, blank=True, null=False)
     skills = models.TextField(verbose_name='Skills', max_length=500, blank=True, null=False)
     courses = models.TextField(verbose_name='Courses', max_length=400, blank=True, null=False)
-    alt_email = models.EmailField(max_length=255, unique=True, null=True)
+    alt_email = models.EmailField(max_length=255, db_index=True, null=True)
     year = models.CharField(verbose_name='Year', max_length=4, choices=YEAR_IN_SCHOOL_CHOICES, default='NONE',
                             blank=True, null=False)
     hours_week = models.CharField(verbose_name='Hours per Week', max_length=1, choices=HOURS_AVAILABLE, default='0')
@@ -160,7 +163,7 @@ class Profile(models.Model):
     linkedin = models.URLField(verbose_name='Linkedin', null=False, blank=True)
     website = models.URLField(verbose_name='Website', null=False, blank=True)
     github = models.URLField(verbose_name='Github', null=False, blank=True)
-    major = models.CharField(verbose_name='Major', max_length=4, choices=MAJORS, default='UND')
+    major = models.CharField(verbose_name='Major', max_length=5, choices=MAJORS, default='UND')
     role = models.CharField(max_length=4, choices=PRIMARY_ROLE, default='NONE', blank=True, null=False)
     positions = ChoiceArrayField(models.CharField(choices=POSITIONS, max_length=1, default='0'), default=['0'])
 
@@ -184,6 +187,7 @@ class Founder(models.Model):
                              null=False)
     startup_name = models.CharField(verbose_name='Startup Name', max_length=99)
     description = models.TextField(verbose_name='Description', blank=True, null=False)
+    alt_email = models.EmailField(max_length=255, db_index=True, null=True, blank=True)
     stage = models.CharField(verbose_name='Stage', max_length=1, choices=STAGE, default='0')
     employee_count = models.IntegerField(verbose_name='Employees', default=1)
     display_funding = models.BooleanField(blank=True, default=False)
@@ -193,6 +197,7 @@ class Founder(models.Model):
 
     def __str__(self):
         return self.user.email
+
 
 
 class Funding(models.Model):
@@ -207,7 +212,7 @@ class Funding(models.Model):
 class Job(models.Model):
     founder = models.ForeignKey(Founder, on_delete=models.CASCADE, null=True)
     title = models.CharField(verbose_name='Job Title', max_length=40, blank=True, null=False)
-    pay = models.CharField(verbose_name='Pay', max_length=4, choices=POSITION, default='1')
+    pay = models.CharField(verbose_name='Pay', max_length=5, choices=POSITION, default='1')
     description = models.TextField(verbose_name='Description', max_length=500, blank=True, null=False)
     level = models.CharField(verbose_name='Level', max_length=2, choices=LEVELS, default="FT")
     created_date = models.DateTimeField(default=timezone.now)
@@ -215,21 +220,7 @@ class Job(models.Model):
 
 @receiver(post_save, sender=user.MyUser)
 def create_user_profile(sender, instance, created, **kwargs):
-    if created and not instance.is_founder:
+    if created and instance.is_individual:
         Profile.objects.create(user=instance)
-    elif created and instance.is_founder:
+    if created and instance.is_founder:
         Founder.objects.create(user=instance)
-
-
-@receiver(post_save, sender=user.MyUser)
-def save_user_profile(sender, instance, **kwargs):
-    if instance.is_founder:
-        if hasattr(instance, 'profile'):
-            try:
-                if (instance.founder is None):
-                    Founder.objects.create(user=instance)
-            except:
-                Founder.objects.create(user=instance)
-        instance.founder.save()
-    else:
-        instance.profile.save()

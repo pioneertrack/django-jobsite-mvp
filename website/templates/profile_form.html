@@ -3,14 +3,19 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-{% trans "Update profile" %}
+{% trans title %}
 {% endblock %}
 {% block content %}
+
 <div class = "profile-form">
+
   <div class="modal-dialog">
   <div id = "updateprofile" class = "profile-form-container">
-    <h1> Update your profile </h1><br>
-    <form id = "profileform"method="post" enctype="multipart/form-data">
+    {% if is_first_login %}
+        <a href="{{ next_url }}" class="pull-right fill-out-later">Fill out later</a>
+    {% endif %}
+    <h1> {{ title }} </h1><br>
+    <form id = "profileform" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {% for dict in experience.errors %}
           {% for error in dict.values %}
@@ -100,6 +105,9 @@
 
       <input type="submit" name="save" class="profile-form-submit" value="Save changes">
     </form>
+
+    <a href="{% url 'website:settings' %}" style="margin-left: 46%;" >Cancel</a>
+
   </div>
 </div>
 </div>

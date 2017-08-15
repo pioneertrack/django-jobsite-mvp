@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %} Settings {% endblock %}
+{% block content %}
+<div class = "profile-form">
+      <div class="modal-dialog">
+
+          {% if not request.user.is_individual or not request.user.profile %}
+            <a href="{% url 'website:add_profile' %}" class="btn btn-primary pull-left" style="margin-right: 20px;">
+                Create Personal Profile
+            </a>
+          {% endif %}
+
+          {% if not request.user.is_founder or not request.user.founder %}
+            <a href="{% url 'website:add_startup' %}" class="btn btn-primary pull-left">
+                Create Startup Profile
+            </a>
+          {% endif %}
+
+          <div class="clear20"></div>
+
+          <div id="updateprofile" class="profile-form-container">
+              <h1>Change Password</h1><br/>
+              <form id="profileform" method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <input type="submit" class="profile-form-submit" value="Update">
+              </form>
+          </div>
+
+        <div class="clear30" ></div>
+
+
+            <!--repalced by Alternate Contact Email in personal profile update and startup profile update-->
+        <!--{% if alternate_email_form %}-->
+          <!--<div id="updateprofile" class="profile-form-container">-->
+            <!--<h1>Change Alternate Email</h1><br/>-->
+            <!--<form id="profileform" method="post" action="{% url 'website:change_alternate_email' %}">-->
+                <!--{% csrf_token %}-->
+                <!--{{ alternate_email_form|crispy }}-->
+                <!--<input type="submit" class="profile-form-submit" value="Update">-->
+            <!--</form>-->
+          <!--</div>-->
+        <!--{% endif %}-->
+
+        <div class="clear30"></div>
+        <div class="clear10"></div>
+
+        <div class="pull-left">
+            <!--
+            If user has both personal and startup profile then show delete profile button with both profiles to select
+            from.
+
+            If user has single account i.e personal or startup then simply show disable account button so user can
+            disable his account as the user has single profile and deleting that profile doesn't make sense because
+            a user is nothing without a profile (personal or startup)
+            -->
+            {% if request.user.profile and request.user.founder %}
+                <form method="post" action="{% url 'website:delete_profile' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Delete Selected Profile</button>
+                    <select name="selected_account" class="select" style="padding: 6px 50px;">
+                        <option value="personal">Personal Profile</option>
+                        <option value="startup">Startup Profile</option>
+                    </select>
+                </form>
+
+                <div class="clear30"></div>
+                <div class="clear10"></div>
+
+            {% endif %}
+
+            {% if request.user.is_account_disabled %}
+                <form method="post" action="{% url 'website:change_account_status' 'enable' %}">{% csrf_token %}</form>
+                <button class="btn btn-primary" id="enable-account">Enable Account</button>
+            {% else %}
+                <form method="post" action="{% url 'website:change_account_status' 'disable' %}">{% csrf_token %}</form>
+                <button class="btn btn-primary" id="disable-account">Disable Account</button>
+            {% endif %}
+
+        </div>
+
+        <div class="clear30"></div>
+
+    </div>
+</div>
+
+</div>
+{% endblock %}

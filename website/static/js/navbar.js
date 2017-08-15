@@ -8,7 +8,7 @@ jQuery(document).ready(function($){
 	 return false;
 	});
 	$('#update').click(function(){
-	 window.location.href='/profile/update';
+	 window.location.href = $(this).attr('data-href');
 	 return false;
 	});
 	var mainHeader = $('.cd-auto-hide-header'),

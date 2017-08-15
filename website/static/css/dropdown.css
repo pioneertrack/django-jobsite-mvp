@@ -913,3 +913,14 @@ ul.cd-dropdown-content{
 .radio label input[type="radio"]:disabled + .cr {
     opacity: .5;
 }
+
+ul#cd-navigation div.nice-select{
+    background: none !important;
+    color: #25283D;
+    margin-top: 12px;
+    font-size: 1.8rem
+}
+
+ul#cd-navigation div.nice-select ul.list li{
+    width: 100%;
+}

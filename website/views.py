@@ -1,12 +1,16 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
+from django.views import generic
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth import authenticate, login, update_session_auth_hash
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.template import Context, loader, RequestContext
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
+from django.urls import reverse_lazy
 from registration.backends.hmac.views import RegistrationView
 from django.contrib import messages
 from django.utils import timezone
 from django.forms.models import inlineformset_factory
+from django.urls import reverse
 from django import forms as f
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Sum
@@ -41,6 +45,13 @@ def merge_dicts(*args):
 
 stemmer = PorterStemmer()
 
+CONTEXT = {
+    'years': prof.YEAR_IN_SCHOOL_CHOICES,
+    'majors': prof.MAJORS,
+    'roles': prof.PRIMARY_ROLE,
+    'fields': prof.CATEGORY,
+    'position': prof.POSITION
+}
 
 JOB_CONTEXT = {
     'p_context': [
@@ -130,7 +141,8 @@ def index(request):
     user = request.user
     if user.first_login:
         messages.success(request, "Welcome to BearFounders! Please update your profile.")
-        return HttpResponseRedirect('/profile/update')
+        redirect_url = 'website:profile_update' if user.is_individual else 'website:startup_update'
+        return redirect(redirect_url)
     if request.method == 'POST':
         query = request.POST['query']
         phrase = False
@@ -478,34 +490,54 @@ def index(request):
                           }))
 
 
-@login_required(login_url='login/')
-def profile(request):
+@login_required
+@user_passes_test(lambda user: user.is_individual and hasattr(user, 'profile'),
+                  login_url=reverse_lazy('website:add_profile'))
+def user_profile(request):
     last_login = request.user.last_login
-    f= "Now"
-    if request.user.is_founder:
-        jobs = request.user.founder.job_set.order_by('created_date')
-        total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
-        return render(request, 'founder.html',
-                      merge_dicts(JOB_CONTEXT, {
-                          'profile': True,
-                          'jobs': jobs,
-                          'reset': True,
-                          'total_funding': total_funding.get('total'),
-                          'last_login': f,
-                      }))
     experience = request.user.profile.experience_set.order_by('-end_date')
+
+    # in case user click on fill out later button in profile update
+    if request.user.first_login:
+        request.user.set_first_login()
+
     return render(request, 'profile.html',
-                  merge_dicts(JOB_CONTEXT, {
+                  merge_dicts(CONTEXT, JOB_CONTEXT, {
                       'profile': True,
                       'experience': experience,
                       'reset': True,
-                      'last_login': f,
+                      'last_login': last_login,
                   }))
 
 
-@login_required(login_url='login/')
-def profile_update(request):
+@login_required
+@user_passes_test(lambda user: user.is_founder and hasattr(user, 'founder'),
+                  login_url=reverse_lazy('website:add_startup'))
+def startup_profile(request):
+    last_login = request.user.last_login
+    jobs = request.user.founder.job_set.order_by('created_date')
+    total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
+    
+    # in case user click on fill out later button in profile update
+    if request.user.first_login:
+        request.user.set_first_login()
+
+    return render(request, 'founder.html',
+                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      'profile': True,
+                      'jobs': jobs,
+                      'reset': True,
+                      'total_funding': total_funding.get('total'),
+                      'last_login': last_login,
+                  }))
+
+
+@login_required
+@user_passes_test(lambda user: not user.is_individual or not hasattr(user, 'profile'),
+                  login_url=reverse_lazy('website:settings'))
+def add_profile(request):
     user = request.user
+
     ExperienceFormSet = inlineformset_factory(prof.Profile, prof.Experience, form=forms.ExperienceForm,
                                               widgets={'start_date': f.DateInput(), 'end_date': f.DateInput()},
                                               error_messages={'start_date': {
@@ -513,6 +545,113 @@ def profile_update(request):
                                                               'end_date': {
                                                                   'invalid': 'Please enter a date with the form MM/DD/YY'}},
                                               max_num=5, extra=1)
+
+    profile = user.profile if hasattr(user, 'profile') else None
+    profile_form = forms.ProfileForm(instance=profile)
+    experience_form = ExperienceFormSet(instance=profile)
+
+    if request.method == 'POST':
+        profile_form = forms.ProfileForm(request.POST, request.FILES, instance=profile)
+        experience_form = ExperienceFormSet(request.POST, instance=profile)
+
+        if profile_form.is_valid() and experience_form.is_valid():
+            profile = profile_form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+
+            for k in experience_form.deleted_forms:
+                s = k.save(commit=False)
+                s.delete()
+            objs = experience_form.save(commit=False)
+            for obj in objs:
+                if obj.company != '':
+                    obj.profile = profile
+                    obj.save()
+
+            messages.success(request, 'Your profile was successfully added')
+            user.is_individual = True
+            user.save()
+            return redirect('website:profile')
+        else:
+            messages.error(request, "There was an error processing your request")
+
+    return render(request, 'profile_form.html',
+                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      'profile_form': profile_form,
+                      'experience': experience_form,
+                      'show_exp': True,
+                      'reset': True,
+                      'title': 'Add Profile'
+                  }))
+
+
+@login_required
+@user_passes_test(lambda user: user.is_individual and hasattr(user, 'profile'),
+                  login_url=reverse_lazy('website:settings'))
+def profile_update(request):
+    user = request.user
+    is_first_login = user.first_login
+
+    ExperienceFormSet = inlineformset_factory(prof.Profile, prof.Experience, form=forms.ExperienceForm,
+                                              widgets={'start_date': f.DateInput(), 'end_date': f.DateInput()},
+                                              error_messages={'start_date': {
+                                                  'invalid': 'Please enter a date with the form MM/DD/YY'},
+                                                              'end_date': {
+                                                                  'invalid': 'Please enter a date with the form MM/DD/YY'}},
+                                              max_num=5, extra=1)
+
+    profile_form = forms.ProfileForm(instance=request.user.profile)
+    experience_form = ExperienceFormSet(instance=request.user.profile)
+
+    if request.method == 'POST':
+        profile_form = forms.ProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        experience_form = ExperienceFormSet(request.POST, instance=request.user.profile)
+        alt_email = profile_form["alt_email"]
+        if request.user.email == alt_email:
+            profile_form._errors["alt_email"] = ["Account for email address is not registered or already activated."]
+
+        if profile_form.is_valid() and experience_form.is_valid():
+            profile = profile_form.save()
+
+            for k in experience_form.deleted_forms:
+                s = k.save(commit=False)
+                s.delete()
+            objs = experience_form.save(commit=False)
+            for obj in objs:
+                if obj.company != '':
+                    obj.profile = profile
+                    obj.save()
+
+            messages.success(request, 'Your profile was successfully updated!')
+            user.save()
+
+            if user.is_founder and user.first_login:
+                return redirect('website:startup_update')
+
+            user.set_first_login()
+            return redirect('website:profile')
+        else:
+            print(profile_form.errors, experience_form.errors)
+            messages.error(request, "There was an error processing your request")
+
+    return render(request, 'profile_form.html',
+                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      'profile_form': profile_form,
+                      'experience': experience_form,
+                      'show_exp': True,
+                      'reset': True,
+                      'title': 'Update your profile',
+                      'is_first_login': is_first_login,
+                      'next_url': reverse('website:startup_update') if user.is_founder else reverse('website:profile')
+                  }))
+
+
+@login_required
+@user_passes_test(lambda user: not user.is_founder or not hasattr(user, 'founder'),
+                  login_url=reverse_lazy('website:settings'))
+def add_startup(request):
+    user = request.user
+
     FundingFormSet = inlineformset_factory(prof.Founder, prof.Funding, form=forms.FundingForm,
                                            error_messages={
                                                'raised': {'invalid': 'Please enter an amount greater than 0'}},
@@ -521,31 +660,76 @@ def profile_update(request):
     JobFormSet = inlineformset_factory(prof.Founder, prof.Job, form=forms.JobForm,
                                        labels={'level': 'Job position', 'title': 'Job title', 'pay': 'Job pay',
                                                'description': 'Job description'}, max_num=5, extra=1)
-    if user.first_login:
-        user.set_first_login()
-    if not user.is_founder and request.method == 'POST':
-        profile_form = forms.ProfileForm(request.POST, request.FILES, instance=request.user.profile)
-        experience_form = ExperienceFormSet(request.POST, instance=request.user.profile)
-        alt_email = profile_form["alt_email"]
-        if request.user.email == alt_email:
-            profile_form._errors["alt_email"] = ["Account for email address is not registered or already activated."]
-        if profile_form.is_valid() and experience_form.is_valid():
-            for k in experience_form.deleted_forms:
+
+    founder = user.founder if hasattr(user, 'founder') else None
+    startup_form = forms.FounderForm(instance=founder)
+    funding_form = FundingFormSet(instance=founder)
+    job_form = JobFormSet(instance=founder)
+
+    if request.method == 'POST':
+        profile_form = forms.FounderForm(request.POST, request.FILES, instance=founder)
+        funding_form = FundingFormSet(request.POST, instance=founder)
+        job_form = JobFormSet(request.POST, instance=founder)
+        if profile_form.is_valid() and job_form.is_valid() and funding_form.is_valid():
+            profile = profile_form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+
+            for k in job_form.deleted_forms:
                 s = k.save(commit=False)
-                # messages.success(request, "Removed " +str(s.company) + " from experience")
                 s.delete()
-            objs = experience_form.save(commit=False)
+            for l in funding_form.deleted_forms:
+                t = l.save(commit=False)
+                t.delete()
+            objs = job_form.save(commit=False)
             for obj in objs:
-                # messages.success(request, "Added " +str(obj.company) + " to experience")
-                if obj.company != '':
+                if obj.title != '':
+                    obj.founder = request.user.founder
                     obj.save()
-            profile_form.save()
-            messages.success(request, 'Your profile was successfully updated!')
+            objs2 = funding_form.save(commit=False)
+            for obj2 in objs2:
+                if obj2.raised > 0:
+                    obj2.founder = request.user.founder
+                    obj2.save()
+
+            messages.success(request, 'Your profile was successfully added')
+            user.is_founder = True
             user.save()
-            return HttpResponseRedirect('/profile')
+            return redirect('website:startup_profile')
         else:
-            messages.error(request, "There was an error processing your request")
-    elif user.is_founder and request.method == 'POST':
+            messages.error(request, 'There was an error processing your request')
+
+    return render(request, 'profile_form.html',
+                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      'profile_form': startup_form,
+                      'funding': funding_form,
+                      'jobs': job_form,
+                      'show_exp': False,
+                      'reset': True,
+                      'title': 'Add Startup'
+                  }))
+
+
+@login_required
+@user_passes_test(lambda user: user.is_founder and hasattr(user, 'founder'), login_url=reverse_lazy('website:settings'))
+def startup_update(request):
+    user = request.user
+    is_first_login = user.first_login
+
+    FundingFormSet = inlineformset_factory(prof.Founder, prof.Funding, form=forms.FundingForm,
+                                           error_messages={
+                                               'raised': {'invalid': 'Please enter an amount greater than 0'}},
+                                           labels={'stage': 'Funding round', 'raised': 'Amount raised'}, max_num=5,
+                                           extra=1)
+    JobFormSet = inlineformset_factory(prof.Founder, prof.Job, form=forms.JobForm,
+                                       labels={'level': 'Job position', 'title': 'Job title', 'pay': 'Job pay',
+                                               'description': 'Job description'}, max_num=5, extra=1)
+
+    startup_form = forms.FounderForm(instance=request.user.founder)
+    funding_form = FundingFormSet(instance=request.user.founder)
+    job_form = JobFormSet(instance=request.user.founder)
+
+    if request.method == 'POST':
         profile_form = forms.FounderForm(request.POST, request.FILES, instance=request.user.founder)
         funding_form = FundingFormSet(request.POST, instance=request.user.founder)
         job_form = JobFormSet(request.POST, instance=request.user.founder)
@@ -558,6 +742,7 @@ def profile_update(request):
                 t.delete()
             objs = job_form.save(commit=False)
             for obj in objs:
+                print(obj.__dict__)
                 if obj.title != '':
                     obj.save()
             objs2 = funding_form.save(commit=False)
@@ -567,36 +752,25 @@ def profile_update(request):
             profile_form.save()
             messages.success(request, 'Your profile was successfully updated!')
             user.save()
-            return HttpResponseRedirect('/profile')
+            user.set_first_login()
+            return redirect('website:startup_profile')
         else:
             messages.error(request, 'There was an error processing your request')
-    elif user.is_founder:
-        profile_form = forms.FounderForm(instance=request.user.founder)
-        funding_form = FundingFormSet(instance=request.user.founder)
-        job_form = JobFormSet(instance=request.user.founder)
-    else:
-        profile_form = forms.ProfileForm(instance=request.user.profile)
-        experience_form = ExperienceFormSet(instance=request.user.profile)
-    if not user.is_founder:
-        return render(request, 'profile_form.html',
-                      merge_dicts(JOB_CONTEXT, {
-                          'profile_form': profile_form,
-                          'experience': experience_form,
-                          'show_exp': True,
-                          'reset': True
-                      }))
-    else:
-        return render(request, 'profile_form.html',
-                      merge_dicts(JOB_CONTEXT, {
-                          'profile_form': profile_form,
-                          'funding': funding_form,
-                          'jobs': job_form,
-                          'show_exp': False,
-                          'reset': True
-                      }))
+
+    return render(request, 'profile_form.html',
+                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+                      'profile_form': startup_form,
+                      'funding': funding_form,
+                      'jobs': job_form,
+                      'show_exp': False,
+                      'reset': True,
+                      'is_first_login': is_first_login,
+                      'title': 'Update Startup',
+                      'next_url': reverse('website:startup_profile')
+                  }))
 
 
-@login_required(login_url='login/')
+@login_required
 def get_user_view(request, id):
     user = get_object_or_404(models.MyUser, pk=id)
     last_login = user.last_login
@@ -659,6 +833,8 @@ def google_analytics(request):
             'GOOGLE_ANALYTICS_DOMAIN': ga_domain,
         }
     return {}
+
+
 def resend_activation_email(request):
     email_body_template = 'registration/activation_email.txt'
     email_subject_template = 'registration/activation_email_subject.txt'
@@ -705,8 +881,82 @@ def resend_activation_email(request):
     context.update({"form" : form})
     return render(request, 'registration/resend_activation_email_form.html', context)
 
+
 def job_list(request, pk):
     founder = get_object_or_404(Founder, pk=pk)
     jobs = Job.objects.filter(founder=founder).values().order_by('created_date')
     return render(request, 'job_list.html', {'founder': founder, 'jobs':jobs})
 
+
+class Settings(LoginRequiredMixin, generic.FormView):
+    success_url = reverse_lazy('website:settings')
+    form_class = forms.ChangePasswordForm
+    # alternate_email_form_class = forms.ChangeAlternateEmailForm
+    template_name = 'settings.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(Settings, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(Settings, self).get_context_data(**kwargs)
+        # if self.request.user.is_individual and hasattr(self.request.user, 'profile'):
+        #     context['alternate_email_form'] = self.alternate_email_form_class(
+        #         initial={'alt_email': self.request.user.profile.alt_email})
+        context.update(**CONTEXT)
+        context.update(**JOB_CONTEXT)
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        update_session_auth_hash(self.request, form.user)
+        messages.success(self.request, 'Password updated')
+        return super(Settings, self).form_valid(form)
+
+
+# class ChangeAlternateEmail(Settings, UserPassesTestMixin):
+#     form_class = forms.ChangeAlternateEmailForm
+#     http_method_names = ['post']
+#
+#     def test_func(self):
+#         return self.request.user.is_individual
+#
+#     def get_form_kwargs(self):
+#         kwargs = super(Settings, self).get_form_kwargs()
+#         kwargs['instance'] = self.request.user.profile
+#         return kwargs
+#
+#     def form_valid(self, form):
+#         form.save()
+#         messages.success(self.request, 'Alternate email updated')
+#         return redirect(self.get_success_url())
+
+
+class ChangeAccountStatus(LoginRequiredMixin, generic.RedirectView):
+    url = reverse_lazy('website:settings')
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        user.is_account_disabled = True if kwargs.get('status') == 'disable' else False
+        user.save()
+        messages.success(request, 'Your account has been {}d'.format(kwargs.get('status')))
+        return super(ChangeAccountStatus, self).post(request, *args, **kwargs)
+
+
+class DeleteProfile(LoginRequiredMixin, generic.RedirectView):
+    url = reverse_lazy('website:settings')
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        selected_account = request.POST.get('selected_account')
+        if selected_account == 'personal':
+            user.profile.delete()
+            user.is_individual = False
+        if selected_account == 'startup':
+            user.founder.delete()
+            user.is_founder = False
+
+        user.save()
+        messages.success(request, 'Your {} profile has been deleted'.format(selected_account.capitalize()))
+        return super(DeleteProfile, self).post(request, *args, **kwargs)

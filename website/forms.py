@@ -3,7 +3,8 @@ from nocaptcha_recaptcha.fields import NoReCaptchaField
 from website import models, profile
 from django import forms
 from django.conf import settings
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.auth.forms import PasswordChangeForm
+from django.forms.fields import ValidationError
 from django.db.models import IntegerField
 from django.core.validators import EmailValidator
 from django import template
@@ -19,6 +20,8 @@ logging.basicConfig(filename='errorlog.txt')
 
 class NewRegistrationForm(RegistrationFormUniqueEmail):
     captcha = NoReCaptchaField()
+    create_both_profiles = forms.BooleanField(label='Both', required=False,
+                                             widget=forms.CheckboxInput(attrs={'id': 'select-both-profiles'}))
 
     def __init__(self, *args, **kwargs):
         super(RegistrationFormUniqueEmail, self).__init__(*args, **kwargs)
@@ -49,21 +52,40 @@ class NewRegistrationForm(RegistrationFormUniqueEmail):
             )
         return submitted_data
 
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        if not cleaned_data.get('is_individual') and not cleaned_data.get('is_founder'):
+            self.add_error('create_both_profiles', 'You must be representing an individual profile or startup')
+        return cleaned_data
+
     class Meta:
         model = models.MyUser
-        fields = ['first_name', 'last_name', 'email', 'is_founder', 'password1', 'password2']
+        fields = ['first_name', 'last_name', 'email', 'is_individual', 'is_founder', 'create_both_profiles', 'password1', 'password2']
         labels = {
-            'is_founder' : 'Are you representing a company/startup?',
-            'captcha' : '',
+            'is_individual': 'Create individual profile',
+            'is_founder': 'Create startup profile',
+            'captcha': '',
         }
 
 
 class ProfileForm(forms.ModelForm):
     image = forms.ImageField(label='Profile image',required=False, error_messages ={'invalid':"Image files only"}, widget = forms.FileInput)
 
+    def __init__(self, *args, **kwargs):
+        super(ProfileForm, self).__init__(*args, **kwargs)
+        self.initial['alt_email'] = None
+
     def is_valid(self):
         log.info(force_text(self.errors))
         return super(ProfileForm, self).is_valid()
+
+    def clean_alt_email(self):
+        email = self.cleaned_data['alt_email']
+        if email != None and email != '':
+            result = profile.Profile.objects.filter(alt_email=email)
+            if result.count() > 1 or (result.count() == 1 and result[0].id != self.instance.id):
+                raise ValidationError(message='Alt email already used')
+        return email
 
     class Meta:
         model = profile.Profile
@@ -79,11 +101,20 @@ class ProfileForm(forms.ModelForm):
             'courses': 'Relevant coursework',
             'major': 'Primary Major',
             'positions': 'Seeking what type of position?',
+            'alt_email': 'Alternate Contact Email',
         }
 
 
 class FounderForm(forms.ModelForm):
     logo = forms.ImageField(label='Logo',required=False, error_messages ={'invalid':"Image files only"}, widget = forms.FileInput)
+
+    def clean_alt_email(self):
+        email = self.cleaned_data['alt_email']
+        if email != None and email != '':
+            result = profile.Founder.objects.filter(alt_email=email)
+            if result.count() > 1 or (result.count() == 1 and result[0].id != self.instance.id):
+                raise ValidationError(message='Alt email already used')
+        return email
 
     def is_valid(self):
         log.info(force_text(self.errors))
@@ -91,13 +122,14 @@ class FounderForm(forms.ModelForm):
 
     class Meta:
         model = profile.Founder
-        fields = ('startup_name', 'stage', 'employee_count', 'logo', 'description',
+        fields = ('startup_name', 'stage', 'employee_count', 'logo', 'description', 'alt_email',
                   'field', 'website', 'facebook', 'display_funding')
         labels = {
             'employee_count': 'Number of employees',
             'stage': 'What stage is your startup in?',
             'hours_wanted': 'Hours per week candidates should have available',
-            'seeking': 'Looking for a partner or to hire/contract?'
+            'seeking': 'Looking for a partner or to hire/contract?',
+            'alt_email': 'Alternate Contact Email',
         }
 
 
@@ -136,5 +168,21 @@ class JobForm(forms.ModelForm):
     class Meta:
         model = profile.Job
         fields=('title', 'level', 'pay', 'description')
+
+
+class ChangePasswordForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super(ChangePasswordForm, self).__init__(*args, **kwargs)
+        self.fields['new_password1'].help_text = ''
+
+
+class ChangeAlternateEmailForm(forms.ModelForm):
+
+    class Meta:
+        model = profile.Profile
+        fields = ('alt_email',)
+
+
 class ResendActivationEmailForm(forms.Form):
     email = forms.EmailField(required=True)
+
