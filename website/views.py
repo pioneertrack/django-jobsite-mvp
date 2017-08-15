@@ -514,7 +514,23 @@ def user_profile(request):
 @user_passes_test(lambda user: user.is_founder and hasattr(user, 'founder'),
                   login_url=reverse_lazy('website:add_startup'))
 def startup_profile(request):
-    last_login = request.user.last_login
+    user = get_object_or_404(models.MyUser, pk=request.user.id)
+    last_login = user.last_login
+    current_time= timezone.now()
+    cr= current_time - last_login
+    cr= cr.total_seconds()
+    if cr<3600.00:
+        f= "AN HOUR AGO"
+    elif cr> 3600.00 and cr< 86400.00:
+        f= "Today"
+    elif cr> 86400.00 and cr< 172800.00:
+        f= "Yesterday"
+    elif cr> 172800.00 and cr< 604800.00:
+        f= "A week ago"
+    elif cr>608400.00 and cr< 2592000.00:
+        f= "A month Ago"
+    else:
+        f= "A year ago"
     jobs = request.user.founder.job_set.order_by('created_date')
     total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
     
@@ -528,7 +544,7 @@ def startup_profile(request):
                       'jobs': jobs,
                       'reset': True,
                       'total_funding': total_funding.get('total'),
-                      'last_login': last_login,
+                      'last_login': f,
                   }))
 
 
