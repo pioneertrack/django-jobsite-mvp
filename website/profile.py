@@ -100,7 +100,8 @@ CATEGORY = (
 LEVELS = (
     ('FT', 'Full-time'),
     ('PT', 'Part-time'),
-    ('IN', 'Intern')
+    ('IN', 'Intern'),
+    ('CT', 'Contract')
 )
 POSITIONS = (
     ('0', 'Partnership'),
