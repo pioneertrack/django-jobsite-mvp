@@ -176,16 +176,16 @@ def index(request):
 
             active_selects = []
 
-            if len(years) > 1:
+            if len(years) > 1 or (not '' in years and len(years) > 0):
                 kwargs['profile__year__in'] = years
                 active_selects.append('year_'+category)
-            if len(majors) > 1:
+            if len(majors) > 1  or (not '' in majors and len(majors) > 0):
                 kwargs['profile__major__in'] = majors
                 active_selects.append('major_'+category)
-            if len(roles) > 1:
+            if len(roles) > 1 or (not '' in roles and len(roles) > 0):
                 kwargs['profile__role__in'] = roles
                 active_selects.append('role_'+category)
-            if len(experience) > 1:
+            if len(experience) > 1  or (not '' in experience and len(experience) > 0):
                 active_selects.append('experience_'+category)
                 for item in experience:
                     if item == '1':
@@ -299,10 +299,10 @@ def index(request):
 
             active_selects = []
 
-            if len(fields) > 1:
+            if len(fields) > 1  or (not '' in fields and len(fields) > 0):
                 active_selects.append('fields')
                 kwargs['founder__field__in'] = fields
-            if len(stage) > 1:
+            if len(stage) > 1  or (not '' in stage and len(stage) > 0):
                 active_selects.append('stage')
                 kwargs['founder__stage__in'] = stage
 
@@ -399,13 +399,13 @@ def index(request):
 
             active_selects = []
 
-            if len(level) > 1:
+            if len(level) > 1  or (not '' in level and len(level) > 0):
                 active_selects.append('level')
                 kwargs['level__in'] = level
-            if len(pay) > 1:
+            if len(pay) > 1  or (not '' in pay and len(pay) > 0):
                 active_selects.append('pay')
                 kwargs['pay__in'] = pay
-            if len(category) > 1:
+            if len(category) > 1  or (not '' in category and len(category) > 0):
                 active_selects.append('category')
                 kwargs['founder__field__in'] = category
 

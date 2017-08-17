@@ -23,6 +23,7 @@
   ],
   "dependencies": {
     "bootstrap": "^3.3.7",
-    "nice-select": "https://github.com/hazarin/jquery-nice-select.git#master"
+    "nice-select": "https://github.com/hazarin/jquery-nice-select.git#master",
+    "slidebars": "^2.0.2"
   }
 }

@@ -71,6 +71,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'website.views.google_analytics',
+                'website.context_processors.is_mobile'
             ],
         },
     },
