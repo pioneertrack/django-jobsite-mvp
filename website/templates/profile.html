@@ -18,7 +18,13 @@
         {%if user.profile.has_startup_exp %}<span class="label label-default">Has startup experience</span>{%endif%}
         {%if user.profile.has_funding_exp %}<span class="label label-default">Has funding experience</span>{%endif%}
         <h3>{%if user.profile.year != ""%}{{user.profile.get_year_display}}{%else%}Student{%endif%} at UC Berkeley</h3>
-        {%if user.profile.position != ""%} <p>Looking for a <strong> {{user.profile.get_position_display}} </strong> position</p> {%endif%}
+        {%if user.profile.positions != ""%} <p>Looking for a
+          <strong>
+            {%  for item in positions_display %}
+              {{ item }}{% if not forloop.last %},{% endif %}
+            {%  endfor %}
+          </strong> position{{ positions_display|pluralize:"'s" }}</p>
+        {%endif%}
         <hr>
 	<h5>Active: {{ last_login|timesince:current_time }} ago</h5>
         {%if profile %}

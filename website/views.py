@@ -217,6 +217,11 @@ def index(request):
                             search_index.get(word).append([r.id, [i]])
                     else:
                         search_index[word] = [[r.id, [i]]]
+                # TODO: Remember normal alg for that
+                positions = []
+                for item in r.profile.positions:
+                    positions.append(prof.POSITIONS.__getitem__(int(item))[1])
+                r.positions_display = positions;
             to_return = set()
             if len(words) == 0:
                 count = 0
@@ -502,6 +507,11 @@ def user_profile(request):
     if request.user.first_login:
         request.user.set_first_login()
 
+    # TODO: need to remember normal alg for that
+    positions = []
+    for item in user.profile.positions:
+        positions.append(prof.POSITIONS.__getitem__(int(item))[1])
+
     return render(request, 'profile.html',
                   merge_dicts(CONTEXT, JOB_CONTEXT, {
                       'profile': True,
@@ -509,6 +519,8 @@ def user_profile(request):
                       'reset': True,
                       'last_login': last_login,
                       'current_time': current_time,
+                      'last_login': f,
+                      'positions_display': positions,
                   }))
 
 
@@ -792,9 +804,13 @@ def get_user_view(request, id):
                           'reset': True,
                           'last_login':last_login,
                           'current_time': current_time,
-                          
+
                       }))
     else:
+        # TODO: need to remember normal alg for that
+        positions = []
+        for item in user.profile.positions:
+            positions.append(prof.POSITIONS.__getitem__(int(item))[1])
         exp = user.profile.experience_set.order_by('-end_date')
         return render(request, 'profile.html',
                       merge_dicts(JOB_CONTEXT, {
@@ -804,6 +820,8 @@ def get_user_view(request, id):
                           'reset': True,
                           'last_login':last_login,
                           'current_time': current_time,
+                          'last_login':f,
+                          'positions_display': positions,
                       }))
 
 
