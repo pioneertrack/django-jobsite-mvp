@@ -176,6 +176,13 @@ def index(request):
 
             active_selects = []
 
+            filter_mobile = {
+                'year_'+category: years,
+                'major_'+category: majors,
+                'role_'+category: roles,
+                'experience_'+category: experience,
+            }
+
             if len(years) > 1 or (not '' in years and len(years) > 0):
                 kwargs['profile__year__in'] = years
                 active_selects.append('year_'+category)
@@ -283,6 +290,7 @@ def index(request):
                                           category+'_hidden': filter_hidden,
                                           'search_category': request.POST['select-category'],
                                           'active_selects': active_selects,
+                                          'mobile_filter': filter_mobile,
                                       }))
         elif request.POST['select-category'] == 'startups':
 
@@ -294,6 +302,11 @@ def index(request):
             filter_hidden = request.POST.get('filter_startups')
             fields = request.POST.getlist('fields')
             stage = request.POST.getlist('stage')
+
+            filter_mobile = {
+                'fields_startups': fields,
+                'stage_startups': stage,
+            }
 
             filter = json.loads('[' + filter_hidden + ']')
 
@@ -385,6 +398,7 @@ def index(request):
                                   'startups_hidden': filter_hidden,
                                   'search_category': request.POST['select-category'],
                                   'active_selects': active_selects,
+                                  'mobile_filter': filter_mobile
                               }
                           ))
         elif request.POST['select-category'] == 'jobs':
@@ -398,6 +412,12 @@ def index(request):
             filter = json.loads('[' + filter_hidden + ']')
 
             active_selects = []
+
+            filter_mobile = {
+                'category_jobs': category,
+                'level_jobs': level,
+                'pay_jobs': pay,
+            }
 
             if len(level) > 1  or (not '' in level and len(level) > 0):
                 active_selects.append('level')
@@ -479,6 +499,7 @@ def index(request):
                               'filter_jobs': filter,
                               'jobs_hidden': filter_hidden,
                               'active_selects': active_selects,
+                              'mobile_filter': filter_mobile
                           }))
     else:
         if user.is_founder:

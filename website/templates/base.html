@@ -101,7 +101,7 @@
             {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
           </div>
           {% for subitem in item.1 %}
-              {% to_list item.0|add:"_partners" subitem.0 subitem.1 item.2.class as tmp_list %}
+{#              {% to_list item.0|add:"_partners" subitem.0 subitem.1 item.2.class as tmp_list %}#}
               <label for="{{ subitem.0 }}"
                 {% if forloop.counter > 3 %} class="_hidden" {% endif %}
               >
@@ -109,7 +109,10 @@
                 <input id="{{ subitem.0 }}" form="mainform" type="checkbox" value="{{ subitem.0 }}"
                       name="{{ item.0 }}_partners"
                       class="text-capitalize"
-                      {% if tmp_list in filter_partners %}checked{% endif %}/>
+                      {% if mobile_filter %}
+                        {%  in_list mobile_filter item.0|add:"_partners" as b_val %}
+                        {% if subitem.0 in b_val %}checked{% endif %}
+                      {% endif %}/>
                 <i class="fa fa-square"></i>
                 <i class="fa fa-check-square"></i>
               </label>
@@ -128,7 +131,6 @@
             {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
           </div>
           {% for subitem in item.1 %}
-              {% to_list item.0|add:"_employees" subitem.0 subitem.1 item.2.class as tmp_list %}
               <label for="{{ subitem.0 }}"
                 {% if forloop.counter > 3 %} class="_hidden" {% endif %}
               >
@@ -136,7 +138,10 @@
                 <input id="{{ subitem.0 }}" form="mainform" type="checkbox" value="{{ subitem.0 }}"
                       name="{{ item.0 }}_employees"
                       class="text-capitalize"
-                      {% if tmp_list in filter_partners %}checked{% endif %}/>
+                      {% if mobile_filter %}
+                        {%  in_list mobile_filter item.0|add:"_employees" as b_val %}
+                        {% if subitem.0 in b_val %}checked{% endif %}
+                      {% endif %}/>
                 <i class="fa fa-square"></i>
                 <i class="fa fa-check-square"></i>
               </label>
@@ -154,7 +159,6 @@
             {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
           </div>
           {% for subitem in item.1 %}
-              {% to_list item.0|add:"_freelancers" subitem.0 subitem.1 item.2.class as tmp_list %}
               <label for="{{ subitem.0 }}"
                 {% if forloop.counter > 3 %} class="_hidden" {% endif %}
               >
@@ -162,7 +166,10 @@
                 <input id="{{ subitem.0 }}" form="mainform" type="checkbox" value="{{ subitem.0 }}"
                       name="{{ item.0 }}_freelancers"
                       class="text-capitalize"
-                      {% if tmp_list in filter_partners %}checked{% endif %}/>
+                      {% if mobile_filter %}
+                        {%  in_list mobile_filter item.0|add:"_freelancers" as b_val %}
+                        {% if subitem.0 in b_val %}checked{% endif %}
+                      {% endif %}/>
                 <i class="fa fa-square"></i>
                 <i class="fa fa-check-square"></i>
               </label>
@@ -180,7 +187,6 @@
             {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
           </div>
           {% for subitem in item.1 %}
-              {% to_list item.0|add:"_jobs" subitem.0 subitem.1 item.2.class as tmp_list %}
               <label for="{{ subitem.0 }}"
                 {% if forloop.counter > 3 %} class="_hidden" {% endif %}
               >
@@ -188,7 +194,10 @@
                 <input id="{{ subitem.0 }}" form="mainform" type="checkbox" value="{{ subitem.0 }}"
                       name="{{ item.0 }}_jobs"
                       class="text-capitalize"
-                      {% if tmp_list in filter_partners %}checked{% endif %}/>
+                      {% if mobile_filter %}
+                        {%  in_list mobile_filter item.0|add:"_jobs" as b_val %}
+                        {% if subitem.0 in b_val %}checked{% endif %}
+                      {% endif %}/>
                 <i class="fa fa-square"></i>
                 <i class="fa fa-check-square"></i>
               </label>
@@ -206,7 +215,6 @@
             {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
           </div>
           {% for subitem in item.1 %}
-              {% to_list item.0|add:"_startups" subitem.0 subitem.1 item.2.class as tmp_list %}
               <label for="{{ subitem.0 }}"
                 {% if forloop.counter > 3 %} class="_hidden" {% endif %}
               >
@@ -214,7 +222,10 @@
                 <input id="{{ subitem.0 }}" form="mainform" type="checkbox" value="{{ subitem.0 }}"
                       name="{{ item.0 }}_startups"
                       class="text-capitalize"
-                      {% if tmp_list in filter_partners %}checked{% endif %}/>
+                      {% if mobile_filter %}
+                        {%  in_list mobile_filter item.0|add:"_startups" as b_val %}
+                        {% if subitem.0 in b_val %}checked{% endif %}
+                      {% endif %}/>
                 <i class="fa fa-square"></i>
                 <i class="fa fa-check-square"></i>
               </label>
