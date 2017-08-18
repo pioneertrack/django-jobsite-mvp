@@ -689,7 +689,7 @@
   display: none;
   }
 
-[off-canvas*=left] {
+[off-canvas*=left], [off-canvas*=right] {
   width: 320px;
   }
 

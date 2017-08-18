@@ -4,6 +4,17 @@
 {% block title %}
 {% trans "Thank you" %}
 {% endblock %}
+
+{% if is_mobile %}
+{% block mobile_content %}
+<div class = "modal-dialog" style = "padding-top: 30px; padding-bottom: 30px;">
+<div class = "profile-form-container">
+<h2>
+We have send you a email. If you have not received an email please check your spam folder. You can now close this tab.</h2>
+</div>
+</div>
+{% endblock %}
+{% else %}
 {% block content %}
 <div class = "modal-dialog" style = "padding-top: 30px; padding-bottom: 30px;">
 <div class = "profile-form-container">
@@ -12,3 +23,4 @@ We have send you a email. If you have not received an email please check your sp
 </div>
 </div>
 {% endblock %}
+{% endif %}

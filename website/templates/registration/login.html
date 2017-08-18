@@ -8,128 +8,139 @@
 
 {% if is_mobile %}
 
-{% block mobile_content %}
-  <div class="container">
-    <div class="row top-tile">
-      <div class="col col-md-6 text-center" style="align-self: center;">
-        <h1 style="color: white;">Find a team member to get your project started today</h1>
-      </div>
-      <div class="col col-md-6">
-        <div id="login-modal" style="margin-top: 50px; margin-bottom:50px" ;>
-          <div class="loginmodal-container">
-            <h1>Login</h1><br>
-            <form method="post">
-              {% csrf_token %}
-              {{ form|crispy }}
-              <input type="submit" name="login" class="loginmodal-submit" value="Login">
-            </form>
+  {% block mobile_content %}
+    <div class="container">
+      <div class="row top-tile">
+        <div class="col col-md-6 text-center" style="align-self: center;">
+          <h1 style="color: white;">Find a team member to get your project started today</h1>
+        </div>
+        <div class="col col-md-6">
+          <div id="login-modal" style="margin-top: 50px; margin-bottom:50px" ;>
+            <div class="loginmodal-container">
+              <h1>Login</h1><br>
+              <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <input type="submit" name="login" class="loginmodal-submit" value="Login">
+              </form>
 
-            <div class="login-help">
-              <a href="/register/">Register</a> - <a href="/password/reset">Forgot Password</a> - <a href="/resend/">Resend
-              Email</a>
+              <div class="login-help">
+                <a href="/register/">Register</a> - <a href="/password/reset">Forgot Password</a> - <a href="/resend/">Resend
+                Email</a>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="container" style="background-color: white; width:100%;">
-    <div class="row">
-      <div style="width:80%; left:10%; padding-top:20px;" class="col col-md-12 text-center">
-        <h1>What is BearFounders?</h1>
-        <hr>
-        <h3>Bear Founders is designed to help create startup connections. No longer do people have to post ads on
-          Facebook, ask their friends to ask their friends, or post paper flyers on bulletin boards. Bear Founders
-          exclusively allows Berkeley students and Alumni to create profiles for either a startup or an individual.</h3>
+    <div class="container" style="background-color: white; width:100%;">
+      <div class="row">
+        <div style="width:80%; left:10%; padding-top:20px;" class="col col-md-12 text-center">
+          <h1>What is BearFounders?</h1>
+          <hr>
+          <h3>Bear Founders is designed to help create startup connections. No longer do people have to post ads on
+            Facebook, ask their friends to ask their friends, or post paper flyers on bulletin boards. Bear Founders
+            exclusively allows Berkeley students and Alumni to create profiles for either a startup or an
+            individual.</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col col-md-4 text-center">
+          <h1><i style="font-size:5em;" class="fa fa-search" aria-hidden="true"></i></h1>
+          <h1>Search</h1>
+          <p>Search for people based on their name, year, major, or skillset. Find people who fit your needs and have
+            the
+            experience you require. Search for startups who are hiring based on name, industry, and positions
+            available</p>
+        </div>
+        <div class="col col-md-4 text-center">
+          <h1><i style="font-size:5em;" class="fa fa-handshake-o" aria-hidden="true"></i></h1>
+          <h1>Connect</h1>
+          <p>After you think you have found the right match, send a connection request. This will email the user saying
+            that there is an interest in their profile. Give them more information about yourself and what you are
+            hiring/looking for</p>
+        </div>
+        <div class="col col-md-4 text-center">
+          <h1><i style="font-size:5em;" class="fa fa-wrench" aria-hidden="true"></i></h1>
+          <h1>Build</h1>
+          <p>After both parties reach an agreement on the pay/partnership, start working on your project together! It's
+            quick and easy.</p>
+        </div>
+      </div>
+      <div class="home row text-center" style="padding-top: 50px;">
+        <div class='col col-md-6 col-md-offset-3'>
+          <p>Having issues signing up? Email <strong>help@bearfounders.com</strong></p>
+        </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col col-md-4 text-center">
-        <h1><i style="font-size:5em;" class="fa fa-search" aria-hidden="true"></i></h1>
-        <h1>Search</h1>
-        <p>Search for people based on their name, year, major, or skillset. Find people who fit your needs and have the
-          experience you require. Search for startups who are hiring based on name, industry, and positions
-          available</p>
-      </div>
-      <div class="col col-md-4 text-center">
-        <h1><i style="font-size:5em;" class="fa fa-handshake-o" aria-hidden="true"></i></h1>
-        <h1>Connect</h1>
-        <p>After you think you have found the right match, send a connection request. This will email the user saying
-          that there is an interest in their profile. Give them more information about yourself and what you are
-          hiring/looking for</p>
-      </div>
-      <div class="col col-md-4 text-center">
-        <h1><i style="font-size:5em;" class="fa fa-wrench" aria-hidden="true"></i></h1>
-        <h1>Build</h1>
-        <p>After both parties reach an agreement on the pay/partnership, start working on your project together! It's
-          quick and easy.</p>
-      </div>
-    </div>
-    <div class="home row text-center" style="padding-top: 50px;">
-      <div class='col col-md-6 col-md-offset-3'>
-        <p>Having issues signing up? Email <strong>help@bearfounders.com</strong></p>
-      </div>
-    </div>
-  </div>
-{% endblock %}
+  {% endblock %}
 
-{%  else %}
+{% else %}
 
-{% block content %}
-<div class = "container">
-  <div class = "row top-tile">
-    <div class = "col col-md-6 text-center" style="align-self: center;">
-      <h1 style="color: white;">Find a team member to get your project started today</h1>
-    </div>
-    <div class = "col col-md-6">
-      <div id="login-modal" style="margin-top: 50px; margin-bottom:50px";>
-				<div class="loginmodal-container">
-          <h1>Login</h1><br>
-          <form method="post">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <input type="submit" name="login" class="loginmodal-submit" value="Login">
-          </form>
+  {% block content %}
+    <div class="container">
+      <div class="row top-tile">
+        <div class="col col-md-6 text-center" style="align-self: center;">
+          <h1 style="color: white;">Find a team member to get your project started today</h1>
+        </div>
+        <div class="col col-md-6">
+          <div id="login-modal" style="margin-top: 50px; margin-bottom:50px" ;>
+            <div class="loginmodal-container">
+              <h1>Login</h1><br>
+              <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <input type="submit" name="login" class="loginmodal-submit" value="Login">
+              </form>
 
-  				<div class="login-help">
-  					<a href="/register/">Register</a> - <a href="/password/reset">Forgot Password</a> - <a href="/resend/">Resend Email</a>
-				  </div>
-				</div>
+              <div class="login-help">
+                <a href="/register/">Register</a> - <a href="/password/reset">Forgot Password</a> - <a href="/resend/">Resend
+                Email</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-<div class = "container" style ="background-color: white; width:100%;">
-  <div class = "row">
-    <div style="width:80%; left:10%; padding-top:20px;" class = "col col-md-12 text-center">
-      <h1>What is BearFounders?</h1>
-      <hr>
-      <h3>Bear Founders is designed to help create startup connections. No longer do people have to post ads on Facebook, ask their friends to ask their friends, or post paper flyers on bulletin boards. Bear Founders exclusively allows Berkeley students and Alumni to create profiles for either a startup or an individual.</h3>
+    <div class="container" style="background-color: white; width:100%;">
+      <div class="row">
+        <div style="width:80%; left:10%; padding-top:20px;" class="col col-md-12 text-center">
+          <h1>What is BearFounders?</h1>
+          <hr>
+          <h3>Bear Founders is designed to help create startup connections. No longer do people have to post ads on
+            Facebook, ask their friends to ask their friends, or post paper flyers on bulletin boards. Bear Founders
+            exclusively allows Berkeley students and Alumni to create profiles for either a startup or an
+            individual.</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col col-md-4 text-center">
+          <h1><i style="font-size:5em;" class="fa fa-search" aria-hidden="true"></i></h1>
+          <h1>Search</h1>
+          <p>Search for people based on their name, year, major, or skillset. Find people who fit your needs and have
+            the experience you require. Search for startups who are hiring based on name, industry, and positions
+            available</p>
+        </div>
+        <div class="col col-md-4 text-center">
+          <h1><i style="font-size:5em;" class="fa fa-handshake-o" aria-hidden="true"></i></h1>
+          <h1>Connect</h1>
+          <p>After you think you have found the right match, send a connection request. This will email the user saying
+            that there is an interest in their profile. Give them more information about yourself and what you are
+            hiring/looking for</p>
+        </div>
+        <div class="col col-md-4 text-center">
+          <h1><i style="font-size:5em;" class="fa fa-wrench" aria-hidden="true"></i></h1>
+          <h1>Build</h1>
+          <p>After both parties reach an agreement on the pay/partnership, start working on your project together! It's
+            quick and easy.</p>
+        </div>
+      </div>
+      <div class="home row text-center" style="padding-top: 50px;">
+        <div class='col col-md-6 col-md-offset-3'>
+          <p>Having issues signing up? Email <strong>help@bearfounders.com</strong></p>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class = "row">
-    <div class = "col col-md-4 text-center">
-      <h1><i style="font-size:5em;" class="fa fa-search" aria-hidden="true"></i></h1>
-      <h1>Search</h1>
-      <p>Search for people based on their name, year, major, or skillset. Find people who fit your needs and have the experience you require. Search for startups who are hiring based on name, industry, and positions available</p>
-    </div>
-    <div class = "col col-md-4 text-center">
-      <h1><i style="font-size:5em;" class="fa fa-handshake-o" aria-hidden="true"></i></h1>
-      <h1>Connect</h1>
-      <p>After you think you have found the right match, send a connection request. This will email the user saying that there is an interest in their profile. Give them more information about yourself and what you are hiring/looking for</p>
-    </div>
-    <div class = "col col-md-4 text-center">
-      <h1><i style="font-size:5em;" class="fa fa-wrench" aria-hidden="true"></i></h1>
-      <h1>Build</h1>
-      <p>After both parties reach an agreement on the pay/partnership, start working on your project together! It's quick and easy.</p>
-    </div>
-  </div>
-  <div class = "home row text-center" style = "padding-top: 50px;">
-    <div class = 'col col-md-6 col-md-offset-3'>
-      <p>Having issues signing up? Email <strong>help@bearfounders.com</strong></p>
-    </div>
-  </div>
-</div>
-{% endblock %}
+  {% endblock %}
 
 {% endif %}
