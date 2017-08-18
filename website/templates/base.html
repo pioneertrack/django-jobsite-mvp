@@ -22,12 +22,11 @@
   <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300" rel="stylesheet">
-  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+  <script src="{% static 'jquery-modern/dist/jquery.min.js' %}"></script>
   <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
   {% if is_mobile %}
     <script src="{% static 'slidebars/dist/slidebars.min.js' %}"></script>
     <script src="{% static 'detect_swipe/jquery.detect_swipe.js' %}"></script>
-{#    <script src="{% static 'js/jquery.touchwipe.min.js' %}"></script>#}
     <script src="{% static 'js/mobile.js' %}"></script>
   {% else %}
     <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
