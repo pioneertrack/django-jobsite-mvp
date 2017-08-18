@@ -45,7 +45,7 @@ jQuery(document).ready(function($){
   $('input[name="select-category"]').on('change', function(e) {
     var checked = $('input[name="select-category"]:checked');
     var class_to_show = checked.val();
-    var blocs_to_show = $(`.mobile-filters .checkboxes.${class_to_show}`);
+    var blocs_to_show = $('.mobile-filters .checkboxes.' + class_to_show);
 
     $('.mobile-filters .checkboxes').removeClass('is-visible');
 
