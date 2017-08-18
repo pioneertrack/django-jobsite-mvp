@@ -304,8 +304,8 @@ def index(request):
             stage = request.POST.getlist('stage')
 
             filter_mobile = {
-                'fields_startups': fields,
-                'stage_startups': stage,
+                'fields': fields,
+                'stage': stage,
             }
 
             filter = json.loads('[' + filter_hidden + ']')
@@ -414,9 +414,9 @@ def index(request):
             active_selects = []
 
             filter_mobile = {
-                'category_jobs': category,
-                'level_jobs': level,
-                'pay_jobs': pay,
+                'category': category,
+                'level': level,
+                'pay': pay,
             }
 
             if len(level) > 1  or (not '' in level and len(level) > 0):

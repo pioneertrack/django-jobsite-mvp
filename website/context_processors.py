@@ -7,4 +7,4 @@ def is_mobile(request):
     if MOBILE_AGENT_RE.match(request.META['HTTP_USER_AGENT']):
         return {'is_mobile': True}
     else:
-        return {'is_mobile': True}
+        return {'is_mobile': False}

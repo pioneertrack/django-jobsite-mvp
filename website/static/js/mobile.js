@@ -1,15 +1,21 @@
 jQuery(document).ready(function($){
+
   // Initialize Slidebars
   var controller = new slidebars();
   controller.init();
-  // Toggle Slidebars
+
   $('.toggle-id-1').on('click', function(e) {
     // Stop default action and bubbling
     e.stopPropagation();
     e.preventDefault();
-
-    // Toggle the Slidebar with id 'id-1'
     controller.toggle('id-1');
+  });
+
+  $('.toggle-id-2').on('click', function(e) {
+    // Stop default action and bubbling
+    e.stopPropagation();
+    e.preventDefault();
+    controller.toggle('id-2');
   });
 
   $('.filter-show').on('click', function(e){
@@ -22,23 +28,23 @@ jQuery(document).ready(function($){
     }
   });
 
-  $("#selector").on('change', function(e) {
-    var class_to_show = $(this).val();
+  $('#reset').on('click', function(e) {
+    e.preventDefault();
+    $(this).parents('[off-canvas]').find('input[type="checkbox"]:checked').each(function(e) {
+      $(this).prop('checked', false);
+    })
+  })
+
+  $('input[name="select-category"]').on('change', function(e) {
+    var checked = $('input[name="select-category"]:checked');
+    var class_to_show = checked.val();
     var blocs_to_show = $(`.mobile-filters .checkboxes.${class_to_show}`);
 
     $('.mobile-filters .checkboxes').removeClass('is-visible');
 
     blocs_to_show.addClass('is-visible');
-
-    if ($(this).val() === 'jobs') {
-      $('.cd-dropdown-content.people').hide();
-      $('.cd-dropdown-content.jobs').show();
-    } else {
-      $('.cd-dropdown-content.jobs').hide();
-      $('.cd-dropdown-content.people').show();
-    }
   });
 
-	$("#selector").trigger('change');
+	$('input[name="select-category"]').trigger('change');
 
 });

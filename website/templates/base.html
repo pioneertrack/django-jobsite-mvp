@@ -79,6 +79,58 @@
 </head>
 <body>
 {% if is_mobile %}
+  <div off-canvas="id-2 right reveal" class="mobile-filters checkboxes">
+    <div class="mobile-filter-header">
+      <div class="filter-header">
+        <a class="toggle-id-2"><i class="fa fa-close"></i></a>
+      </div>
+      <div class="filter-header">
+        Find for
+      </div>
+      <div class="filter-header">
+      </div>
+
+    </div>
+
+    <div class="filter-container">
+      <label for="partners">
+        Partners
+        <input id="partners" form="mainform" type="radio" name="select-category" value="partners"
+                  {% if not founder and not search_category %}checked{% elif search_category == 'partners' %}
+                  checked{% endif %}/>
+        <i class="fa fa-circle-o"></i>
+        <i class="fa fa-dot-circle-o"></i>
+      </label>
+      <label for="employees">
+        Employees
+        <input id="employees" form="mainform" type="radio" name="select-category" value="employees"
+                  {% if search_category == 'employees' %}checked{% endif %}/>
+        <i class="fa fa-circle-o"></i>
+        <i class="fa fa-dot-circle-o"></i>
+      </label>
+      <label for="freelancers">
+        Freelancers
+        <input id="freelancers" form="mainform" type="radio" name="select-category" value="freelancers"
+                  {% if search_category == 'freelancers' %}checked{% endif %}/>
+        <i class="fa fa-circle-o"></i>
+        <i class="fa fa-dot-circle-o"></i>
+      </label>
+      <label for="startups">
+        Startups
+        <input id="startups" form="mainform" type="radio" name="select-category" value="startups"
+                  {% if search_category == 'startups' %}checked{% endif %}/>
+        <i class="fa fa-circle-o"></i>
+        <i class="fa fa-dot-circle-o"></i>
+      </label>
+      <label for="jobs">
+        Jobs
+        <input id="jobs" form="mainform" type="radio" name="select-category" value="jobs"
+                  {% if search_category == 'jobs' %}checked{% endif %}/>
+        <i class="fa fa-circle-o"></i>
+        <i class="fa fa-dot-circle-o"></i>
+      </label>
+    </div>
+  </div>
 
   <div off-canvas="id-1 left reveal" class="mobile-filters">
     <div class="mobile-filter-header">
@@ -101,12 +153,11 @@
             {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
           </div>
           {% for subitem in item.1 %}
-{#              {% to_list item.0|add:"_partners" subitem.0 subitem.1 item.2.class as tmp_list %}#}
-              <label for="{{ subitem.0 }}"
+              <label for="{{ subitem.0 }}_{{ item.0 }}_partners"
                 {% if forloop.counter > 3 %} class="_hidden" {% endif %}
               >
                 {{ subitem.1 }}
-                <input id="{{ subitem.0 }}" form="mainform" type="checkbox" value="{{ subitem.0 }}"
+                <input id="{{ subitem.0 }}_{{ item.0 }}_partners" form="mainform" type="checkbox" value="{{ subitem.0 }}"
                       name="{{ item.0 }}_partners"
                       class="text-capitalize"
                       {% if mobile_filter %}
@@ -131,11 +182,11 @@
             {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
           </div>
           {% for subitem in item.1 %}
-              <label for="{{ subitem.0 }}"
+              <label for="{{ subitem.0 }}_{{ item.0 }}_employees"
                 {% if forloop.counter > 3 %} class="_hidden" {% endif %}
               >
                 {{ subitem.1 }}
-                <input id="{{ subitem.0 }}" form="mainform" type="checkbox" value="{{ subitem.0 }}"
+                <input id="{{ subitem.0 }}_{{ item.0 }}_employees" form="mainform" type="checkbox" value="{{ subitem.0 }}"
                       name="{{ item.0 }}_employees"
                       class="text-capitalize"
                       {% if mobile_filter %}
@@ -159,11 +210,11 @@
             {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
           </div>
           {% for subitem in item.1 %}
-              <label for="{{ subitem.0 }}"
+              <label for="{{ subitem.0 }}_{{ item.0 }}_freelancers"
                 {% if forloop.counter > 3 %} class="_hidden" {% endif %}
               >
                 {{ subitem.1 }}
-                <input id="{{ subitem.0 }}" form="mainform" type="checkbox" value="{{ subitem.0 }}"
+                <input id="{{ subitem.0 }}_{{ item.0 }}_freelancers" form="mainform" type="checkbox" value="{{ subitem.0 }}"
                       name="{{ item.0 }}_freelancers"
                       class="text-capitalize"
                       {% if mobile_filter %}
@@ -181,21 +232,21 @@
     </div>
 
     <div class="checkboxes jobs">
-      {% for item in p_context %}
+      {% for item in job_context %}
         <div class="filter-container">
           <div class="filter-title-block">
             {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
           </div>
           {% for subitem in item.1 %}
-              <label for="{{ subitem.0 }}"
+              <label for="{{ subitem.0 }}_{{ item.0 }}_jobs"
                 {% if forloop.counter > 3 %} class="_hidden" {% endif %}
               >
                 {{ subitem.1 }}
-                <input id="{{ subitem.0 }}" form="mainform" type="checkbox" value="{{ subitem.0 }}"
-                      name="{{ item.0 }}_jobs"
+                <input id="{{ subitem.0 }}_{{ item.0 }}_jobs" form="mainform" type="checkbox" value="{{ subitem.0 }}"
+                      name="{{ item.0 }}"
                       class="text-capitalize"
                       {% if mobile_filter %}
-                        {%  in_list mobile_filter item.0|add:"_jobs" as b_val %}
+                        {%  in_list mobile_filter item.0 as b_val %}
                         {% if subitem.0 in b_val %}checked{% endif %}
                       {% endif %}/>
                 <i class="fa fa-square"></i>
@@ -209,21 +260,21 @@
     </div>
 
     <div class="checkboxes startups">
-      {% for item in p_context %}
+      {% for item in f_context %}
         <div class="filter-container">
           <div class="filter-title-block">
             {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
           </div>
           {% for subitem in item.1 %}
-              <label for="{{ subitem.0 }}"
+              <label for="{{ subitem.0 }}_{{ item.0 }}_startups"
                 {% if forloop.counter > 3 %} class="_hidden" {% endif %}
               >
                 {{ subitem.1 }}
-                <input id="{{ subitem.0 }}" form="mainform" type="checkbox" value="{{ subitem.0 }}"
-                      name="{{ item.0 }}_startups"
+                <input id="{{ subitem.0 }}_{{ item.0 }}_startups" form="mainform" type="checkbox" value="{{ subitem.0 }}"
+                      name="{{ item.0 }}"
                       class="text-capitalize"
                       {% if mobile_filter %}
-                        {%  in_list mobile_filter item.0|add:"_startups" as b_val %}
+                        {%  in_list mobile_filter item.0 as b_val %}
                         {% if subitem.0 in b_val %}checked{% endif %}
                       {% endif %}/>
                 <i class="fa fa-square"></i>
@@ -316,42 +367,15 @@
               <div class="searchform">
 
                 <div class="cd-show-filter toggle-id-1">
-                  <input type="checkbox" name="show_filter" id="show_filter">
-                  <label for="show_filter">
-                    <i class="fa fa-list" aria-hidden="true"></i>
-                    <i class="fa fa-th-large" aria-hidden="true"></i>
-                  </label>
+                  <i class="fa fa-bars" aria-hidden="true"></i>
                 </div>
 
-                <input type="search" name="query" placeholder="Search... ">
-                <div class="cd-select filter-container">
-                  <div>Find</div>
-                  <select id="selector" name="select-category" class="filter small no-overflow">
-                    <optgroup label="People">
-                      <option value="partners"
-                              {% if not founder and not search_category %}selected{% elif search_category == 'partners' %}
-                              selected{% endif %}>
-                        Partners
-                      </option>
-                      <option value="employees" {% if search_category == 'employees' %}selected{% endif %}>
-                        Employees
-                      </option>
-                      <option value="freelancers" {% if search_category == 'freelancers' %}selected{% endif %}>
-                        Freelancers
-                      </option>
-                    </optgroup>
-                    <option value="startups"
-                            {% if founder and not search_category %}selected{% elif search_category == 'startups' %}
-                            selected{% endif %}>Startups
-                    </option>
-                    <option value="jobs" {% if search_category == 'jobs' %}selected{% endif %}>
-                      Jobs
-                    </option>
-                  </select>
-
+                <input class="for-mobile" type="search" name="query" placeholder="Search... ">
+                <div class="cd-select filter-container toggle-id-2">
+                  <i class="fa fa-bars" aria-hidden="true"></i>
                 </div>
 
-                <div class="cd-search-button">
+                <div class="cd-search-button for-mobile">
                   <button id="searchbutton" type="submit" class="btn btn-success">
                     <i class="fa fa-search"></i>
                   </button>
