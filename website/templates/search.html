@@ -152,13 +152,7 @@
                   <div class="card job-card">
                     <div class="header-bg" style="height:100px; background-color:#25283D;">
                       <h2>{{ user.founder.startup_name }}</h2>
-                      <div class="avatar" style="
-                          background-image: url('
-                          {% if user.is_founder %}{{ user.founder.logo.url }}{% else %}{{ user.profile.image.url }}{% endif %}');
-                          background-size: contain;
-                          position: absolute;
-                          background-position: center;
-                          background-repeat: no-repeat;"></div>
+                      <div class="avatar" style="background-image: url('{% if user.is_founder %}{{ user.founder.logo.url }}{% else %}{{ user.profile.image.url }}{% endif %}');background-size: contain;position: absolute;background-position: center;background-repeat: no-repeat;"></div>
                     </div>
                     <div class="offer-content">
                       <div class="info">
@@ -201,13 +195,7 @@
                   <div class="card">
                     <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
                     <div>
-                      <div class="avatar" style="
-                          background-image: url('
-                          {% if user.is_founder %}{{ user.founder.logo.url }}{% else %}{{ user.profile.image.url }}{% endif %}');
-                          background-size: contain;
-                          position: absolute;
-                          background-position: center;
-                          background-repeat: no-repeat;"></div>
+                      <div class="avatar" style="background-image: url('{% if user.is_founder %}{{ user.founder.logo.url }}{% else %}{{ user.profile.image.url }}{% endif %}');background-size: contain;position: absolute;background-position: center;background-repeat: no-repeat;"></div>
                     </div>
                     <div class="content">
                       {% if user.is_founder %}
