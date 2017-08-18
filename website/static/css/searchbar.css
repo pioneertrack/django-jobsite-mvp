@@ -22,7 +22,7 @@
   transform: translateY(-50%);
 }
 .cd-main-search .cd-search-button.for-mobile {
-  right: 0px;
+  right: 5px;
 }
 #searchbutton {
   width: 40px;
@@ -69,7 +69,7 @@
   flex: 0 0 100%;
   margin-left: 0;
   padding-left: 40px;
-  padding-right: 40px;
+  padding-right: 50px;
 }
 
 @media screen and (min-width: 1024px) {
