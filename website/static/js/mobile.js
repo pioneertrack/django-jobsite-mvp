@@ -35,6 +35,10 @@ jQuery(document).ready(function($){
     })
   })
 
+  $('[off-canvas]').on('swipeleft', function(e) {
+    controller.close();
+  })
+
   $('input[name="select-category"]').on('change', function(e) {
     var checked = $('input[name="select-category"]:checked');
     var class_to_show = checked.val();
