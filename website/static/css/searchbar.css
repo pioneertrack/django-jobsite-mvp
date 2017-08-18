@@ -87,7 +87,7 @@
 .cd-main-search .cd-select {
   display: inline-block;
   position: absolute;
-  z-index: 0;
+  z-index: 1;
   right: 70px;
   top: 50%;
   bottom: auto;

@@ -179,8 +179,7 @@
 
     </header> <!-- .cd-auto-hide-header -->
 
-    <main class="cd-main-content"
-          style="background-color:{% if not request.user.is_authenticated %} #25283D {% else %} white {% endif %}">
+    <main class="cd-main-content">
       {% if messages and request.user.is_authenticated %}
         <ul class="messages {% if  filter_startups or filter_people or filter_jobs %}tags{% endif %}">
         </ul>
