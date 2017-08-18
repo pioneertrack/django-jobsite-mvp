@@ -172,7 +172,7 @@ jQuery(document).ready(function($){
 
   $("#selector").on('change', function(e) {
     var class_to_show = $(this).val();
-    var blocs_to_show = $(`.cd-search-nav.tags .tags.${class_to_show}, .cd-search-nav.first .selects.${class_to_show}`);
+    var blocs_to_show = $('.cd-search-nav.tags .tags.'+ class_to_show +', .cd-search-nav.first .selects.' + class_to_show);
 
     $('.cd-search-nav.tags .tags').removeClass('is-visible');
     $('.cd-search-nav.first .selects').removeClass('is-visible');
