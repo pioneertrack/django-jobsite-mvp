@@ -11,33 +11,36 @@ jQuery(document).ready(function($){
     controller.toggle('id-1');
   });
 
-  $('.toggle-id-2').on('click', function(e) {
-    // Stop default action and bubbling
-    e.stopPropagation();
-    e.preventDefault();
-    controller.toggle('id-2');
+  $('.toggle-id-1-find').on('click', function(e) {
+    controller.toggle('id-1');
   });
 
-  $('.filter-show').on('click', function(e){
-    if ($(this).parent().hasClass('show')) {
-      $(this).parent().removeClass('show');
-      $(this).text('Show all');
+  $('.filter-show, [name="select-category"]').on('click', function(e){
+    if ($(this).parents('.filter-container:first').hasClass('show')) {
+      $(this).parents('.filter-container:first').removeClass('show');
+      if ($(this).prop("tagName") === 'BUTTON') {
+        $(this).text('Show all');
+      }
     } else {
-      $(this).parent().addClass('show');
-      $(this).text('Hide');
+      $(this).parents('.filter-container:first').addClass('show');
+      if ($(this).prop("tagName") === 'BUTTON') {
+        $(this).text('Hide');
+      }
+    }
+    if ($(this).prop("name") === 'select-category') {
+      var value = $('[name="select-category"]:checked').val();
+      $(this).parents('.checkboxes').find('.current').text(value);
     }
   });
 
   $('#reset').on('click', function(e) {
     e.preventDefault();
-    $(this).parents('[off-canvas]').find('input[type="checkbox"]:checked').each(function(e) {
+    var current = $(this).parents('[off-canvas]').find('.checkboxes.is-visible');
+    current.find('input[type="checkbox"]:checked').each(function(e) {
       $(this).prop('checked', false);
     })
   })
 
-  $('[off-canvas]').on('swipeleft', function(e) {
-    controller.close();
-  })
 
   $('input[name="select-category"]').on('change', function(e) {
     var checked = $('input[name="select-category"]:checked');
@@ -50,5 +53,9 @@ jQuery(document).ready(function($){
   });
 
 	$('input[name="select-category"]').trigger('change');
+
+  $(".mobile-filters").on('swipeleft',  function(){
+    controller.close('id-1');
+  })
 
 });
