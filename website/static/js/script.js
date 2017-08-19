@@ -30,14 +30,6 @@ jQuery(document).ready(function($){
         theme: "3d-thick-dark"
    });
 
-   $(window).on('scroll', function(){
-        $('html').removeClass('hide-overflow hide-scrollbar hide-scrollbar-thumb');
-        clearTimeout($.data(this, 'scrollTimer'));
-        $.data(this, 'scrollTimer', setTimeout(function() {
-            $('html').addClass('hide-overflow hide-scrollbar hide-scrollbar-thumb');
-        }, 400));
-   });
-
   $(document).on('mouseleave', '.tags', function(e) {
     var tags = $(this).children('.filter-container');
     var children = $(tags.children(':not(.outer)').get().reverse());
