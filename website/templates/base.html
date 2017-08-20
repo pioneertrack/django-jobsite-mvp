@@ -25,7 +25,7 @@
   <script src="{% static 'jquery-modern/dist/jquery.min.js' %}"></script>
   <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
   {% if is_mobile %}
-    <script src="{% static 'slidebars/dist/slidebars.min.js' %}"></script>
+    <script src="{% static 'js/slidebars.js' %}"></script>
     <script src="{% static 'detect_swipe/jquery.detect_swipe.js' %}"></script>
     <script src="{% static 'js/mobile.js' %}"></script>
   {% else %}
@@ -81,7 +81,6 @@
 <body>
 {% if is_mobile %}
   <div canvas="container">
-
     <header class="cd-auto-hide-header">
       <div class="logo"><a href="/"><img src="{% static 'favicon/logo.jpg' %}"/></a></div>
       <nav class="cd-primary-nav">
@@ -140,19 +139,6 @@
           <form id="mainform" action="/" autocomplete="off" method="POST">
             {% csrf_token %}
 
-            <input type="hidden" value="{% if partners_hidden %}{{ partners_hidden }}{% endif %}" name="filter_partners"
-                   id="filter_partners">
-            <input type="hidden" value="{% if employees_hidden %}{{ employees_hidden }}{% endif %}"
-                   name="filter_employees"
-                   id="filter_employees">
-            <input type="hidden" value="{% if freelancers_hidden %}{{ freelancers_hidden }}{% endif %}"
-                   name="filter_freelancers"
-                   id="filter_freelancers">
-            <input type="hidden" value="{% if jobs_hidden %}{{ jobs_hidden }}{% endif %}" name="filter_jobs"
-                   id="filter_jobs">
-            <input type="hidden" value="{% if startups_hidden %}{{ startups_hidden }}{% endif %}" name="filter_startups"
-                   id="filter_startups">
-
             <div id="search" class="cd-main-search is-visible">
 
               <div class="searchform">
@@ -200,27 +186,24 @@
 
     <a href="#0" class="cd-top"></a>
 
+{#    <div class="loading-overlay">#}
+{#      <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>#}
+{#    </div>#}
+
   </div>
 
-  <div off-canvas="id-1 left reveal" class="mobile-filters">
+  <div off-canvas="id-1 left reveal" class="mobile-filters search-select">
     <div class="mobile-filter-header">
       <div class="filter-header">
         <a class="toggle-id-1">Back</a>
       </div>
-      <div class="filter-header">
-        Filters
-      </div>
-      <div class="filter-header">
-        <a id="reset">Reset</a>
-      </div>
-
     </div>
 
     <div class="checkboxes">
       <div class="filter-container search-category">
         <div class="top">
-          <div class="filter-header">
-              <a class="filter-show  text-left">Search for</a>
+          <div class="filter-header text-capitalize link-blue">
+              Search for
           </div>
           <div class="filter-header text-right current text-capitalize">
               {% if search_category %}
@@ -234,35 +217,35 @@
         <input id="partners" form="mainform" type="radio" name="select-category" value="partners"
                {% if not founder and not search_category %}checked{% elif search_category == 'partners' %}
                checked{% endif %}/>
-        <label for="partners" class="_hidden">
+        <label for="partners">
           Partners
           <i class="fa fa-circle-o"></i>
           <i class="fa fa-dot-circle-o"></i>
         </label>
         <input id="employees" form="mainform" type="radio" name="select-category" value="employees"
                {% if search_category == 'employees' %}checked{% endif %}/>
-        <label for="employees" class="_hidden">
+        <label for="employees">
           Employees
           <i class="fa fa-circle-o"></i>
           <i class="fa fa-dot-circle-o"></i>
         </label>
         <input id="freelancers" form="mainform" type="radio" name="select-category" value="freelancers"
                {% if search_category == 'freelancers' %}checked{% endif %}/>
-        <label for="freelancers" class="_hidden">
+        <label for="freelancers">
           Freelancers
           <i class="fa fa-circle-o"></i>
           <i class="fa fa-dot-circle-o"></i>
         </label>
         <input id="startups" form="mainform" type="radio" name="select-category" value="startups"
                {% if search_category == 'startups' %}checked{% endif %}/>
-        <label for="startups" class="_hidden">
+        <label for="startups">
           Startups
           <i class="fa fa-circle-o"></i>
           <i class="fa fa-dot-circle-o"></i>
         </label>
         <input id="jobs" form="mainform" type="radio" name="select-category" value="jobs"
                {% if search_category == 'jobs' %}checked{% endif %}/>
-        <label for="jobs" class="_hidden">
+        <label for="jobs">
           Jobs
           <i class="fa fa-circle-o"></i>
           <i class="fa fa-dot-circle-o"></i>
@@ -270,6 +253,22 @@
       </div>
     </div>
 
+
+  </div>
+
+  <div off-canvas="id-2 left overlay" class="mobile-filters filter-select">
+    <div class="mobile-filter-header">
+      <div class="filter-header">
+        <a class="toggle-id-2">Back</a>
+      </div>
+      <div class="filter-header">
+        Filters
+      </div>
+      <div class="filter-header">
+        <a id="reset">Reset</a>
+      </div>
+
+    </div>
     <div class="checkboxes partners">
       {% for item in p_context %}
         <div class="filter-container">

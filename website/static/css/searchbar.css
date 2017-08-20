@@ -690,9 +690,24 @@
   }
 
 [off-canvas*=left], [off-canvas*=right] {
-  width: 320px;
+  width: 100vw;
   }
 
+@media (min-width: 640px) and (orientation: landscape) {
+[off-canvas*=left], [off-canvas*=right] {
+  width: 55vw;
+  }
+}
+@media (min-width: 700px) and (orientation: landscape) {
+[off-canvas*=left], [off-canvas*=right] {
+  width: 50vw;
+  }
+}
+@media (min-width: 1024px) and (orientation: landscape) {
+[off-canvas*=left], [off-canvas*=right] {
+  width: 40vw;
+  }
+}
 .checkboxes .filter-container {
   padding: 10px 0;
 }
@@ -722,12 +737,8 @@
     }
   .checkboxes .filter-container input[type="radio"]:checked+label,
   .checkboxes .filter-container input[type="checkbox"]:checked+label,
-  .checkboxes .filter-container label:focus,
-  .checkboxes .filter-container label:hover {
-    background: #8F3985;
-    }
   .checkboxes .filter-container label:focus {
-    background: #ee5be4;
+    background: #8F3985;
     }
     .checkboxes .filter-container label input {
       display: none;
@@ -800,8 +811,7 @@
   -ms-transform: translateY(-50%);
   -o-transform: translateY(-50%);
   transform: translateY(-50%);
-  left: 0px;
-  padding-left: 0.5rem;
+  left: 0;
 }
 .cd-show-filter input {
   display: none;
@@ -830,6 +840,8 @@
   padding: 5px 40px 5px 20px;
   display: block;
   font-weight: 700;
+  font-size: 1.9rem;
+  color: #337ab7;
 }
 .checkboxes.bottom {
   -webkit-column-count: 2;
@@ -843,6 +855,7 @@
   column-count: 2;
   padding: 5px 40px 5px 40px;
   font-weight: 700;
+  font-size: 1.9rem;
 }
 .filter-show.text-left {
   text-align: left;
@@ -862,4 +875,27 @@
   font-weight: 700;
   padding: 5px 40px 5px 20px;
   text-align: center;
+  font-size: 1.9rem;
+}
+.link-blue {
+    color: #337ab7;
+}
+.search-select .mobile-filter-header {
+  -webkit-column-count: 1;
+  -moz-column-count: 1;
+  column-count: 1;
+}
+.loading-overlay {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+}
+.loading-overlay i {
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 50vh;
 }

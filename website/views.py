@@ -172,7 +172,9 @@ def index(request):
             majors = request.POST.getlist('major_'+category)
             roles = request.POST.getlist('role_'+category)
             experience = request.POST.getlist('experience_'+category)
-            filter = json.loads('[' + filter_hidden + ']')
+            filter = None
+            if filter_hidden != None:
+                filter = json.loads('[' + filter_hidden + ']')
 
             active_selects = []
 
@@ -307,8 +309,9 @@ def index(request):
                 'fields': fields,
                 'stage': stage,
             }
-
-            filter = json.loads('[' + filter_hidden + ']')
+            filter = None
+            if filter_hidden != None:
+                filter = json.loads('[' + filter_hidden + ']')
 
             active_selects = []
 
@@ -409,7 +412,9 @@ def index(request):
             pay = request.POST.getlist('pay')
             filter_hidden = request.POST.get('filter_jobs')
 
-            filter = json.loads('[' + filter_hidden + ']')
+            filter = None
+            if filter_hidden != None:
+                filter = json.loads('[' + filter_hidden + ']')
 
             active_selects = []
 

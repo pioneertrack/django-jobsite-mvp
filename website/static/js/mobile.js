@@ -11,9 +11,27 @@ jQuery(document).ready(function($){
     controller.toggle('id-1');
   });
 
-  $('.toggle-id-1-find').on('click', function(e) {
-    controller.toggle('id-1');
+  $('.toggle-id-2').on('click', function(e) {
+    // Stop default action and bubbling
+    e.stopPropagation();
+    e.preventDefault();
+    controller.toggle('id-2');
   });
+
+  $('.toggle-id-1-find').on('click', function(e) {
+    controller.close('id-1');
+    controller.close('id-2');
+    // $('.loading-overlay').show();
+  });
+
+  $( controller.events ).on( 'closed', function ( event, id ) {
+    event.stopPropagation();
+    // console.log( 'Slidebar ' + id + ' is open.' );
+  } );
+  $( controller.events ).on( 'opened', function ( event, id ) {
+    event.stopPropagation();
+    // console.log( 'Slidebar ' + id + ' is open.' );
+  } );
 
   $('.filter-show, [name="select-category"]').on('click', function(e){
     if ($(this).parents('.filter-container:first').hasClass('show')) {
@@ -30,6 +48,7 @@ jQuery(document).ready(function($){
     if ($(this).prop("name") === 'select-category') {
       var value = $('[name="select-category"]:checked').val();
       $(this).parents('.checkboxes').find('.current').text(value);
+      controller.open('id-2');
     }
   });
 
@@ -54,7 +73,16 @@ jQuery(document).ready(function($){
 
 	$('input[name="select-category"]').trigger('change');
 
-  $(".mobile-filters").on('swipeleft',  function(){
+  $(".mobile-filters.search-select").on('swiperight',  function(){
+    controller.open('id-2');
+  })
+
+  $(".mobile-filters.filter-select").on('swipeleft',  function(e){
+    e.stopPropagation();
+    controller.close('id-2');
+  })
+
+  $(".mobile-filters.search-select").on('swipeleft',  function(){
     controller.close('id-1');
   })
 
