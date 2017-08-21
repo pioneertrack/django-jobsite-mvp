@@ -27,7 +27,8 @@ jQuery(document).ready(function($){
     });
 
   $("div.nice-select ul.list").mCustomScrollbar({
-        theme: "3d-thick-dark"
+        theme: "3d-thick-dark",
+        scrollInertia: 300,
    });
 
   $(document).on('mouseleave', '.tags', function(e) {
