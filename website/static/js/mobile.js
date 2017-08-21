@@ -31,33 +31,24 @@ jQuery(document).ready(function($){
       $(document).unbind('swipeleft.mobile');
     }
     if (id == 'id-2') {
-      $(document).unbind('swipeleft.mobile');
-      $(document).bind('swipeleft.mobile', function (e) {
-        controller.close('id-1');
-      });
+      $(document).unbind('swiperight.mobile');
     }
     // console.log( 'Slidebar ' + id + ' is closed.' );
   } );
+
   $( controller.events ).on( 'opened', function ( event, id ) {
     event.stopPropagation();
+    $(document).bind('swipeleft.mobile', function (e) {
+      controller.close('id-2');
+      controller.close('id-1');
+    });
     if (id == 'id-2') {
-      $(document).unbind('swipeleft.mobile');
-      $(document).bind('swipeleft.mobile', function (e) {
-        controller.close('id-2');
-      });
-    }
-    if (id == 'id-1') {
       $(document).bind('swiperight.mobile', function (e) {
-        controller.open('id-2');
-        $(document).bind('swipeleft.mobile', function (e) {
-          controller.close('id-2');
-        });
-      });
-      $(document).bind('swipeleft.mobile', function (e) {
-        controller.close('id-1');
+        controller.close('id-2');
+        $(document).unbind('swiperight.mobile');
+
       });
     }
-    // console.log( 'Slidebar ' + id + ' is open.' );
   } );
 
   $('.filter-show, [name="select-category"]').on('click', function(e){
