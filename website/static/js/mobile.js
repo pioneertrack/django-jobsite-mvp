@@ -95,4 +95,6 @@ jQuery(document).ready(function($){
 
 	$('input[name="select-category"]').trigger('change');
 
+  // $('ul#cd-navigation select.filter').niceSelect();
+
 });
