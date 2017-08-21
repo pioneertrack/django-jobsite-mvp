@@ -10,7 +10,7 @@
   <link rel='shortcut icon' type='image/x-icon' href='{% static 'favicon/favicon-connectdevelop.ico' %}?r=1'/>
   <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" type="text/css">
   {% if is_mobile %}
-    <link rel="stylesheet" href="{% static 'slidebars/dist/slidebars.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'slidebars-fork/dist/slidebars.min.css' %}" type="text/css">
   {% else %}
     <link rel="stylesheet" href="{% static 'nice-select/css/nice-select.css' %}" type="text/css">
   {% endif %}
@@ -26,7 +26,7 @@
   <script src="{% static 'jquery-modern/dist/jquery.min.js' %}"></script>
   <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
   {% if is_mobile %}
-    <script src="{% static 'js/slidebars.js' %}"></script>
+    <script src="{% static 'slidebars-fork/dist/slidebars.min.js' %}"></script>
     <script src="{% static 'detect_swipe/jquery.detect_swipe.js' %}"></script>
     <script src="{% static 'js/mobile.js' %}"></script>
   {% else %}
@@ -272,6 +272,14 @@
 
     </div>
     <div class="checkboxes partners">
+      <div class="top">
+        <div class="filter-header text-capitalize link-blue">
+          Search for
+        </div>
+        <div class="filter-header text-right current text-capitalize">
+          Partners
+        </div>
+      </div>
       {% for item in p_context %}
         <div class="filter-container">
           <div class="filter-title-block">
@@ -301,6 +309,14 @@
     </div>
 
     <div class="checkboxes employees">
+      <div class="top">
+        <div class="filter-header text-capitalize link-blue">
+          Search for
+        </div>
+        <div class="filter-header text-right current text-capitalize">
+          Employees
+        </div>
+      </div>
       {% for item in p_context %}
         <div class="filter-container">
           <div class="filter-title-block">
@@ -329,6 +345,14 @@
     </div>
 
     <div class="checkboxes freelancers">
+      <div class="top">
+        <div class="filter-header text-capitalize link-blue">
+          Search for
+        </div>
+        <div class="filter-header text-right current text-capitalize">
+          Freelancers
+        </div>
+      </div>
       {% for item in p_context %}
         <div class="filter-container">
           <div class="filter-title-block">
@@ -357,6 +381,14 @@
     </div>
 
     <div class="checkboxes jobs">
+      <div class="top">
+        <div class="filter-header text-capitalize link-blue">
+          Search for
+        </div>
+        <div class="filter-header text-right current text-capitalize">
+          Jobs
+        </div>
+      </div>
       {% for item in job_context %}
         <div class="filter-container">
           <div class="filter-title-block">
@@ -385,6 +417,14 @@
     </div>
 
     <div class="checkboxes startups">
+      <div class="top">
+        <div class="filter-header text-capitalize link-blue">
+          Search for
+        </div>
+        <div class="filter-header text-right current text-capitalize">
+          Startups
+        </div>
+      </div>
       {% for item in f_context %}
         <div class="filter-container">
           <div class="filter-title-block">
@@ -415,7 +455,7 @@
 
     <div class="checkboxes bottom">
       <div class="filter-header">
-        <button class="btn btn-primary toggle-id-1">Done</button>
+        <button class="btn btn-primary toggle-id-1-find">Done</button>
       </div>
       <div class="filter-header">
         <button form="mainform" type="submit" class="btn btn-primary toggle-id-1-find">Find</button>

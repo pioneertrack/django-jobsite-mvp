@@ -26,10 +26,37 @@ jQuery(document).ready(function($){
 
   $( controller.events ).on( 'closed', function ( event, id ) {
     event.stopPropagation();
-    // console.log( 'Slidebar ' + id + ' is open.' );
+    if (id == 'id-1') {
+      $(document).unbind('swiperight.mobile');
+      $(document).unbind('swipeleft.mobile');
+    }
+    if (id == 'id-2') {
+      $(document).unbind('swipeleft.mobile');
+      $(document).bind('swipeleft.mobile', function (e) {
+        controller.close('id-1');
+      });
+    }
+    // console.log( 'Slidebar ' + id + ' is closed.' );
   } );
   $( controller.events ).on( 'opened', function ( event, id ) {
     event.stopPropagation();
+    if (id == 'id-2') {
+      $(document).unbind('swipeleft.mobile');
+      $(document).bind('swipeleft.mobile', function (e) {
+        controller.close('id-2');
+      });
+    }
+    if (id == 'id-1') {
+      $(document).bind('swiperight.mobile', function (e) {
+        controller.open('id-2');
+        $(document).bind('swipeleft.mobile', function (e) {
+          controller.close('id-2');
+        });
+      });
+      $(document).bind('swipeleft.mobile', function (e) {
+        controller.close('id-1');
+      });
+    }
     // console.log( 'Slidebar ' + id + ' is open.' );
   } );
 
@@ -72,18 +99,5 @@ jQuery(document).ready(function($){
   });
 
 	$('input[name="select-category"]').trigger('change');
-
-  $(".mobile-filters.search-select").on('swiperight',  function(){
-    controller.open('id-2');
-  })
-
-  $(".mobile-filters.filter-select").on('swipeleft',  function(e){
-    e.stopPropagation();
-    controller.close('id-2');
-  })
-
-  $(".mobile-filters.search-select").on('swipeleft',  function(){
-    controller.close('id-1');
-  })
 
 });

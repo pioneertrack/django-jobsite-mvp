@@ -60,6 +60,14 @@ JOB_CONTEXT = {
         ('role', list(prof.PRIMARY_ROLE), {'class': 'label-role', 'name': 'role'}),
         ('experience', [('0', 'Has startup experience'), ('1', 'Has funding experience')], {'class': 'label-experience'}),
     ],
+    'e_context': [
+        ('position', [
+             ('1', 'Intern'),
+             ('2', 'Part-Time'),
+             ('3', 'Full-Time')
+        ]),
+        {'class': 'label-role'}
+    ],
     'f_context': [
         ('stage', list(prof.STAGE), {'class': 'label-stage'}),
         ('fields', list(prof.CATEGORY), {'class': 'label-field', 'name': 'field'})

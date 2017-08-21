@@ -690,7 +690,7 @@
   }
 
 [off-canvas*=left], [off-canvas*=right] {
-  width: 100vw;
+  width: 87vw;
   }
 
 @media (min-width: 640px) and (orientation: landscape) {
