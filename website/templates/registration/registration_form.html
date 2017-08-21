@@ -3,25 +3,50 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-{% trans "Register" %}
+  {% trans "Register" %}
 {% endblock %}
-{% block content %}
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
-<div id="login-modal" style="padding-bottom: 20px;">
-    <div class="modal-dialog">
-				<div class="loginmodal-container">
+
+{% if is_mobile %}
+  {% block mobile_content %}
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <div id="login-modal" style="padding-bottom: 20px;">
+      <div class="modal-dialog">
+        <div class="loginmodal-container">
           <form method="post">
             <h1>Welcome!</h1><br>
             {% csrf_token %}
             {{ form|crispy }}
-            <input type="submit" name="register" class="loginmodal-submit" value="Register" style = "margin-top: 10px;">
+            <input type="submit" name="register" class="loginmodal-submit" value="Register" style="margin-top: 10px;">
           </form>
           <div class="login-help">
             <a href="/login/">Already have an account? - Login</a>
           </div>
-				</div>
+        </div>
+      </div>
     </div>
-</div>
 
 
-{% endblock %}
+  {% endblock %}
+{% else %}
+  {% block content %}
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <div id="login-modal" style="padding-bottom: 20px;">
+      <div class="modal-dialog">
+        <div class="loginmodal-container">
+          <form method="post">
+            <h1>Welcome!</h1><br>
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" name="register" class="loginmodal-submit" value="Register" style="margin-top: 10px;">
+          </form>
+          <div class="login-help">
+            <a href="/login/">Already have an account? - Login</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  {% endblock %}
+{% endif %}
+

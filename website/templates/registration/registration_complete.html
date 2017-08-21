@@ -4,12 +4,27 @@
 {% block title %}
 {% trans "Thank you" %}
 {% endblock %}
-{% block content %}
-<div class = "modal-dialog" style = "padding-top: 30px; padding-bottom: 30px;">
-<div class = "profile-form-container">
-<h2>
-Registration complete! Check your email to activate your account. If you have not received an email please check your spam folder. You can now close this tab.</h2>
-<a class="btn btn-primary" href="/resend/">Resend Email</a>
-</div>
-</div>
-{% endblock %}
+
+{% if is_mobile %}
+  {% block mobile_content %}
+    <div class="modal-dialog" style="padding-top: 30px; padding-bottom: 30px;">
+      <div class="profile-form-container">
+        <h2>
+          Registration complete! Check your email to activate your account. If you have not received an email please
+          check your spam folder. You can now close this tab.</h2>
+        <a class="btn btn-primary" href="/resend/">Resend Email</a>
+      </div>
+    </div>
+  {% endblock %}
+{% else %}
+  {% block content %}
+    <div class="modal-dialog" style="padding-top: 30px; padding-bottom: 30px;">
+      <div class="profile-form-container">
+        <h2>
+          Registration complete! Check your email to activate your account. If you have not received an email please
+          check your spam folder. You can now close this tab.</h2>
+        <a class="btn btn-primary" href="/resend/">Resend Email</a>
+      </div>
+    </div>
+  {% endblock %}
+{% endif %}

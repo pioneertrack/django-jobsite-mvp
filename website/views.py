@@ -60,6 +60,13 @@ JOB_CONTEXT = {
         ('role', list(prof.PRIMARY_ROLE), {'class': 'label-role', 'name': 'role'}),
         ('experience', [('0', 'Has startup experience'), ('1', 'Has funding experience')], {'class': 'label-experience'}),
     ],
+    'e_context': [
+        ('position', [
+            ('1', 'Intern'),
+            ('2', 'Part-Time'),
+            ('3', 'Full-Time')
+        ], {'class': 'label-position'}),
+    ],
     'f_context': [
         ('stage', list(prof.STAGE), {'class': 'label-stage'}),
         ('fields', list(prof.CATEGORY), {'class': 'label-field', 'name': 'field'})
@@ -159,10 +166,16 @@ def index(request):
             kwargs = {'is_active': True, 'is_founder': False}
             category = request.POST['select-category']
 
+            active_selects = []
+
+            position = request.POST.getlist('position_'+category)
             if category == 'partners':
                 kwargs['profile__positions__contains'] = ['0']
             elif category == 'employees':
                 kwargs['profile__positions__overlap'] = ['1', '2', '3']
+                if len(position) > 1 or (not '' in position and len(position) > 0):
+                    kwargs['profile__positions__overlap'] = position
+                    active_selects.append('position_' + category)
             else:
                 kwargs['profile__positions__contains'] = ['4']
 
@@ -172,20 +185,28 @@ def index(request):
             majors = request.POST.getlist('major_'+category)
             roles = request.POST.getlist('role_'+category)
             experience = request.POST.getlist('experience_'+category)
-            filter = json.loads('[' + filter_hidden + ']')
+            filter = None
+            if filter_hidden != None:
+                filter = json.loads('[' + filter_hidden + ']')
 
-            active_selects = []
+            filter_mobile = {
+                'year_'+category: years,
+                'major_'+category: majors,
+                'role_'+category: roles,
+                'experience_'+category: experience,
+                'position_'+category: position,
+            }
 
-            if len(years) > 1:
+            if len(years) > 1 or (not '' in years and len(years) > 0):
                 kwargs['profile__year__in'] = years
                 active_selects.append('year_'+category)
-            if len(majors) > 1:
+            if len(majors) > 1  or (not '' in majors and len(majors) > 0):
                 kwargs['profile__major__in'] = majors
                 active_selects.append('major_'+category)
-            if len(roles) > 1:
+            if len(roles) > 1 or (not '' in roles and len(roles) > 0):
                 kwargs['profile__role__in'] = roles
                 active_selects.append('role_'+category)
-            if len(experience) > 1:
+            if len(experience) > 1  or (not '' in experience and len(experience) > 0):
                 active_selects.append('experience_'+category)
                 for item in experience:
                     if item == '1':
@@ -283,6 +304,7 @@ def index(request):
                                           category+'_hidden': filter_hidden,
                                           'search_category': request.POST['select-category'],
                                           'active_selects': active_selects,
+                                          'mobile_filter': filter_mobile,
                                       }))
         elif request.POST['select-category'] == 'startups':
 
@@ -295,14 +317,20 @@ def index(request):
             fields = request.POST.getlist('fields')
             stage = request.POST.getlist('stage')
 
-            filter = json.loads('[' + filter_hidden + ']')
+            filter_mobile = {
+                'fields': fields,
+                'stage': stage,
+            }
+            filter = None
+            if filter_hidden != None:
+                filter = json.loads('[' + filter_hidden + ']')
 
             active_selects = []
 
-            if len(fields) > 1:
+            if len(fields) > 1  or (not '' in fields and len(fields) > 0):
                 active_selects.append('fields')
                 kwargs['founder__field__in'] = fields
-            if len(stage) > 1:
+            if len(stage) > 1  or (not '' in stage and len(stage) > 0):
                 active_selects.append('stage')
                 kwargs['founder__stage__in'] = stage
 
@@ -385,6 +413,7 @@ def index(request):
                                   'startups_hidden': filter_hidden,
                                   'search_category': request.POST['select-category'],
                                   'active_selects': active_selects,
+                                  'mobile_filter': filter_mobile
                               }
                           ))
         elif request.POST['select-category'] == 'jobs':
@@ -395,17 +424,25 @@ def index(request):
             pay = request.POST.getlist('pay')
             filter_hidden = request.POST.get('filter_jobs')
 
-            filter = json.loads('[' + filter_hidden + ']')
+            filter = None
+            if filter_hidden != None:
+                filter = json.loads('[' + filter_hidden + ']')
 
             active_selects = []
 
-            if len(level) > 1:
+            filter_mobile = {
+                'category': category,
+                'level': level,
+                'pay': pay,
+            }
+
+            if len(level) > 1  or (not '' in level and len(level) > 0):
                 active_selects.append('level')
                 kwargs['level__in'] = level
-            if len(pay) > 1:
+            if len(pay) > 1  or (not '' in pay and len(pay) > 0):
                 active_selects.append('pay')
                 kwargs['pay__in'] = pay
-            if len(category) > 1:
+            if len(category) > 1  or (not '' in category and len(category) > 0):
                 active_selects.append('category')
                 kwargs['founder__field__in'] = category
 
@@ -479,6 +516,7 @@ def index(request):
                               'filter_jobs': filter,
                               'jobs_hidden': filter_hidden,
                               'active_selects': active_selects,
+                              'mobile_filter': filter_mobile
                           }))
     else:
         if user.is_founder:

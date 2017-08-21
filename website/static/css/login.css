@@ -336,9 +336,6 @@ html {
   right: 0;
   height: 100%;
   width: 35px;
-  background: transparent;
-  background: -webkit-linear-gradient(right, #25283D, rgba(37, 40, 61, 0));
-  background: linear-gradient(to left, #25283D, rgba(37, 40, 61, 0));
   pointer-events: none;
   -webkit-transition: opacity .2s;
   transition: opacity .2s;
@@ -348,8 +345,8 @@ html {
 }
 
 .cd-main-content {
-  background-color: #d3d3d3;
-  height: 100%;
+  /*background-color: #d3d3d3;*/
+  /*height: 100%;*/
   padding-top:80px;
 }
 .messages {

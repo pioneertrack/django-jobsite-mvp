@@ -2,12 +2,29 @@
 {% block title %}
 Jobs
 {% endblock %}
-{% block content %}
-<h1>Jobs by {{ founder.startup_name }}</h1><br/>
-{% for job in jobs %}
-<h2>{{ job.title }}</h2>
-<h3>{{ job.pay }}</h3>
-<p>{{ job.description }}</p>
-<br/>
-{% endfor %}
-{%endblock%}
+
+{% if is_mobile %}
+
+  {% block mobile_content %}
+    <h1>Jobs by {{ founder.startup_name }}</h1><br/>
+    {% for job in jobs %}
+      <h2>{{ job.title }}</h2>
+      <h3>{{ job.pay }}</h3>
+      <p>{{ job.description }}</p>
+      <br/>
+    {% endfor %}
+  {% endblock %}
+
+{% else %}
+
+  {% block content %}
+    <h1>Jobs by {{ founder.startup_name }}</h1><br/>
+    {% for job in jobs %}
+      <h2>{{ job.title }}</h2>
+      <h3>{{ job.pay }}</h3>
+      <p>{{ job.description }}</p>
+      <br/>
+    {% endfor %}
+  {% endblock %}
+
+{% endif %}

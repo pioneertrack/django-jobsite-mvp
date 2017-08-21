@@ -4,126 +4,252 @@
 {% block title %}
 {% trans "Home" %}
 {% endblock %}
-{% block content %}
-<div class = 'container' style = "padding-top: 30px; padding-bottom:30px;">
-    <div class = 'row'>
-        {%for item, skills in searched%}
-        {% if item.level %}
-        {% with user=item.founder.user %}
-        <div class="col col-md-4 item">
+{% if is_mobile %}
 
-            <a class="card-hover" href='/users/{{ user.id }}'>
-                <div class="card job-card">
+  {% block mobile_content %}
+    <div class='container' style="padding-top: 30px; padding-bottom:30px;">
+      <div class='row'>
+        {% for item, skills in searched %}
+          {% if item.level %}
+            {% with user=item.founder.user %}
+              <div class="col col-md-4 item">
+
+                <a class="card-hover" href='/users/{{ user.id }}'>
+                  <div class="card job-card">
                     <div class="header-bg" style="height:100px; background-color:#25283D;">
-                        <h2>{{ user.founder.startup_name }}</h2>
-                        <div class="avatar" style="
-                            background-image: url('{% if user.is_founder %}{{ user.founder.logo.url }}{% else %}{{ user.profile.image.url }}{% endif %}');
-                          background-size: contain;
-                          position: absolute;
-                          background-position: center;
-                          background-repeat: no-repeat;"></div>
+                      <h2>{{ user.founder.startup_name }}</h2>
+                      <div class="avatar" style="background-image: url('{% if user.is_founder %}{{ user.founder.logo.url }}{% else %}{{ user.profile.image.url }}{% endif %}');background-size: contain;position: absolute;background-position: center;background-repeat: no-repeat;"></div>
                     </div>
                     <div class="offer-content">
-                        <div class="info">
-                            <h3>{{ item.title }}</h3>
-                            <div class="pcomp">
-                                <div class="mdata">
-                                    <span class="font-weight-bold">Job position:&nbsp;</span><span>{{ item.get_level_display }}</span>
-                                </div>
-                                <div class="mdata">
-                                    <span class="font-weight-bold">Compensation type:&nbsp;</span><span>{{ item.get_pay_display }}</span>
-                                </div>
-                            </div>
+                      <div class="info">
+                        <h3>{{ item.title }}</h3>
+                        <div class="pcomp">
+                          <div class="mdata">
+                            <span
+                                class="font-weight-bold">Job position:&nbsp;</span><span>{{ item.get_level_display }}</span>
+                          </div>
+                          <div class="mdata">
+                            <span
+                                class="font-weight-bold">Compensation type:&nbsp;</span><span>{{ item.get_pay_display }}</span>
+                          </div>
                         </div>
-                        <script type="text/javascript">
-                            $(function() {
-                                $('.description p').each(function(i) {
-                                    var text = $(this).text().trim();
-                                    len = text.length;
-                                    if (len > 200) {
-                                        $(this).text(text.substr(0, 200) + '...');
-                                    }
-                                });
-                            });
-                        </script>
-                        <div class="description">
-                            <p>{{ item.description }}</p>
-                        </div>
+                      </div>
+                      <script type="text/javascript">
+                        $(function() {
+                          $('.description p').each(function(i) {
+                            var text = $(this).text().trim();
+                            len = text.length;
+                            if (len > 200) {
+                              $(this).text(text.substr(0, 200) + '...');
+                            }
+                          });
+                        });
+                      </script>
+                      <div class="description">
+                        <p>{{ item.description }}</p>
+                      </div>
                     </div>
-                </div>
-            </a>
+                  </div>
+                </a>
 
-        </div>
-        {% endwith %}
-        {% else %}
-        {% with user=item %}
-        <div class="col col-md-4" style="height:400px;">
-            <a class="card-hover" href='/users/{{ user.id }}'>
-                <div class="card">
+              </div>
+            {% endwith %}
+          {% else %}
+            {% with user=item %}
+              <div class="col col-md-4" style="height:400px;">
+                <a class="card-hover" href='/users/{{ user.id }}'>
+                  <div class="card">
                     <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
                     <div>
-                        <div class="avatar" style="
-                            background-image: url('{% if user.is_founder %}{{ user.founder.logo.url }}{% else %}{{ user.profile.image.url }}{% endif %}');
+                      <div class="avatar" style="background-image: url('{% if user.is_founder %}{{ user.founder.logo.url }}{% else %}{{ user.profile.image.url }}{% endif %}');
                           background-size: contain;
                           position: absolute;
                           background-position: center;
                           background-repeat: no-repeat;"></div>
                     </div>
                     <div class="content">
-                        {% if user.is_founder %}
+                      {% if user.is_founder %}
                         <h2>{{ user.founder.startup_name }}</h2>
-                        <h4>{{user.founder.get_stage_display}} • {{user.founder.employee_count}} Employee{{ user.founder.employee_count|pluralize }}</h4>
+                        <h4>{{ user.founder.get_stage_display }} • {{ user.founder.employee_count }}
+                          Employee{{ user.founder.employee_count|pluralize }}</h4>
                         <hr>
                         <script type="text/javascript">
-                            $(function() {
-                                $('.founderdescription').each(function(i) {
-                                    len = $(this).text().length;
-                                    if (len > 300) {
-                                        $(this).text($(this).text().substr(0, 200) + '...');
-                                    }
-                                });
+                          $(function() {
+                            $('.founderdescription').each(function(i) {
+                              len = $(this).text().length;
+                              if (len > 300) {
+                                $(this).text($(this).text().substr(0, 200) + '...');
+                              }
                             });
+                          });
                         </script>
                         <div class="founderdescription">
-                            <p>{{ user.founder.description }}<p>
+                          <p>{{ user.founder.description }}<p>
                         </div>
-                        {% else %}
+                      {% else %}
                         <h2>{{ user.first_name }} {{ user.last_name }}</h2>
                         <h3 style="margin-top:0">{{ user.profile.get_year_display }}</h3>
-                        {% if user.profile.has_startup_exp %}<span class="label label-default">Has startup experience</span>
+                        {% if user.profile.has_startup_exp %}
+                          <span class="label label-default">Has startup experience</span>
                         {% endif %}
-                        {% if user.profile.has_funding_exp %}<span class="label label-default">Has funding experience</span>
+                        {% if user.profile.has_funding_exp %}
+                          <span class="label label-default">Has funding experience</span>
                         {% endif %}
                         <span class="label label-primary">{{ user.profile.get_year_display }}</span>
                         <span class="label label-primary">{{ user.profile.get_major_display }}</span>
                         <span class="label label-info">{{ user.profile.get_role_display }}</span>
                         {% for skill in skills|slice:":5" %}
-                        <span class="label label-info">{{ skill }}</span>
+                          <span class="label label-info">{{ skill }}</span>
                         {% endfor %}
                         <span class="label label-success">{{ user.profile.get_hours_week_display }} hr/wk</span>
                         {% for work in user.profile.experience_set.all %}
-                        <span class="label label-danger">Worked at {{ work.company }}</span>
+                          <span class="label label-danger">Worked at {{ work.company }}</span>
                         {% endfor %}
-                          {% for item in user.positions_display %}
-                            <span class="label label-warning">{{ item }}</span>
-                          {% endfor %}
-                        {% endif %}
-                        <!--<div style = "padding:10px;">
+                        {% for item in user.positions_display %}
+                          <span class="label label-warning">{{ item }}</span>
+                        {% endfor %}
+                      {% endif %}
+                      <!--<div style = "padding:10px;">
                         <a href="/users/{{user.id}}" class="btn btn-primary btn-outline">View profile</a>
                         </div>-->
                     </div>
-                </div>
-            </a>
+                  </div>
+                </a>
 
 
-        </div>
-        {% endwith %}
-        {% endif %}
+              </div>
+            {% endwith %}
+          {% endif %}
         {% empty %}
-        <div class = "col col-md-12 text-center">
-            <h1><i class="fa fa-exclamation-circle" aria-hidden="true"></i> There were no users that matched your search query! Try another search.</h1>
-        </div>
-        {%endfor%}
+          <div class="col col-md-12 text-center">
+            <h1><i class="fa fa-exclamation-circle" aria-hidden="true"></i> There were no users that matched your search
+              query! Try another search.</h1>
+          </div>
+        {% endfor %}
+      </div>
     </div>
-</div>
-{% endblock %}
+  {% endblock %}
+
+{% else %}
+
+  {% block content %}
+    <div class='container' style="padding-top: 30px; padding-bottom:30px;">
+      <div class='row'>
+        {% for item, skills in searched %}
+          {% if item.level %}
+            {% with user=item.founder.user %}
+              <div class="col col-md-4 item">
+
+                <a class="card-hover" href='/users/{{ user.id }}'>
+                  <div class="card job-card">
+                    <div class="header-bg" style="height:100px; background-color:#25283D;">
+                      <h2>{{ user.founder.startup_name }}</h2>
+                      <div class="avatar" style="background-image: url('{% if user.is_founder %}{{ user.founder.logo.url }}{% else %}{{ user.profile.image.url }}{% endif %}');background-size: contain;position: absolute;background-position: center;background-repeat: no-repeat;"></div>
+                    </div>
+                    <div class="offer-content">
+                      <div class="info">
+                        <h3>{{ item.title }}</h3>
+                        <div class="pcomp">
+                          <div class="mdata">
+                            <span
+                                class="font-weight-bold">Job position:&nbsp;</span><span>{{ item.get_level_display }}</span>
+                          </div>
+                          <div class="mdata">
+                            <span
+                                class="font-weight-bold">Compensation type:&nbsp;</span><span>{{ item.get_pay_display }}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <script type="text/javascript">
+                        $(function() {
+                          $('.description p').each(function(i) {
+                            var text = $(this).text().trim();
+                            len = text.length;
+                            if (len > 200) {
+                              $(this).text(text.substr(0, 200) + '...');
+                            }
+                          });
+                        });
+                      </script>
+                      <div class="description">
+                        <p>{{ item.description }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+
+              </div>
+            {% endwith %}
+          {% else %}
+            {% with user=item %}
+              <div class="col col-md-4" style="height:400px;">
+                <a class="card-hover" href='/users/{{ user.id }}'>
+                  <div class="card">
+                    <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
+                    <div>
+                      <div class="avatar" style="background-image: url('{% if user.is_founder %}{{ user.founder.logo.url }}{% else %}{{ user.profile.image.url }}{% endif %}');background-size: contain;position: absolute;background-position: center;background-repeat: no-repeat;"></div>
+                    </div>
+                    <div class="content">
+                      {% if user.is_founder %}
+                        <h2>{{ user.founder.startup_name }}</h2>
+                        <h4>{{ user.founder.get_stage_display }} • {{ user.founder.employee_count }}
+                          Employee{{ user.founder.employee_count|pluralize }}</h4>
+                        <hr>
+                        <script type="text/javascript">
+                          $(function() {
+                            $('.founderdescription').each(function(i) {
+                              len = $(this).text().length;
+                              if (len > 300) {
+                                $(this).text($(this).text().substr(0, 200) + '...');
+                              }
+                            });
+                          });
+                        </script>
+                        <div class="founderdescription">
+                          <p>{{ user.founder.description }}<p>
+                        </div>
+                      {% else %}
+                        <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                        <h3 style="margin-top:0">{{ user.profile.get_year_display }}</h3>
+                        {% if user.profile.has_startup_exp %}
+                          <span class="label label-default">Has startup experience</span>
+                        {% endif %}
+                        {% if user.profile.has_funding_exp %}
+                          <span class="label label-default">Has funding experience</span>
+                        {% endif %}
+                        <span class="label label-primary">{{ user.profile.get_year_display }}</span>
+                        <span class="label label-primary">{{ user.profile.get_major_display }}</span>
+                        <span class="label label-info">{{ user.profile.get_role_display }}</span>
+                        {% for skill in skills|slice:":5" %}
+                          <span class="label label-info">{{ skill }}</span>
+                        {% endfor %}
+                        <span class="label label-success">{{ user.profile.get_hours_week_display }} hr/wk</span>
+                        {% for work in user.profile.experience_set.all %}
+                          <span class="label label-danger">Worked at {{ work.company }}</span>
+                        {% endfor %}
+                        {% for item in user.positions_display %}
+                          <span class="label label-warning">{{ item }}</span>
+                        {% endfor %}
+                      {% endif %}
+                      <!--<div style = "padding:10px;">
+                        <a href="/users/{{user.id}}" class="btn btn-primary btn-outline">View profile</a>
+                        </div>-->
+                    </div>
+                  </div>
+                </a>
+
+
+              </div>
+            {% endwith %}
+          {% endif %}
+        {% empty %}
+          <div class="col col-md-12 text-center">
+            <h1><i class="fa fa-exclamation-circle" aria-hidden="true"></i> There were no users that matched your search
+              query! Try another search.</h1>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endblock %}
+
+{% endif %}

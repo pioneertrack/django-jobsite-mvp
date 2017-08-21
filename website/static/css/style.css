@@ -1,3 +1,4 @@
+
 .centered{
     margin: 0 auto;
     float: none;
@@ -35,4 +36,20 @@ div.alert-error ul li, p[id^='error_']{
 
 p.help-block strong{
     font-weight: normal;
+}
+
+#menubutton:hover {
+  transform: scale(1.1);
+}
+#menubutton {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background-color: #8F3985;
+  transition: all .2s ease-in-out;
+}
+[off-canvas] {
+    color: white;
+    background-color: #25283d;
 }

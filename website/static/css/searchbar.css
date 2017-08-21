@@ -21,6 +21,9 @@
   -o-transform: translateY(-50%);
   transform: translateY(-50%);
 }
+.cd-main-search .cd-search-button.for-mobile {
+  right: 5px;
+}
 #searchbutton {
   width: 40px;
   height: 40px;
@@ -54,6 +57,21 @@
   flex: 0 0 100%;
 }
 
+#search input[type="search"].for-mobile  {
+  border-radius: 0;
+  margin-top: 0;
+  /*border-bottom: solid 3px #8F3985;*/
+  background-color: rgba(0,0,0,0);
+  width: 100%;
+  height: 100%;
+  bottom: 0px;
+  position:absolute;
+  flex: 0 0 100%;
+  margin-left: 0;
+  padding-left: 40px;
+  padding-right: 50px;
+}
+
 @media screen and (min-width: 1024px) {
   #search input[type="search"] {
     width: 100%;
@@ -69,7 +87,7 @@
 .cd-main-search .cd-select {
   display: inline-block;
   position: absolute;
-  z-index: 0;
+  z-index: 1;
   right: 70px;
   top: 50%;
   bottom: auto;
@@ -567,8 +585,8 @@
 .nice-select.no-overflow .list .option:hover .list{
   display: block;
 }
-
-.startups, .jobs, .partners, .employees, .freelancers {
+.checkboxes.startups, .checkboxes.jobs, .checkboxes.partners, .checkboxes.employees, .checkboxes.freelancers,
+.selects.startups, .selects.jobs, .selects.partners, .selects.employees, .selects.freelancers {
   display: none;
 }
 .tags.startups.is-visible,
@@ -579,6 +597,13 @@
   display: flex;
 }
 
+.checkboxes.startups.is-visible,
+.checkboxes.jobs.is-visible,
+.checkboxes.partners.is-visible,
+.checkboxes.employees.is-visible,
+.checkboxes.freelancers.is-visible {
+  display: block;
+}
 .selects.startups.is-visible,
 .selects.jobs.is-visible,
 .selects.partners.is-visible,
@@ -662,4 +687,215 @@
 }
 .select-category {
   display: none;
+  }
+
+[off-canvas*=left], [off-canvas*=right] {
+  width: 87vw;
+  }
+
+@media (min-width: 640px) and (orientation: landscape) {
+[off-canvas*=left], [off-canvas*=right] {
+  width: 55vw;
+  }
+}
+@media (min-width: 700px) and (orientation: landscape) {
+[off-canvas*=left], [off-canvas*=right] {
+  width: 50vw;
+  }
+}
+@media (min-width: 1024px) and (orientation: landscape) {
+[off-canvas*=left], [off-canvas*=right] {
+  width: 40vw;
+  }
+}
+.checkboxes .filter-container {
+  padding: 10px 0;
+}
+  .checkboxes .filter-container.show label._hidden {
+    overflow: visible;
+    margin: 0 0 5px;
+    padding: 5px 40px 5px 20px;
+    height: auto;
+    }
+  .checkboxes .filter-container label {
+    position: relative;
+    padding: 5px 40px 5px 20px;
+    display: block;
+    transition: all 0.3s ease;
+  }
+  .checkboxes .filter-container.search-category label {
+    position: relative;
+    padding: 5px 40px 5px 20px;
+    display: block;
+    transition: all 0.1s ease;
+  }
+  .checkboxes .filter-container label._hidden {
+    overflow: hidden;
+    padding: 0 40px 0 20px;
+    margin: 0;
+    height: 0;
+    }
+  .checkboxes .filter-container input[type="radio"]:checked+label,
+  .checkboxes .filter-container input[type="checkbox"]:checked+label,
+  .checkboxes .filter-container label:focus {
+    background: #8F3985;
+    }
+    .checkboxes .filter-container label input {
+      display: none;
+      }
+    .checkboxes .filter-container input[type="radio"],
+    .checkboxes .filter-container input[type="checkbox"] {
+      display: none;
+      }
+    .checkboxes .filter-container label i {
+      position: absolute;
+      right: 25px;
+      top: 8px;
+      color: #ffffff;
+      }
+    .checkboxes .filter-container input[type="radio"]+label i,
+    .checkboxes .filter-container input[type="checkbox"]+label i {
+      position: absolute;
+      right: 25px;
+      top: 8px;
+      color: #ffffff;
+      }
+
+    .checkboxes .filter-container i.fa-check-square {
+      display: none;
+      }
+
+    .checkboxes .filter-container input:checked ~ i.fa-square {
+      display: none;
+      }
+    .checkboxes .filter-container input:checked ~ i.fa-check-square {
+      display: block;
+      }
+    .checkboxes .filter-container input[type="checkbox"]:checked+label  i.fa-square {
+      display: none;
+      }
+    .checkboxes .filter-container input[type="checkbox"]:checked+label  i.fa-check-square {
+      display: block;
+      }
+
+    .checkboxes .filter-container i.fa-dot-circle-o {
+      display: none;
+      }
+    .checkboxes .filter-container input[type="radio"]:checked+label i.fa-circle-o {
+      display: none;
+      }
+    .checkboxes .filter-container input[type="radio"]:checked+label i.fa-dot-circle-o {
+      display: block;
+      }
+.filter-show {
+  margin: 0 auto;
+  width: 85%;
+  text-align: center;
+  display: block;
+  }
+
+.cd-show-filter.toggle-id-1{
+  z-index: 13;
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  text-align: left;
+  padding-left: 0.5rem;
+  width: 40px;
+  height: 40px;
+  bottom: auto;
+  color: white;
+  font-size: 3rem;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+  transform: translateY(-50%);
+  left: 0;
+}
+.cd-show-filter input {
+  display: none;
+}
+.cd-show-filter *{
+  cursor: hand;
+}
+.cd-show-filter *:hover {
+  transform: scale(1.1);
+}
+.cd-show-filter #show_filter + label .fa-list{
+  display: block;
+}
+.cd-show-filter #show_filter + label .fa-th-large{
+  display: none;
+}
+.cd-show-filter #show_filter:checked + label .fa-list {
+  display: none;
+}
+.cd-show-filter #show_filter:checked + label .fa-th-large{
+  display: block;
+}
+.filter-title-block {
+  text-transform: capitalize;
+  position: relative;
+  padding: 5px 40px 5px 20px;
+  display: block;
+  font-weight: 700;
+  font-size: 1.9rem;
+  color: #337ab7;
+}
+.checkboxes.bottom {
+  -webkit-column-count: 2;
+  -moz-column-count: 2;
+  column-count: 2;
+  padding: 5px 20px 5px 20px;
+}
+.checkboxes .top {
+  -webkit-column-count: 2;
+  -moz-column-count: 2;
+  column-count: 2;
+  padding: 5px 20px 5px 20px;
+  font-weight: 700;
+  font-size: 1.9rem;
+}
+.filter-show.text-left {
+  text-align: left;
+  margin: 0;
+
+}
+.checkboxes.bottom .btn-primary {
+  margin: 0 auto;
+  width: 85%;
+  text-align: center;
+  display: block;
+}
+.mobile-filter-header {
+  -webkit-column-count: 3;
+  -moz-column-count: 3;
+  column-count: 3;
+  font-weight: 700;
+  padding: 5px 40px 5px 20px;
+  text-align: center;
+  font-size: 1.9rem;
+}
+.link-blue {
+    color: #337ab7;
+}
+.search-select .mobile-filter-header {
+  -webkit-column-count: 1;
+  -moz-column-count: 1;
+  column-count: 1;
+}
+.loading-overlay {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+}
+.loading-overlay i {
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 50vh;
 }
