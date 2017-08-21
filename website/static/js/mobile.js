@@ -87,6 +87,10 @@ jQuery(document).ready(function($){
     })
   })
 
+  window.addEventListener("orientationchange", function() {
+    controller.close('id-1');
+    controller.close('id-2');
+  }, false);
 
   $('input[name="select-category"]').on('change', function(e) {
     var checked = $('input[name="select-category"]:checked');
