@@ -62,11 +62,10 @@ JOB_CONTEXT = {
     ],
     'e_context': [
         ('position', [
-             ('1', 'Intern'),
-             ('2', 'Part-Time'),
-             ('3', 'Full-Time')
-        ]),
-        {'class': 'label-role'}
+            ('1', 'Intern'),
+            ('2', 'Part-Time'),
+            ('3', 'Full-Time')
+        ], {'class': 'label-position'}),
     ],
     'f_context': [
         ('stage', list(prof.STAGE), {'class': 'label-stage'}),
@@ -167,10 +166,16 @@ def index(request):
             kwargs = {'is_active': True, 'is_founder': False}
             category = request.POST['select-category']
 
+            active_selects = []
+
+            position = request.POST.getlist('position_'+category)
             if category == 'partners':
                 kwargs['profile__positions__contains'] = ['0']
             elif category == 'employees':
                 kwargs['profile__positions__overlap'] = ['1', '2', '3']
+                if len(position) > 1 or (not '' in position and len(position) > 0):
+                    kwargs['profile__positions__overlap'] = position
+                    active_selects.append('position_' + category)
             else:
                 kwargs['profile__positions__contains'] = ['4']
 
@@ -184,13 +189,12 @@ def index(request):
             if filter_hidden != None:
                 filter = json.loads('[' + filter_hidden + ']')
 
-            active_selects = []
-
             filter_mobile = {
                 'year_'+category: years,
                 'major_'+category: majors,
                 'role_'+category: roles,
                 'experience_'+category: experience,
+                'position_'+category: position,
             }
 
             if len(years) > 1 or (not '' in years and len(years) > 0):
