@@ -795,7 +795,7 @@
   }
 
 .cd-show-filter.toggle-id-1{
-  z-index: 13;
+  z-index: 1;
   display: inline-block;
   position: absolute;
   top: 50%;

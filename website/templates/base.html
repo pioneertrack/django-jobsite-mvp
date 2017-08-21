@@ -113,7 +113,7 @@
                 {% else %}
                   <a href="{% url 'website:profile' %}">
                     {% if request.user.profile.image.url %}
-                      <img id="headerthumbnail" src="{{ request.user.profile.image.url }}">
+                      <img id="headerthumbnail" src="{{ request.user.profile.image.url }}" class="for-mobile">
                     {% endif %}
                     My Profile
                   </a>
