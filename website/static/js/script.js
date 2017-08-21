@@ -26,6 +26,11 @@ jQuery(document).ready(function($){
         }
     });
 
+  $("div.nice-select ul.list").mCustomScrollbar({
+        theme: "3d-thick-dark",
+        scrollInertia: 300,
+   });
+
   $(document).on('mouseleave', '.tags', function(e) {
     var tags = $(this).children('.filter-container');
     var children = $(tags.children(':not(.outer)').get().reverse());
