@@ -28,3 +28,11 @@ div#div_id_logo, div#div_id_image {
     margin-bottom: 10px;
     margin-top: 10px;
 }
+
+div.alert-error ul li, p[id^='error_']{
+    color: red;
+}
+
+p.help-block strong{
+    font-weight: normal;
+}
