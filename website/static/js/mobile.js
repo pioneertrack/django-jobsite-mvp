@@ -24,6 +24,12 @@ jQuery(document).ready(function($){
     // $('.loading-overlay').show();
   });
 
+  $( controller.events ).on( 'closing', function ( event, id ) {
+      if (controller.isActiveSlidebar('id-2')) {
+        controller.close('id-2');
+      }
+  });
+
   $( controller.events ).on( 'closed', function ( event, id ) {
     event.stopPropagation();
     if (id == 'id-1') {
