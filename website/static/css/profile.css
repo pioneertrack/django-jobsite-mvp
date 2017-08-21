@@ -187,6 +187,14 @@
 .profile-page h3, .profile-page h4, .profile-page h5, .profile-page h6{
   font-family: roboto;
 }
+#headerthumbnail.for-mobile {
+  z-index: 3;
+  display: inline-block;
+  height: 100%;
+  border-radius: 50%;
+  line-height: inherit;
+  margin-bottom: 6px;
+}
 #headerthumbnail {
   height: 50px;
   width: 50px;

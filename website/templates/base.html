@@ -26,6 +26,7 @@
   <script src="{% static 'jquery-modern/dist/jquery.min.js' %}"></script>
   <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
   {% if is_mobile %}
+    <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
     <script src="{% static 'slidebars-fork/dist/slidebars.min.js' %}"></script>
     <script src="{% static 'detect_swipe/jquery.detect_swipe.js' %}"></script>
     <script src="{% static 'js/mobile.js' %}"></script>
@@ -113,7 +114,7 @@
                 {% else %}
                   <a href="{% url 'website:profile' %}">
                     {% if request.user.profile.image.url %}
-                      <img id="headerthumbnail" src="{{ request.user.profile.image.url }}">
+                      <img id="headerthumbnail" src="{{ request.user.profile.image.url }}" class="for-mobile">
                     {% endif %}
                     My Profile
                   </a>
