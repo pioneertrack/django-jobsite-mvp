@@ -21,7 +21,7 @@ jQuery(document).ready(function($){
         }
     });
 
-  $("div.nice-select ul.list").mCustomScrollbar({
+  $(".first div.nice-select ul.list").mCustomScrollbar({
         theme: "3d-thick-dark",
         scrollInertia: 300,
   });
