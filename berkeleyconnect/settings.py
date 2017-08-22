@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'storages',
     'import_export',
     'django_extensions',
+    'imagekit',
 ]
 
 MIDDLEWARE = [

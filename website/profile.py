@@ -4,9 +4,9 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.contrib.postgres.fields import ArrayField
-from datetime import datetime
 from django import forms
-from django.core.exceptions import ValidationError
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill
 
 HOURS_AVAILABLE = (
     ('0', '0 - 5'),
@@ -149,6 +149,10 @@ class Profile(models.Model):
     bio = models.TextField(verbose_name='Bio', max_length=500, blank=True, null=False)
     image = models.ImageField(upload_to=user_directory_path, default='images/default/default-profile.jpg', blank=True,
                               null=False)
+    image_thumbnail = ImageSpecField(source='image',
+                                      processors=[ResizeToFill(100, 100)],
+                                      format='PNG',
+                                      options={'quality': 100})
     interests = models.TextField(verbose_name='Interests', max_length=500, blank=True, null=False)
     skills = models.TextField(verbose_name='Skills', max_length=500, blank=True, null=False)
     courses = models.TextField(verbose_name='Courses', max_length=400, blank=True, null=False)
@@ -183,6 +187,10 @@ class Founder(models.Model):
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
     logo = models.ImageField(upload_to=company_logo_path, default='images/default/default-logo.jpg', blank=True,
                              null=False)
+    logo_thumbnail = ImageSpecField(source='image',
+                                      processors=[ResizeToFill(100, 100)],
+                                      format='PNG',
+                                      options={'quality': 100})
     startup_name = models.CharField(verbose_name='Startup Name', max_length=99)
     description = models.TextField(verbose_name='Description', blank=True, null=False)
     alt_email = models.EmailField(max_length=255, db_index=True, null=True, blank=True)
