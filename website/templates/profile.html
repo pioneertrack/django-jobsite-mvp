@@ -18,9 +18,6 @@
               </div>
             </div>
             <div class="colmd-8 centerfy">
-              {% if not is_mobile %}
-                <h1>Not mobile</h1>
-              {% endif %}
               <h1>{{ user.first_name }} {{ user.last_name }}</h1>
               {% if user.profile.has_startup_exp %}
                 <span class="label label-default">Has startup experience</span>{% endif %}
@@ -160,9 +157,6 @@
               </div>
             </div>
             <div class="colmd-8 centerfy">
-              {% if not is_mobile %}
-                <h1>Not mobile</h1>
-              {% endif %}
               <h1>{{ user.first_name }} {{ user.last_name }}</h1>
               {% if user.profile.has_startup_exp %}
                 <span class="label label-default">Has startup experience</span>{% endif %}
