@@ -5,6 +5,10 @@ jQuery(document).ready(function($) {
   $('ul#cd-navigation select.filter').niceSelect();
   $('ul#cd-navigation ul.list li:first').hide();
 
+  $('#profiles_holder').on('click', function(e) {
+    e.preventDefault();
+  })
+
   $('ul#cd-navigation ul.list li').on('click', function() {
     window.location.href = $(this).attr('data-value');
   });
