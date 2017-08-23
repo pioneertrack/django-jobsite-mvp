@@ -539,7 +539,12 @@ def index(request):
 def user_profile(request):
     last_login = request.user.last_login
     experience = request.user.profile.experience_set.order_by('-end_date')
-
+    current_time= timezone.now()
+    cd = False
+    cr= current_time - last_login
+    cr= cr.total_seconds()
+    if cr< 86400.00:
+        cd= True
     # in case user click on fill out later button in profile update
     if request.user.first_login:
         request.user.set_first_login()
@@ -556,6 +561,7 @@ def user_profile(request):
                       'reset': True,
                       'last_login': last_login,
                       'positions_display': positions,
+                      'cd':cd,
                   }))
 
 
@@ -565,6 +571,12 @@ def user_profile(request):
 def startup_profile(request):
     user = get_object_or_404(models.MyUser, pk=request.user.id)
     last_login = user.last_login
+    current_time= timezone.now()
+    cd = False
+    cr= current_time - last_login
+    cr= cr.total_seconds()
+    if cr< 86400.00:
+        cd= True
     jobs = request.user.founder.job_set.order_by('created_date')
     total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
     
@@ -579,6 +591,7 @@ def startup_profile(request):
                       'reset': True,
                       'total_funding': total_funding.get('total'),
                       'last_login': last_login,
+                      'cd':cd,
                   }))
 
 
@@ -824,6 +837,12 @@ def startup_update(request):
 def get_user_view(request, id):
     user = get_object_or_404(models.MyUser, pk=id)
     last_login = user.last_login
+    current_time= timezone.now()
+    cd = False
+    cr= current_time - last_login
+    cr= cr.total_seconds()
+    if cr< 86400.00:
+        cd= True
     if user is None:
         return HttpResponseRedirect('/')
     if user.is_founder:
@@ -835,6 +854,7 @@ def get_user_view(request, id):
                           'jobs': jobs,
                           'reset': True,
                           'last_login':last_login,
+                          'cd':cd,
                       }))
     else:
         # TODO: need to remember normal alg for that
@@ -850,6 +870,7 @@ def get_user_view(request, id):
                           'reset': True,
                           'last_login':last_login,
                           'positions_display': positions,
+                          'cd':cd,
                       }))
 
 
