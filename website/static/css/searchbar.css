@@ -899,3 +899,6 @@
   margin: 0 auto;
   margin-top: 50vh;
 }
+.small-avatar {
+  width: 100%;
+}

@@ -8,8 +8,7 @@ from django import forms
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 from django.core.files.storage import FileSystemStorage
-from django.conf import settings
-import os.path
+from custom_storages import MediaStorage
 
 HOURS_AVAILABLE = (
     ('0', '0 - 5'),
@@ -141,9 +140,14 @@ class CustomImageField(models.ImageField):
 
     def from_db_value(self, value, expression, connection, context):
         val = self.to_python(value)
-        if self.storage.exists(self.storage.location + '/' + val):
-            return val;
-        return self.storage.location + '/' + self.default
+        if isinstance(self.storage, FileSystemStorage):
+            if self.storage.exists(self.storage.location + '/' + val):
+                return val;
+            return self.storage.location + '/' + self.default
+        if isinstance(self.storage, MediaStorage):
+            if self.storage.exists(val):
+                return val;
+            return self.default
 
 
 def user_directory_path(instance, filename):
@@ -205,7 +209,7 @@ class Experience(models.Model):
 
 class Founder(models.Model):
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
-    logo = models.ImageField(upload_to=company_logo_path, default='images/default/default-logo.jpg', blank=True,
+    logo = CustomImageField(upload_to=company_logo_path, default='images/default/default-logo.jpg', blank=True,
                              null=False)
     logo_thumbnail = ImageSpecField(source='logo',
                                       processors=[ResizeToFill(100, 100)],
