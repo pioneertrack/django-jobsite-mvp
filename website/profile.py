@@ -137,17 +137,18 @@ class ChoiceArrayField(ArrayField):
 
 
 class CustomImageField(models.ImageField):
-
     def from_db_value(self, value, expression, connection, context):
         val = self.to_python(value)
-        if isinstance(self.storage, FileSystemStorage):
-            if self.storage.exists(self.storage.location + '/' + val):
-                return val;
-            return self.storage.location + '/' + self.default
+        if val == self.default:
+            return val;
         if isinstance(self.storage, MediaStorage):
             if self.storage.exists(val):
                 return val;
             return self.default
+        if isinstance(self.storage, FileSystemStorage):
+            if self.storage.exists(self.storage.location + '/' + val):
+                return val;
+            return self.storage.location + '/' + self.default
 
 
 def user_directory_path(instance, filename):
