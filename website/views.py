@@ -163,7 +163,7 @@ def index(request):
         people = ['partners', 'employees', 'freelancers']
         if request.POST['select-category'] in people:
 
-            kwargs = {'is_active': True, 'is_founder': False}
+            kwargs = {'is_active': True, 'is_individual': True}
             category = request.POST['select-category']
 
             active_selects = []

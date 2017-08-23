@@ -7,6 +7,9 @@ from django.contrib.postgres.fields import ArrayField
 from django import forms
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+import os.path
 
 HOURS_AVAILABLE = (
     ('0', '0 - 5'),
@@ -134,6 +137,15 @@ class ChoiceArrayField(ArrayField):
         return super(ArrayField, self).formfield(**defaults)
 
 
+class CustomImageField(models.ImageField):
+
+    def from_db_value(self, value, expression, connection, context):
+        val = self.to_python(value)
+        if self.storage.exists(self.storage.location + '/' + val):
+            return val;
+        return self.storage.location + '/' + self.default
+
+
 def user_directory_path(instance, filename):
     return 'images/user_{0}/{1}.jpg'.format(instance.id, instance.id)
 
@@ -147,7 +159,7 @@ class Profile(models.Model):
     role = models.CharField(max_length = 4, choices = PRIMARY_ROLE, default='NONE', blank = True, null = False)
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
     bio = models.TextField(verbose_name='Bio', max_length=500, blank=True, null=False)
-    image = models.ImageField(upload_to=user_directory_path, default='images/default/default-profile.jpg', blank=True,
+    image = CustomImageField(upload_to=user_directory_path, default='images/default/default-profile.jpg', blank=True,
                               null=False)
     image_thumbnail = ImageSpecField(source='image',
                                       processors=[ResizeToFill(100, 100)],
@@ -169,6 +181,14 @@ class Profile(models.Model):
     role = models.CharField(max_length=4, choices=PRIMARY_ROLE, default='NONE', blank=True, null=False)
     positions = ChoiceArrayField(models.CharField(choices=POSITIONS, max_length=1, default='0'), default=['0'])
 
+    def __getattr__(self, item):
+        if item != 'image':
+            return super(Profile, self).__getattr__(item)
+        if item == 'image':
+            if item == 'image':
+                image = super(Profile, self).__getattr__(item)
+                return image
+
     def __str__(self):
         return self.user.email
 
@@ -187,7 +207,7 @@ class Founder(models.Model):
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
     logo = models.ImageField(upload_to=company_logo_path, default='images/default/default-logo.jpg', blank=True,
                              null=False)
-    logo_thumbnail = ImageSpecField(source='image',
+    logo_thumbnail = ImageSpecField(source='logo',
                                       processors=[ResizeToFill(100, 100)],
                                       format='PNG',
                                       options={'quality': 100})
