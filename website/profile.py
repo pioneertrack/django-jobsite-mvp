@@ -211,7 +211,7 @@ class Experience(models.Model):
     start_date = models.DateField(verbose_name='Start Date', blank=True, null=True)
     description = models.TextField(verbose_name='Description', max_length=500, blank=True, null=False)
     currently_working = models.BooleanField(default=False)
-    end_date = models.DateField(verbose_name='End Date', default=timezone.now, null=True)
+    end_date = models.DateField(verbose_name='End Date', default=timezone.now, null=True, blank=True)
 
 
 class Founder(models.Model):
