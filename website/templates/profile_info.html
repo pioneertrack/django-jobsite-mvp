@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block title %}
-{{user.first_name}} {{user.last_name}}
+{{profile.user.first_name}} {{profile.last_name}}
 {% endblock %}
 
 {% if is_mobile %}
@@ -13,19 +13,19 @@
         <div class="container">
           <div id="profile-hero" class="row well">
             <div class="col-md-4 centerfy">
-              <div class='profile-image text-center img-responsive'
-                style="background-image: url('{{ user.profile.image_thumbnail_large.url }}');">
+              <div class="profile-image text-center img-responsive"
+                style="background-image: url('{{ profile.image_thumbnail_large.url }}');">
               </div>
             </div>
             <div class="col-md-8 centerfy">
-              <h1>{{ user.first_name }} {{ user.last_name }}</h1>
-              {% if user.profile.has_startup_exp %}
+              <h1>{{ profile.user.first_name }} {{ profile.user.last_name }}</h1>
+              {% if profile.has_startup_exp %}
                 <span class="label label-default">Has startup experience</span>{% endif %}
-              {% if user.profile.has_funding_exp %}
+              {% if profile.has_funding_exp %}
                 <span class="label label-default">Has funding experience</span>{% endif %}
-              <h3>{% if user.profile.year != "" %}{{ user.profile.get_year_display }}{% else %}Student{% endif %} at UC
+              <h3>{% if profile.year != "" %}{{ profile.get_year_display }}{% else %}Student{% endif %} at UC
                 Berkeley</h3>
-              {% if user.profile.positions != "" %} <p>Looking for a
+              {% if profile.positions != "" %} <p>Looking for a
                 <strong>
                   {% for item in positions_display %}
                     {{ item }}{% if not forloop.last %},{% endif %}
@@ -34,13 +34,7 @@
               {% endif %}
               <hr>
               <h5>Active: {{ last_login|timesince }} ago</h5>
-              {% if profile %}
-                <button id="update" data-href="{% url 'website:profile_update' %}"
-                        class="btn btn-lg btn-success btn-outline">Update your profile
-                </button>
-              {% else %}
-                <button id="connect" class="btn btn-lg btn-primary btn-outline">Connect</button>
-              {% endif %}
+              <button id="connect" class="btn btn-lg btn-primary btn-outline">Connect</button>
             </div>
           </div>
         </div>
@@ -49,8 +43,8 @@
         <div class="row">
           <div class="col col-md-3 col-md-offset-2">
             <h2>Primary role</h2>
-            {% if user.profile.role != "" %}
-              <h3>{{ user.profile.get_role_display }}</h3>
+            {% if profile.role != "" %}
+              <h3>{{ profile.get_role_display }}</h3>
             {% else %}
               <p>None</p>
             {% endif %}
@@ -58,35 +52,35 @@
           </div>
           <div class="col col-md-6">
             <h2>Primary major</h2>
-            <h3>{{ user.profile.get_major_display }}</h3>
+            <h3>{{ profile.get_major_display }}</h3>
             <hr>
           </div>
         </div>
         <div class="row">
           <div class="col col-md-8 col-md-offset-2">
             <h2>Bio</h2>
-            <p>{{ user.profile.bio|linebreaks }}</p>
+            <p>{{ profile.bio|linebreaks }}</p>
             <hr>
           </div>
         </div>
         <div class="row">
           <div class="col col-md-8 col-md-offset-2">
             <h2>Skills</h2>
-            <p>{{ user.profile.skills|linebreaks }}</p>
+            <p>{{ profile.skills|linebreaks }}</p>
             <hr>
           </div>
         </div>
         <div class="row">
           <div class="col col-md-8 col-md-offset-2">
             <h2>Interests</h2>
-            <p>{{ user.profile.interests|linebreaks }}</p>
+            <p>{{ profile.interests|linebreaks }}</p>
             <hr>
           </div>
         </div>
         <div class="row">
           <div class="col col-md-8 col-md-offset-2">
             <h2>Relevant coursework</h2>
-            <p>{{ user.profile.courses|linebreaks }}</p>
+            <p>{{ profile.courses|linebreaks }}</p>
             <hr>
           </div>
         </div>
@@ -116,25 +110,25 @@
         <div class="row">
           <div class="col col-md-4 col-md-offset-2">
             <h2>I am available</h2>
-            {% if user.profile.get_hours_week_display != "" %}
-              <h3>{{ user.profile.get_hours_week_display }}</h3>{% else %}<h3>10</h3>{% endif %}
+            {% if profile.get_hours_week_display != "" %}
+              <h3>{{ profile.get_hours_week_display }}</h3>{% else %}<h3>10</h3>{% endif %}
             <h2>hours per week</h2>
             <hr>
           </div>
           <div class="col col-md-4">
-            {% if user.profile.linkedin != "" %}
+            {% if profile.linkedin != "" %}
               <h2>Linked<i class="fa fa-linkedin-square" aria-hidden="true" style="color:#0077B5;"></i></h2>
-              <a target="_blank" href="{{ user.profile.linkedin }}">{{ user.profile.linkedin }}</a>
+              <a target="_blank" href="{{ profile.linkedin }}">{{ profile.linkedin }}</a>
               <hr>
             {% endif %}
-            {% if user.profile.github != "" %}
+            {% if profile.github != "" %}
               <h2>Github <i class="fa fa-github" aria-hidden="true"></i></h2>
-              <a target="_blank" href="{{ user.profile.github }}">{{ user.profile.github }} </a>
+              <a target="_blank" href="{{ profile.github }}">{{ profile.github }} </a>
               <hr>
             {% endif %}
-            {% if user.profile.website != "" %}
+            {% if profile.website != "" %}
               <h2>Personal website</h2>
-              <a target="_blank" href="{{ user.profile.website }}">{{ user.profile.website }}</a>
+              <a target="_blank" href="{{ profile.website }}">{{ profile.website }}</a>
               <hr>
             {% endif %}
           </div>
@@ -153,18 +147,18 @@
           <div id="profile-hero" class="row well">
             <div class="col-md-4 centerfy">
               <div class="profile-image text-center img-responsive"
-                style="background-image: url('{{ user.profile.image_thumbnail_large.url }}');">
+                style="background-image: url('{{ profile.image_thumbnail_large.url }}');">
               </div>
             </div>
             <div class="col-md-8 centerfy">
-              <h1>{{ user.first_name }} {{ user.last_name }}</h1>
-              {% if user.profile.has_startup_exp %}
+              <h1>{{ profile.user.first_name }} {{ profile.user.last_name }}</h1>
+              {% if profile.has_startup_exp %}
                 <span class="label label-default">Has startup experience</span>{% endif %}
-              {% if user.profile.has_funding_exp %}
+              {% if profile.has_funding_exp %}
                 <span class="label label-default">Has funding experience</span>{% endif %}
-              <h3>{% if user.profile.year != "" %}{{ user.profile.get_year_display }}{% else %}Student{% endif %} at UC
+              <h3>{% if profile.year != "" %}{{ profile.get_year_display }}{% else %}Student{% endif %} at UC
                 Berkeley</h3>
-              {% if user.profile.positions != "" %} <p>Looking for a
+              {% if profile.positions != "" %} <p>Looking for a
                 <strong>
                   {% for item in positions_display %}
                     {{ item }}{% if not forloop.last %},{% endif %}
@@ -173,13 +167,7 @@
               {% endif %}
               <hr>
               <h5>Active: {{ last_login|timesince }} ago</h5>
-              {% if profile %}
-                <button id="update" data-href="{% url 'website:profile_update' %}"
-                        class="btn btn-lg btn-success btn-outline">Update your profile
-                </button>
-              {% else %}
-                <button id="connect" class="btn btn-lg btn-primary btn-outline">Connect</button>
-              {% endif %}
+              <button id="connect" class="btn btn-lg btn-primary btn-outline">Connect</button>
             </div>
           </div>
         </div>
@@ -188,8 +176,8 @@
         <div class="row">
           <div class="col col-md-3 col-md-offset-2">
             <h2>Primary role</h2>
-            {% if user.profile.role != "" %}
-              <h3>{{ user.profile.get_role_display }}</h3>
+            {% if profile.role != "" %}
+              <h3>{{ profile.get_role_display }}</h3>
             {% else %}
               <p>None</p>
             {% endif %}
@@ -197,35 +185,35 @@
           </div>
           <div class="col col-md-6">
             <h2>Primary major</h2>
-            <h3>{{ user.profile.get_major_display }}</h3>
+            <h3>{{ profile.get_major_display }}</h3>
             <hr>
           </div>
         </div>
         <div class="row">
           <div class="col col-md-8 col-md-offset-2">
             <h2>Bio</h2>
-            <p>{{ user.profile.bio|linebreaks }}</p>
+            <p>{{ profile.bio|linebreaks }}</p>
             <hr>
           </div>
         </div>
         <div class="row">
           <div class="col col-md-8 col-md-offset-2">
             <h2>Skills</h2>
-            <p>{{ user.profile.skills|linebreaks }}</p>
+            <p>{{ profile.skills|linebreaks }}</p>
             <hr>
           </div>
         </div>
         <div class="row">
           <div class="col col-md-8 col-md-offset-2">
             <h2>Interests</h2>
-            <p>{{ user.profile.interests|linebreaks }}</p>
+            <p>{{ profile.interests|linebreaks }}</p>
             <hr>
           </div>
         </div>
         <div class="row">
           <div class="col col-md-8 col-md-offset-2">
             <h2>Relevant coursework</h2>
-            <p>{{ user.profile.courses|linebreaks }}</p>
+            <p>{{ profile.courses|linebreaks }}</p>
             <hr>
           </div>
         </div>
@@ -255,25 +243,25 @@
         <div class="row">
           <div class="col col-md-4 col-md-offset-2">
             <h2>I am available</h2>
-            {% if user.profile.get_hours_week_display != "" %}
-              <h3>{{ user.profile.get_hours_week_display }}</h3>{% else %}<h3>10</h3>{% endif %}
+            {% if profile.get_hours_week_display != "" %}
+              <h3>{{ profile.get_hours_week_display }}</h3>{% else %}<h3>10</h3>{% endif %}
             <h2>hours per week</h2>
             <hr>
           </div>
           <div class="col col-md-4">
-            {% if user.profile.linkedin != "" %}
+            {% if profile.linkedin != "" %}
               <h2>Linked<i class="fa fa-linkedin-square" aria-hidden="true" style="color:#0077B5;"></i></h2>
-              <a target="_blank" href="{{ user.profile.linkedin }}">{{ user.profile.linkedin }}</a>
+              <a target="_blank" href="{{ profile.linkedin }}">{{ profile.linkedin }}</a>
               <hr>
             {% endif %}
-            {% if user.profile.github != "" %}
+            {% if profile.github != "" %}
               <h2>Github <i class="fa fa-github" aria-hidden="true"></i></h2>
-              <a target="_blank" href="{{ user.profile.github }}">{{ user.profile.github }} </a>
+              <a target="_blank" href="{{ profile.github }}">{{ profile.github }} </a>
               <hr>
             {% endif %}
-            {% if user.profile.website != "" %}
+            {% if profile.website != "" %}
               <h2>Personal website</h2>
-              <a target="_blank" href="{{ user.profile.website }}">{{ user.profile.website }}</a>
+              <a target="_blank" href="{{ profile.website }}">{{ profile.website }}</a>
               <hr>
             {% endif %}
           </div>

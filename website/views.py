@@ -305,6 +305,7 @@ def index(request):
                                           'search_category': request.POST['select-category'],
                                           'active_selects': active_selects,
                                           'mobile_filter': filter_mobile,
+                                          'people': people,
                                       }))
         elif request.POST['select-category'] == 'startups':
 
@@ -821,36 +822,41 @@ def startup_update(request):
 
 
 @login_required
-def get_user_view(request, id):
+def get_profile_view(request, id):
     user = get_object_or_404(models.MyUser, pk=id)
     last_login = user.last_login
     if user is None:
         return HttpResponseRedirect('/')
-    if user.is_founder:
-        jobs = user.founder.job_set.order_by('title')
-        return render(request, 'founder.html',
-                      merge_dicts(JOB_CONTEXT, {
-                          'user': user,
-                          'profile': False,
-                          'jobs': jobs,
-                          'reset': True,
-                          'last_login':last_login,
-                      }))
-    else:
-        # TODO: need to remember normal alg for that
-        positions = []
-        for item in user.profile.positions:
-            positions.append(prof.POSITIONS.__getitem__(int(item))[1])
-        exp = user.profile.experience_set.order_by('-end_date')
-        return render(request, 'profile.html',
-                      merge_dicts(JOB_CONTEXT, {
-                          'user': user,
-                          'profile': False,
-                          'experience': exp,
-                          'reset': True,
-                          'last_login':last_login,
-                          'positions_display': positions,
-                      }))
+    # TODO: need to remember normal alg for that
+    positions = []
+    for item in user.profile.positions:
+        positions.append(prof.POSITIONS.__getitem__(int(item))[1])
+    exp = user.profile.experience_set.order_by('-end_date')
+    return render(request, 'profile_info.html',
+                  merge_dicts(JOB_CONTEXT, {
+                      'profile': user.profile,
+                      'experience': exp,
+                      'reset': True,
+                      'last_login':last_login,
+                      'positions_display': positions,
+                  }))
+
+
+@login_required
+def get_startup_view(request, id):
+    user = get_object_or_404(models.MyUser, pk=id)
+    last_login = user.last_login
+    if user is None:
+        return HttpResponseRedirect('/')
+    jobs = user.founder.job_set.order_by('title')
+    return render(request, 'founder_info.html',
+                  merge_dicts(JOB_CONTEXT, {
+                      'founder': user.founder,
+                      'profile': False,
+                      'jobs': jobs,
+                      'reset': True,
+                      'last_login':last_login,
+                  }))
 
 
 class MyRegistrationView(RegistrationView):

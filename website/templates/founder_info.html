@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block title %}
-{{user.founder.startup_name}}
+{{founder.startup_name}}
 {% endblock %}
 
 {% if is_mobile %}
@@ -14,24 +14,17 @@
           <div id="profile-hero" class="row well">
             <div class="col-md-4 centerfy">
               <div class="profile-image text-center img-responsive"
-                style="background-image: url('{{ user.founder.logo_thumbnail_large.url }}');">
+                style="background-image: url('{{ founder.logo_thumbnail_large.url }}');">
               </div>
             </div>
             <div class="col-md-8 centerfy">
-              <h1>{{ user.founder.startup_name }}</h1>
-              <h3>{{ user.founder.get_field_display }}
-                <h3>
-                  <p>{{ user.founder.get_stage_display }} with {{ user.founder.employee_count }}
-                    Employee{{ user.founder.employee_count|pluralize }}</p>
-                  <hr>
-                  <h5>Active: {{ last_login|timesince }} ago</h5>
-                  {% if profile %}
-                    <button id="update" data-href="{% url 'website:startup_update' %}"
-                            class="btn btn-lg btn-success btn-outline">Update your company profile
-                    </button>
-                  {% else %}
-                    <button id="connect" class="btn btn-lg btn-primary btn-outline">Contact</button>
-                  {% endif %}
+              <h1>{{ founder.startup_name }}</h1>
+              <h3>{{ founder.get_field_display }}</h3>
+              <p>{{ founder.get_stage_display }} with {{ founder.employee_count }}
+                Employee{{ founder.employee_count|pluralize }}</p>
+              <hr>
+              <h5>Active: {{ last_login|timesince }} ago</h5>
+              <button id="connect" class="btn btn-lg btn-primary btn-outline">Contact</button>
             </div>
           </div>
         </div>
@@ -40,7 +33,7 @@
         <div class="row">
           <div class="col col-md-8 col-md-offset-2">
             <h2>About</h2>
-            <p>{{ user.founder.description|linebreaks }}</p>
+            <p>{{ founder.description|linebreaks }}</p>
             <hr>
           </div>
         </div>
@@ -64,20 +57,20 @@
             <hr>
           </div>
         </div>
-        {% if user.founder.website != "" %}
+        {% if founder.website != "" %}
           <div class="row">
             <div class="col col-md-8 col-md-offset-2">
               <h2>Website</h2>
-              <a target="_blank" href={{ user.founder.website }}>{{ user.founder.website }}</a>
+              <a target="_blank" href={{ founder.website }}>{{ founder.website }}</a>
               <hr>
             </div>
           </div>
         {% endif %}
-        {% if user.founder.facebook != "" %}
+        {% if founder.facebook != "" %}
           <div class="row">
             <div class="col col-md-8 col-md-offset-2">
               <h2>Facebook</h2>
-              <a target="_blank" href={{ user.founder.facebook }}>{{ user.founder.facebook }}</a>
+              <a target="_blank" href={{ founder.facebook }}>{{ founder.facebook }}</a>
               <hr>
             </div>
           </div>
@@ -88,7 +81,6 @@
 
 {% else %}
 
-
   {% block content %}
     <div class="profile-page">
       <div class="jumbotron">
@@ -96,24 +88,17 @@
           <div id="profile-hero" class="row well">
             <div class="col-md-4 centerfy">
               <div class="profile-image text-center img-responsive"
-                style="background-image: url('{{ user.founder.logo_thumbnail_large.url }}');">
+                style="background-image: url('{{ founder.logo_thumbnail_large.url }}');">
               </div>
             </div>
             <div class="col-md-8 centerfy">
-              <h1>{{ user.founder.startup_name }}</h1>
-              <h3>{{ user.founder.get_field_display }}
-                <h3>
-                  <p>{{ user.founder.get_stage_display }} with {{ user.founder.employee_count }}
-                    Employee{{ user.founder.employee_count|pluralize }}</p>
-                  <hr>
-                  <h5>Active: {{ last_login|timesince }} ago</h5>
-                  {% if profile %}
-                    <button id="update" data-href="{% url 'website:startup_update' %}"
-                            class="btn btn-lg btn-success btn-outline">Update your company profile
-                    </button>
-                  {% else %}
-                    <button id="connect" class="btn btn-lg btn-primary btn-outline">Contact</button>
-                  {% endif %}
+              <h1>{{ founder.startup_name }}</h1>
+              <h3>{{ founder.get_field_display }}</h3>
+              <p>{{ founder.get_stage_display }} with {{ founder.employee_count }}
+                Employee{{ founder.employee_count|pluralize }}</p>
+              <hr>
+              <h5>Active: {{ last_login|timesince }} ago</h5>
+              <button id="connect" class="btn btn-lg btn-primary btn-outline">Contact</button>
             </div>
           </div>
         </div>
@@ -122,7 +107,7 @@
         <div class="row">
           <div class="col col-md-8 col-md-offset-2">
             <h2>About</h2>
-            <p>{{ user.founder.description|linebreaks }}</p>
+            <p>{{ founder.description|linebreaks }}</p>
             <hr>
           </div>
         </div>
@@ -146,20 +131,20 @@
             <hr>
           </div>
         </div>
-        {% if user.founder.website != "" %}
+        {% if founder.website != "" %}
           <div class="row">
             <div class="col col-md-8 col-md-offset-2">
               <h2>Website</h2>
-              <a target="_blank" href={{ user.founder.website }}>{{ user.founder.website }}</a>
+              <a target="_blank" href={{ founder.website }}>{{ founder.website }}</a>
               <hr>
             </div>
           </div>
         {% endif %}
-        {% if user.founder.facebook != "" %}
+        {% if founder.facebook != "" %}
           <div class="row">
             <div class="col col-md-8 col-md-offset-2">
               <h2>Facebook</h2>
-              <a target="_blank" href={{ user.founder.facebook }}>{{ user.founder.facebook }}</a>
+              <a target="_blank" href={{ founder.facebook }}>{{ founder.facebook }}</a>
               <hr>
             </div>
           </div>
