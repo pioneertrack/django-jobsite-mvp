@@ -8,40 +8,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="google-site-verification" content="nPkjkzj2J7V1MRk-0QBYC7GQnfKtWPBdCvvL0Y_qGbM"/>
   <link rel='shortcut icon' type='image/x-icon' href='{% static 'favicon/favicon-connectdevelop.ico' %}?r=1'/>
-  <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" type="text/css">
-  {% if is_mobile %}
-    <link rel="stylesheet" href="{% static 'slidebars-fork/dist/slidebars.min.css' %}" type="text/css">
-  {% else %}
-    <link rel="stylesheet" href="{% static 'nice-select/css/nice-select.css' %}" type="text/css">
-  {% endif %}
 
-  <link rel="stylesheet" href="{% static 'css/login.css' %}" type="text/css">
-  <link rel="stylesheet" href="{% static 'css/profile.css' %}" type="text/css">
-  <link rel="stylesheet" href="{% static 'css/searchbar.css' %}" type="text/css">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
-  <link rel="stylesheet" href="{% static 'custom-scrollbar/jquery.mCustomScrollbar.min.css' %}" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300" rel="stylesheet">
-  <script src="{% static 'jquery-modern/dist/jquery.min.js' %}"></script>
-  <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
-  {% if is_mobile %}
-    <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
-    <script src="{% static 'slidebars-fork/dist/slidebars.min.js' %}"></script>
-    <script src="{% static 'detect_swipe/jquery.detect_swipe.js' %}"></script>
-    <script src="{% static 'js/mobile.js' %}"></script>
-  {% else %}
-    <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
-    <script src="{% static 'js/responsive.js' %}"></script>
-  {% endif %}
-  <script src="{% static 'js/navbar.js' %}"></script>
-  <script src="{% static 'js/jquery_formset.js' %}"></script>
-  <script src="{% static 'js/script.js' %}"></script>
-  <script src="{% static 'js/Modernizer.js' %}"></script>
-  <script src="{% static 'custom-scrollbar/jquery.mCustomScrollbar.concat.min.js' %}"></script>
-  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.css">
+  {% block css %}
+    <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" type="text/css">
+    {% if is_mobile %}
+      <link rel="stylesheet" href="{% static 'slidebars-fork/dist/slidebars.min.css' %}" type="text/css">
+    {% else %}
+      <link rel="stylesheet" href="{% static 'nice-select/css/nice-select.css' %}" type="text/css">
+    {% endif %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/searchbar.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'custom-scrollbar/jquery.mCustomScrollbar.min.css' %}" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.css">
+  {% endblock css %}
+
+  {% block js %}
+    <script src="{% static 'jquery-modern/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    {% if is_mobile %}
+      <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
+      <script src="{% static 'slidebars-fork/dist/slidebars.min.js' %}"></script>
+      <script src="{% static 'detect_swipe/jquery.detect_swipe.js' %}"></script>
+      <script src="{% static 'js/mobile.js' %}"></script>
+    {% else %}
+      <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
+      <script src="{% static 'js/responsive.js' %}"></script>
+    {% endif %}
+    <script src="{% static 'js/navbar.js' %}"></script>
+    <script src="{% static 'js/jquery_formset.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'js/Modernizer.js' %}"></script>
+    <script src="{% static 'custom-scrollbar/jquery.mCustomScrollbar.concat.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.js"></script>
+  {% endblock js %}
+
   <title>{% block title %}{% endblock %}</title>
+
   <script>
     {% if show_exp %}
       $(function() {
