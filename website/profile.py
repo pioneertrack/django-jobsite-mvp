@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.contrib.postgres.fields import ArrayField
 from django import forms
 from imagekit.models import ImageSpecField
-from imagekit.processors import ResizeToFill
+from imagekit.processors import ResizeToFit
 from django.core.files.storage import FileSystemStorage
 from custom_storages import MediaStorage
 
@@ -169,11 +169,11 @@ class Profile(models.Model):
     image = CustomImageField(upload_to=user_directory_path, default='images/default/default-profile.jpg', blank=True,
                               null=False)
     image_thumbnail = ImageSpecField(source='image',
-                                      processors=[ResizeToFill(100, 100)],
+                                      processors=[ResizeToFit(100, 100, False)],
                                       format='PNG',
                                       options={'quality': 100})
     image_thumbnail_large = ImageSpecField(source='image',
-                                      processors=[ResizeToFill(300, 300)],
+                                      processors=[ResizeToFit(300, 300, False)],
                                       format='PNG',
                                       options={'quality': 100})
     interests = models.TextField(verbose_name='Interests', max_length=500, blank=True, null=False)
@@ -219,11 +219,11 @@ class Founder(models.Model):
     logo = CustomImageField(upload_to=company_logo_path, default='images/default/default-logo.jpg', blank=True,
                              null=False)
     logo_thumbnail = ImageSpecField(source='logo',
-                                      processors=[ResizeToFill(100, 100)],
+                                      processors=[ResizeToFit(100, 100, False)],
                                       format='PNG',
                                       options={'quality': 100})
     logo_thumbnail_large = ImageSpecField(source='logo',
-                                      processors=[ResizeToFill(300, 300)],
+                                      processors=[ResizeToFit(300, 300, False)],
                                       format='PNG',
                                       options={'quality': 100})
     startup_name = models.CharField(verbose_name='Startup Name', max_length=99)
