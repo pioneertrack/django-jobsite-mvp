@@ -139,6 +139,6 @@ $(function(){
 
 	setTimeout(function() {
 		$('.message').fadeOut('slow');
-	}, 2000);
+	}, 3500);
 
 });
