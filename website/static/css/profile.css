@@ -293,3 +293,6 @@
 a.fill-out-later{
     margin-top: -20px;
 }
+.profile-image .avatar {
+  width: 100%;
+}

@@ -172,6 +172,10 @@ class Profile(models.Model):
                                       processors=[ResizeToFill(100, 100)],
                                       format='PNG',
                                       options={'quality': 100})
+    image_thumbnail_large = ImageSpecField(source='image',
+                                      processors=[ResizeToFill(300, 300)],
+                                      format='PNG',
+                                      options={'quality': 100})
     interests = models.TextField(verbose_name='Interests', max_length=500, blank=True, null=False)
     skills = models.TextField(verbose_name='Skills', max_length=500, blank=True, null=False)
     courses = models.TextField(verbose_name='Courses', max_length=400, blank=True, null=False)
@@ -216,6 +220,10 @@ class Founder(models.Model):
                              null=False)
     logo_thumbnail = ImageSpecField(source='logo',
                                       processors=[ResizeToFill(100, 100)],
+                                      format='PNG',
+                                      options={'quality': 100})
+    logo_thumbnail_large = ImageSpecField(source='logo',
+                                      processors=[ResizeToFill(300, 300)],
                                       format='PNG',
                                       options={'quality': 100})
     startup_name = models.CharField(verbose_name='Startup Name', max_length=99)

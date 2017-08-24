@@ -13,8 +13,8 @@
         <div class="container">
           <div id="profile-hero" class="row well">
             <div class="col-md-4 centerfy">
-              <div class='profile-image text-center img-responsive'
-                   style="background-image: url({{ user.profile.image.url }})">
+              <div class='profile-image text-center img-responsive'>
+                <img src="{{ user.profile.image_thumbnail_large.url }}">
               </div>
             </div>
             <div class="col-md-8 centerfy">
@@ -152,8 +152,8 @@
         <div class="container">
           <div id="profile-hero" class="row well">
             <div class="col-md-4 centerfy">
-              <div class='profile-image text-center img-responsive'
-                   style="background-image: url({{ user.profile.image.url }})">
+              <div class="profile-image text-center img-responsive">
+                <img src="{{ user.profile.image_thumbnail_large.url }}">
               </div>
             </div>
             <div class="col-md-8 centerfy">
