@@ -540,11 +540,8 @@ def user_profile(request):
     last_login = request.user.last_login
     experience = request.user.profile.experience_set.order_by('-end_date')
     current_time= timezone.now()
-    cd = False
-    cr= current_time - last_login
-    cr= cr.total_seconds()
-    if cr< 86400.00:
-        cd= True
+    cr = current_time - last_login
+    cd = cr.total_seconds() < 86400.00
     # in case user click on fill out later button in profile update
     if request.user.first_login:
         request.user.set_first_login()
@@ -572,11 +569,8 @@ def startup_profile(request):
     user = get_object_or_404(models.MyUser, pk=request.user.id)
     last_login = user.last_login
     current_time= timezone.now()
-    cd = False
-    cr= current_time - last_login
-    cr= cr.total_seconds()
-    if cr< 86400.00:
-        cd= True
+    cr = current_time - last_login
+    cd = cr.total_seconds < 86400.00
     jobs = request.user.founder.job_set.order_by('created_date')
     total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
     
@@ -838,11 +832,8 @@ def get_user_view(request, id):
     user = get_object_or_404(models.MyUser, pk=id)
     last_login = user.last_login
     current_time= timezone.now()
-    cd = False
-    cr= current_time - last_login
-    cr= cr.total_seconds()
-    if cr< 86400.00:
-        cd= True
+    cr = current_time - last_login
+    cd = cr.total_seconds() < 86400.00
     if user is None:
         return HttpResponseRedirect('/')
     if user.is_founder:
