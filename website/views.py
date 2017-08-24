@@ -541,7 +541,7 @@ def user_profile(request):
     experience = request.user.profile.experience_set.order_by('-end_date')
     current_time= timezone.now()
     cr = current_time - last_login
-    cd = cr.total_seconds() < 86400.00
+    cd = cr.total_seconds() < 86400
     # in case user click on fill out later button in profile update
     if request.user.first_login:
         request.user.set_first_login()
@@ -570,7 +570,7 @@ def startup_profile(request):
     last_login = user.last_login
     current_time= timezone.now()
     cr = current_time - last_login
-    cd = cr.total_seconds < 86400.00
+    cd = cr.total_seconds() < 86400
     jobs = request.user.founder.job_set.order_by('created_date')
     total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
     
