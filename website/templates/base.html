@@ -487,7 +487,7 @@
               {% else %}
                 <a href="{% url 'website:profile' %}">
                   {% if user.profile.image.url %}
-                    <img id="headerthumbnail" src="{{ user.profile.image.url }}">
+                    <img id="headerthumbnail" src="{{ user.profile.image_thumbnail.url }}">
                   {% endif %}
                   My Profile
                 </a>
