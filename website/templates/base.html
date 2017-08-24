@@ -16,15 +16,15 @@
     {% else %}
       <link rel="stylesheet" href="{% static 'nice-select/css/nice-select.css' %}" type="text/css">
     {% endif %}
-    <link rel="stylesheet" href="{% static 'css/login.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'css/profile.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'css/searchbar.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'custom-scrollbar/jquery.mCustomScrollbar.min.css' %}" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.css">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/searchbar.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
   {% endblock css %}
 
   {% block js %}
@@ -39,53 +39,15 @@
       <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
       <script src="{% static 'js/responsive.js' %}"></script>
     {% endif %}
-    <script src="{% static 'js/navbar.js' %}"></script>
-    <script src="{% static 'js/jquery_formset.js' %}"></script>
-    <script src="{% static 'js/script.js' %}"></script>
     <script src="{% static 'js/Modernizer.js' %}"></script>
     <script src="{% static 'custom-scrollbar/jquery.mCustomScrollbar.concat.min.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.js"></script>
+    <script src="{% static 'js/navbar.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
   {% endblock js %}
 
   <title>{% block title %}{% endblock %}</title>
 
-  <script>
-    {% if show_exp %}
-      $(function() {
-        $('#profileform .set .forminstance').formset({
-          prefix: 'experience_set',
-          deleteCssClass: 'remove',
-          deleteText: '[&mdash;] remove',
-          addCssClass: 'add-another',
-          addText: '[+] Add work experience',
-        });
-      });
-    {% else %}
-      $(function() {
-        $('#profileform .set #funding').formset({
-          prefx: 'founder_set1',
-          deleteCssClass: 'remove',
-          deleteText: '[&mdash;] remove',
-          addCssClass: 'add-another',
-          addText: '[+] Add funding round',
-          formCssClass: 'dynamic-form1',
-        });
-        $('#profileform .set #jobs').formset({
-          prefix: 'founder_set2',
-          deleteCssClass: 'remove',
-          deleteText: '[&mdash;] remove',
-          addCssClass: 'add-another',
-          addText: '[+] Add job opening',
-          formCssClass: 'dynamic-form2',
-        });
-      });
-    {%endif%}
-    $(document).ready(function() {
-      setTimeout(function() {
-        $('.message').fadeOut('slow');
-      }, 2000);
-    });
-  </script>
 </head>
 <body>
 {% if is_mobile %}

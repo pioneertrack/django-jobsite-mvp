@@ -1,9 +1,9 @@
-jQuery(document).ready(function($){
+$(function(){
 
   $('input#select-both-profiles').on('change', function() {
         console.log($(this).is(":checked"));
         $('input#id_is_founder, input#id_is_individual').prop('checked', $(this).is(":checked"));
-    });
+  });
 
   $('ul#cd-navigation ul.list li').on('click', function(){
        window.location.href = $(this).attr('data-value');
@@ -136,5 +136,9 @@ jQuery(document).ready(function($){
       $('.job-card:first').parents('.container').removeClass('list');
     }
   });
+
+	setTimeout(function() {
+		$('.message').fadeOut('slow');
+	}, 2000);
 
 });

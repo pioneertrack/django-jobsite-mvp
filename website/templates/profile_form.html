@@ -1,9 +1,16 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load i18n %}
 {% load crispy_forms_tags %}
 
 {% block title %}
 {% trans title %}
+{% endblock %}
+
+{% block js %}
+  {{ block.super }}
+  <script src="{% static 'js/jquery_formset.js' %}"></script>
+  <script src="{% static 'js/profile.js' %}"></script>
 {% endblock %}
 
 {% if is_mobile %}
