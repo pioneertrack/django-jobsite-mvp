@@ -4,9 +4,11 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.contrib.postgres.fields import ArrayField
-from datetime import datetime
 from django import forms
-from django.core.exceptions import ValidationError
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFit
+from django.core.files.storage import FileSystemStorage
+from custom_storages import MediaStorage
 
 HOURS_AVAILABLE = (
     ('0', '0 - 5'),
@@ -134,6 +136,23 @@ class ChoiceArrayField(ArrayField):
         return super(ArrayField, self).formfield(**defaults)
 
 
+class CustomImageField(models.ImageField):
+    def from_db_value(self, value, expression, connection, context):
+        val = self.to_python(value)
+        if val == self.default:
+            return val;
+        if isinstance(self.storage, MediaStorage):
+            if self.storage.exists(val):
+                return val;
+            return self.default
+        if isinstance(self.storage, FileSystemStorage):
+            last_char = '';
+            if self.storage.location[-1] != '/': last_char = '/'
+            if self.storage.exists(self.storage.location + last_char + val):
+                return val;
+            return self.storage.location + last_char + self.default
+
+
 def user_directory_path(instance, filename):
     return 'images/user_{0}/{1}.jpg'.format(instance.id, instance.id)
 
@@ -147,8 +166,16 @@ class Profile(models.Model):
     role = models.CharField(max_length = 4, choices = PRIMARY_ROLE, default='NONE', blank = True, null = False)
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
     bio = models.TextField(verbose_name='Bio', max_length=500, blank=True, null=False)
-    image = models.ImageField(upload_to=user_directory_path, default='images/default/default-profile.jpg', blank=True,
+    image = CustomImageField(upload_to=user_directory_path, default='images/default/default-profile.jpg', blank=True,
                               null=False)
+    image_thumbnail = ImageSpecField(source='image',
+                                      processors=[ResizeToFit(100, 100, False)],
+                                      format='PNG',
+                                      options={'quality': 100})
+    image_thumbnail_large = ImageSpecField(source='image',
+                                      processors=[ResizeToFit(300, 300, False)],
+                                      format='PNG',
+                                      options={'quality': 100})
     interests = models.TextField(verbose_name='Interests', max_length=500, blank=True, null=False)
     skills = models.TextField(verbose_name='Skills', max_length=500, blank=True, null=False)
     courses = models.TextField(verbose_name='Courses', max_length=400, blank=True, null=False)
@@ -165,6 +192,14 @@ class Profile(models.Model):
     role = models.CharField(max_length=4, choices=PRIMARY_ROLE, default='NONE', blank=True, null=False)
     positions = ChoiceArrayField(models.CharField(choices=POSITIONS, max_length=1, default='0'), default=['0'])
 
+    def __getattr__(self, item):
+        if item != 'image':
+            return super(Profile, self).__getattr__(item)
+        if item == 'image':
+            if item == 'image':
+                image = super(Profile, self).__getattr__(item)
+                return image
+
     def __str__(self):
         return self.user.email
 
@@ -176,13 +211,21 @@ class Experience(models.Model):
     start_date = models.DateField(verbose_name='Start Date', blank=True, null=True)
     description = models.TextField(verbose_name='Description', max_length=500, blank=True, null=False)
     currently_working = models.BooleanField(default=False)
-    end_date = models.DateField(verbose_name='End Date', default=timezone.now, null=True)
+    end_date = models.DateField(verbose_name='End Date', default=timezone.now, null=True, blank=True)
 
 
 class Founder(models.Model):
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
-    logo = models.ImageField(upload_to=company_logo_path, default='images/default/default-logo.jpg', blank=True,
+    logo = CustomImageField(upload_to=company_logo_path, default='images/default/default-logo.jpg', blank=True,
                              null=False)
+    logo_thumbnail = ImageSpecField(source='logo',
+                                      processors=[ResizeToFit(100, 100, False)],
+                                      format='PNG',
+                                      options={'quality': 100})
+    logo_thumbnail_large = ImageSpecField(source='logo',
+                                      processors=[ResizeToFit(300, 300, False)],
+                                      format='PNG',
+                                      options={'quality': 100})
     startup_name = models.CharField(verbose_name='Startup Name', max_length=99)
     description = models.TextField(verbose_name='Description', blank=True, null=False)
     alt_email = models.EmailField(max_length=255, db_index=True, null=True, blank=True)

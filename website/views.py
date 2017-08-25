@@ -163,7 +163,7 @@ def index(request):
         people = ['partners', 'employees', 'freelancers']
         if request.POST['select-category'] in people:
 
-            kwargs = {'is_active': True, 'is_founder': False}
+            kwargs = {'is_active': True, 'is_individual': True}
             category = request.POST['select-category']
 
             active_selects = []
@@ -305,6 +305,7 @@ def index(request):
                                           'search_category': request.POST['select-category'],
                                           'active_selects': active_selects,
                                           'mobile_filter': filter_mobile,
+                                          'people': people,
                                       }))
         elif request.POST['select-category'] == 'startups':
 
@@ -538,10 +539,11 @@ def index(request):
                   login_url=reverse_lazy('website:add_profile'))
 def user_profile(request):
     last_login = request.user.last_login
-    experience = request.user.profile.experience_set.order_by('-end_date')
     current_time= timezone.now()
     cr = current_time - last_login
     cd = cr.total_seconds() < 86400
+    experience = request.user.profile.experience_set.order_by('-end_date')
+
     # in case user click on fill out later button in profile update
     if request.user.first_login:
         request.user.set_first_login()
@@ -558,7 +560,7 @@ def user_profile(request):
                       'reset': True,
                       'last_login': last_login,
                       'positions_display': positions,
-                      'cd':cd,
+                      'cd': cd,
                   }))
 
 
@@ -585,7 +587,7 @@ def startup_profile(request):
                       'reset': True,
                       'total_funding': total_funding.get('total'),
                       'last_login': last_login,
-                      'cd':cd,
+                      'cd': cd,
                   }))
 
 
@@ -828,41 +830,49 @@ def startup_update(request):
 
 
 @login_required
-def get_user_view(request, id):
+def get_profile_view(request, id):
     user = get_object_or_404(models.MyUser, pk=id)
     last_login = user.last_login
     current_time= timezone.now()
     cr = current_time - last_login
-    cd = cr.total_seconds() < 86400.00
+    cd = cr.total_seconds() < 86400
     if user is None:
         return HttpResponseRedirect('/')
-    if user.is_founder:
-        jobs = user.founder.job_set.order_by('title')
-        return render(request, 'founder.html',
-                      merge_dicts(JOB_CONTEXT, {
-                          'user': user,
-                          'profile': False,
-                          'jobs': jobs,
-                          'reset': True,
-                          'last_login':last_login,
-                          'cd':cd,
-                      }))
-    else:
-        # TODO: need to remember normal alg for that
-        positions = []
-        for item in user.profile.positions:
-            positions.append(prof.POSITIONS.__getitem__(int(item))[1])
-        exp = user.profile.experience_set.order_by('-end_date')
-        return render(request, 'profile.html',
-                      merge_dicts(JOB_CONTEXT, {
-                          'user': user,
-                          'profile': False,
-                          'experience': exp,
-                          'reset': True,
-                          'last_login':last_login,
-                          'positions_display': positions,
-                          'cd':cd,
-                      }))
+    # TODO: need to remember normal alg for that
+    positions = []
+    for item in user.profile.positions:
+        positions.append(prof.POSITIONS.__getitem__(int(item))[1])
+    exp = user.profile.experience_set.order_by('-end_date')
+    return render(request, 'profile_info.html',
+                  merge_dicts(JOB_CONTEXT, {
+                      'profile': user.profile,
+                      'experience': exp,
+                      'reset': True,
+                      'last_login':last_login,
+                      'positions_display': positions,
+                      'cd': cd,
+                  }))
+
+
+@login_required
+def get_startup_view(request, id):
+    user = get_object_or_404(models.MyUser, pk=id)
+    last_login = user.last_login
+    current_time= timezone.now()
+    cr = current_time - last_login
+    cd = cr.total_seconds() < 86400
+    if user is None:
+        return HttpResponseRedirect('/')
+    jobs = user.founder.job_set.order_by('title')
+    return render(request, 'founder_info.html',
+                  merge_dicts(JOB_CONTEXT, {
+                      'founder': user.founder,
+                      'profile': False,
+                      'jobs': jobs,
+                      'reset': True,
+                      'last_login':last_login,
+                      'cd': cd,
+                  }))
 
 
 class MyRegistrationView(RegistrationView):

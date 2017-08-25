@@ -204,11 +204,11 @@
 .img-responsive {
   width: 300px;
   height: 300px;
-  border-radius: 50%;
   background-color: white;
   background-repeat: no-repeat;
-  background-size: cover;
   background-position: center center;
+  background-size: contain;
+  overflow: hidden;
 }
 .card {
   overflow: hidden;
@@ -242,14 +242,14 @@
   top: calc(100px);
   transform: translateY(-50px);
   left: calc(50% - 50px);
-  /*z-index: 100;*/
   background-color: white;
-}
-
-.card .avatar {
+  background-repeat: no-repeat;
+  background-position: center;
   width: 100px;
   height: 100px;
+  overflow: hidden;
   border: 5px solid rgba(0,0,30,0.8);
+  background-size: contain;
 }
 .card .founderavatar {
   background-size: contain !important;
@@ -292,4 +292,7 @@
 
 a.fill-out-later{
     margin-top: -20px;
+}
+.profile-image {
+  border: 5px solid rgba(0,0,30,0.8);
 }

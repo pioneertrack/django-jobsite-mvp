@@ -1,4 +1,7 @@
-
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
 .centered{
     margin: 0 auto;
     float: none;
@@ -52,4 +55,16 @@ p.help-block strong{
 [off-canvas] {
     color: white;
     background-color: #25283d;
+}
+
+ul#cd-navigation div.nice-select {
+  background: none !important;
+  color: #25283D;
+  margin-top: 12px;
+  font-size: 1.8rem;
+  padding-left: 0;
+}
+
+ul#cd-navigation div.nice-select ul.list li {
+  width: 100%;
 }

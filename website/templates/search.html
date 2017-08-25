@@ -11,14 +11,16 @@
       <div class='row'>
         {% for item, skills in searched %}
           {% if item.level %}
-            {% with user=item.founder.user %}
+            {% with current_user=item.founder.user %}
               <div class="col col-md-4 item">
 
-                <a class="card-hover" href='/users/{{ user.id }}'>
+                <a class="card-hover" href='/startups/{{ current_user.id }}'>
                   <div class="card job-card">
                     <div class="header-bg" style="height:100px; background-color:#25283D;">
-                      <h2>{{ user.founder.startup_name }}</h2>
-                      <div class="avatar" style="background-image: url('{% if user.is_founder %}{{ user.founder.logo.url }}{% else %}{{ user.profile.image.url }}{% endif %}');background-size: contain;position: absolute;background-position: center;background-repeat: no-repeat;"></div>
+                      <h2>{{ current_user.founder.startup_name }}</h2>
+                      <div class="avatar"
+                        style="background-image: url('{{ current_user.founder.logo_thumbnail.url }}');">
+                      </div>
                     </div>
                     <div class="offer-content">
                       <div class="info">
@@ -55,23 +57,64 @@
               </div>
             {% endwith %}
           {% else %}
-            {% with user=item %}
-              <div class="col col-md-4" style="height:400px;">
-                <a class="card-hover" href='/users/{{ user.id }}'>
-                  <div class="card">
-                    <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
-                    <div>
-                      <div class="avatar" style="background-image: url('{% if user.is_founder %}{{ user.founder.logo.url }}{% else %}{{ user.profile.image.url }}{% endif %}');
-                          background-size: contain;
-                          position: absolute;
-                          background-position: center;
-                          background-repeat: no-repeat;"></div>
+            {% with current_user=item %}
+              {% if search_category in people %}
+                <div class="col col-md-4" style="height:400px;">
+
+                  <a class="card-hover" href='/profiles/{{ current_user.id }}'>
+                    <div class="card">
+                      <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
+                      <div>
+                        <div class="avatar">
+                          <img src="{{ current_user.profile.image_thumbnail.url }}"
+                               class="small-avatar"/>
+                        </div>
+                      </div>
+                      <div class="content">
+                        <h2>{{ current_user.first_name }} {{ current_user.last_name }}</h2>
+                        <h3 style="margin-top:0">{{ current_user.profile.get_year_display }}</h3>
+                        {% if current_user.profile.has_startup_exp %}
+                          <span class="label label-default">Has startup experience</span>
+                        {% endif %}
+                        {% if current_user.profile.has_funding_exp %}
+                          <span class="label label-default">Has funding experience</span>
+                        {% endif %}
+                        <span class="label label-primary">{{ current_user.profile.get_year_display }}</span>
+                        <span class="label label-primary">{{ current_user.profile.get_major_display }}</span>
+                        <span class="label label-info">{{ current_user.profile.get_role_display }}</span>
+                        {% for skill in skills|slice:":5" %}
+                          <span class="label label-info">{{ skill }}</span>
+                        {% endfor %}
+                        <span class="label label-success">{{ current_user.profile.get_hours_week_display }} hr/wk</span>
+                        {% for work in current_user.profile.experience_set.all %}
+                          <span class="label label-danger">Worked at {{ work.company }}</span>
+                        {% endfor %}
+                        {% for item in current_user.positions_display %}
+                          <span class="label label-warning">{{ item }}</span>
+                        {% endfor %}
+                        <!--<div style = "padding:10px;">
+                        <a href="/users/{{user.id}}" class="btn btn-primary btn-outline">View profile</a>
+                        </div>-->
+                      </div>
                     </div>
-                    <div class="content">
-                      {% if user.is_founder %}
-                        <h2>{{ user.founder.startup_name }}</h2>
-                        <h4>{{ user.founder.get_stage_display }} • {{ user.founder.employee_count }}
-                          Employee{{ user.founder.employee_count|pluralize }}</h4>
+                  </a>
+
+                </div>
+              {% else %}
+                <div class="col col-md-4" style="height:400px;">
+
+                  <a class="card-hover" href='/startups/{{ current_user.id }}'>
+                    <div class="card">
+                      <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
+                      <div>
+                        <div class="avatar"
+                          style="background-image: url('{{ current_user.founder.logo_thumbnail.url }}');">
+                        </div>
+                      </div>
+                      <div class="content">
+                        <h2>{{ current_user.founder.startup_name }}</h2>
+                        <h4>{{ current_user.founder.get_stage_display }} • {{ current_user.founder.employee_count }}
+                          Employee{{ current_user.founder.employee_count|pluralize }}</h4>
                         <hr>
                         <script type="text/javascript">
                           $(function() {
@@ -84,40 +127,17 @@
                           });
                         </script>
                         <div class="founderdescription">
-                          <p>{{ user.founder.description }}<p>
+                          <p>{{ current_user.founder.description }}<p>
                         </div>
-                      {% else %}
-                        <h2>{{ user.first_name }} {{ user.last_name }}</h2>
-                        <h3 style="margin-top:0">{{ user.profile.get_year_display }}</h3>
-                        {% if user.profile.has_startup_exp %}
-                          <span class="label label-default">Has startup experience</span>
-                        {% endif %}
-                        {% if user.profile.has_funding_exp %}
-                          <span class="label label-default">Has funding experience</span>
-                        {% endif %}
-                        <span class="label label-primary">{{ user.profile.get_year_display }}</span>
-                        <span class="label label-primary">{{ user.profile.get_major_display }}</span>
-                        <span class="label label-info">{{ user.profile.get_role_display }}</span>
-                        {% for skill in skills|slice:":5" %}
-                          <span class="label label-info">{{ skill }}</span>
-                        {% endfor %}
-                        <span class="label label-success">{{ user.profile.get_hours_week_display }} hr/wk</span>
-                        {% for work in user.profile.experience_set.all %}
-                          <span class="label label-danger">Worked at {{ work.company }}</span>
-                        {% endfor %}
-                        {% for item in user.positions_display %}
-                          <span class="label label-warning">{{ item }}</span>
-                        {% endfor %}
-                      {% endif %}
-                      <!--<div style = "padding:10px;">
+                        <!--<div style = "padding:10px;">
                         <a href="/users/{{user.id}}" class="btn btn-primary btn-outline">View profile</a>
                         </div>-->
+                      </div>
                     </div>
-                  </div>
-                </a>
+                  </a>
 
-
-              </div>
+                </div>
+              {% endif %}
             {% endwith %}
           {% endif %}
         {% empty %}
@@ -137,14 +157,16 @@
       <div class='row'>
         {% for item, skills in searched %}
           {% if item.level %}
-            {% with user=item.founder.user %}
+            {% with current_user=item.founder.user %}
               <div class="col col-md-4 item">
 
-                <a class="card-hover" href='/users/{{ user.id }}'>
+                <a class="card-hover" href='/startups/{{ current_user.id }}'>
                   <div class="card job-card">
                     <div class="header-bg" style="height:100px; background-color:#25283D;">
-                      <h2>{{ user.founder.startup_name }}</h2>
-                      <div class="avatar" style="background-image: url('{% if user.is_founder %}{{ user.founder.logo.url }}{% else %}{{ user.profile.image.url }}{% endif %}');background-size: contain;position: absolute;background-position: center;background-repeat: no-repeat;"></div>
+                      <h2>{{ current_user.founder.startup_name }}</h2>
+                      <div class="avatar"
+                        style="background-image: url('{{ current_user.founder.logo_thumbnail.url }}');">
+                      </div>
                     </div>
                     <div class="offer-content">
                       <div class="info">
@@ -181,19 +203,63 @@
               </div>
             {% endwith %}
           {% else %}
-            {% with user=item %}
-              <div class="col col-md-4" style="height:400px;">
-                <a class="card-hover" href='/users/{{ user.id }}'>
-                  <div class="card">
-                    <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
-                    <div>
-                      <div class="avatar" style="background-image: url('{% if user.is_founder %}{{ user.founder.logo.url }}{% else %}{{ user.profile.image.url }}{% endif %}');background-size: contain;position: absolute;background-position: center;background-repeat: no-repeat;"></div>
+            {% with current_user=item %}
+              {% if search_category in people %}
+                <div class="col col-md-4" style="height:400px;">
+
+                  <a class="card-hover" href='/profiles/{{ current_user.id }}'>
+                    <div class="card">
+                      <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
+                      <div>
+                        <div class="avatar"
+                          style="background-image: url('{{ current_user.profile.image_thumbnail.url }}');">
+                        </div>
+                      </div>
+                      <div class="content">
+                          <h2>{{ current_user.first_name }} {{ current_user.last_name }}</h2>
+                          <h3 style="margin-top:0">{{ current_user.profile.get_year_display }}</h3>
+                          {% if current_user.profile.has_startup_exp %}
+                            <span class="label label-default">Has startup experience</span>
+                          {% endif %}
+                          {% if current_user.profile.has_funding_exp %}
+                            <span class="label label-default">Has funding experience</span>
+                          {% endif %}
+                          <span class="label label-primary">{{ current_user.profile.get_year_display }}</span>
+                          <span class="label label-primary">{{ current_user.profile.get_major_display }}</span>
+                          <span class="label label-info">{{ current_user.profile.get_role_display }}</span>
+                          {% for skill in skills|slice:":5" %}
+                            <span class="label label-info">{{ skill }}</span>
+                          {% endfor %}
+                          <span class="label label-success">{{ current_user.profile.get_hours_week_display }} hr/wk</span>
+                          {% for work in current_user.profile.experience_set.all %}
+                            <span class="label label-danger">Worked at {{ work.company }}</span>
+                          {% endfor %}
+                          {% for item in current_user.positions_display %}
+                            <span class="label label-warning">{{ item }}</span>
+                          {% endfor %}
+                        <!--<div style = "padding:10px;">
+                          <a href="/users/{{user.id}}" class="btn btn-primary btn-outline">View profile</a>
+                          </div>-->
+                      </div>
                     </div>
-                    <div class="content">
-                      {% if user.is_founder %}
-                        <h2>{{ user.founder.startup_name }}</h2>
-                        <h4>{{ user.founder.get_stage_display }} • {{ user.founder.employee_count }}
-                          Employee{{ user.founder.employee_count|pluralize }}</h4>
+                  </a>
+
+                </div>
+              {% else %}
+                <div class="col col-md-4" style="height:400px;">
+
+                  <a class="card-hover" href='/startups/{{ current_user.id }}'>
+                    <div class="card">
+                      <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
+                      <div>
+                        <div class="avatar"
+                          style="background-image: url('{{ current_user.founder.logo_thumbnail.url }}');">
+                        </div>
+                      </div>
+                      <div class="content">
+                        <h2>{{ current_user.founder.startup_name }}</h2>
+                        <h4>{{ current_user.founder.get_stage_display }} • {{ current_user.founder.employee_count }}
+                          Employee{{ current_user.founder.employee_count|pluralize }}</h4>
                         <hr>
                         <script type="text/javascript">
                           $(function() {
@@ -206,40 +272,17 @@
                           });
                         </script>
                         <div class="founderdescription">
-                          <p>{{ user.founder.description }}<p>
+                          <p>{{ current_user.founder.description }}<p>
                         </div>
-                      {% else %}
-                        <h2>{{ user.first_name }} {{ user.last_name }}</h2>
-                        <h3 style="margin-top:0">{{ user.profile.get_year_display }}</h3>
-                        {% if user.profile.has_startup_exp %}
-                          <span class="label label-default">Has startup experience</span>
-                        {% endif %}
-                        {% if user.profile.has_funding_exp %}
-                          <span class="label label-default">Has funding experience</span>
-                        {% endif %}
-                        <span class="label label-primary">{{ user.profile.get_year_display }}</span>
-                        <span class="label label-primary">{{ user.profile.get_major_display }}</span>
-                        <span class="label label-info">{{ user.profile.get_role_display }}</span>
-                        {% for skill in skills|slice:":5" %}
-                          <span class="label label-info">{{ skill }}</span>
-                        {% endfor %}
-                        <span class="label label-success">{{ user.profile.get_hours_week_display }} hr/wk</span>
-                        {% for work in user.profile.experience_set.all %}
-                          <span class="label label-danger">Worked at {{ work.company }}</span>
-                        {% endfor %}
-                        {% for item in user.positions_display %}
-                          <span class="label label-warning">{{ item }}</span>
-                        {% endfor %}
-                      {% endif %}
-                      <!--<div style = "padding:10px;">
+                        <!--<div style = "padding:10px;">
                         <a href="/users/{{user.id}}" class="btn btn-primary btn-outline">View profile</a>
                         </div>-->
+                      </div>
                     </div>
-                  </div>
-                </a>
+                  </a>
 
-
-              </div>
+                </div>
+              {% endif %}
             {% endwith %}
           {% endif %}
         {% empty %}
