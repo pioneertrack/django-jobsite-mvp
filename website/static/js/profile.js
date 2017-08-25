@@ -17,18 +17,18 @@ $(function() {
       }
     });
 
-    $(document).on('change', '[id*="currently_working"]', function(e) {
-      var regexp = /-currently_working/;
-      var id = $(this).prop('id').replace(regexp, '');
-      if ($(this).prop('checked')) {
-        $('#' + id + '-end_date').hide();
-        $('#' + id + '-end_date').val('');
-      } else {
-        var dt = new Date();
-        $('#' + id + '-end_date').show();
-        $('#' + id + '-end_date').val(new Intl.DateTimeFormat('en-US').format(dt));
-      }
-    });
+    // $(document).on('change', '[id*="currently_working"]', function(e) {
+    //   var regexp = /-currently_working/;
+    //   var id = $(this).prop('id').replace(regexp, '');
+    //   if ($(this).prop('checked')) {
+    //     $('#' + id + '-end_date').hide();
+    //     $('#' + id + '-end_date').val('');
+    //   } else {
+    //     var dt = new Date();
+    //     $('#' + id + '-end_date').show();
+    //     $('#' + id + '-end_date').val(new Intl.DateTimeFormat('en-US').format(dt));
+    //   }
+    // });
 
   }
 
