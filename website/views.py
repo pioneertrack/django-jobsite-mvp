@@ -825,6 +825,9 @@ def startup_update(request):
 def get_profile_view(request, id):
     user = get_object_or_404(models.MyUser, pk=id)
     last_login = user.last_login
+    current_time= timezone.now()
+    cr = current_time - last_login
+    cd = cr.total_seconds() < 86400.00
     if user is None:
         return HttpResponseRedirect('/')
     # TODO: need to remember normal alg for that
@@ -839,6 +842,7 @@ def get_profile_view(request, id):
                       'reset': True,
                       'last_login':last_login,
                       'positions_display': positions,
+                      'cd': cd,
                   }))
 
 

@@ -24,7 +24,11 @@
                   <p>{{ user.founder.get_stage_display }} with {{ user.founder.employee_count }}
                     Employee{{ user.founder.employee_count|pluralize }}</p>
                   <hr>
-                  <h5>Active: {{ last_login|timesince }} ago</h5>
+                  {% if cd %}
+                    <h5>Active: Today </h5>
+                  {%else%}
+                    <h5>Active: {{ last_login|timesince }} ago</h5>
+                  {% endif %}
                   {% if profile %}
                     <button id="update" data-href="{% url 'website:startup_update' %}"
                             class="btn btn-lg btn-success btn-outline">Update your company profile
@@ -106,7 +110,11 @@
                   <p>{{ user.founder.get_stage_display }} with {{ user.founder.employee_count }}
                     Employee{{ user.founder.employee_count|pluralize }}</p>
                   <hr>
-                  <h5>Active: {{ last_login|timesince }} ago</h5>
+                  {% if cd %}
+                    <h5>Active: Today </h5>
+                  {%else%}
+                    <h5>Active: {{ last_login|timesince }} ago</h5>
+                  {% endif %}
                   {% if profile %}
                     <button id="update" data-href="{% url 'website:startup_update' %}"
                             class="btn btn-lg btn-success btn-outline">Update your company profile
