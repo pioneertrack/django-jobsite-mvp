@@ -9,21 +9,25 @@ from website.models import MyUser
 from website.forms import NewRegistrationForm
 from website.profile import Profile, Experience
 from website.profile import Founder, Funding, Job
+from website.profile import Connection
 
 from website.profile import STAGE, LEVELS, CATEGORY, PRIMARY_ROLE, MAJORS, YEAR_IN_SCHOOL_CHOICES, FUNDING_ROUNDS, POSITION, HOURS_AVAILABLE
 
-#Classes for My Users (All users)
+
+# Classes for My Users (All users)
 class ProfileInline(admin.StackedInline):
     model = Profile
     can_delete = False
     verbose_name_plural = 'Profile'
     fk_name = 'user'
 
+
 class FounderInline(admin.StackedInline):
     model = Founder
     can_delete = False
     verbose_name_plural = 'Founder'
     fk_name = 'user'
+
 
 class MyUserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
@@ -62,10 +66,11 @@ class MyUserAdmin(BaseUserAdmin):
     get_year.short_description = 'Year'
 
 
-#Classes for Founders
+# Classes for Founders
 class FundingInline(admin.TabularInline):
     model = Funding
     extra = 1
+
 
 class FounderResource(resources.ModelResource):
     seed     = fields.Field(widget=widgets.ForeignKeyWidget(Funding), column_name='Seed')
@@ -132,6 +137,7 @@ class FounderResource(resources.ModelResource):
             headers.append(header)
         return headers
 
+
 class FounderAdmin(ImportExportModelAdmin):
     list_display = ('user','startup_name','stage','field','employee_count',)
     list_filter = ('stage','field',)
@@ -147,7 +153,8 @@ class FounderAdmin(ImportExportModelAdmin):
     resource_class = FounderResource
     pass
 
-#Classes for positions
+
+# Classes for positions
 class JobResource(resources.ModelResource):
     class Meta:
         model = Job
@@ -180,6 +187,7 @@ class JobResource(resources.ModelResource):
             headers.append(header)
         return headers
 
+
 class JobAdmin(ImportExportModelAdmin):
     list_display = ('founder','title','pay','level')
     list_filter = ('pay','level')
@@ -189,10 +197,27 @@ class JobAdmin(ImportExportModelAdmin):
     resource_class = JobResource
     pass
 
-#Classes for Users
+
+# Classes for Connection emails
+class ConnectionResource(resources.ModelResource):
+    class Meta:
+        model = Connection
+        fields = ('created_at', 'receiver', 'sender', 'to_startup', 'message')
+        export_order = ('receiver', 'sender')
+
+
+class ConnectionAdmin(ImportExportModelAdmin):
+    resource_class = ConnectionResource
+    list_display = ('created_at', 'receiver', 'sender', 'to_startup')
+    readonly_fields = ('created_at', 'receiver', 'sender', 'to_startup', 'message')
+    ordering = ('created_at', 'sender', 'receiver')
+
+
+# Classes for Users
 class ExperienceInline(admin.StackedInline):
     model = Experience
     extra = 1
+
 
 class ProfileResource(resources.ModelResource):
     class Meta:
@@ -252,6 +277,7 @@ class ProfileResource(resources.ModelResource):
             headers.append(header)
         return headers
 
+
 class ProfileAdmin(ImportExportModelAdmin):
     list_display = ('user', 'major', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp')
     list_filter = ('major','year','has_startup_exp','has_funding_exp')
@@ -273,4 +299,5 @@ admin.site.register(MyUser, MyUserAdmin)
 admin.site.register(Founder, FounderAdmin)
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Job, JobAdmin)
+admin.site.register(Connection, ConnectionAdmin)
 admin.site.unregister(Group)
