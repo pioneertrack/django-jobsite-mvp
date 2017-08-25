@@ -9,13 +9,13 @@ $(function() {
       addText: '[+] Add work experience',
     });
 
-    $('[id*="currently_working"]').each(function(e) {
-      var regexp = /-currently_working/;
-      var id = $(this).prop('id').replace(regexp, '');
-      if ($(this).prop('checked')) {
-        $('#' + id + '-end_date').hide();
-      }
-    });
+    // $('[id*="currently_working"]').each(function(e) {
+    //   var regexp = /-currently_working/;
+    //   var id = $(this).prop('id').replace(regexp, '');
+    //   if ($(this).prop('checked')) {
+    //     $('#' + id + '-end_date').hide();
+    //   }
+    // });
 
     // $(document).on('change', '[id*="currently_working"]', function(e) {
     //   var regexp = /-currently_working/;
