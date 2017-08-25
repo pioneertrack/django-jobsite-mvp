@@ -65,9 +65,8 @@
                     <div class="card">
                       <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
                       <div>
-                        <div class="avatar">
-                          <img src="{{ current_user.profile.image_thumbnail.url }}"
-                               class="small-avatar"/>
+                        <div class="avatar"
+                          style="background-image: url('{{ current_user.profile.image_thumbnail.url }}');">
                         </div>
                       </div>
                       <div class="content">
