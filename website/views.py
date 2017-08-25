@@ -539,6 +539,9 @@ def index(request):
                   login_url=reverse_lazy('website:add_profile'))
 def user_profile(request):
     last_login = request.user.last_login
+    current_time= timezone.now()
+    cr = current_time - last_login
+    cd = cr.total_seconds() < 86400
     experience = request.user.profile.experience_set.order_by('-end_date')
 
     # in case user click on fill out later button in profile update
@@ -557,6 +560,7 @@ def user_profile(request):
                       'reset': True,
                       'last_login': last_login,
                       'positions_display': positions,
+                      'cd': cd,
                   }))
 
 
@@ -566,6 +570,9 @@ def user_profile(request):
 def startup_profile(request):
     user = get_object_or_404(models.MyUser, pk=request.user.id)
     last_login = user.last_login
+    current_time= timezone.now()
+    cr = current_time - last_login
+    cd = cr.total_seconds() < 86400
     jobs = request.user.founder.job_set.order_by('created_date')
     total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
     
@@ -580,6 +587,7 @@ def startup_profile(request):
                       'reset': True,
                       'total_funding': total_funding.get('total'),
                       'last_login': last_login,
+                      'cd': cd,
                   }))
 
 
@@ -827,7 +835,7 @@ def get_profile_view(request, id):
     last_login = user.last_login
     current_time= timezone.now()
     cr = current_time - last_login
-    cd = cr.total_seconds() < 86400.00
+    cd = cr.total_seconds() < 86400
     if user is None:
         return HttpResponseRedirect('/')
     # TODO: need to remember normal alg for that
@@ -850,6 +858,9 @@ def get_profile_view(request, id):
 def get_startup_view(request, id):
     user = get_object_or_404(models.MyUser, pk=id)
     last_login = user.last_login
+    current_time= timezone.now()
+    cr = current_time - last_login
+    cd = cr.total_seconds() < 86400
     if user is None:
         return HttpResponseRedirect('/')
     jobs = user.founder.job_set.order_by('title')
@@ -860,6 +871,7 @@ def get_startup_view(request, id):
                       'jobs': jobs,
                       'reset': True,
                       'last_login':last_login,
+                      'cd': cd,
                   }))
 
 

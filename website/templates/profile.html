@@ -30,7 +30,7 @@
                   {% for item in positions_display %}
                     {{ item }}{% if not forloop.last %},{% endif %}
                   {% endfor %}
-                </strong> position{{ positions_display|pluralize:"'s" }}</p>
+                </strong> position{{ positions_display|pluralize }}</p>
               {% endif %}
               <hr>
              {% if cd %}
@@ -173,7 +173,7 @@
                   {% for item in positions_display %}
                     {{ item }}{% if not forloop.last %},{% endif %}
                   {% endfor %}
-                </strong> position{{ positions_display|pluralize:"'s" }}</p>
+                </strong> position{{ positions_display|pluralize }}</p>
               {% endif %}
               <hr>
               {% if cd %}

@@ -30,10 +30,14 @@
                   {% for item in positions_display %}
                     {{ item }}{% if not forloop.last %},{% endif %}
                   {% endfor %}
-                </strong> position{{ positions_display|pluralize:"'s" }}</p>
+                </strong> position{{ positions_display|pluralize }}</p>
               {% endif %}
               <hr>
-              <h5>Active: {{ last_login|timesince }} ago</h5>
+              {% if cd %}
+       				  <h5>Active: Today </h5>
+              {%else%}
+                <h5>Active: {{ last_login|timesince }} ago</h5>
+              {% endif %}
               <button id="connect" class="btn btn-lg btn-primary btn-outline">Connect</button>
             </div>
           </div>
@@ -163,10 +167,14 @@
                   {% for item in positions_display %}
                     {{ item }}{% if not forloop.last %},{% endif %}
                   {% endfor %}
-                </strong> position{{ positions_display|pluralize:"'s" }}</p>
+                </strong> position{{ positions_display|pluralize }}</p>
               {% endif %}
               <hr>
-              <h5>Active: {{ last_login|timesince }} ago</h5>
+              {% if cd %}
+       				  <h5>Active: Today </h5>
+              {%else%}
+                <h5>Active: {{ last_login|timesince }} ago</h5>
+              {% endif %}
               <button id="connect" class="btn btn-lg btn-primary btn-outline">Connect</button>
             </div>
           </div>

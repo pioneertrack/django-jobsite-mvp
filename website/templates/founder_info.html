@@ -23,7 +23,11 @@
               <p>{{ founder.get_stage_display }} with {{ founder.employee_count }}
                 Employee{{ founder.employee_count|pluralize }}</p>
               <hr>
-              <h5>Active: {{ last_login|timesince }} ago</h5>
+              {% if cd %}
+       				  <h5>Active: Today </h5>
+              {%else%}
+                <h5>Active: {{ last_login|timesince }} ago</h5>
+              {% endif %}
               <button id="connect" class="btn btn-lg btn-primary btn-outline">Contact</button>
             </div>
           </div>
@@ -97,7 +101,11 @@
               <p>{{ founder.get_stage_display }} with {{ founder.employee_count }}
                 Employee{{ founder.employee_count|pluralize }}</p>
               <hr>
-              <h5>Active: {{ last_login|timesince }} ago</h5>
+              {% if cd %}
+       				  <h5>Active: Today </h5>
+              {%else%}
+                <h5>Active: {{ last_login|timesince }} ago</h5>
+              {% endif %}
               <button id="connect" class="btn btn-lg btn-primary btn-outline">Contact</button>
             </div>
           </div>
