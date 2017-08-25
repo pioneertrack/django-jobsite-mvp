@@ -259,6 +259,14 @@ class Job(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
 
 
+class Connection(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    sender = models.ForeignKey(user.MyUser, verbose_name='Sender', null=True, related_name='sender')
+    receiver = models.ForeignKey(user.MyUser, verbose_name='Receiver', null=True, related_name='receiver')
+    to_startup = models.BooleanField(verbose_name='Receiver is startup', default=False)
+    message = models.TextField(verbose_name='Message', null=True)
+
+
 @receiver(post_save, sender=user.MyUser)
 def create_user_profile(sender, instance, created, **kwargs):
     if created and instance.is_individual:

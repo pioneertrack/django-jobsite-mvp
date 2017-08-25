@@ -14,12 +14,10 @@ from django.urls import reverse
 from django import forms as f
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Sum
-from django.contrib import admin
 from django.conf import settings
+from django.http import Http404, HttpResponseServerError
 import numpy as np
 import simplejson as json
-import re
-import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 import string
@@ -28,6 +26,10 @@ from django.core import signing
 from random import shuffle
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
+from smtplib import SMTPException
+from urllib.parse import urlparse
+import re
+
 from . models import MyUser
 from . forms import ResendActivationEmailForm
 from website import forms
@@ -123,17 +125,26 @@ def tf_idf(tokenized_users, query, term_index):
 @login_required(login_url='login/')
 def connect(request):
     if request.is_ajax():
-        user = get_object_or_404(models.MyUser, pk=request.POST['user'])
-        if user is not None:
-            user.email_user(
-                request.user.first_name + " " + request.user.last_name + " wants to work with you on BearFounders!",
-                request.POST['text'] + "\r\nREPLY TO: " + request.user.email, 'noreply@bearfounders.com')
-            message = "success"
+        url = urlparse(request.META.get('HTTP_REFERER'));
+        from_startup = re.match(r'.*/startups/.*', url.path) is not None;
+        receiver = get_object_or_404(models.MyUser, pk=request.POST['user'])
+        sender = request.user
+        text = request.POST['text']
+        if receiver is not None:
+            try:
+                receiver.email_user(
+                    sender.first_name + " " + sender.last_name + " wants to work with you on BearFounders!",
+                    request.POST['text'] + "\r\nREPLY TO: " + sender.email, 'noreply@bearfounders.com')
+                prof.Connection.objects.create(sender=sender, receiver=receiver, to_startup=from_startup, message=text)
+                message = "success"
+                return HttpResponse(message)
+            except SMTPException as err:
+                message = err
         else:
             message = 'failure'
+        return HttpResponseServerError(message)
     else:
-        message = "failure"
-    return HttpResponse(message)
+        raise Http404()
 
 
 @login_required(login_url='login/')
