@@ -598,11 +598,16 @@ def add_profile(request):
     user = request.user
 
     ExperienceFormSet = inlineformset_factory(prof.Profile, prof.Experience, form=forms.ExperienceForm,
-                                              widgets={'start_date': f.DateInput(), 'end_date': f.DateInput()},
-                                              error_messages={'start_date': {
-                                                  'invalid': 'Please enter a date with the form MM/DD/YY'},
-                                                              'end_date': {
-                                                                  'invalid': 'Please enter a date with the form MM/DD/YY'}},
+                                              widgets={
+                                                  'start_date': f.DateInput(format='%m/%d/%y'),
+                                                  'end_date': f.DateInput(format='%m/%d/%y'),
+                                              },
+                                              error_messages={
+                                                  'start_date': {
+                                                      'invalid': 'Please enter a date with the form MM/DD/YY'},
+                                                  'end_date': {
+                                                      'invalid': 'Please enter a date with the form MM/DD/YY'}
+                                              },
                                               max_num=5, extra=1)
 
     profile = user.profile if hasattr(user, 'profile') else None
@@ -652,11 +657,16 @@ def profile_update(request):
     is_first_login = user.first_login
 
     ExperienceFormSet = inlineformset_factory(prof.Profile, prof.Experience, form=forms.ExperienceForm,
-                                              widgets={'start_date': f.DateInput(), 'end_date': f.DateInput()},
-                                              error_messages={'start_date': {
-                                                  'invalid': 'Please enter a date with the form MM/DD/YY'},
-                                                              'end_date': {
-                                                                  'invalid': 'Please enter a date with the form MM/DD/YY'}},
+                                              widgets={
+                                                  'start_date': f.DateInput(format='%m/%d/%y'),
+                                                  'end_date': f.DateInput(format='%m/%d/%y'),
+                                              },
+                                              error_messages={
+                                                  'start_date': {
+                                                      'invalid': 'Please enter a date with the form MM/DD/YY'},
+                                                  'end_date': {
+                                                      'invalid': 'Please enter a date with the form MM/DD/YY'}
+                                              },
                                               max_num=5, extra=1)
 
     profile_form = forms.ProfileForm(instance=request.user.profile)
