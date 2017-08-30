@@ -886,12 +886,16 @@
 {% endif %}
 </body>
 
+
+
+{% block user_info %}
 {% if user.first_name %}
   <script type="text/javascript">
     name = {%if not user.is_founder%}'{{user.first_name|safe}}'{%else%}'{{user.founder.startup_name|safe}}';{%endif%}
     user = '{{user.id|safe}}';
   </script>
 {% endif %}
+{% endblock %}
 
 {% if GOOGLE_ANALYTICS_PROPERTY_ID %}
   <script>
