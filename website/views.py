@@ -127,7 +127,7 @@ def connect(request):
     if request.is_ajax():
         url = urlparse(request.META.get('HTTP_REFERER'));
         from_startup = re.match(r'.*/startups/.*', url.path) is not None;
-        receiver = get_object_or_404(models.MyUser, pk=request.POST['user'])
+        receiver = get_object_or_404(models.MyUser, pk=request.POST['user_page_id'])
         sender = request.user
         text = request.POST['text']
         if receiver is not None:
