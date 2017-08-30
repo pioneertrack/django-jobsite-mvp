@@ -280,3 +280,10 @@
   {% endblock %}
 
 {% endif %}
+
+{% block user_info %}
+  {{ block.super }}
+  <script type="text/javascript">
+    user_page_id = {{ profile.user.id }};
+  </script>
+{% endblock user_info %}

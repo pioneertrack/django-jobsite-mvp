@@ -95,7 +95,7 @@ $(function(){
 				url: "/connect/",
 				data: {
 						'text': text,
-						'user': user,
+						'user': user_page_id,
 				},
 				success: function(data) {
 						console.log('email sent');
