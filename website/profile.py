@@ -240,7 +240,6 @@ class Founder(models.Model):
         return self.user.email
 
 
-
 class Funding(models.Model):
     founder = models.ForeignKey(Founder, on_delete=models.CASCADE, null=True)
     stage = models.CharField(verbose_name='Stage', max_length=1, choices=FUNDING_ROUNDS, default='0', null=True)

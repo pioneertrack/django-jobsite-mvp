@@ -33,7 +33,7 @@ $(function() {
   }
 
   $('#profileform .set #funding').formset({
-    prefx: 'founder_set1',
+    prefix: 'funding_set',
     deleteCssClass: 'remove',
     deleteText: '[&mdash;] remove',
     addCssClass: 'add-another',
@@ -42,7 +42,7 @@ $(function() {
   });
 
   $('#profileform .set #jobs').formset({
-    prefix: 'founder_set2',
+    prefix: 'job_set',
     deleteCssClass: 'remove',
     deleteText: '[&mdash;] remove',
     addCssClass: 'add-another',
