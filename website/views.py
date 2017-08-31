@@ -174,9 +174,8 @@ def index(request):
         people = ['partners', 'employees', 'freelancers']
         if request.POST['select-category'] in people:
 
-            kwargs = {'is_active': True, 'is_individual': True}
+            kwargs = {'is_active': True, 'is_individual': True, 'is_account_disabled': False}
             category = request.POST['select-category']
-
             active_selects = []
 
             position = request.POST.getlist('position_'+category)
@@ -320,9 +319,7 @@ def index(request):
                                       }))
         elif request.POST['select-category'] == 'startups':
 
-            kwargs = {}
-            kwargs['is_active'] = True
-            kwargs['is_founder'] = True
+            kwargs = {'is_active': True, 'is_founder': True, 'is_account_disabled': False}
             kwargs['founder__startup_name__gt'] = ''
 
             filter_hidden = request.POST.get('filter_startups')
@@ -430,7 +427,7 @@ def index(request):
                           ))
         elif request.POST['select-category'] == 'jobs':
             tokenized_jobs = []
-            kwargs = {}
+            kwargs = {'founder__user__is_account_disabled': False}
             category = request.POST.getlist('category')
             level = request.POST.getlist('level')
             pay = request.POST.getlist('pay')
