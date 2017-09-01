@@ -140,21 +140,23 @@ class CustomImageField(models.ImageField):
     def from_db_value(self, value, expression, connection, context):
         val = self.to_python(value)
         if val == self.default:
-            return val;
+            return val
         if isinstance(self.storage, MediaStorage):
             try:
                 if self.storage.exists(val):
-                    return val;
+                    return val
             except Exception:
-                return self.default
+                pass
+            return self.default
         if isinstance(self.storage, FileSystemStorage):
-            last_char = '';
+            last_char = ''
             if self.storage.location[-1] != '/': last_char = '/'
             try:
                 if self.storage.exists(self.storage.location + last_char + val):
-                    return val;
-            except Exception as e:
-                return self.storage.location + last_char + self.default
+                    return val
+            except Exception:
+                pass
+            return self.default
 
 
 def user_directory_path(instance, filename):

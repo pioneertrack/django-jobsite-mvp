@@ -167,5 +167,6 @@
   {{ block.super }}
   <script type="text/javascript">
     user_page_id = {{ founder.user.id }};
-  </script>
+    name = '{{founder.startup_name|safe}}';
+</script>
 {% endblock user_info %}

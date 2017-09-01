@@ -285,5 +285,6 @@
   {{ block.super }}
   <script type="text/javascript">
     user_page_id = {{ profile.user.id }};
+    name = '{{profile.user.first_name|safe}} {{profile.user.last_name|safe}}';
   </script>
 {% endblock user_info %}
