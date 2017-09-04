@@ -27,6 +27,8 @@ DATABASES = {
     }
 }
 
+EMAIL_BACKEND = "mailer.backend.DbBackend"
+
 EMAIL_HOST = 'localhost'
 
 EMAIL_PORT = 1025

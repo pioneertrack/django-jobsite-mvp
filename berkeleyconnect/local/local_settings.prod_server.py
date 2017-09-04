@@ -57,6 +57,8 @@ MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIA_ROOT)
 
 # Email settings
 
+EMAIL_BACKEND = "mailer.backend.DbBackend"
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 DEFAULT_FROM_EMAIL = 'noreply@bearfounders.com'

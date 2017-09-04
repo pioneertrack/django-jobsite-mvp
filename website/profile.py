@@ -197,17 +197,17 @@ class Profile(models.Model):
     major = models.CharField(verbose_name='Major', max_length=5, choices=MAJORS, default='UND')
     role = models.CharField(max_length=4, choices=PRIMARY_ROLE, default='NONE', blank=True, null=False)
     positions = ChoiceArrayField(models.CharField(choices=POSITIONS, max_length=1, default='0'), default=['0'])
-
-    def __getattr__(self, item):
-        if item != 'image':
-            return super(Profile, self).__getattr__(item)
-        if item == 'image':
-            if item == 'image':
-                image = super(Profile, self).__getattr__(item)
-                return image
+    is_filled = models.BooleanField(verbose_name='You profile not filled', null=False, default=False)
 
     def __str__(self):
         return self.user.email
+
+    def check_is_filled(self):
+        if len(self.bio) > 1 and (len(self.skills) > 0 or self.experience_set.count() > 0):
+            self.is_filled = True
+        else:
+            self.is_filled = False
+        self.save()
 
 
 class Experience(models.Model):
@@ -241,9 +241,17 @@ class Founder(models.Model):
     website = models.URLField(verbose_name='Website', blank=True, null=False)
     facebook = models.URLField(verbose_name='Facebook', blank=True, null=False)
     field = models.CharField(verbose_name='Field', max_length=4, choices=CATEGORY, blank=True, null=False)
+    is_filled = models.BooleanField(verbose_name='You startup profile not filled', null=False, default=False)
 
     def __str__(self):
         return self.user.email
+
+    def save(self, *args, **kwargs):
+        if len(self.description) > 1:
+            self.is_filled = True
+        else:
+            self.is_filled = False
+        super(Founder, self).save(*args, **kwargs)
 
 
 class Funding(models.Model):
