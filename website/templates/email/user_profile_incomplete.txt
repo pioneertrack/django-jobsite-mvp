@@ -1,0 +1,16 @@
+{% load i18n %}
+Hi {{ profile.user.first_name }}
+
+We’ve noticed that your profile is incomplete. In order to be found on the site, you must have:
+
+1) A Bio
+2) Skills or Experience listed
+
+There are over 70 opportunities waiting for you.
+
+Please complete these in order to be displayed on Bear Founders!
+
+https://www.bearfounders.com/profile/update
+
+Sincerely,
+Bearfounders Management

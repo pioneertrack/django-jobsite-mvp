@@ -27,3 +27,5 @@ website/migrations/*
 /static/
 /berkeleyconnect/local_settings.py
 /bower_components/
+!/website/templates/email/user_profile_incomplete.txt
+!/website/templates/email/startup_profile_incomplete.txt

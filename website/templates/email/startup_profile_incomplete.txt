@@ -1,0 +1,15 @@
+{% load i18n %}
+Hi {{ profile.user.first_name }}
+
+We’ve noticed that your startup profile is incomplete. In order to be found on the site, you must have:
+
+1) An “About” startup description filled out
+
+There are over 500 individuals looking to join startups in some capacity.
+
+Please complete these in order to be displayed on Bear Founders!
+
+https://www.bearfounders.com/startup/update
+
+Sincerely,
+Bearfounders Management
