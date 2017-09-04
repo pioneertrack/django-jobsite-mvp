@@ -1051,3 +1051,11 @@ class DeleteProfile(LoginRequiredMixin, generic.RedirectView):
         user.save()
         messages.success(request, 'Your {} profile has been deleted'.format(selected_account.capitalize()))
         return super(DeleteProfile, self).post(request, *args, **kwargs)
+
+def test_mail(request):
+    user = request.user
+    message = render_to_string('email/user_profile_incomplete.txt', {'profile': user.profile})
+    user.email_user('You personal profile is incomplete', message, 'noreply@bearfounders.com')
+    message = render_to_string('email/startup_profile_incomplete.txt', {'profile': user.profile})
+    user.email_user('You startup profile is incomplete', message, 'noreply@bearfounders.com')
+    return HttpResponseRedirect('/')

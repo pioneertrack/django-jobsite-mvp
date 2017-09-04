@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'import_export',
     'django_extensions',
     'imagekit',
+    'mailer'
 ]
 
 MIDDLEWARE = [
@@ -174,6 +175,13 @@ MESSAGE_TAGS = {message.DEBUG: 'debug', message.INFO: 'info', message.SUCCESS: '
 
 CRISPY_TEMPLATE_PACK = 'bootstrap'
 
+# Django-Mailer settings
+
+MAILER_EMAIL_MAX_BATCH = 10
+
+MAILER_EMAIL_MAX_DEFERRED = 5
+
+MAILER_EMAIL_THROTTLE = 1
 
 try:
   from .local_settings import *
