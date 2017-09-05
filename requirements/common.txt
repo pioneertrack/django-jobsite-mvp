@@ -51,3 +51,4 @@ numpy==1.13.0
 simplejson==3.11.1
 django-extensions==1.8.1
 django-imagekit==4.0.1
+django-mailer==1.2.2
