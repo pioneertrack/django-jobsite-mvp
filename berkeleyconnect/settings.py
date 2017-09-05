@@ -33,20 +33,23 @@ ALLOWED_HOSTS = ['.bearfounders.com', '54.215.142.223']
 # Application definition
 
 INSTALLED_APPS = [
-    'website',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'nocaptcha_recaptcha',
     'crispy_forms',
     'storages',
     'import_export',
     'django_extensions',
     'imagekit',
-    'mailer'
+    'mailer',
+    'django_elasticsearch_dsl',
+
+    'website',
 ]
 
 MIDDLEWARE = [
@@ -182,6 +185,14 @@ MAILER_EMAIL_MAX_BATCH = 10
 MAILER_EMAIL_MAX_DEFERRED = 5
 
 MAILER_EMAIL_THROTTLE = 1
+
+
+ELASTICSEARCH_DSL={
+    'default': {
+        'hosts': 'localhost:9200'
+    },
+}
+
 
 try:
   from .local_settings import *
