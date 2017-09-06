@@ -20,6 +20,7 @@ HOURS_AVAILABLE = (
 POSITION = (
     ('0', 'Partnership'),
     ('1', 'Paid'),
+    ('2', 'Unpaid'),
     ('NONE', 'Other',)
 )
 STAGE = (
