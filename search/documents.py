@@ -1,5 +1,4 @@
 from django_elasticsearch_dsl import DocType, Index, fields
-from website.models import MyUser
 from website.profile import Profile, Founder, Job
 
 people = Index('people')
@@ -15,7 +14,7 @@ class PeopleDocument(DocType):
         'first_name': fields.StringField(),
         'last_name': fields.StringField(),
     })
-    experience = fields.NestedField(properties={
+    experience_set = fields.NestedField(properties={
         'company': fields.StringField(),
         'position': fields.StringField(),
         'description': fields.TextField(),
@@ -24,7 +23,7 @@ class PeopleDocument(DocType):
     class Meta:
         model = Profile
         fields = [
-            'majors',
+            'major',
             'bio',
             'skills',
             'interests',

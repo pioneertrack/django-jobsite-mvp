@@ -7,9 +7,7 @@ from django.contrib.auth.models import Group
 
 from website.models import MyUser
 from website.forms import NewRegistrationForm
-from website.profile import Profile, Experience
-from website.profile import Founder, Funding, Job
-from website.profile import Connection
+from website.profile import Profile, Experience, Founder, Funding, Job, Connection
 
 from website.profile import STAGE, LEVELS, CATEGORY, PRIMARY_ROLE, MAJORS, YEAR_IN_SCHOOL_CHOICES, FUNDING_ROUNDS, POSITION, HOURS_AVAILABLE
 
@@ -147,8 +145,9 @@ class FounderAdmin(ImportExportModelAdmin):
         ('Contact',    {'fields': ['website','facebook']})
     )
     inlines = (FundingInline,)
+    search_fields = ('user',)
 
-    ordering = ('user',)
+    ordering = ('user__email',)
 
     resource_class = FounderResource
     pass
@@ -284,16 +283,18 @@ class ProfileAdmin(ImportExportModelAdmin):
     fieldsets = (
         (None,         {'fields': ['user','bio','interests']}),
         ('School',     {'fields': ['year', 'role', 'major', 'courses']}),
-        ('Work',       {'fields': ['hours_week','position', 'positions']}),
+        ('Work',       {'fields': ['hours_week', 'positions']}),
         ('Experience', {'fields': ['has_startup_exp','has_funding_exp','skills']}),
         ('Contact',    {'fields': ['linkedin','website','github']})
     )
+    search_fields = ('user__email',)
     inlines = (ExperienceInline,)
 
     ordering = ('user',)
 
     resource_class = ProfileResource
     pass
+
 
 admin.site.register(MyUser, MyUserAdmin)
 admin.site.register(Founder, FounderAdmin)

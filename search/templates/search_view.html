@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}
+{% trans "Home" %}
+{% endblock %}
+
+{% if is_mobile %}
+
+  {% block mobile_content %}
+  {% endblock mobile_content %}
+
+{% else %}
+
+  {% block content %}
+  {% endblock content %}
+
+{% endif %}

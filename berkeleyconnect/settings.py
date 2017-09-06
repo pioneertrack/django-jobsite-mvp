@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django_elasticsearch_dsl',
 
     'website',
+    'search',
 ]
 
 MIDDLEWARE = [
@@ -67,7 +68,7 @@ ROOT_URLCONF = 'berkeleyconnect.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        # 'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,6 +79,11 @@ TEMPLATES = [
                 'website.views.google_analytics',
                 'website.context_processors.is_mobile'
             ],
+            # 'loaders': [
+            #     'django.template.loaders.filesystem.Loader',
+            #     'django.template.loaders.app_directories.Loader',
+            # ],
+
         },
     },
 ]
@@ -189,7 +195,7 @@ MAILER_EMAIL_THROTTLE = 1
 
 ELASTICSEARCH_DSL={
     'default': {
-        'hosts': 'localhost:9200'
+        'hosts': 'elastic:elastic@localhost:9200'
     },
 }
 
