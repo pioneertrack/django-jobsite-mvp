@@ -147,11 +147,8 @@ $(function () {
             method: "POST",
             data: $('#mainform').serialize(),
             success: function (response) {
-                console.log(response, $("#item_template").html());
                 var compiled = _.template($("#item_template").html());
                 $('main .container').html(compiled({"data": response}));
-                //var data = JSON.parse(response.data);
-
             }
         });
 
