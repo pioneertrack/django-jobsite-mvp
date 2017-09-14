@@ -196,7 +196,6 @@ class Profile(models.Model):
     website = models.URLField(verbose_name='Website', null=False, blank=True)
     github = models.URLField(verbose_name='Github', null=False, blank=True)
     major = models.CharField(verbose_name='Major', max_length=5, choices=MAJORS, default='UND')
-    role = models.CharField(max_length=4, choices=PRIMARY_ROLE, default='NONE', blank=True, null=False)
     positions = ChoiceArrayField(models.CharField(choices=POSITIONS, max_length=1, default='0'), default=['0'])
     is_filled = models.BooleanField(verbose_name='You profile not filled', null=False, default=False)
 

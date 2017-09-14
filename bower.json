@@ -27,6 +27,7 @@
     "custom-scrollbar": "https://github.com/malihu/malihu-custom-scrollbar-plugin.git#master",
     "jquery-modern": "jquery#2",
     "detect_swipe": "https://github.com/marcandre/detect_swipe.git#^2.1.4",
-    "slidebars-fork": "https://github.com/hazarin/Slidebars.git#master"
+    "slidebars-fork": "https://github.com/hazarin/Slidebars.git#master",
+    "underscore": "1.8.3"
   }
 }

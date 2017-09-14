@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views.generic.edit import FormView
+from django.http import JsonResponse
 from django import forms
 from search.documents import PeopleDocument
 from elasticsearch_dsl import FacetedSearch
@@ -43,7 +44,8 @@ class SearchView(FormView):
         return context
 
     def post(self, request, *args, **kwargs):
-        category = request.POST['select-category']
+        category = 'partners' #request.POST['select-category']
+        query = request.POST['query']
         position = request.POST.getlist('position_' + category)
         years = request.POST.getlist('year_' + category)
         majors = request.POST.getlist('major_' + category)
@@ -57,14 +59,14 @@ class SearchView(FormView):
                         {'term': {'user.is_active': True}},
                         {'term': {'user.is_individual': True}},
                         {'term': {'user.is_account_disabled': False}},
-                        {'terms': {'positions': position}},
-                        {'terms': {'year': years}},
-                        {'terms': {'major': majors}},
-                        {'terms': {'role': roles}},
+                        #{'terms': {'positions': position}},
+                        #{'terms': {'year': years}},
+                        #{'terms': {'major': majors}},
+                        #{'terms': {'role': roles}},
                     ],
                     'must': {
                         'multi_match': {
-                            'query': 'John Doe',
+                            'query': 'John Doe',#query,
                             'type': 'cross_fields',
                             'fields': [
                                 'major',
@@ -84,7 +86,11 @@ class SearchView(FormView):
             }
         }
 
-        res = PeopleDocument.search().from_dict(query)
+        res = PeopleDocument.search().from_dict(query).execute()
 
+        search_response = {}
         for hit in res:
-            a = hit
+            id = hit.meta.id
+            search_response[id] = hit.to_dict()
+
+        return JsonResponse(search_response)

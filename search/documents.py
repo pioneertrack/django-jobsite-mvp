@@ -1,5 +1,4 @@
 from django_elasticsearch_dsl import DocType, Index, fields
-from elasticsearch_dsl import Field
 from website.profile import Profile, Founder, Job
 
 people = Index('people')
@@ -28,6 +27,7 @@ class PeopleDocument(DocType):
     class Meta:
         model = Profile
         fields = [
+            'id',
             'year',
             'major',
             'role',
