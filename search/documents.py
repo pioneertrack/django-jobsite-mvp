@@ -32,6 +32,7 @@ class PeopleDocument(DocType):
             'id',
             'year',
             'major',
+            'hours_week',
             'role',
             'has_startup_exp',
             'has_funding_exp',
