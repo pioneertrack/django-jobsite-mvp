@@ -209,6 +209,9 @@ class Profile(models.Model):
             self.is_filled = False
         self.save()
 
+    def image_to_string(self):
+        return self.image.url
+
 
 class Experience(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)

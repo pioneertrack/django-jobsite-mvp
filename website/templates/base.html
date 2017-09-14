@@ -1013,17 +1013,38 @@
                 <div class="card">
                     <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
                     <div>
-
+                        <div class="avatar"
+                          style="background-image: url('<%= item.image %>');">
+                        </div>
                     </div>
                     <div class="content">
                         <h2><%= item.user.first_name %> <%= item.user.last_name %></h2>
+
                         <h3 style="margin-top:0"><%= item.year %></h3>
+
                         <% if (item.has_startup_exp) { %>
-                          <span class="label label-default">Has startup experience</span>
+                            <span class="label label-default">Has startup experience</span>
                         <% } %>
+
                         <% if (item.has_founding_exp) { %>
                         <span class="label label-default">Has funding experience</span>
                         <% } %>
+
+                        <span class="label label-primary">x</span>
+
+                        <span class="label label-primary"><%= item.major %></span>
+
+                        <span class="label label-info"><%= item.role %></span>
+
+                        <% if (item.skills.length > 0) { _.each(item.skills.split(','), function (skill) { %>
+                          <span class="label label-info"><%= skill %></span>
+                        <% })} %>
+
+                        <span class="label label-success">current_user.profile.get_hours_week_display hr/wk</span>
+
+                        <% if (item.experience_set.length > 0) { _.each(item.experience_set, function (experience) { %>
+                            <span class="label label-danger">Worked at work.company</span>
+                        <% })} %>
                     </div>
                 </div>
             </a>

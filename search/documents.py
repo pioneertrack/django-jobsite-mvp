@@ -24,6 +24,8 @@ class PeopleDocument(DocType):
     })
     positions = fields.StringField()
 
+    image = fields.StringField(attr="image_to_string")
+
     class Meta:
         model = Profile
         fields = [
