@@ -26,6 +26,8 @@ class PeopleDocument(DocType):
 
     image = fields.StringField(attr="image_to_string")
 
+    major_display = fields.StringField(attr="get_major_display")
+
     class Meta:
         model = Profile
         fields = [

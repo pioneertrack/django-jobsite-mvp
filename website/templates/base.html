@@ -45,7 +45,6 @@
         <script src="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.js"></script>
         <script src="{% static 'js/navbar.js' %}"></script>
         <script src="{% static 'js/script.js' %}"></script>
-        <script src="{% static 'js/script.js' %}"></script>
         <script src="{% static 'underscore/underscore.js' %}"></script>
     {% endblock js %}
 
@@ -1005,7 +1004,7 @@
 
 {% block search_template %}
     <script type="text/html" id="item_template">
-        <% if(data) { %>
+        <% if(data.length)  { %>
         <% _.each(data, function (item) { %>
         <% console.log(item) %>
         <div class="col col-md-4" style="height:400px;">
@@ -1030,9 +1029,9 @@
 
                         <% if (item.year != 'NONE') { %><span class="label label-primary"> <%= item.year %> </span><% } %>
 
-                        <span class="label label-primary"><%= item.major %></span>
+                        <span class="label label-primary"><%= item.major_display %></span>
 
-                        <span class="label label-info"><%= item.role %></span>
+                        <% if (item.role != 'NONE') { %><span class="label label-info"><%= item.role %></span><% } %>
 
                         <% if (item.skills.length > 0) { _.each(item.skills.split(','), function (skill) { %>
                           <span class="label label-info"><%= skill %></span>

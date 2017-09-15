@@ -43,48 +43,68 @@ class SearchView(FormView):
         context.update(JOB_CONTEXT)
         return context
 
-    def post(self, request, *args, **kwargs):
-        category = 'partners' #request.POST['select-category']
-        query = request.POST['query']
+    def post(self, request, page=0, *args, **kwargs):
+        current_page = int(page)
+        category = request.POST.get('select-category', 'partners')
+        query_string = request.POST.get('query', '')
+
         position = request.POST.getlist('position_' + category)
         years = request.POST.getlist('year_' + category)
-        majors = request.POST.getlist('major_' + category)
+        majors =  request.POST.getlist('major_' + category)
         roles = request.POST.getlist('role_' + category)
         experience = request.POST.getlist('experience_' + category)
 
+        per_page = 6
+        current_offset = (current_page * per_page) - 1
+
+        if (current_offset < 0):
+            current_offset = 0
+
         query = {
+            'from': current_offset,
+            'size': per_page,
             'query': {
                 'bool': {
                     'filter': [
                         {'term': {'user.is_active': True}},
                         {'term': {'user.is_individual': True}},
                         {'term': {'user.is_account_disabled': False}},
-                        #{'terms': {'positions': position}},
+                        {'terms': {'positions': ['0', '1', '4']}},
                         #{'terms': {'year': years}},
-                        #{'terms': {'major': majors}},
                         #{'terms': {'role': roles}},
-                    ],
-                    'must': {
-                        'multi_match': {
-                            'query': 'John Doe',#query,
-                            'type': 'cross_fields',
-                            'fields': [
-                                'major',
-                                'bio',
-                                'skills',
-                                'interests',
-                                'courses',
-                                'user.first_name',
-                                'user.last_name',
-                                'experience_set.company',
-                                'experience_set.position',
-                                'experience_set.description',
-                            ]
-                        }
-                    }
+                        {'terms': {'major': ['eecs']}}
+                    ]
                 }
             }
         }
+
+        if (len(query_string) > 0):
+            query['query']['bool']['must'] = {
+                'multi_match': {
+                    'query': query_string,
+                    'type': 'cross_fields',
+                    'fields': [
+                        'major',
+                        'major_display',
+                        'bio',
+                        'skills',
+                        'interests',
+                        'courses',
+                        'user.first_name',
+                        'user.last_name',
+                        'experience_set.company',
+                        'experience_set.position',
+                        'experience_set.description',
+                    ]
+                }
+            }
+
+        #if '' in majors:
+        #    majors.remove('')
+
+        #if len(majors) > 0:
+        #    query['query']['bool']['filter'].append({'terms': {'major': ['CS', 'EECS']}})
+
 
         res = PeopleDocument.search().from_dict(query).execute()
 
