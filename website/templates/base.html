@@ -565,9 +565,11 @@
 
 
 
+
                                                             {% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
                                                 <option class="text-capitalize" selected
                                                         data-display="
+
 
 
 
@@ -608,9 +610,11 @@
 
 
 
+
                                                             {% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
                                                 <option class="text-capitalize" selected
                                                         data-display="
+
 
 
 
@@ -648,9 +652,11 @@
 
 
 
+
                                                             {% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
                                                 <option class="text-capitalize" selected
                                                         data-display="
+
 
 
 
@@ -692,9 +698,11 @@
 
 
 
+
                                                             {% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
                                                 <option class="text-capitalize" selected
                                                         data-display="
+
 
 
 
@@ -735,9 +743,11 @@
 
 
 
+
                                                             {% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
                                                 <option class="text-capitalize" selected
                                                         data-display="
+
 
 
 
@@ -778,9 +788,11 @@
 
 
 
+
                                                             {% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
                                                 <option class="text-capitalize" selected
                                                         data-display="
+
 
 
 
@@ -1002,11 +1014,8 @@
     </script>
 {% endif %}
 
-{% block search_template %}
-    <script type="text/html" id="item_template">
-        <% if(data.length)  { %>
-        <% _.each(data, function (item) { %>
-        <% console.log(item) %>
+{% block search_person_template %}
+    <script type="text/html" id="search_person_template">
         <div class="col col-md-4" style="height:400px;">
             <a class="card-hover" href='/profiles/<%= item.id %>'>
                 <div class="card">
@@ -1017,44 +1026,47 @@
                     <div class="content">
                         <h2><%= item.user.first_name %> <%= item.user.last_name %></h2>
 
-                        <% if (item.year != 'NONE') { %><h3 style="margin-top:0"> <%= item.year %> </h3><% } %>
+                        <% if (item.year != 'NONE') { %><h3 style="margin-top:0"> <%= item.year_display %> </h3><% } %>
 
                         <% if (item.has_startup_exp) { %>
                             <span class="label label-default">Has startup experience</span>
                         <% } %>
 
                         <% if (item.has_founding_exp) { %>
-                        <span class="label label-default">Has funding experience</span>
+                            <span class="label label-default">Has funding experience</span>
                         <% } %>
 
-                        <% if (item.year != 'NONE') { %><span class="label label-primary"> <%= item.year %> </span><% } %>
+                        <% if (item.year != 'NONE') { %>
+                            <span class="label label-primary"> <%= item.year_display %> </span>
+                        <% } %>
 
                         <span class="label label-primary"><%= item.major_display %></span>
 
                         <% if (item.role != 'NONE') { %><span class="label label-info"><%= item.role %></span><% } %>
 
                         <% if (item.skills.length > 0) { _.each(item.skills.split(','), function (skill) { %>
-                          <span class="label label-info"><%= skill %></span>
+                        <span class="label label-info"><%= skill %></span>
                         <% })} %>
 
                         <span class="label label-success"><%= item.hours_week %> hr/wk</span>
 
                         <% if (item.experience_set.length > 0) { _.each(item.experience_set, function (experience) { %>
-                            <span class="label label-danger">Worked at <%= experience.company %></span>
+                        <span class="label label-danger">Worked at <%= experience.company %></span>
                         <% })} %>
                     </div>
                 </div>
             </a>
         </div>
-        <% }) %>
-        <% } else { %>
+    </script>
+{% endblock search_person_template %}
+
+{% block empty_search_template %}
+    <script type="text/html" id="empty_search_template">
         <div class="col col-md-12 text-center">
             <h1><i class="fa fa-exclamation-circle" aria-hidden="true"></i> There were no users that matched your search
                 query! Try another search.</h1>
         </div>
-        <% } %>
-
     </script>
-{% endblock search_template %}
+{% endblock empty_search_template %}
 
 </html>

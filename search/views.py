@@ -1,3 +1,4 @@
+from django.db.models.functions.base import Lower
 from django.shortcuts import render
 from django.views.generic.edit import FormView
 from django.http import JsonResponse
@@ -54,7 +55,7 @@ class SearchView(FormView):
         roles = request.POST.getlist('role_' + category)
         experience = request.POST.getlist('experience_' + category)
 
-        per_page = 6
+        per_page = 9
         current_offset = (current_page * per_page) - 1
 
         if (current_offset < 0):
@@ -69,10 +70,6 @@ class SearchView(FormView):
                         {'term': {'user.is_active': True}},
                         {'term': {'user.is_individual': True}},
                         {'term': {'user.is_account_disabled': False}},
-                        {'terms': {'positions': ['0', '1', '4']}},
-                        #{'terms': {'year': years}},
-                        #{'terms': {'role': roles}},
-                        {'terms': {'major': ['eecs']}}
                     ]
                 }
             }
@@ -99,12 +96,37 @@ class SearchView(FormView):
                 }
             }
 
-        #if '' in majors:
-        #    majors.remove('')
+        if '' in position:
+            position.remove('')
 
-        #if len(majors) > 0:
-        #    query['query']['bool']['filter'].append({'terms': {'major': ['CS', 'EECS']}})
+        if len(position) > 0:
+            query['query']['bool']['filter'].append({'terms': {'positions': position}})
 
+
+        if '' in years:
+            years.remove('')
+
+        if len(years) > 0:
+            query['query']['bool']['filter'].append({'terms': {'year': years}})
+
+        if '' in majors:
+            majors.remove('')
+
+        if len(majors) > 0:
+            query['query']['bool']['filter'].append({'terms': {'major': majors}})
+
+        if '' in roles:
+            roles.remove('')
+
+        if len(roles) > 0:
+            query['query']['bool']['filter'].append({'terms': {'role': roles}})
+
+        if '' in experience:
+            experience.remove('')
+
+        # TODO: has founding and has sturtup expirience
+        #if len(experience) > 0:
+            #query['query']['bool']['filter'].append({'term': {'has_startup_exp': True}})
 
         res = PeopleDocument.search().from_dict(query).execute()
 

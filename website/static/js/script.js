@@ -35,18 +35,11 @@ $(function () {
 
     //hide or show the "back to top" link
     $(window).scroll(function () {
+
         ( $(this).scrollTop() > offset ) ? $back_to_top.addClass('cd-is-visible') : $back_to_top.removeClass('cd-is-visible cd-fade-out');
 
-        var current_offset = $(window).scrollTop() + $(window).height();
-
-        if(
-            (current_offset >= $(document).height() - 300 && $(window).scrollTop() > 300) ||
-            $(window).scrollTop() + $(window).height() == $(document).height()
-
-        ) {
-            getSearchResults();
-        }
-
+        // check for additional search results oon scroll
+        searchLazyLoad();
 
     });
 
@@ -155,44 +148,93 @@ $(function () {
     }, 3500);
 
 
+    // ########
+    // Search
+    // ########
+
+    // underscore template for person (base.html)
+    var person = _.template($("#search_person_template").html());
+
     var currentPage = 0;
     var currentSearchData = [];
-    var compiled = _.template($("#item_template").html());
+    var end_of_results = false;
+    var is_active_request = false;
 
+    /**
+     * Renders search results in main container
+     * @param data Object
+     */
     function render_search(data) {
-        console.log(data);
-        Object.keys(data).forEach(function (key) {
-            console.log(key, data[key]);
-            currentSearchData.push(data[key]);
-        });
-
-        console.log(currentSearchData);
-        $('main .container').html(compiled({"data": currentSearchData}));
-
+        if (Object.keys(data).length) {
+            Object.keys(data).forEach(function (key) {
+                $('main .container').append(person({"item": data[key]}));
+            });
+        } else if (currentPage == 0) {
+            // underscore template (base.html)
+            $('main .container').html(_.template($("#empty_search_template").html())());
+        }
     }
 
+    /**
+     * Retrieve search results
+     */
     function getSearchResults() {
-        $.ajax('/search/' + currentPage + '/', {
-            method: "POST",
-            data: $('#mainform').serializeArray(),
-            success: function (response) {
-                render_search(response);
-                currentPage++;
-            }
-        });
+        if (!end_of_results && !is_active_request) {
+            is_active_request = true;
+            $.ajax('/search/' + currentPage + '/', {
+                method: "POST",
+                data: $('#mainform').serializeArray(),
+                success: function (response) {
+                    is_active_request = false;
+                    render_search(response);
+                    if (Object.keys(response).length) {
+                        currentPage++;
+                    }
+                    else {
+                        end_of_results = true;
+                    }
+                },
+                error: function () {
+                    is_active_request = false;
+                }
+            });
+        }
     }
 
-    $('#searchbutton').on('click', function (e) {
+    /**
+     * Lazy load search result on scroll
+     */
+    function searchLazyLoad() {
+        if (location.pathname == '/') {
+            if ($(window).scrollTop() + $(window).height() >= $(document).height() - 250) {
+                getSearchResults();
+            }
+        }
+    }
+
+    /**
+     * Apply logic to form
+     */
+    $('#mainform').on('submit', function (e) {
+        // clear previous data
         currentPage = 0;
         currentSearchData = [];
-        $('body,html').animate({
-                scrollTop: 0
-            }, 0
-        );
+        end_of_results = false;
+
+        // clear main container
+        $('main .container').html('');
+
+        // "redirect" to mainpage
+        history.pushState({}, 'Home', '/');
+
+        // scroll to top
+        $('body,html').animate({scrollTop: 0}, 0);
+
+        // results
         getSearchResults();
 
+        // prevent actual submit
         return false;
     });
-
 
 });

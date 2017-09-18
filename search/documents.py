@@ -1,7 +1,15 @@
 from django_elasticsearch_dsl import DocType, Index, fields
 from website.profile import Profile, Founder, Job
+from django.conf import settings
+from elasticsearch_dsl import analyzer, tokenizer
 
-people = Index('people')
+
+if hasattr(settings, 'PRODUCTION') and settings.PRODUCTION:
+    people_index_name = 'people'
+else:
+    people_index_name = 'dev_people'
+
+people = Index(people_index_name)
 people.settings(
     number_of_shards=1,
     number_of_replicas=0,
@@ -28,14 +36,40 @@ class PeopleDocument(DocType):
 
     major_display = fields.StringField(attr="get_major_display")
 
+    major = fields.StringField(
+        attr="major",
+        analyzer=analyzer(
+            'standard_major',
+            tokenizer="standard",
+            filter=["standard"]
+        )
+    )
+
+    year_display = fields.StringField(attr="get_year_display")
+
+    year = fields.StringField(
+        attr="year",
+        analyzer=analyzer(
+            'standard_year',
+            tokenizer="standard",
+            filter=["standard"]
+        )
+    )
+
+    role = fields.StringField(
+        attr="role",
+        analyzer=analyzer(
+            'standard_role',
+            tokenizer="standard",
+            filter=["standard"]
+        )
+    )
+
     class Meta:
         model = Profile
         fields = [
             'id',
-            'year',
-            'major',
             'hours_week',
-            'role',
             'has_startup_exp',
             'has_funding_exp',
             'bio',
