@@ -121,12 +121,12 @@ class SearchView(FormView):
         if len(roles) > 0:
             query['query']['bool']['filter'].append({'terms': {'role': roles}})
 
-        if '' in experience:
-            experience.remove('')
-
-        # TODO: has founding and has sturtup expirience
-        #if len(experience) > 0:
-            #query['query']['bool']['filter'].append({'term': {'has_startup_exp': True}})
+        if len(experience) > 1 or (not '' in experience and len(experience) > 0):
+            for item in experience:
+                if item == '1':
+                    query['query']['bool']['filter'].append({'term': {'has_funding_exp': True}})
+                elif item == '0':
+                    query['query']['bool']['filter'].append({'term': {'has_startup_exp': True}})
 
         res = PeopleDocument.search().from_dict(query).execute()
 
