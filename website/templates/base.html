@@ -978,10 +978,10 @@
                 <div class="card">
                     <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
                     <div>
-                        <div class="avatar" style="background-image: url(' current_user.founder.logo.url ');"></div>
+                        <div class="avatar" style="background-image: url('<%= item.founder.logo %>');"></div>
                     </div>
                     <div class="content">
-                        <h2><%= item.startup_name %></h2>
+                        <h2><%= item.founder.startup_name %></h2>
                         <h4><%= item.stage_display %> • <% item.employee_count %>Employee</h4>
                         <hr>
                         <div class="founderdescription cut-text" data-cut="200">
@@ -1000,8 +1000,8 @@
             <a class="card-hover" href='/startups/<%= item.id %>'>
                 <div class="card job-card">
                     <div class="header-bg" style="height:100px; background-color:#25283D;">
-                        <h2><%= item.startup_name %></h2>
-                        <div class="avatar" style="background-image: url('');"></div>
+                        <h2><%= item.founder.startup_name %></h2>
+                        <div class="avatar" style="background-image: url('<%= item.founder.logo %>');"></div>
                     </div>
                     <div class="offer-content">
                         <div class="info">

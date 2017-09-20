@@ -153,7 +153,8 @@ class SearchView(LoginRequiredMixin, FormView):
                     }
                 }
 
-            res = StartupDocument.search().from_dict(query).execute()
+            search = StartupDocument.search()
+            res = search.from_dict(query).execute()
 
         elif category == 'jobs':
             query = {
@@ -174,17 +175,38 @@ class SearchView(LoginRequiredMixin, FormView):
                         'query': query_string,
                         'type': 'cross_fields',
                         'fields': [
-                            'startup_name',
+                            'founder.startup_name',
+                            'title'
                             'description',
-                            'stage',
-                            'employee_count',
-                            'field',
-                            'stage_display'
+                            'founder.field'
                         ]
                     }
                 }
 
+            job_category = request.POST.getlist('category')
+            level = request.POST.getlist('level')
+            pay = request.POST.getlist('pay')
+
+            if '' in level:
+                level.remove('')
+
+            if '' in pay:
+                pay.remove('')
+
+            if '' in job_category:
+                job_category.remove('')
+
+            if len(level) > 0:
+                query['query']['bool']['filter'].append({'terms': {'level': level}})
+
+            if len(pay) > 0:
+                query['query']['bool']['filter'].append({'terms': {'pay': pay}})
+
+            if len(job_category) > 0:
+                query['query']['bool']['filter'].append({'terms': {'founder.field': job_category}})
+
             res = JobDocument.search().from_dict(query).execute()
+
         else:
             return JsonResponse({'error': 'Unknown request'})
 

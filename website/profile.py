@@ -256,6 +256,9 @@ class Founder(models.Model):
             self.is_filled = False
         super(Founder, self).save(*args, **kwargs)
 
+    def logo_to_string(self):
+        return self.logo.url
+
 
 class Funding(models.Model):
     founder = models.ForeignKey(Founder, on_delete=models.CASCADE, null=True)

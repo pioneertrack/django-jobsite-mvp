@@ -31,11 +31,9 @@ class PeopleDocument(DocType):
         'description': fields.TextField(),
     })
     positions = fields.StringField()
-
     image = fields.StringField(attr="image_to_string")
-
     major_display = fields.StringField(attr="get_major_display")
-
+    year_display = fields.StringField(attr="get_year_display")
     major = fields.StringField(
         attr="major",
         analyzer=analyzer(
@@ -44,9 +42,6 @@ class PeopleDocument(DocType):
             filter=["standard"]
         )
     )
-
-    year_display = fields.StringField(attr="get_year_display")
-
     year = fields.StringField(
         attr="year",
         analyzer=analyzer(
@@ -55,7 +50,6 @@ class PeopleDocument(DocType):
             filter=["standard"]
         )
     )
-
     role = fields.StringField(
         attr="role",
         analyzer=analyzer(
@@ -93,7 +87,6 @@ startup.settings(
 
 @startup.doc_type
 class StartupDocument(DocType):
-
     stage_display = fields.StringField(attr="get_stage_display")
 
     class Meta:
@@ -122,20 +115,40 @@ job.settings(
 
 @job.doc_type
 class JobDocument(DocType):
-    founder = fields.NestedField(properties={
-        'startup_name': fields.StringField()
+    pay_display = fields.StringField(attr="get_pay_display")
+    level_display = fields.StringField(attr="get_level_display")
+    founder = fields.ObjectField(properties={
+        'startup_name': fields.StringField(),
+        'logo': fields.StringField(attr="logo_to_string"),
+        'field': fields.StringField(attr="field", analyzer=analyzer(
+            'standard_field',
+            tokenizer="standard",
+            filter=["standard"]
+        )),
     })
 
-    pay_display = fields.StringField(attr="get_pay_display")
+    pay = fields.StringField(
+        attr="pay",
+        analyzer=analyzer(
+            'standard_pay',
+            tokenizer="standard",
+            filter=["standard"]
+        )
+    )
 
-    level_display = fields.StringField(attr="get_level_display")
+    level = fields.StringField(
+        attr="level",
+        analyzer=analyzer(
+            'standard_level',
+            tokenizer="standard",
+            filter=["standard"]
+        )
+    )
 
     class Meta:
         model = Job
         fields = [
             'id',
             'title',
-            'pay',
-            'level',
             'description'
         ]
