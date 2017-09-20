@@ -147,6 +147,16 @@ $(function () {
         $('.message').fadeOut('slow');
     }, 3500);
 
+    function cutText() {
+        $('.cut-text').each(function (i) {
+            len = $(this).text().length;
+            if (len > $(this).data('cut')) {
+                $(this).text($(this).text().substr(0, $(this).data('cut')) + '...');
+            }
+        });
+    }
+
+    cutText();
 
     // ########
     // Search
@@ -154,6 +164,8 @@ $(function () {
 
     // underscore template for person (base.html)
     var person = _.template($("#search_person_template").html());
+    var startup = _.template($("#search_startup_template").html());
+    var job = _.template($("#search_job_template").html());
 
     var currentPage = 0;
     var currentSearchData = [];
@@ -165,11 +177,25 @@ $(function () {
      * @param data Object
      */
     function render_search(data) {
-        if (Object.keys(data).length) {
-            Object.keys(data).forEach(function (key) {
-                $('main .container').append(person({"item": data[key]}));
+        if (Object.keys(data.items).length) {
+
+            Object.keys(data.items).forEach(function (key) {
+                switch (data.category) {
+                    case 'person':
+                        $('main .container').append(person({"item": data.items[key]}));
+                        break;
+                    case 'startups':
+                        $('main .container').append(startup({"item": data.items[key]}));
+                        break;
+                    case 'jobs':
+                        $('main .container').append(job({"item": data.items[key]}));
+                        break;
+                }
             });
-        } else if (currentPage == 0) {
+
+            cutText();
+
+        } else if (currentPage == '0') {
             // underscore template (base.html)
             $('main .container').html(_.template($("#empty_search_template").html())());
         }

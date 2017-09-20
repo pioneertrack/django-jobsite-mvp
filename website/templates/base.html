@@ -2,7 +2,7 @@
 {% load website_tags %}
 {% load imagekit %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -559,23 +559,9 @@
                                                     form="mainform"
                                                     name="{{ item.0 }}_partners"
                                                     multiple style="display: none;"
-                                                    data-class="
-
-
-
-
-
-
-                                                            {% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                                                    data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
                                                 <option class="text-capitalize" selected
-                                                        data-display="
-
-
-
-
-
-
-                                                                {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                                                        data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
                                                         {% if item.0|add:"_partners" in active_selects %}
                                                         data-revert="Select All"
                                                         data-text="Diselect All"
@@ -604,23 +590,9 @@
                                                     form="mainform"
                                                     name="{{ item.0 }}_employees"
                                                     multiple style="display: none;"
-                                                    data-class="
-
-
-
-
-
-
-                                                            {% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                                                    data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
                                                 <option class="text-capitalize" selected
-                                                        data-display="
-
-
-
-
-
-
-                                                                {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                                                        data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
                                                         {% if item.0|add:"_employees" in active_selects %}
                                                         data-revert="Select All"
                                                         data-text="Diselect All"
@@ -646,23 +618,9 @@
                                                     form="mainform"
                                                     name="{{ item.0 }}_employees"
                                                     multiple style="display: none;"
-                                                    data-class="
-
-
-
-
-
-
-                                                            {% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                                                    data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
                                                 <option class="text-capitalize" selected
-                                                        data-display="
-
-
-
-
-
-
-                                                                {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                                                        data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
                                                         {% if item.0|add:"_employees" in active_selects %}
                                                         data-revert="Select All"
                                                         data-text="Diselect All"
@@ -692,23 +650,9 @@
                                                     form="mainform"
                                                     name="{{ item.0 }}_freelancers"
                                                     multiple style="display: none;"
-                                                    data-class="
-
-
-
-
-
-
-                                                            {% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                                                    data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
                                                 <option class="text-capitalize" selected
-                                                        data-display="
-
-
-
-
-
-
-                                                                {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                                                        data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
                                                         {% if item.0|add:"_freelancers" in active_selects %}
                                                         data-revert="Select All"
                                                         data-text="Diselect All"
@@ -737,23 +681,9 @@
                                                     form="mainform"
                                                     name="{{ item.0 }}"
                                                     multiple style="display: none;"
-                                                    data-class="
-
-
-
-
-
-
-                                                            {% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                                                    data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
                                                 <option class="text-capitalize" selected
-                                                        data-display="
-
-
-
-
-
-
-                                                                {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                                                        data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
                                                         {% if item.0 in active_selects %}
                                                         data-revert="Select All"
                                                         data-text="Diselect All"
@@ -778,27 +708,11 @@
                                 <div class="selects startups">
                                     {% for item in f_context %}
                                         <div class="filter-container">
-                                            <select class="filter small"
-                                                    form="mainform"
-                                                    name="{{ item.0 }}"
+                                            <select class="filter small" form="mainform" name="{{ item.0 }}"
                                                     multiple style="display: none;"
-                                                    data-class="
-
-
-
-
-
-
-                                                            {% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                                                    data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
                                                 <option class="text-capitalize" selected
-                                                        data-display="
-
-
-
-
-
-
-                                                                {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                                                        data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
                                                         {% if item.0 in active_selects %}
                                                         data-revert="Select All"
                                                         data-text="Diselect All"
@@ -980,9 +894,6 @@
     <a href="#0" class="cd-top"></a>
 
 {% endif %}
-</body>
-
-
 
 {% block user_info %}
     {% if user.first_name %}
@@ -1029,15 +940,15 @@
                         <% if (item.year != 'NONE') { %><h3 style="margin-top:0"> <%= item.year_display %> </h3><% } %>
 
                         <% if (item.has_startup_exp) { %>
-                            <span class="label label-default">Has startup experience</span>
+                        <span class="label label-default">Has startup experience</span>
                         <% } %>
 
                         <% if (item.has_founding_exp) { %>
-                            <span class="label label-default">Has funding experience</span>
+                        <span class="label label-default">Has funding experience</span>
                         <% } %>
 
                         <% if (item.year != 'NONE') { %>
-                            <span class="label label-primary"> <%= item.year_display %> </span>
+                        <span class="label label-primary"> <%= item.year_display %> </span>
                         <% } %>
 
                         <span class="label label-primary"><%= item.major_display %></span>
@@ -1060,6 +971,62 @@
     </script>
 {% endblock search_person_template %}
 
+{% block search_startup_template %}
+    <script type="text/html" id="search_startup_template">
+        <div class="col col-md-4" style="height:400px;">
+            <a class="card-hover" href='/startups/<%= item.id %>'>
+                <div class="card">
+                    <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
+                    <div>
+                        <div class="avatar" style="background-image: url(' current_user.founder.logo.url ');"></div>
+                    </div>
+                    <div class="content">
+                        <h2><%= item.startup_name %></h2>
+                        <h4><%= item.stage_display %> • <% item.employee_count %>Employee</h4>
+                        <hr>
+                        <div class="founderdescription cut-text" data-cut="200">
+                            <p><%= item.description %><p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </script>
+{% endblock search_startup_template %}
+
+{% block search_job_template %}
+    <script type="text/html" id="search_job_template">
+        <div class="col col-md-4 item">
+            <a class="card-hover" href='/startups/<%= item.id %>'>
+                <div class="card job-card">
+                    <div class="header-bg" style="height:100px; background-color:#25283D;">
+                        <h2><%= item.startup_name %></h2>
+                        <div class="avatar" style="background-image: url('');"></div>
+                    </div>
+                    <div class="offer-content">
+                        <div class="info">
+                            <h3><%= item.title %></h3>
+                            <div class="pcomp">
+                                <div class="mdata">
+                                <span class="font-weight-bold">Job position:&nbsp;</span><span><%= item.level_display %></span>
+                                </div>
+                                <div class="mdata">
+                                <span class="font-weight-bold">Compensation type:&nbsp;</span><span><%= item.pay_display %></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="description cut-text" data-cut="200">
+                            <p><%= item.description %></p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </script>
+{% endblock search_job_template %}
+
+<!-- current_user.founder.logo.url -->
+
 {% block empty_search_template %}
     <script type="text/html" id="empty_search_template">
         <div class="col col-md-12 text-center">
@@ -1068,5 +1035,5 @@
         </div>
     </script>
 {% endblock empty_search_template %}
-
+</body>
 </html>

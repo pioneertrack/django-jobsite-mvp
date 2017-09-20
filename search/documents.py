@@ -3,7 +3,7 @@ from website.profile import Profile, Founder, Job
 from django.conf import settings
 from elasticsearch_dsl import analyzer, tokenizer
 
-
+# Profile search document
 if hasattr(settings, 'PRODUCTION') and settings.PRODUCTION:
     people_index_name = 'people'
 else:
@@ -68,7 +68,6 @@ class PeopleDocument(DocType):
     class Meta:
         model = Profile
         fields = [
-            'id',
             'hours_week',
             'has_startup_exp',
             'has_funding_exp',
@@ -76,4 +75,67 @@ class PeopleDocument(DocType):
             'skills',
             'interests',
             'courses',
+        ]
+
+
+# Startup search document
+if hasattr(settings, 'PRODUCTION') and settings.PRODUCTION:
+    startup_index_name = 'startup'
+else:
+    startup_index_name = 'dev_startup'
+
+startup = Index(startup_index_name)
+startup.settings(
+    number_of_shards=1,
+    number_of_replicas=0,
+)
+
+
+@startup.doc_type
+class StartupDocument(DocType):
+
+    stage_display = fields.StringField(attr="get_stage_display")
+
+    class Meta:
+        model = Founder
+        fields = [
+            'startup_name',
+            'description',
+            'stage',
+            'employee_count',
+            'field'
+        ]
+
+
+# Job search document
+if hasattr(settings, 'PRODUCTION') and settings.PRODUCTION:
+    job_index_name = 'job'
+else:
+    job_index_name = 'dev_job'
+
+job = Index(job_index_name)
+job.settings(
+    number_of_shards=1,
+    number_of_replicas=0,
+)
+
+
+@job.doc_type
+class JobDocument(DocType):
+    founder = fields.NestedField(properties={
+        'startup_name': fields.StringField()
+    })
+
+    pay_display = fields.StringField(attr="get_pay_display")
+
+    level_display = fields.StringField(attr="get_level_display")
+
+    class Meta:
+        model = Job
+        fields = [
+            'id',
+            'title',
+            'pay',
+            'level',
+            'description'
         ]
