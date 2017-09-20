@@ -54,7 +54,7 @@ class SearchView(LoginRequiredMixin, FormView):
         if current_offset < 0:
             current_offset = 0
 
-        if category == 'partners':
+        if category == 'partners' or category == 'employees' or category == 'freelancers':
             position = request.POST.getlist('position_' + category)
             years = request.POST.getlist('year_' + category)
             majors = request.POST.getlist('major_' + category)
@@ -75,7 +75,7 @@ class SearchView(LoginRequiredMixin, FormView):
                 }
             }
 
-            if (len(query_string) > 0):
+            if len(query_string) > 0:
                 query['query']['bool']['must'] = {
                     'multi_match': {
                         'query': query_string,

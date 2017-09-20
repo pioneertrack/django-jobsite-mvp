@@ -181,7 +181,9 @@ $(function () {
 
             Object.keys(data.items).forEach(function (key) {
                 switch (data.category) {
-                    case 'person':
+                    case 'partners':
+                    case 'employees':
+                    case 'freelancers':
                         $('main .container').append(person({"item": data.items[key]}));
                         break;
                     case 'startups':

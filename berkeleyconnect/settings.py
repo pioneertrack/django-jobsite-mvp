@@ -197,7 +197,7 @@ MAILER_EMAIL_THROTTLE = 1
 
 ELASTICSEARCH_DSL={
     'default': {
-        'hosts': 'elastic:elastic@localhost:9200'
+        'hosts': 'elastic:changeme@localhost:9200'
     },
 }
 
