@@ -38,8 +38,8 @@ class MyUserAdmin(BaseUserAdmin):
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     list_display = ('email', 'first_name', 'last_name', 'is_individual', 'is_founder', 'is_active', 'is_admin',
-                    'is_account_disabled', 'get_year')
-    list_filter = ('is_admin','is_active', 'is_founder',)
+                    'is_account_disabled', 'get_year', 'registered_at')
+    list_filter = ('is_admin','is_active', 'is_founder', 'registered_at')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name')}),
@@ -140,7 +140,7 @@ class FounderResource(resources.ModelResource):
 
 class FounderAdmin(ImportExportModelAdmin):
     list_display = ('user','startup_name','stage','field','employee_count',)
-    list_filter = ('stage','field',)
+    list_filter = ('stage','field','is_filled')
     fieldsets = (
         (None,         {'fields': ['user','startup_name','logo','display_funding']}),
         ('Basic Info', {'fields': ['description','stage','employee_count','field']}),
@@ -280,7 +280,7 @@ class ProfileResource(resources.ModelResource):
 
 class ProfileAdmin(ImportExportModelAdmin):
     list_display = ('user', 'major', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp')
-    list_filter = ('major','year','has_startup_exp','has_funding_exp')
+    list_filter = ('major','year','has_startup_exp','has_funding_exp', 'is_filled')
     fieldsets = (
         (None,         {'fields': ['user','bio','interests']}),
         ('School',     {'fields': ['year', 'role', 'major', 'courses']}),
