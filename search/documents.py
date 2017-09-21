@@ -88,15 +88,30 @@ startup.settings(
 @startup.doc_type
 class StartupDocument(DocType):
     stage_display = fields.StringField(attr="get_stage_display")
+    user = fields.ObjectField(properties={
+        'is_active': fields.BooleanField(),
+        'is_individual': fields.BooleanField(),
+        'is_account_disabled': fields.BooleanField(),
+        'is_founder': fields.BooleanField()
+    })
+
+    field = fields.StringField(
+        attr="field",
+        analyzer=analyzer(
+            'standard_field',
+            tokenizer="standard",
+            filter=["standard"]
+        )
+    )
 
     class Meta:
         model = Founder
         fields = [
+            'id',
             'startup_name',
             'description',
             'stage',
-            'employee_count',
-            'field'
+            'employee_count'
         ]
 
 
@@ -120,6 +135,7 @@ class JobDocument(DocType):
     founder = fields.ObjectField(properties={
         'startup_name': fields.StringField(),
         'logo': fields.StringField(attr="logo_to_string"),
+        'is_filled': fields.BooleanField(),
         'field': fields.StringField(attr="field", analyzer=analyzer(
             'standard_field',
             tokenizer="standard",

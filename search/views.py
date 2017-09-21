@@ -130,13 +130,18 @@ class SearchView(LoginRequiredMixin, FormView):
             res = PeopleDocument.search().from_dict(query).execute()
 
         elif category == 'startups':
+            fields = request.POST.getlist('fields')
+            stage = request.POST.getlist('stage')
+
             query = {
                 'from': current_offset,
                 'size': per_page,
                 'query': {
                     'bool': {
                         'filter': [
-
+                            {'term': {'user.is_active': True}},
+                            {'term': {'user.is_account_disabled': False}},
+                            {'term': {'user.is_founder': True}},
                         ]
                     }
                 }
@@ -148,13 +153,31 @@ class SearchView(LoginRequiredMixin, FormView):
                         'query': query_string,
                         'type': 'cross_fields',
                         'fields': [
-
+                            'startup_name',
+                            'description',
+                            'stage',
+                            'employee_count',
+                            'field'
                         ]
                     }
                 }
 
-            search = StartupDocument.search()
-            res = search.from_dict(query).execute()
+            if '' in fields:
+                fields.remove('')
+
+            if len(fields) > 0:
+                query['query']['bool']['filter'].append({'terms': {'field': fields}})
+
+            if '' in stage:
+                stage.remove('')
+
+            if len(stage) > 0:
+                query['query']['bool']['filter'].append({'terms': {'stage': stage}})
+
+            query = StartupDocument.search().from_dict(query)
+            # TODO: In some reason query index name is clears
+            query._index = 'startup'
+            res = query.execute()
 
         elif category == 'jobs':
             query = {
@@ -163,7 +186,7 @@ class SearchView(LoginRequiredMixin, FormView):
                 'query': {
                     'bool': {
                         'filter': [
-
+                            {'term': {'founder.is_filled': True}}
                         ]
                     }
                 }
