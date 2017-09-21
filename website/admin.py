@@ -223,7 +223,7 @@ class ProfileResource(resources.ModelResource):
     class Meta:
         model = Profile
 
-        fields = ('user', 'user__first_name', 'user__last_name', 'bio', 'position',
+        fields = ('user', 'user__first_name', 'user__last_name', 'bio',
                   'interests', 'skills', 'courses', 'year', 'hours_week',
                   'has_startup_exp', 'has_funding_exp', 'linkedin', 'website',
                   'github', 'major', 'role')
@@ -284,7 +284,7 @@ class ProfileAdmin(ImportExportModelAdmin):
     fieldsets = (
         (None,         {'fields': ['user','bio','interests']}),
         ('School',     {'fields': ['year', 'role', 'major', 'courses']}),
-        ('Work',       {'fields': ['hours_week','position', 'positions']}),
+        ('Work',       {'fields': ['hours_week', 'positions']}),
         ('Experience', {'fields': ['has_startup_exp','has_funding_exp','skills']}),
         ('Contact',    {'fields': ['linkedin','website','github']})
     )
