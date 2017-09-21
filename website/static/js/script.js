@@ -179,8 +179,6 @@ $(function () {
     function render_search(data) {
         if (Object.keys(data.items).length) {
 
-            console.log(data);
-
             Object.keys(data.items).forEach(function (key) {
                 switch (data.category) {
                     case 'partners':
@@ -189,7 +187,6 @@ $(function () {
                         $('main .container').append(person({"item": data.items[key]}));
                         break;
                     case 'startups':
-                        console.log('render', data.items[key]);
                         $('main .container').append(startup({"item": data.items[key]}));
                         break;
                     case 'jobs':
