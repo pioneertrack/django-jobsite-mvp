@@ -52,6 +52,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     )
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
+    registered_at = models.DateTimeField(auto_now_add=True, editable=False)
     first_name = models.CharField(verbose_name='First Name',max_length = 25)
     last_name = models.CharField(verbose_name='Last Name',max_length = 40)
     is_active = models.BooleanField(default=False)

@@ -172,7 +172,7 @@ def company_logo_path(instance, filename):
 class Profile(models.Model):
     role = models.CharField(max_length = 4, choices = PRIMARY_ROLE, default='NONE', blank = True, null = False)
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
-    bio = models.TextField(verbose_name='Bio', max_length=500, blank=True, null=False)
+    bio = models.TextField(verbose_name='Bio', max_length=500, blank=False, null=False)
     image = CustomImageField(upload_to=user_directory_path, default='images/default/default-profile.jpg', blank=True,
                               null=False)
     image_thumbnail = ImageSpecField(source='image',
@@ -184,7 +184,7 @@ class Profile(models.Model):
                                       format='PNG',
                                       options={'quality': 100})
     interests = models.TextField(verbose_name='Interests', max_length=500, blank=True, null=False)
-    skills = models.TextField(verbose_name='Skills', max_length=500, blank=True, null=False)
+    skills = models.TextField(verbose_name='Skills', max_length=500, blank=False, null=False)
     courses = models.TextField(verbose_name='Courses', max_length=400, blank=True, null=False)
     alt_email = models.EmailField(max_length=255, db_index=True, null=True, blank=True)
     year = models.CharField(verbose_name='Year', max_length=4, choices=YEAR_IN_SCHOOL_CHOICES, default='NONE',
@@ -233,8 +233,8 @@ class Founder(models.Model):
                                       processors=[ResizeToFit(300, 300, False)],
                                       format='PNG',
                                       options={'quality': 100})
-    startup_name = models.CharField(verbose_name='Startup Name', max_length=99)
-    description = models.TextField(verbose_name='Description', blank=True, null=False)
+    startup_name = models.CharField(verbose_name='Startup Name', max_length=99, blank=False)
+    description = models.TextField(verbose_name='Description', blank=False, null=False)
     alt_email = models.EmailField(max_length=255, db_index=True, null=True, blank=True)
     stage = models.CharField(verbose_name='Stage', max_length=1, choices=STAGE, default='0')
     employee_count = models.IntegerField(verbose_name='Employees', default=1)
