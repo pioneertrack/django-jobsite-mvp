@@ -65,9 +65,11 @@ JOB_CONTEXT = {
     ],
     'e_context': [
         ('position', [
+            ('0', 'Partner'),
             ('1', 'Intern'),
             ('2', 'Part-Time'),
-            ('3', 'Full-Time')
+            ('3', 'Full-Time'),
+            ('4', 'Freelance')
         ], {'class': 'label-position'}),
     ],
     'f_context': [
@@ -181,15 +183,9 @@ def index(request):
             active_selects = []
 
             position = request.POST.getlist('position_' + category)
-            if category == 'partners':
-                kwargs['profile__positions__contains'] = ['0']
-            elif category == 'employees':
-                kwargs['profile__positions__overlap'] = ['1', '2', '3']
-                if len(position) > 1 or (not '' in position and len(position) > 0):
-                    kwargs['profile__positions__overlap'] = position
-                    active_selects.append('position_' + category)
-            else:
-                kwargs['profile__positions__contains'] = ['4']
+
+            kwargs['profile__positions__contains'] = position
+            active_selects.append('position_' + category)
 
             filter_hidden = request.POST.get('filter_' + category)
 

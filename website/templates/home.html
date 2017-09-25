@@ -42,6 +42,21 @@
 {% else %}
 
   {% block content %}
+      <!-- TODO: move styles to css -->
+      <!-- TODO: ajust link height -->
+      <!-- TODO: ajust header padding -->
+      <!-- TODO: move static images at now they stored in website/static folder -->
+      <div style="display: flex; ">
+        <a href="#" style="width:100%; display: block; height: 600px;
+        background: url('/media/images/default/gates.jpg');background-position: center center;color: white;
+        text-align: center; vertical-align: middle; font-size: 20px;
+        ">x</a>
+        <a href="#" style="width:100%; display: block; height: 600px;
+        background: url('/media/images/default/tower.jpg');background-position: center center;color: white;
+        text-align: center; vertical-align: middle; font-size: 20px;
+        ">y</a>
+      </div>
+      <!--
     <div class="container">
       <div class="home row">
         <div class="col col-md-4 text-center slide-in-left">
@@ -71,6 +86,7 @@
         </div>
       </div>
     </div>
+    -->
   {% endblock %}
 
 {% endif %}
