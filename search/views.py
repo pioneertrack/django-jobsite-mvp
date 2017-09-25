@@ -18,9 +18,11 @@ JOB_CONTEXT = {
     ],
     'e_context': [
         ('position', [
+            ('0', 'Partner'),
             ('1', 'Intern'),
             ('2', 'Part-Time'),
-            ('3', 'Full-Time')
+            ('3', 'Full-Time'),
+            ('4', 'Freelance')
         ], {'class': 'label-position'}),
     ],
     'f_context': [
@@ -54,7 +56,7 @@ class SearchView(LoginRequiredMixin, FormView):
         if current_offset < 0:
             current_offset = 0
 
-        if category == 'partners' or category == 'employees' or category == 'freelancers':
+        if category == 'partners':
             res = self.people_search(request, category, query_string, per_page, current_offset)
 
         elif category == 'startups':

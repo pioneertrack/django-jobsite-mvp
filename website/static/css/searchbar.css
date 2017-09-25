@@ -31,6 +31,7 @@
   border-radius: 50%;
   background-color: #8F3985;
   transition: all .2s ease-in-out;
+  font-size: 10px;
 }
 #searchbutton:hover {
   transform: scale(1.1);
@@ -642,7 +643,6 @@
 }
 
 .cd-secondary-nav.cd-search-nav.first {
-  padding: 0 0 0 40px;
   display: flex;
   align-items: center;
   flex: 1 1 100%;

@@ -28,26 +28,6 @@
         <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
     {% endblock css %}
 
-    {% block js %}
-        <script src="{% static 'jquery-modern/dist/jquery.min.js' %}"></script>
-        <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
-        {% if is_mobile %}
-            <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
-            <script src="{% static 'slidebars-fork/dist/slidebars.min.js' %}"></script>
-            <script src="{% static 'detect_swipe/jquery.detect_swipe.js' %}"></script>
-            <script src="{% static 'js/mobile.js' %}"></script>
-        {% else %}
-            <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
-            <script src="{% static 'js/responsive.js' %}"></script>
-        {% endif %}
-        <script src="{% static 'js/Modernizer.js' %}"></script>
-        <script src="{% static 'custom-scrollbar/jquery.mCustomScrollbar.concat.min.js' %}"></script>
-        <script src="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.js"></script>
-        <script src="{% static 'js/navbar.js' %}"></script>
-        <script src="{% static 'js/script.js' %}"></script>
-        <script src="{% static 'underscore/underscore.js' %}"></script>
-    {% endblock js %}
-
     <title>{% block title %}{% endblock %}</title>
 
 </head>
@@ -542,48 +522,9 @@
 
                         <div class="searchform">
 
-                            <div class="cd-switch-view">
-                                <input type="checkbox" name="view_type" id="view_type">
-                                <label for="view_type">
-                                    <i class="fa fa-list" aria-hidden="true"></i>
-                                    <i class="fa fa-th-large" aria-hidden="true"></i>
-                                </label>
-                            </div>
-
                             <nav class="cd-secondary-nav cd-search-nav first">
 
                                 <div class="selects partners">
-                                    {% for item in p_context %}
-                                        <div class="filter-container">
-                                            <select class="filter small"
-                                                    form="mainform"
-                                                    name="{{ item.0 }}_partners"
-                                                    multiple style="display: none;"
-                                                    data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
-                                                <option class="text-capitalize" selected
-                                                        data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
-                                                        {% if item.0|add:"_partners" in active_selects %}
-                                                        data-revert="Select All"
-                                                        data-text="Diselect All"
-                                                        {% else %}
-                                                        data-revert="Diselect All"
-                                                        data-text="Select All"
-                                                        {% endif %}
-                                                >
-                                                </option>
-                                                {% for subitem in item.1 %}
-                                                    {% to_list item.0|add:"_partners" subitem.0 subitem.1 item.2.class as tmp_list %}
-                                                    <option value="{{ subitem.0 }}"
-                                                            class="text-capitalize"
-                                                            {% if tmp_list in filter_partners %}selected{% endif %}
-                                                    >{{ subitem.1 }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-
-                                <div class="selects employees">
                                     {% for item in p_context %}
                                         <div class="filter-container">
                                             <select class="filter small"
@@ -635,38 +576,6 @@
                                                     <option value="{{ subitem.0 }}"
                                                             class="text-capitalize"
                                                             {% if tmp_list in filter_employees %}selected{% endif %}
-                                                    >{{ subitem.1 }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-
-
-                                <div class="selects freelancers">
-                                    {% for item in p_context %}
-                                        <div class="filter-container">
-                                            <select class="filter small"
-                                                    form="mainform"
-                                                    name="{{ item.0 }}_freelancers"
-                                                    multiple style="display: none;"
-                                                    data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
-                                                <option class="text-capitalize" selected
-                                                        data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
-                                                        {% if item.0|add:"_freelancers" in active_selects %}
-                                                        data-revert="Select All"
-                                                        data-text="Diselect All"
-                                                        {% else %}
-                                                        data-revert="Diselect All"
-                                                        data-text="Select All"
-                                                        {% endif %}
-                                                >
-                                                </option>
-                                                {% for subitem in item.1 %}
-                                                    {% to_list item.0|add:"_freelancers" subitem.0 subitem.1 item.2.class as tmp_list %}
-                                                    <option value="{{ subitem.0 }}"
-                                                            class="text-capitalize"
-                                                            {% if tmp_list in filter_freelancers %}selected{% endif %}
                                                     >{{ subitem.1 }}</option>
                                                 {% endfor %}
                                             </select>
@@ -738,23 +647,12 @@
 
                             <input type="search" name="query" placeholder="Search... ">
                             <div class="cd-select filter-container">
-                                <div>Find</div>
                                 <select id="selector" name="select-category" class="filter small no-overflow">
-                                    <optgroup label="People">
-                                        <option value="partners"
-                                                {% if not founder and not search_category %}selected{% elif search_category == 'partners' %}
-                                                selected{% endif %}>
-                                            Partners
-                                        </option>
-                                        <option value="employees"
-                                                {% if search_category == 'employees' %}selected{% endif %}>
-                                            Employees
-                                        </option>
-                                        <option value="freelancers"
-                                                {% if search_category == 'freelancers' %}selected{% endif %}>
-                                            Freelancers
-                                        </option>
-                                    </optgroup>
+                                    <option value="partners"
+                                            {% if not founder and not search_category %}selected{% elif search_category == 'partners' %}
+                                            selected{% endif %}>
+                                        People
+                                    </option>
                                     <option value="startups"
                                             {% if founder and not search_category %}selected{% elif search_category == 'startups' %}
                                             selected{% endif %}>Startups
@@ -773,7 +671,7 @@
                                     </button>
                                 {% else %}
                                     <button id="searchbutton" type="submit" class="btn btn-success">
-                                        <i class="fa fa-search"></i>
+                                        GO
                                     </button>
                                 {% endif %}
                             </div>
@@ -1035,5 +933,24 @@
         </div>
     </script>
 {% endblock empty_search_template %}
+{% block js %}
+        <script src="{% static 'jquery-modern/dist/jquery.min.js' %}"></script>
+        <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+        {% if is_mobile %}
+            <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
+            <script src="{% static 'slidebars-fork/dist/slidebars.min.js' %}"></script>
+            <script src="{% static 'detect_swipe/jquery.detect_swipe.js' %}"></script>
+            <script src="{% static 'js/mobile.js' %}"></script>
+        {% else %}
+            <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
+            <script src="{% static 'js/responsive.js' %}"></script>
+        {% endif %}
+        <script src="{% static 'js/Modernizer.js' %}"></script>
+        <script src="{% static 'custom-scrollbar/jquery.mCustomScrollbar.concat.min.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.js"></script>
+        <script src="{% static 'js/navbar.js' %}"></script>
+        <script src="{% static 'js/script.js' %}"></script>
+        <script src="{% static 'underscore/underscore.js' %}"></script>
+    {% endblock js %}
 </body>
 </html>

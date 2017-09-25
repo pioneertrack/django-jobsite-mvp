@@ -65,9 +65,11 @@ JOB_CONTEXT = {
     ],
     'e_context': [
         ('position', [
+            ('0', 'Partner'),
             ('1', 'Intern'),
             ('2', 'Part-Time'),
-            ('3', 'Full-Time')
+            ('3', 'Full-Time'),
+            ('4', 'Freelance')
         ], {'class': 'label-position'}),
     ],
     'f_context': [
