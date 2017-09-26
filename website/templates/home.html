@@ -42,19 +42,15 @@
 {% else %}
 
   {% block content %}
-      <!-- TODO: move styles to css -->
-      <!-- TODO: ajust link height -->
-      <!-- TODO: ajust header padding -->
-      <!-- TODO: move static images at now they stored in website/static folder -->
-      <div style="display: flex; ">
-        <a href="#" style="width:100%; display: block; height: 600px;
-        background: url('/media/images/default/gates.jpg');background-position: center center;color: white;
-        text-align: center; vertical-align: middle; font-size: 20px;
-        ">x</a>
-        <a href="#" style="width:100%; display: block; height: 600px;
-        background: url('/media/images/default/tower.jpg');background-position: center center;color: white;
-        text-align: center; vertical-align: middle; font-size: 20px;
-        ">y</a>
+      <div class="welcome-links">
+      <a href="#" style="background-image: url('/media/images/default/tower.jpg');">
+            <span>Startups</span>
+          <span class="overlay"></span>
+        </a>
+        <a href="#" style="background-image: url('/media/images/default/gates.jpg');">
+            <span>Members</span>
+            <span class="overlay"></span>
+        </a>
       </div>
       <!--
     <div class="container">

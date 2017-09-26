@@ -347,7 +347,7 @@ html {
 .cd-main-content {
   /*background-color: #d3d3d3;*/
   /*height: 100%;*/
-  padding-top:80px;
+  padding-top:10vh;
 }
 .messages {
   padding-top: 95px;
@@ -415,7 +415,8 @@ html {
     display: table-cell;
   }
   .cd-auto-hide-header {
-    height: 80px;
+    height: 10vh;
+    border-bottom: 1px solid #dfdfdf;
   }
   .cd-auto-hide-header .nav-trigger {
     display: none;
