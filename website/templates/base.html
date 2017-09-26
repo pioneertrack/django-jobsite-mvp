@@ -497,6 +497,10 @@
             {% endif %}
         </nav> <!-- .cd-primary-nav -->
 
+        {% if user.is_authenticated %}
+            {% block search_form %}{% endblock search_form %}
+        {% endif %}
+
     </header> <!-- .cd-auto-hide-header -->
 
     <main class="cd-main-content"
@@ -513,8 +517,6 @@
                     </div>
                 {% endfor %}
             </div>
-        {% elif user.is_authenticated %}
-            <!-- <div class="messages"></div> -->
         {% endif %}
         {% block content %}{% endblock %}
     </main> <!-- .cd-main-content -->

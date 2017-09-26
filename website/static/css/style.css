@@ -119,3 +119,16 @@ ul#cd-navigation div.nice-select ul.list li {
     opacity:0.5;
     z-index: 10;
 }
+
+.welcome-links .welcome-card {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    height: 50%;
+    background: white;
+    z-index: 100;
+    width: 25%;
+    border-radius: 10px;
+    padding: 10px;
+}

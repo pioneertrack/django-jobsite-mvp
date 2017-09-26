@@ -547,6 +547,404 @@ def index(request):
                           }))
 
 
+@login_required(login_url='login/')
+def search(request, category_search=''):
+    search_index = {}
+    skillset = ['python', 'java', 'c', 'c++', 'c#', 'matlab', 'hadoop', 'mongodb', 'javascript', 'node.js',
+                'angular.js', 'react.js', 'meteor.js', 'aws', 'elasticeearch', 'spark', 'go', 'haskell',
+                'machine learning',
+                'kafka', 'html', 'css', 'word', 'powerpoint', 'ruby', 'rails', 'django', 'flask', 'data', 'd3.js',
+                'tensorflow', 'theano', 'redis', 'sql', 'mysql', 'sqlite', 'php', '.net', 'laravel', 'jquery', 'ios',
+                'android']
+    user = request.user
+    if user.first_login:
+        messages.success(request, "Welcome to BearFounders! Please update your profile.")
+        redirect_url = 'website:profile_update' if user.is_individual else 'website:startup_update'
+        return redirect(redirect_url)
+    if request.method == 'POST':
+        category_search = request.POST['select-category']
+        query = request.POST['query']
+        phrase = False
+        if (query.startswith("'") and query.endswith("'")) or (query.startswith("'") and query.endswith("'")) and len(
+                query) > 1:
+            phrase = True
+        words = stem_remove_stop_words(query.translate({ord(c): None for c in string.punctuation}).lower().split())
+
+        fields = request.POST.getlist('fields')
+        tokenized_users = []
+        people = ['partners', 'employees', 'freelancers']
+        if request.POST['select-category'] in people:
+
+            kwargs = {'is_active': True, 'is_individual': True, 'is_account_disabled': False,
+                      'profile__is_filled': True}
+            category = request.POST['select-category']
+            active_selects = []
+
+            position = request.POST.getlist('position_' + category)
+
+            kwargs['profile__positions__contains'] = position
+            active_selects.append('position_' + category)
+
+            filter_hidden = request.POST.get('filter_' + category)
+
+            years = request.POST.getlist('year_' + category)
+            majors = request.POST.getlist('major_' + category)
+            roles = request.POST.getlist('role_' + category)
+            experience = request.POST.getlist('experience_' + category)
+            filter = None
+            if filter_hidden != None:
+                filter = json.loads('[' + filter_hidden + ']')
+
+            filter_mobile = {
+                'year_' + category: years,
+                'major_' + category: majors,
+                'role_' + category: roles,
+                'experience_' + category: experience,
+                'position_' + category: position,
+            }
+
+            if len(years) > 1 or (not '' in years and len(years) > 0):
+                kwargs['profile__year__in'] = years
+                active_selects.append('year_' + category)
+            if len(majors) > 1 or (not '' in majors and len(majors) > 0):
+                kwargs['profile__major__in'] = majors
+                active_selects.append('major_' + category)
+            if len(roles) > 1 or (not '' in roles and len(roles) > 0):
+                kwargs['profile__role__in'] = roles
+                active_selects.append('role_' + category)
+            if len(experience) > 1 or (not '' in experience and len(experience) > 0):
+                active_selects.append('experience_' + category)
+                for item in experience:
+                    if item == '1':
+                        kwargs['profile__has_funding_exp'] = True
+                    elif item == '0':
+                        kwargs['profile__has_startup_exp'] = True
+
+            result = models.MyUser.objects.filter(**kwargs)
+
+            for r in result:
+                experience = [stem_remove_stop_words(arr) for arr in [
+                    x.description.lower().replace('\n', ' ').replace('\r', '').translate(
+                        {ord(c): None for c in string.punctuation}).split() for x in r.profile.experience_set.all()]]
+                attr = [stem_remove_stop_words(arr) for arr in [
+                    x.lower().replace('\n', ' ').replace('\r', '').translate(
+                        {ord(c): None for c in string.punctuation}).split() for x in
+                    [r.first_name + " " + r.last_name, r.profile.get_major_display(), r.profile.bio, r.profile.skills,
+                     r.profile.interests, r.profile.courses]]]
+                total = list(itertools.chain.from_iterable(attr + experience))
+                for i, word in enumerate(total):
+                    if word in search_index:
+                        seen = False
+                        for k in search_index.get(word):
+                            if k[0] == r.id:
+                                k[1].append(i)
+                                seen = True
+                                break
+                        if not seen:
+                            search_index.get(word).append([r.id, [i]])
+                    else:
+                        search_index[word] = [[r.id, [i]]]
+                # TODO: Remember normal alg for that
+                positions = []
+                for item in r.profile.positions:
+                    positions.append(prof.POSITIONS.__getitem__(int(item))[1])
+                r.positions_display = positions;
+            to_return = set()
+            if len(words) == 0:
+                count = 0
+                for r in result:
+                    if count > 100:
+                        break
+                    skills = tuple([s for s in skillset if s in set(r.profile.skills.lower().replace(',', '').split())])
+                    to_return.add((r, skills))
+                    count += 1
+            elif len(words) == 1:
+                if words[0] in search_index:
+                    valid_users = set([k[0] for k in search_index[words[0]]])
+                    for r in result:
+                        if r.id in valid_users:
+                            skills = tuple(
+                                [s for s in skillset if s in set(r.profile.skills.lower().replace(',', '').split())])
+                            to_return.add((r, skills))
+            elif len(words) > 1:
+                for word in words:
+                    if word in search_index:
+                        valid_users = set([k[0] for k in search_index[word]])
+                        for r in result:
+                            if r.id in valid_users:
+                                skills = tuple([s for s in skillset if
+                                                s in set(r.profile.skills.lower().replace(',', '').split())])
+                                to_return.add((r, skills))
+            if len(words) > 0:
+                for user, skills in list(to_return):
+                    experience = [stem_remove_stop_words(arr) for arr in [
+                        x.description.lower().replace('\n', ' ').replace('\r', '').translate(
+                            {ord(c): None for c in string.punctuation}).split() for x in
+                        user.profile.experience_set.all()]]
+                    attr = [stem_remove_stop_words(arr) for arr in [
+                        x.lower().replace('\n', ' ').replace('\r', '').translate(
+                            {ord(c): None for c in string.punctuation}).split() for x in
+                        [user.first_name + " " + user.last_name, user.profile.get_major_display(), user.profile.bio,
+                         user.profile.skills, user.profile.interests, user.profile.courses]]]
+                    total = list(itertools.chain.from_iterable(attr + experience))
+                    tokenized_users.append((user, total))
+                to_return = []
+                for user in tf_idf(tokenized_users, words, search_index):
+                    skills = [s for s in skillset if s in set(r.profile.skills.lower().replace(',', '').split())]
+                    to_return.append((user, skills))
+            else:
+                to_return = list(to_return)
+                shuffle(to_return)
+            return render(request, 'search.html',
+                          merge_dicts(JOB_CONTEXT,
+                                      {
+                                          'searched': to_return,
+                                          'oldroles': roles,
+                                          'oldmajors': majors,
+                                          'oldyears': years,
+                                          'startup': request.POST.get('startup', False),
+                                          'funding': request.POST.get('funding', False),
+                                          'posted': True,
+                                          'founder': False,
+                                          'filter_' + category: filter,
+                                          category + '_hidden': filter_hidden,
+                                          'search_category': request.POST['select-category'],
+                                          'active_selects': active_selects,
+                                          'mobile_filter': filter_mobile,
+                                          'people': people,
+                                      }))
+        elif request.POST['select-category'] == 'startups':
+
+            kwargs = {
+                'is_active': True,
+                'is_founder': True,
+                'is_account_disabled': False,
+                'founder__is_filled': True,
+                'founder__startup_name__gt': '',
+            }
+
+            filter_hidden = request.POST.get('filter_startups')
+            fields = request.POST.getlist('fields')
+            stage = request.POST.getlist('stage')
+
+            filter_mobile = {
+                'fields': fields,
+                'stage': stage,
+            }
+            filter = None
+            if filter_hidden != None:
+                filter = json.loads('[' + filter_hidden + ']')
+
+            active_selects = []
+
+            if len(fields) > 1 or (not '' in fields and len(fields) > 0):
+                active_selects.append('fields')
+                kwargs['founder__field__in'] = fields
+            if len(stage) > 1 or (not '' in stage and len(stage) > 0):
+                active_selects.append('stage')
+                kwargs['founder__stage__in'] = stage
+
+            result = models.MyUser.objects.filter(**kwargs)
+            for r in result:
+                jobs = [stem_remove_stop_words(arr) for arr in [
+                    " ".join([x.description, x.title, x.get_level_display(), x.get_pay_display()]).lower().replace('\n',
+                                                                                                                   ' ').replace(
+                        '\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in
+                    r.founder.job_set.all()]]
+                attr = [stem_remove_stop_words(arr) for arr in [
+                    x.lower().replace('\n', ' ').replace('\r', '').translate(
+                        {ord(c): None for c in string.punctuation}).split() for x in
+                    [r.first_name + " " + r.last_name, r.founder.startup_name, r.founder.description]]]
+                total = list(itertools.chain.from_iterable(jobs + attr))
+                for i, word in enumerate(total):
+                    if word in search_index:
+                        seen = False
+                        for k in search_index.get(word):
+                            if k[0] == r.id:
+                                k[1].append(i)
+                                seen = True
+                                break
+                        if not seen:
+                            search_index.get(word).append([r.id, [i]])
+                    else:
+                        search_index[word] = [[r.id, [i]]]
+            to_return = set()
+            if len(words) == 0:
+                count = 0
+                for r in result:
+                    if count > 100:
+                        break
+                    to_return.add((r, None))
+                    count += 1
+                to_return = list(to_return)
+                shuffle(to_return)
+            elif len(words) == 1:
+                if words[0] in search_index:
+                    valid_users = set([k[0] for k in search_index[words[0]]])
+                    for r in result:
+                        if r.id in valid_users:
+                            to_return.add((r, None))
+            elif len(words) > 1:
+                for word in words:
+                    if word in search_index:
+                        valid_users = set([k[0] for k in search_index[word]])
+                        for r in result:
+                            if r.id in valid_users:
+                                to_return.add((r, None))
+            # vals = roles + years + majors
+            if len(words) > 0:
+                for user, skills in list(to_return):
+                    jobs = [stem_remove_stop_words(arr) for arr in [
+                        " ".join([x.description, x.title, x.get_level_display(), x.get_pay_display()]).lower().replace(
+                            '\n', ' ').replace('\r', '').translate({ord(c): None for c in string.punctuation}).split()
+                        for x in user.founder.job_set.all()]]
+                    attr = [stem_remove_stop_words(arr) for arr in [
+                        x.lower().replace('\n', ' ').replace('\r', '').translate(
+                            {ord(c): None for c in string.punctuation}).split() for x in
+                        [user.first_name + " " + user.last_name, user.founder.startup_name, user.founder.description]]]
+                    total = list(itertools.chain.from_iterable(jobs + attr))
+                    tokenized_users.append((user, total))
+                to_return = [(x, None) for x in tf_idf(tokenized_users, words, search_index)]
+            else:
+                to_return = list(to_return)
+                shuffle(to_return)
+
+            return render(request, 'search.html',
+                          merge_dicts(JOB_CONTEXT,
+                                      {
+                                          'searched': to_return,
+                                          'oldfields': fields,
+                                          'funded': request.POST.get('been_funded', False),
+                                          'startup': request.POST.get('startup', False),
+                                          'funding': request.POST.get('funding', False),
+                                          'posted': False,
+                                          'founder': True,
+                                          'filter_startups': filter,
+                                          'startups_hidden': filter_hidden,
+                                          'search_category': request.POST['select-category'],
+                                          'active_selects': active_selects,
+                                          'mobile_filter': filter_mobile
+                                      }
+                                      ))
+        elif request.POST['select-category'] == 'jobs':
+            tokenized_jobs = []
+            kwargs = {
+                'founder__user__is_account_disabled': False,
+                'founder__is_filled': True,
+            }
+            category = request.POST.getlist('category')
+            level = request.POST.getlist('level')
+            pay = request.POST.getlist('pay')
+            filter_hidden = request.POST.get('filter_jobs')
+
+            filter = None
+            if filter_hidden != None:
+                filter = json.loads('[' + filter_hidden + ']')
+
+            active_selects = []
+
+            filter_mobile = {
+                'category': category,
+                'level': level,
+                'pay': pay,
+            }
+
+            if len(level) > 1 or (not '' in level and len(level) > 0):
+                active_selects.append('level')
+                kwargs['level__in'] = level
+            if len(pay) > 1 or (not '' in pay and len(pay) > 0):
+                active_selects.append('pay')
+                kwargs['pay__in'] = pay
+            if len(category) > 1 or (not '' in category and len(category) > 0):
+                active_selects.append('category')
+                kwargs['founder__field__in'] = category
+
+            result = prof.Job.objects.filter(**kwargs)
+            for r in result:
+                attr = [stem_remove_stop_words(arr) for arr in
+                        [x.lower().replace('\n', ' ').replace('\r', '').translate(
+                            {ord(c): None for c in string.punctuation}).split() for x in
+                         [r.founder.startup_name, r.founder.description, r.title, r.description]]]
+                attr = list(itertools.chain.from_iterable(attr))
+                for i, word in enumerate(attr):
+                    if word in search_index:
+                        seen = False
+                        for k in search_index.get(word):
+                            if k[0] == r.id:
+                                k[1].append(i)
+                                seen = True
+                                break
+                        if not seen:
+                            search_index.get(word).append([r.id, [i]])
+                    else:
+                        search_index[word] = [[r.id, [i]]]
+
+            to_return = set();
+            if len(words) == 0:
+                count = 0
+                for r in result:
+                    if count > 100:
+                        break
+                    to_return.add((r, None))
+                    count += 1
+                to_return = list(to_return)
+                shuffle(to_return)
+            elif len(words) == 1:
+                if words[0] in search_index:
+                    valid_users = set([k[0] for k in search_index[words[0]]])
+                    for r in result:
+                        if r.id in valid_users:
+                            to_return.add((r, None))
+            elif len(words) > 1:
+                for word in words:
+                    if word in search_index:
+                        valid_users = set([k[0] for k in search_index[word]])
+                        for r in result:
+                            if r.id in valid_users:
+                                to_return.add((r, None))
+            if len(words) > 0:
+                for job in list(to_return):
+                    attr = [stem_remove_stop_words(arr) for arr in
+                            [x.lower().replace('\n', ' ').replace('\r', '').translate(
+                                {ord(c): None for c in string.punctuation}).split() for x in
+                             [r.founder.startup_name, r.founder.description, r.title, r.description]]]
+                    attr = list(itertools.chain.from_iterable(attr))
+                    tokenized_jobs.append((job, attr))
+                to_return = tf_idf(tokenized_jobs, words, search_index)
+            else:
+                to_return = list(to_return)
+                shuffle(to_return)
+
+            return render(
+                request,
+                'search.html',
+                merge_dicts(JOB_CONTEXT, {
+                    'searched': to_return,
+                    'search_category': category_search,
+                    'oldfields': fields,
+                    'funded': request.POST.get('been_funded', False),
+                    'startup': request.POST.get('startup', False),
+                    'funding': request.POST.get('funding', False),
+                    'posted': False,
+                    'founder': True,
+                    'filter_jobs': filter,
+                    'jobs_hidden': filter_hidden,
+                    'active_selects': active_selects,
+                    'mobile_filter': filter_mobile,
+                })
+            )
+    else:
+        return render(
+            request,
+            'search_page.html',
+            merge_dicts(JOB_CONTEXT, {
+                'search_category': category_search,
+                'posted': False,
+                'reset': True,
+            })
+        )
+
+
 @login_required
 @user_passes_test(lambda user: user.is_individual and hasattr(user, 'profile'),
                   login_url=reverse_lazy('website:add_profile'))
@@ -1047,6 +1445,7 @@ class DeleteProfile(LoginRequiredMixin, generic.RedirectView):
         user.save()
         messages.success(request, 'Your {} profile has been deleted'.format(selected_account.capitalize()))
         return super(DeleteProfile, self).post(request, *args, **kwargs)
+
 
 def test_mail(request):
     user = request.user

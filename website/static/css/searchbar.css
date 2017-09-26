@@ -674,7 +674,6 @@
   cursor: pointer;
 }
 .messages {
-  padding-top: 125px;
   -webkit-transition: all .5s ease;
   -moz-transition: all .5s ease;
   transition: all .5s ease;

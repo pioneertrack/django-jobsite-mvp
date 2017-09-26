@@ -416,7 +416,7 @@ html {
   }
   .cd-auto-hide-header {
     height: 10vh;
-    border-bottom: 1px solid #dfdfdf;
+    border-bottom: 1px solid #25283D;
   }
   .cd-auto-hide-header .nav-trigger {
     display: none;
