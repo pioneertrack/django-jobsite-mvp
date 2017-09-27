@@ -561,9 +561,12 @@ def search(request, category_search=''):
         messages.success(request, "Welcome to BearFounders! Please update your profile.")
         redirect_url = 'website:profile_update' if user.is_individual else 'website:startup_update'
         return redirect(redirect_url)
-    if request.method == 'POST':
-        category_search = request.POST['select-category']
-        query = request.POST['query']
+    if request.method == 'POST' or len(category_search) > 0:
+        query = ''
+        if request.method == 'POST':
+            category_search = request.POST['select-category']
+            query = request.POST['query']
+
         phrase = False
         if (query.startswith("'") and query.endswith("'")) or (query.startswith("'") and query.endswith("'")) and len(
                 query) > 1:
@@ -573,11 +576,11 @@ def search(request, category_search=''):
         fields = request.POST.getlist('fields')
         tokenized_users = []
         people = ['partners', 'employees', 'freelancers']
-        if request.POST['select-category'] in people:
+        if category_search in people:
 
             kwargs = {'is_active': True, 'is_individual': True, 'is_account_disabled': False,
                       'profile__is_filled': True}
-            category = request.POST['select-category']
+            category = category_search
             active_selects = []
 
             position = request.POST.getlist('position_' + category)
@@ -648,7 +651,7 @@ def search(request, category_search=''):
                 positions = []
                 for item in r.profile.positions:
                     positions.append(prof.POSITIONS.__getitem__(int(item))[1])
-                r.positions_display = positions;
+                r.positions_display = positions
             to_return = set()
             if len(words) == 0:
                 count = 0
@@ -708,12 +711,12 @@ def search(request, category_search=''):
                                           'founder': False,
                                           'filter_' + category: filter,
                                           category + '_hidden': filter_hidden,
-                                          'search_category': request.POST['select-category'],
+                                          'search_category': category_search,
                                           'active_selects': active_selects,
                                           'mobile_filter': filter_mobile,
                                           'people': people,
                                       }))
-        elif request.POST['select-category'] == 'startups':
+        elif category_search == 'startups':
 
             kwargs = {
                 'is_active': True,
@@ -821,21 +824,27 @@ def search(request, category_search=''):
                                           'founder': True,
                                           'filter_startups': filter,
                                           'startups_hidden': filter_hidden,
-                                          'search_category': request.POST['select-category'],
+                                          'search_category': category_search,
                                           'active_selects': active_selects,
                                           'mobile_filter': filter_mobile
                                       }
                                       ))
-        elif request.POST['select-category'] == 'jobs':
+        elif category_search == 'jobs':
             tokenized_jobs = []
             kwargs = {
                 'founder__user__is_account_disabled': False,
                 'founder__is_filled': True,
             }
-            category = request.POST.getlist('category')
-            level = request.POST.getlist('level')
-            pay = request.POST.getlist('pay')
-            filter_hidden = request.POST.get('filter_jobs')
+            category = category_search
+
+            level = []
+            pay = []
+            filter_hidden = []
+
+            if request.method == 'POST':
+                level = request.POST.getlist('level')
+                pay = request.POST.getlist('pay')
+                filter_hidden = request.POST.get('filter_jobs')
 
             filter = None
             if filter_hidden != None:
