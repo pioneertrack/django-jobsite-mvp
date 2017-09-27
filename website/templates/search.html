@@ -185,11 +185,9 @@
                                                 form="mainform"
                                                 name="{{ item.0 }}_employees"
                                                 multiple style="display: none;"
-                                                data-class="
-                                                        {% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                                                data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
                                             <option class="text-capitalize" selected
-                                                    data-display="
-                                                            {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                                                    data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
                                                     {% if item.0|add:"_employees" in active_selects %}
                                                     data-revert="Select All"
                                                     data-text="Diselect All"
@@ -215,11 +213,9 @@
                                                 form="mainform"
                                                 name="{{ item.0 }}_employees"
                                                 multiple style="display: none;"
-                                                data-class="
-                                                        {% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                                                data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
                                             <option class="text-capitalize" selected
-                                                    data-display="
-                                                            {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                                                    data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
                                                     {% if item.0|add:"_employees" in active_selects %}
                                                     data-revert="Select All"
                                                     data-text="Diselect All"
@@ -248,11 +244,9 @@
                                                 form="mainform"
                                                 name="{{ item.0 }}"
                                                 multiple style="display: none;"
-                                                data-class="
-                                                        {% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                                                data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
                                             <option class="text-capitalize" selected
-                                                    data-display="
-                                                            {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                                                    data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
                                                     {% if item.0 in active_selects %}
                                                     data-revert="Select All"
                                                     data-text="Diselect All"
@@ -279,11 +273,9 @@
                                     <div class="filter-container">
                                         <select class="filter small" form="mainform" name="{{ item.0 }}"
                                                 multiple style="display: none;"
-                                                data-class="
-                                                        {% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                                                data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
                                             <option class="text-capitalize" selected
-                                                    data-display="
-                                                            {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                                                    data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
                                                     {% if item.0 in active_selects %}
                                                     data-revert="Select All"
                                                     data-text="Diselect All"
