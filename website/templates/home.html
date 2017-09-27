@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load static from staticfiles %}
 
 {% block title %}
 {% trans "Home" %}
@@ -43,14 +44,14 @@
 
   {% block content %}
       <div class="welcome-links">
-      <a href="/search/startups/" style="background-image: url('/media/images/default/tower.jpg');">
+      <a href="/search/startups/" style="background-image: url('{% static 'images/default/tower.jpg' %}');">
             <span>Startups</span>
           <span class="overlay"></span>
         </a>
           <div class="welcome-card">
               <h1 class="text-center">Welcome to Bearfounders</h1>
           </div>
-        <a href="/search/partners/" style="background-image: url('/media/images/default/gates.jpg');">
+        <a href="/search/partners/" style="background-image: url('{% static 'images/default/gates.jpg' %}');">
             <span>Members</span>
             <span class="overlay"></span>
         </a>

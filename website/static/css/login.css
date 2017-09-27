@@ -427,3 +427,14 @@ html {
     overflow: visible;
   }
 }
+
+/** for new homepage*/
+@media all and (max-height: 800px) {
+  .cd-main-content {
+    padding-top:80px;
+  }
+  .cd-auto-hide-header {
+    height: 80px;
+    border-bottom: 1px solid #25283D;
+  }
+}
