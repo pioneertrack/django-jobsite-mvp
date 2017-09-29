@@ -121,7 +121,8 @@ ul#cd-navigation div.nice-select ul.list li {
 }
 
 .welcome-links .welcome-card {
-    background-image: url('/static/images/default/opportunities.jpg');
+    border: 3px solid white;
+    background-image: url('../images/default/opportunities.jpg');
     max-height: 460px;
     background-size: contain;
     background-repeat: round;

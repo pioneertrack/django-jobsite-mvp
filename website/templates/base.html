@@ -26,6 +26,9 @@
         <link rel="stylesheet" href="{% static 'css/profile.css' %}" type="text/css">
         <link rel="stylesheet" href="{% static 'css/searchbar.css' %}" type="text/css">
         <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+{#        {% if DEBUG %}#}
+{#            <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" />#}
+{#        {% endif %}    #}
     {% endblock css %}
 
     <title>{% block title %}{% endblock %}</title>
