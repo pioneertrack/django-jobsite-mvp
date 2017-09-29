@@ -1,11 +1,10 @@
 # app/urls.py
 
 from django.conf.urls import url
-
 from website import views
 
+
 urlpatterns = [
-  url(r'^$', views.index, name='index'),
   url(r'^search/$', views.search, name='search'),
   url(r'^search/(?P<category_search>\w+)/$', views.search, name='search'),
   url(r'^profile/add/$', views.add_profile, name='add_profile'),

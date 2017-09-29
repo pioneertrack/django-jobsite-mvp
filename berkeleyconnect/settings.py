@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'import_export',
     'django_extensions',
     'imagekit',
-    'mailer'
+    'mailer',
+    'landing',
 ]
 
 MIDDLEWARE = [

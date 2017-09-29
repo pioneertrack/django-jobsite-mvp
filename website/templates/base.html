@@ -8,10 +8,10 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="google-site-verification" content="nPkjkzj2J7V1MRk-0QBYC7GQnfKtWPBdCvvL0Y_qGbM"/>
-    <link rel='shortcut icon' type='image/x-icon' href='{% static 'favicon/favicon-connectdevelop.ico' %}?r=1'/>
+    <link rel='shortcut icon' type='image/x-icon' href='{% static 'img/favicon.ico' %}?r=1'/>
 
     {% block css %}
-        <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}" type="text/css">
+        <link rel="stylesheet" href="{% static 'bootstrap-3/dist/css/bootstrap.min.css' %}" type="text/css">
         {% if is_mobile %}
             <link rel="stylesheet" href="{% static 'slidebars-fork/dist/slidebars.min.css' %}" type="text/css">
         {% else %}
@@ -559,7 +559,7 @@
 {% endif %}
 {% block js %}
         <script src="{% static 'jquery-modern/dist/jquery.min.js' %}"></script>
-        <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'bootstrap-3/dist/js/bootstrap.min.js' %}"></script>
         {% if is_mobile %}
             <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
             <script src="{% static 'slidebars-fork/dist/slidebars.min.js' %}"></script>

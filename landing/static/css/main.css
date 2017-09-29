@@ -1,0 +1,77 @@
+html, body, header {
+    height: 100%;
+}
+
+#intro {
+    height: 100%;
+    background: url("../img/hero.jpg") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    opacity: 40%;
+}
+
+.navbar-brand {
+    color: #041E41;
+    font-weight: bold;
+}
+
+.navbar-nav .nav-item .nav-link {
+    color: #041E41;
+}
+
+.navbar-nav .nav-item .sign-up {
+    width: 100px;
+    background-color: #041E41;
+}
+
+.title {
+    letter-spacing: 4px;
+    text-shadow: 3px 3px 3px #696969;
+}
+
+hr {
+    background-color: #041E41;
+}
+
+.section-header {
+    font-size: 50px;
+}
+
+.quote {
+    font: italic 24px Georgia, serif;
+}
+
+.startup-logo {
+    -webkit-filter: grayscale(250%);
+    filter: grayscale(250%);
+}
+
+.startup-logo:hover {
+    -webkit-filter: grayscale(0%);
+    filter: grayscale(0%);
+}
+
+
+/*Small devices (landscape phones, 576px and up)*/
+@media (max-width: 575px) {
+    
+}
+
+/*Medium devices (tablets, 768px and up)*/
+@media (max-width: 767px) {
+    #copyright {
+        text-align: center;
+    }
+}
+
+/*Large devices (desktops, 992px and up)*/
+@media (max-width: 991px) {
+    
+}
+
+/*Extra large devices (large desktops, 1200px and up)*/
+@media (max-width: 1199px) {
+    
+}

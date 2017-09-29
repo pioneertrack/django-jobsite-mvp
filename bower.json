@@ -22,11 +22,18 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap": "^3.3.7",
     "nice-select": "https://github.com/hazarin/jquery-nice-select.git#master",
     "custom-scrollbar": "https://github.com/malihu/malihu-custom-scrollbar-plugin.git#master",
     "jquery-modern": "jquery#2",
     "detect_swipe": "https://github.com/marcandre/detect_swipe.git#^2.1.4",
-    "slidebars-fork": "https://github.com/hazarin/Slidebars.git#master"
+    "slidebars-fork": "https://github.com/hazarin/Slidebars.git#master",
+    "jquery-old": "jquery#~1.11.3",
+    "bootstrap": "v4.0.0-beta",
+    "MDBootstrap": "^4.4.1",
+    "roboto-fontface": "^0.8.0"
+  },
+  "resolutions": {
+    "bootstrap": "v4.0.0-beta",
+    "jquery": "~3.2.1"
   }
 }
