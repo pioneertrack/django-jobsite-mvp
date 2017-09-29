@@ -121,18 +121,18 @@ ul#cd-navigation div.nice-select ul.list li {
 }
 
 .welcome-links .welcome-card {
-    border: 3px solid white;
+    border: 1px solid white;
     background-image: url('../images/default/opportunities.jpg');
-    max-height: 460px;
-    background-size: contain;
-    background-repeat: round;
+    background-position: right;
+    max-height: 300px;
+    background-size: cover;
+    background-repeat: no-repeat;
     color: white;
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     height: 50%;
-    background: white;
     z-index: 100;
     width: 25%;
     border-radius: 10px;
