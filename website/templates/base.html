@@ -2,7 +2,7 @@
 {% load website_tags %}
 {% load imagekit %}
 <!DOCTYPE html>
-<html lang="en" xmlns="">
+<html lang="en" xmlns="" {% if not user.is_authenticated %}style="height: 100%"{% endif %}>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -31,7 +31,7 @@
     <title>{% block title %}{% endblock %}</title>
 
 </head>
-<body>
+<body {% if not user.is_authenticated %}style="height: 100%"{% endif %}>
 {% if is_mobile %}
     <div canvas="container">
         <header class="cd-auto-hide-header">
@@ -109,7 +109,7 @@
 
         </header> <!-- .cd-auto-hide-header -->
 
-        <main class="cd-main-content" {% if not user.is_authenticated %} style="background-color:#25283D;"{% endif %} >
+        <main class="cd-main-content" {% if not user.is_authenticated %} style="background-color:#25283D; min-height: 100%"{% endif %} >
             {% if messages and user.is_authenticated %}
                 <ul class="messages {% if  filter_startups or filter_people or filter_jobs %}tags{% endif %}">
                 </ul>
@@ -504,7 +504,7 @@
     </header> <!-- .cd-auto-hide-header -->
 
     <main class="cd-main-content"
-          style="background-color:{% if not user.is_authenticated %} #25283D {% else %} white {% endif %}">
+          style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}">
         {% if messages and user.is_authenticated %}
             <ul class="messages {% if  filter_startups or filter_people or filter_jobs %}tags{% endif %}">
             </ul>
