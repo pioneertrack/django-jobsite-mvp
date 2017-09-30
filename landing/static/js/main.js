@@ -1,8 +1,12 @@
 $(document).ready(function(){
     var checkScroll = function(){
         var scroll = $(window).scrollTop();
-        if (scroll > 200) {
-            $('.navbar').css('background' , '#FFB819');
+        var lower = 200; var upper = 400;
+
+        if (scroll > lower && scroll <= upper) {
+            $('.navbar').css('background' , 'rgba(255,184,25,' + ((scroll-lower)/lower).toString() + ')');
+        } else if (scroll > upper){
+            $('.navbar').css('background' , 'rgb(255,184,25)')
         } else {
             $('.navbar').css('background' , 'transparent');
         }
@@ -25,6 +29,6 @@ $(document).ready(function(){
     });
 
     $('.carousel').carousel({
-        interval: 3000,
+        interval: 5000,
     });
 });
