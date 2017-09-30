@@ -95,3 +95,7 @@ hr {
         text-align: center;
     }
 }
+
+#about p, #about p.about-text {
+    font-size: 1.2rem;
+}
