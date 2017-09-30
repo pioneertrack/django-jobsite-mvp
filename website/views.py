@@ -833,15 +833,16 @@ def search(request, category_search=''):
             tokenized_jobs = []
             kwargs = {
                 'founder__user__is_account_disabled': False,
-                # 'founder__is_filled': True,
+                'founder__is_filled': True,
             }
-            category = category_search
 
             level = []
             pay = []
-            filter_hidden = []
+            filter_hidden = ''
+            category = []
 
             if request.method == 'POST':
+                category = request.POST.getlist('category')
                 level = request.POST.getlist('level')
                 pay = request.POST.getlist('pay')
                 filter_hidden = request.POST.get('filter_jobs')
