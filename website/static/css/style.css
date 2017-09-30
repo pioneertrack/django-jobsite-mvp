@@ -98,17 +98,17 @@ ul#cd-navigation div.nice-select ul.list li {
 }
 
 .welcome-links a:hover {
-    width: 100%;
-    display: block;
-    height: 90vh;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-color: #3c3c3c;
-    color: white;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 20px;
+    /*width: 100%;*/
+    /*display: block;*/
+    /*height: 90vh;*/
+    /*background-position: center center;*/
+    /*background-repeat: no-repeat;*/
+    /*background-size: cover;*/
+    /*background-color: #3c3c3c;*/
+    /*color: white;*/
+    /*text-align: center;*/
+    /*vertical-align: middle;*/
+    /*font-size: 20px;*/
 }
 
 .welcome-links a:hover > .overlay {
@@ -136,5 +136,17 @@ ul#cd-navigation div.nice-select ul.list li {
     z-index: 100;
     width: 25%;
     border-radius: 10px;
-    padding: 10px;
+    overflow: hidden;
+}
+
+.welcome-links .welcome-card a {
+    display: block;
+    height: 100%;
+    width: 100%;
+    top: 0;
+}
+
+.welcome-links .welcome-card a:hover {
+    top: 0;
+    background-blend-mode: darken;
 }

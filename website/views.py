@@ -833,7 +833,7 @@ def search(request, category_search=''):
             tokenized_jobs = []
             kwargs = {
                 'founder__user__is_account_disabled': False,
-                'founder__is_filled': True,
+                # 'founder__is_filled': True,
             }
             category = category_search
 
