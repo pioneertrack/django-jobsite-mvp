@@ -149,7 +149,9 @@ ul#cd-navigation div.nice-select ul.list li {
     width: 25%;
     border-radius: 10px;
     overflow: hidden;
-}
+ -webkit-box-shadow: inset 0px -75px 30px -8px rgba(50, 50, 50, 0.75);
+-moz-box-shadow:    inset 0px -75px 30px -8px rgba(50, 50, 50, 0.75);
+box-shadow:         inset 0px -75px 30px -8px rgba(50, 50, 50, 0.75);}
 
 .welcome-links .welcome-card a {
     display: block;
