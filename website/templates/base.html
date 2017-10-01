@@ -27,9 +27,6 @@
         <link rel="stylesheet" href="{% static 'css/searchbar.css' %}" type="text/css">
         <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
         <script src="{% static 'jquery-modern/dist/jquery.min.js' %}"></script>
-{#        {% if DEBUG %}#}
-{#            <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" />#}
-{#        {% endif %}    #}
     {% endblock css %}
 
     <title>{% block title %}{% endblock %}</title>
@@ -575,7 +572,7 @@
         <script src="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.js"></script>
         <script src="{% static 'js/navbar.js' %}"></script>
         <script src="{% static 'js/script.js' %}"></script>
-        <script src="{% static 'underscore/underscore.js' %}"></script>
+{#        <script src="{% static 'underscore/underscore.js' %}"></script>#}
     {% endblock js %}
 </body>
 </html>
