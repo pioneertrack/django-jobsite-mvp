@@ -37,7 +37,9 @@ urlpatterns = [
     url(r'^password/reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', auth_views.password_reset_confirm, name = 'password_reset_confirm'),
     url(r'^password/reset/complete/$', auth_views.password_reset_complete, name = 'password_reset_complete'),
     url(r'^', include('registration.backends.hmac.urls')),
+    url(r'^', include('landing.urls', namespace='landing')),
     url(r'^', include('website.urls', namespace='website')),
+
     url(r'^admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # urlpatterns =+ staticfiles_urlpatterns()
