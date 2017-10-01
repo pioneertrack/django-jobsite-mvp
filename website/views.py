@@ -538,12 +538,14 @@ def index(request):
                           merge_dicts(JOB_CONTEXT, {
                               'posted': False,
                               'reset': True,
+                              'without_padding': True,
                           }))
         else:
             return render(request, 'home.html',
                           merge_dicts(JOB_CONTEXT, {
                               'posted': False,
                               'reset': True,
+                              'without_padding': True,
                           }))
 
 
