@@ -20,10 +20,26 @@
 
       <div class="modal-dialog">
         <div id="updateprofile" class="profile-form-container">
-          {% if is_first_login %}
-            <a href="{{ next_url }}" class="pull-right fill-out-later">Fill out later</a>
+          {% if user.first_login %}
+            <h1 class="text-red">Welcome to Bear Founders</h1>
+          {% else %}
+            <h1> {{ title }} </h1>
           {% endif %}
-          <h1> {{ title }} </h1><br>
+          <br>
+          {% if user.first_login %}
+            {% if not show_exp %}
+              <h2 class="text-red">Tell us about you startup</h2>
+            {% else %}
+              <h2 class="text-red">Tell us about yourself</h2>
+            {% endif %}
+          {% else %}
+            {% if show_exp and user.profile.is_filled or user.founder.is_filled %}
+              <h1>Basic info</h1>
+            {% else %}
+              <h2 class="text-red">You must fill out required fields to become available in the search</h2>
+            {% endif %}
+          {% endif %}
+          <hr>
           <form id="profileform" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% for dict in experience.errors %}
@@ -40,8 +56,6 @@
                 </div>
               {% endfor %}
             {% endfor %}
-            <h1>Basic info</h1>
-            <hr>
             {{ profile_form|crispy }}
 
             {% if show_exp %}
@@ -129,10 +143,26 @@
 
       <div class="modal-dialog">
         <div id="updateprofile" class="profile-form-container">
-          {% if is_first_login %}
-            <a href="{{ next_url }}" class="pull-right fill-out-later">Fill out later</a>
+          {% if user.first_login %}
+            <h1 class="text-red">Welcome to Bear Founders</h1>
+          {% else %}
+            <h1> {{ title }} </h1>
           {% endif %}
-          <h1> {{ title }} </h1><br>
+          <br>
+          {% if user.first_login %}
+            {% if not show_exp %}
+              <h2 class="text-red">Tell us about you startup</h2>
+            {% else %}
+              <h2 class="text-red">Tell us about yourself</h2>
+            {% endif %}
+          {% else %}
+            {% if show_exp and user.profile.is_filled or user.founder.is_filled %}
+              <h1>Basic info</h1>
+            {% else %}
+              <h2 class="text-red">You must fill out required fields to become available in the search</h2>
+            {% endif %}
+          {% endif %}
+          <hr>
           <form id="profileform" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% for dict in experience.errors %}
@@ -149,8 +179,6 @@
                 </div>
               {% endfor %}
             {% endfor %}
-            <h1>Basic info</h1>
-            <hr>
             {{ profile_form|crispy }}
 
             {% if show_exp %}

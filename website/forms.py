@@ -69,11 +69,13 @@ class NewRegistrationForm(RegistrationFormUniqueEmail):
 
 
 class ProfileForm(forms.ModelForm):
-    image = forms.ImageField(label='Profile image',required=False, error_messages ={'invalid':"Image files only"}, widget = forms.FileInput)
+    image = forms.ImageField(label='Profile image',required=True, error_messages ={'invalid':"Image files only"}, widget = forms.FileInput)
 
     def __init__(self, *args, **kwargs):
         super(ProfileForm, self).__init__(*args, **kwargs)
         self.initial['alt_email'] = None
+        if len(self.instance.image.name) > 0:
+            self.fields['image'].required = False
 
     def is_valid(self):
         log.info(force_text(self.errors))
@@ -89,9 +91,8 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = profile.Profile
-        fields = (
-        'image', 'bio', 'positions', 'role', 'alt_email', 'interests', 'skills',
-        'major', 'courses', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'linkedin', 'website', 'github')
+        fields = ('image', 'bio', 'positions', 'role',  'skills', 'year', 'alt_email', 'interests',
+                  'major', 'courses', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'linkedin', 'website', 'github')
         labels = {
             'has_startup_exp': 'I have worked at a startup before',
             'has_funding_exp': 'I have experience with funding a startup',
@@ -106,7 +107,13 @@ class ProfileForm(forms.ModelForm):
 
 
 class FounderForm(forms.ModelForm):
-    logo = forms.ImageField(label='Logo',required=False, error_messages ={'invalid':"Image files only"}, widget = forms.FileInput)
+    logo = forms.ImageField(label='Logo',required=True, error_messages ={'invalid':"Image files only"}, widget = forms.FileInput)
+
+    def __init__(self, *args, **kwargs):
+        super(FounderForm, self).__init__(*args, **kwargs)
+        self.initial['alt_email'] = None
+        if len(self.instance.logo.name) > 0:
+            self.fields['logo'].required = False
 
     def clean_alt_email(self):
         email = self.cleaned_data['alt_email']
@@ -122,8 +129,8 @@ class FounderForm(forms.ModelForm):
 
     class Meta:
         model = profile.Founder
-        fields = ('startup_name', 'stage', 'employee_count', 'logo', 'description', 'alt_email',
-                  'field', 'website', 'facebook', 'display_funding')
+        fields = ('startup_name', 'stage', 'employee_count', 'logo', 'description', 'field', 'alt_email',
+                  'website', 'facebook', 'display_funding')
         labels = {
             'employee_count': 'Number of employees',
             'stage': 'What stage is your startup in?',

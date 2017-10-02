@@ -1,6 +1,11 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto);
 .asteriskField {
-    display: none;
+  display: none;
+}
+#profileform .asteriskField {
+  color: red;
+  margin-left: 5px;
+  display: block;
 }
 a:link , a:hover, a:visited, a:active {
   text-decoration: none;
@@ -434,7 +439,7 @@ html {
     /*padding-top:80px;*/
   }
   .cd-auto-hide-header {
-    /*height: 80px;*/
-    /*border-bottom: 1px solid #25283D;*/
+    height: 80px;
+    border-bottom: 1px solid #25283D;
   }
 }

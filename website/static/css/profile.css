@@ -296,3 +296,17 @@ a.fill-out-later{
 .profile-image {
   border: 5px solid rgba(0,0,30,0.8);
 }
+.profile-form-container h1.text-red {
+  text-align: center;
+  font-size: 2em;
+  font-family: roboto;
+  color: red;
+  margin-top: 0px;
+}
+.profile-form-container h2.text-red {
+  text-align: center;
+  font-size: 1.8em;
+  font-family: roboto;
+  color: red;
+  margin-top: 0px;
+}
