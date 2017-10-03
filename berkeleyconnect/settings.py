@@ -150,7 +150,7 @@ MEDIA_URL = '/media/'
 
 AUTH_USER_MODEL = 'website.MyUser'
 
-ACCOUNT_ACTIVATION_DAYS = 1 # One-day activation window;
+ACCOUNT_ACTIVATION_DAYS = 7
 
 AUTHENTICATION_BACKENDS = (
         'django.contrib.auth.backends.ModelBackend',
