@@ -161,9 +161,14 @@ def index(request):
                 'android']
     user = request.user
     if user.first_login:
-        messages.success(request, "Welcome to BearFounders! Please update your profile.")
-        redirect_url = 'website:profile_update' if user.is_individual else 'website:startup_update'
+        if user.is_individual and not hasattr(user, 'profile'):
+            messages.success(request, "Welcome to BearFounders! Please tell us about yourself.")
+            redirect_url = 'website:profile_update'
+        elif user.is_founder and not hasattr(user, 'founder'):
+            messages.success(request, "Welcome to BearFounders! Please tell us about you startup.")
+            redirect_url ='website:startup_update'
         return redirect(redirect_url)
+
     if request.method == 'POST':
         query = request.POST['query']
         phrase = False
@@ -976,15 +981,14 @@ def user_profile(request):
     for item in request.user.profile.positions:
         positions.append(prof.POSITIONS.__getitem__(int(item))[1])
 
-    return render(request, 'profile.html',
-                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+    return render(request, 'profile.html', {
                       'profile': True,
                       'experience': experience,
                       'reset': True,
                       'last_login': last_login,
                       'positions_display': positions,
                       'cd': cd,
-                  }))
+                  })
 
 
 @login_required
@@ -1003,79 +1007,17 @@ def startup_profile(request):
     if request.user.first_login:
         request.user.set_first_login()
 
-    return render(request, 'founder.html',
-                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+    return render(request, 'founder.html', {
                       'profile': True,
                       'jobs': jobs,
                       'reset': True,
                       'total_funding': total_funding.get('total'),
                       'last_login': last_login,
                       'cd': cd,
-                  }))
+                  })
 
 
 @login_required
-@user_passes_test(lambda user: not user.is_individual or not hasattr(user, 'profile'),
-                  login_url=reverse_lazy('website:settings'))
-def add_profile(request):
-    user = request.user
-
-    ExperienceFormSet = inlineformset_factory(prof.Profile, prof.Experience, form=forms.ExperienceForm,
-                                              widgets={
-                                                  'start_date': f.DateInput(format='%m/%d/%y'),
-                                                  'end_date': f.DateInput(format='%m/%d/%y'),
-                                              },
-                                              error_messages={
-                                                  'start_date': {
-                                                      'invalid': 'Please enter a date with the form MM/DD/YY'},
-                                                  'end_date': {
-                                                      'invalid': 'Please enter a date with the form MM/DD/YY'}
-                                              },
-                                              max_num=5, extra=1)
-
-    profile = user.profile if hasattr(user, 'profile') else None
-    profile_form = forms.ProfileForm(instance=profile)
-    experience_form = ExperienceFormSet(instance=profile)
-
-    if request.method == 'POST':
-        profile_form = forms.ProfileForm(request.POST, request.FILES, instance=profile)
-        experience_form = ExperienceFormSet(request.POST, instance=profile)
-
-        if profile_form.is_valid() and experience_form.is_valid():
-            profile = profile_form.save(commit=False)
-            profile.user = request.user
-            profile.save()
-
-            for k in experience_form.deleted_forms:
-                s = k.save(commit=False)
-                s.delete()
-            objs = experience_form.save(commit=False)
-            for obj in objs:
-                if obj.company != '':
-                    obj.profile = profile
-                    obj.save()
-
-            messages.success(request, 'Your profile was successfully added')
-            profile.check_is_filled()
-            user.is_individual = True
-            user.save()
-            return redirect('website:profile')
-        else:
-            messages.error(request, "There was an error processing your request")
-
-    return render(request, 'profile_form.html',
-                  merge_dicts(CONTEXT, JOB_CONTEXT, {
-                      'profile_form': profile_form,
-                      'experience': experience_form,
-                      'show_exp': True,
-                      'reset': True,
-                      'title': 'Add Profile'
-                  }))
-
-
-@login_required
-@user_passes_test(lambda user: user.is_individual and hasattr(user, 'profile'),
-                  login_url=reverse_lazy('website:settings'))
 def profile_update(request):
     user = request.user
     is_first_login = user.first_login
@@ -1093,18 +1035,23 @@ def profile_update(request):
                                               },
                                               max_num=5, extra=1)
 
-    profile_form = forms.ProfileForm(instance=request.user.profile)
-    experience_form = ExperienceFormSet(instance=request.user.profile)
+    profile = None if not hasattr(user, 'profile') else user.profile
+    profile_form = forms.ProfileForm(instance=profile)
+    experience_form = ExperienceFormSet(instance=profile)
 
     if request.method == 'POST':
-        profile_form = forms.ProfileForm(request.POST, request.FILES, instance=request.user.profile)
-        experience_form = ExperienceFormSet(request.POST, instance=request.user.profile)
+        profile_form = forms.ProfileForm(request.POST, request.FILES, instance=profile)
+        experience_form = ExperienceFormSet(request.POST, instance=profile)
+
         alt_email = profile_form["alt_email"]
-        if request.user.email == alt_email:
+        if user.email == alt_email:
             profile_form._errors["alt_email"] = ["Account for email address is not registered or already activated."]
 
         if profile_form.is_valid() and experience_form.is_valid():
-            profile = profile_form.save()
+            profile = profile_form.save(commit=False)
+            if not hasattr(profile, 'user'):
+                profile.user = user
+            profile.save()
 
             for k in experience_form.deleted_forms:
                 s = k.save(commit=False)
@@ -1115,21 +1062,24 @@ def profile_update(request):
                     obj.profile = profile
                     obj.save()
 
-            messages.success(request, 'Your profile was successfully updated!')
-            user.save()
+            if not user.is_individual:
+                user.is_individual = True
+                user.save()
+
             profile.check_is_filled()
 
             if user.is_founder and user.first_login:
+                messages.success(request, "Welcome to BearFounders! Please tell us about you startup.")
                 return redirect('website:startup_update')
 
+            messages.success(request, 'Your profile was successfully updated!')
             user.set_first_login()
             return redirect('website:profile')
         else:
             print(profile_form.errors, experience_form.errors)
             messages.error(request, "There was an error processing your request")
 
-    return render(request, 'profile_form.html',
-                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+    return render(request, 'profile_form.html', {
                       'profile_form': profile_form,
                       'experience': experience_form,
                       'show_exp': True,
@@ -1137,75 +1087,10 @@ def profile_update(request):
                       'title': 'Update your profile',
                       'is_first_login': is_first_login,
                       'next_url': reverse('website:startup_update') if user.is_founder else reverse('website:profile')
-                  }))
+                  })
 
 
 @login_required
-@user_passes_test(lambda user: not user.is_founder or not hasattr(user, 'founder'),
-                  login_url=reverse_lazy('website:settings'))
-def add_startup(request):
-    user = request.user
-
-    FundingFormSet = inlineformset_factory(prof.Founder, prof.Funding, form=forms.FundingForm,
-                                           error_messages={
-                                               'raised': {'invalid': 'Please enter an amount greater than 0'}},
-                                           labels={'stage': 'Funding round', 'raised': 'Amount raised'}, max_num=5,
-                                           extra=1)
-    JobFormSet = inlineformset_factory(prof.Founder, prof.Job, form=forms.JobForm,
-                                       labels={'level': 'Job position', 'title': 'Job title', 'pay': 'Job pay',
-                                               'description': 'Job description'}, max_num=5, extra=1)
-
-    founder = user.founder if hasattr(user, 'founder') else None
-    startup_form = forms.FounderForm(instance=founder)
-    funding_form = FundingFormSet(instance=founder)
-    job_form = JobFormSet(instance=founder)
-
-    if request.method == 'POST':
-        profile_form = forms.FounderForm(request.POST, request.FILES, instance=founder)
-        funding_form = FundingFormSet(request.POST, instance=founder)
-        job_form = JobFormSet(request.POST, instance=founder)
-        if profile_form.is_valid() and job_form.is_valid() and funding_form.is_valid():
-            profile = profile_form.save(commit=False)
-            profile.user = request.user
-            profile.save()
-
-            for k in job_form.deleted_forms:
-                s = k.save(commit=False)
-                s.delete()
-            for l in funding_form.deleted_forms:
-                t = l.save(commit=False)
-                t.delete()
-            objs = job_form.save(commit=False)
-            for obj in objs:
-                if obj.title != '':
-                    obj.founder = request.user.founder
-                    obj.save()
-            objs2 = funding_form.save(commit=False)
-            for obj2 in objs2:
-                if obj2.raised > 0:
-                    obj2.founder = request.user.founder
-                    obj2.save()
-
-            messages.success(request, 'Your profile was successfully added')
-            user.is_founder = True
-            user.save()
-            return redirect('website:startup_profile')
-        else:
-            messages.error(request, 'There was an error processing your request')
-
-    return render(request, 'profile_form.html',
-                  merge_dicts(CONTEXT, JOB_CONTEXT, {
-                      'profile_form': startup_form,
-                      'funding': funding_form,
-                      'jobs': job_form,
-                      'show_exp': False,
-                      'reset': True,
-                      'title': 'Add Startup'
-                  }))
-
-
-@login_required
-@user_passes_test(lambda user: user.is_founder and hasattr(user, 'founder'), login_url=reverse_lazy('website:settings'))
 def startup_update(request):
     user = request.user
     is_first_login = user.first_login
@@ -1219,15 +1104,24 @@ def startup_update(request):
                                        labels={'level': 'Job position', 'title': 'Job title', 'pay': 'Job pay',
                                                'description': 'Job description'}, max_num=5, extra=1)
 
-    startup_form = forms.FounderForm(instance=request.user.founder)
-    funding_form = FundingFormSet(instance=request.user.founder)
-    job_form = JobFormSet(instance=request.user.founder)
+    founder = None if not hasattr(user, 'founder') else user.founder
+    startup_form = forms.FounderForm(instance=founder)
+    funding_form = FundingFormSet(instance=founder)
+    job_form = JobFormSet(instance=founder)
 
     if request.method == 'POST':
-        profile_form = forms.FounderForm(request.POST, request.FILES, instance=request.user.founder)
-        funding_form = FundingFormSet(request.POST, instance=request.user.founder)
-        job_form = JobFormSet(request.POST, instance=request.user.founder)
+        profile_form = forms.FounderForm(request.POST, request.FILES, instance=founder)
+        funding_form = FundingFormSet(request.POST, instance=founder)
+        job_form = JobFormSet(request.POST, instance=founder)
         if profile_form.is_valid() and job_form.is_valid() and funding_form.is_valid():
+            founder = profile_form.save(commit=False)
+            if not hasattr(founder, 'user'):
+                founder.user = user
+            founder.save()
+            if not user.is_founder:
+                user.is_founder = True
+                user.save()
+
             for k in job_form.deleted_forms:
                 s = k.save(commit=False)
                 s.delete()
@@ -1243,16 +1137,14 @@ def startup_update(request):
             for obj2 in objs2:
                 if obj2.raised > 0:
                     obj2.save()
-            profile_form.save()
             messages.success(request, 'Your profile was successfully updated!')
-            user.save()
+
             user.set_first_login()
             return redirect('website:startup_profile')
         else:
             messages.error(request, 'There was an error processing your request')
 
-    return render(request, 'profile_form.html',
-                  merge_dicts(CONTEXT, JOB_CONTEXT, {
+    return render(request, 'profile_form.html', {
                       'profile_form': startup_form,
                       'funding': funding_form,
                       'jobs': job_form,
@@ -1261,7 +1153,7 @@ def startup_update(request):
                       'is_first_login': is_first_login,
                       'title': 'Update Startup',
                       'next_url': reverse('website:startup_profile')
-                  }))
+                  })
 
 
 @login_required
@@ -1278,15 +1170,14 @@ def get_profile_view(request, id):
     for item in user.profile.positions:
         positions.append(prof.POSITIONS.__getitem__(int(item))[1])
     exp = user.profile.experience_set.order_by('-end_date')
-    return render(request, 'profile_info.html',
-                  merge_dicts(JOB_CONTEXT, {
+    return render(request, 'profile_info.html', {
                       'profile': user.profile,
                       'experience': exp,
                       'reset': True,
                       'last_login': last_login,
                       'positions_display': positions,
                       'cd': cd,
-                  }))
+                  })
 
 
 @login_required
@@ -1299,15 +1190,14 @@ def get_startup_view(request, id):
     if user is None:
         return HttpResponseRedirect('/')
     jobs = user.founder.job_set.order_by('title')
-    return render(request, 'founder_info.html',
-                  merge_dicts(JOB_CONTEXT, {
+    return render(request, 'founder_info.html', {
                       'founder': user.founder,
                       'profile': False,
                       'jobs': jobs,
                       'reset': True,
                       'last_login': last_login,
                       'cd': cd,
-                  }))
+                  })
 
 
 class MyRegistrationView(RegistrationView):

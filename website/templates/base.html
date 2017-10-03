@@ -115,8 +115,8 @@
     <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %}" {% if not user.is_authenticated %}
           style="background-color:#25283D; min-height: 100%"{% endif %} >
       {% if messages and user.is_authenticated %}
-        <ul class="messages {% if  filter_startups or filter_people or filter_jobs %}tags{% endif %}">
-        </ul>
+{#        <ul class="messages {% if  filter_startups or filter_people or filter_jobs %}tags{% endif %}">#}
+{#        </ul>#}
         <div style="position:fixed;width:30%;z-index:1000;bottom:1.5%;right:1%;">
           {% for message in messages %}
             <div class="message alert {% if message.tags %} alert-{{ message.tags }} {% endif %} fade in"
@@ -510,8 +510,8 @@
   <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %}"
         style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}">
     {% if messages and user.is_authenticated %}
-      <ul class="messages {% if  filter_startups or filter_people or filter_jobs %}tags{% endif %}">
-      </ul>
+{#      <ul class="messages {% if  filter_startups or filter_people or filter_jobs %}tags{% endif %}">#}
+{#      </ul>#}
       <div style="position:fixed;width:30%;z-index:1000;bottom:1.5%;right:1%;">
         {% for message in messages %}
           <div class="message alert {% if message.tags %} alert-{{ message.tags }} {% endif %} fade in"

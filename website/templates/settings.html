@@ -10,13 +10,13 @@
       <div class="modal-dialog">
 
         {% if not request.user.is_individual or not request.user.profile %}
-          <a href="{% url 'website:add_profile' %}" class="btn btn-primary pull-left" style="margin-right: 20px;">
+          <a href="{% url 'website:profile_update' %}" class="btn btn-primary pull-left" style="margin-right: 20px;">
             Create Personal Profile
           </a>
         {% endif %}
 
         {% if not request.user.is_founder or not request.user.founder %}
-          <a href="{% url 'website:add_startup' %}" class="btn btn-primary pull-left">
+          <a href="{% url 'website:startup_update' %}" class="btn btn-primary pull-left">
             Create Startup Profile
           </a>
         {% endif %}
@@ -98,13 +98,13 @@
       <div class="modal-dialog">
 
         {% if not request.user.is_individual or not request.user.profile %}
-          <a href="{% url 'website:add_profile' %}" class="btn btn-primary pull-left" style="margin-right: 20px;">
+          <a href="{% url 'website:profile_update' %}" class="btn btn-primary pull-left" style="margin-right: 20px;">
             Create Personal Profile
           </a>
         {% endif %}
 
         {% if not request.user.is_founder or not request.user.founder %}
-          <a href="{% url 'website:add_startup' %}" class="btn btn-primary pull-left">
+          <a href="{% url 'website:startup_update' %}" class="btn btn-primary pull-left">
             Create Startup Profile
           </a>
         {% endif %}

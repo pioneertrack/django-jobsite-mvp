@@ -7,9 +7,7 @@ from website import views
 urlpatterns = [
   url(r'^search/$', views.search, name='search'),
   url(r'^search/(?P<category_search>\w+)/$', views.search, name='search'),
-  url(r'^profile/add/$', views.add_profile, name='add_profile'),
   url(r'^profile/update', views.profile_update, name='profile_update'),
-  url(r'^startup/add/$', views.add_startup, name='add_startup'),
   url(r'^startup/update/$', views.startup_update, name='startup_update'),
   url(r'^profile/$', views.user_profile, name='profile'),
   url(r'^startup_profile/$', views.startup_profile, name='startup_profile'),

@@ -293,13 +293,13 @@ class Connection(models.Model):
 #         Founder.objects.create(user=instance)
 
 
-@receiver(post_save, sender=Profile)
-def check_first_login(sender, instance, created, **kwargs):
-    if instance.user.first_login:
-        instance.user.set_first_login()
-
-
-@receiver(post_save, sender=Founder)
-def check_first_login(sender, instance, created, **kwargs):
-    if instance.user.first_login:
-        instance.user.set_first_login()
+# @receiver(post_save, sender=Profile)
+# def profile_first_login(sender, instance, created, **kwargs):
+#     if instance.user.first_login:
+#         instance.user.set_first_login()
+#
+#
+# @receiver(post_save, sender=Founder)
+# def founder_first_login(sender, instance, created, **kwargs):
+#     if instance.user.first_login:
+#         instance.user.set_first_login()

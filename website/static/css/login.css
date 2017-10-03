@@ -5,7 +5,7 @@
 #profileform .asteriskField {
   color: red;
   margin-left: 5px;
-  display: block;
+  display: inline;
 }
 a:link , a:hover, a:visited, a:active {
   text-decoration: none;
