@@ -2,7 +2,7 @@
 {% load website_tags %}
 {% load imagekit %}
 <!DOCTYPE html>
-<html lang="en" xmlns="" {% if not user.is_authenticated %}style="height: 100%"{% endif %}>
+<html lang="en" xmlns="" {% if not user.is_authenticated or not profile_edit%}style="height: 100%"{% endif %}>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport"
@@ -32,11 +32,11 @@
   <title>{% block title %}{% endblock %}</title>
 
 </head>
-<body {% if not user.is_authenticated %}style="height: 100%"{% endif %}>
+<body {% if not user.is_authenticated or not profile_edit %}style="height: 100%"{% endif %}>
 {% if is_mobile %}
   <div canvas="container">
     <header class="cd-auto-hide-header">
-      <div class="logo"><a href="/"><img src="{% static 'favicon/logo.jpg' %}"/></a></div>
+      <div class="logo"><a href="/"><img src="{% static 'favicon/logo.png' %}"/></a></div>
       <nav class="cd-primary-nav">
         {% if user.is_authenticated %}
           <a href="#cd-navigation" class="nav-trigger">
@@ -112,8 +112,11 @@
 
     </header> <!-- .cd-auto-hide-header -->
 
-    <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %}" {% if not user.is_authenticated %}
-          style="background-color:#25283D; min-height: 100%"{% endif %} >
+    <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %}
+    {% if profile_edit %}profile-edit{% endif %} {% if not user.first_login and profile_edit %}not-first-login{% endif %}"
+{#    {% if not profile_edit %}#}
+        style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}">
+{#    {% endif %}>#}
       {% if messages and user.is_authenticated %}
 {#        <ul class="messages {% if  filter_startups or filter_people or filter_jobs %}tags{% endif %}">#}
 {#        </ul>#}
@@ -448,7 +451,7 @@
 {% else %}
 
   <header class="cd-auto-hide-header">
-    <div class="logo"><a href="/"><img src="{% static 'favicon/logo.jpg' %}"/></a></div>
+    <div class="logo"><a href="/"><img src="{% static 'favicon/logo.png' %}"/></a></div>
     <nav class="cd-primary-nav">
       {% if user.is_authenticated %}
         <a href="#cd-navigation" class="nav-trigger">
@@ -506,9 +509,17 @@
     {% endif %}
 
   </header> <!-- .cd-auto-hide-header -->
-
-  <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %}"
+    <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %}
+    {% if profile_edit %}profile-edit{% endif %} {% if not user.first_login and profile_edit %}not-first-login{% endif %}"
+{#    {% if not profile_edit %}#}
         style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}">
+{#    {% endif %}>#}
+
+{#  <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %} {% if profile_edit %}profile-edit{% endif %}"#}
+{#    {% if not profile_edit %}#}
+{#        style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}"#}
+{#    {% endif %}#}
+{#  >#}
     {% if messages and user.is_authenticated %}
 {#      <ul class="messages {% if  filter_startups or filter_people or filter_jobs %}tags{% endif %}">#}
 {#      </ul>#}

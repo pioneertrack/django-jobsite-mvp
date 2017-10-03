@@ -21,22 +21,22 @@
       <div class="modal-dialog">
         <div id="updateprofile" class="profile-form-container">
           {% if user.first_login %}
-            <h1 class="text-red">Welcome to Bear Founders</h1>
+            <h1 class="text-navy">Welcome to Bear Founders</h1>
           {% else %}
             <h1> {{ title }} </h1>
           {% endif %}
           <br>
           {% if user.first_login %}
             {% if not show_exp %}
-              <h2 class="text-red">Tell us about you startup</h2>
+              <h2 class="text-navy">Tell us about you startup</h2>
             {% else %}
-              <h2 class="text-red">Tell us about yourself</h2>
+              <h2 class="text-navy">Tell us about yourself</h2>
             {% endif %}
           {% else %}
             {% if show_exp and user.profile.is_filled or user.founder.is_filled %}
               <h1>Basic info</h1>
             {% else %}
-              <h2 class="text-red">You must fill out required fields to become available in the search</h2>
+              <h2 class="text-navy">You must fill out required fields to become available in the search</h2>
             {% endif %}
           {% endif %}
           <hr>
@@ -144,22 +144,22 @@
       <div class="modal-dialog">
         <div id="updateprofile" class="profile-form-container">
           {% if user.first_login %}
-            <h1 class="text-red">Welcome to Bear Founders</h1>
+            <h1 class="text-navy">Welcome to Bear Founders</h1>
           {% else %}
             <h1> {{ title }} </h1>
           {% endif %}
           <br>
           {% if user.first_login %}
             {% if not show_exp %}
-              <h2 class="text-red">Tell us about you startup</h2>
+              <h2 class="text-navy">Tell us about you startup</h2>
             {% else %}
-              <h2 class="text-red">Tell us about yourself</h2>
+              <h2 class="text-navy">Tell us about yourself</h2>
             {% endif %}
           {% else %}
             {% if show_exp and user.profile.is_filled or user.founder.is_filled %}
               <h1>Basic info</h1>
             {% else %}
-              <h2 class="text-red">You must fill out required fields to become available in the search</h2>
+              <h2 class="text-navy">You must fill out required fields to become available in the search</h2>
             {% endif %}
           {% endif %}
           <hr>

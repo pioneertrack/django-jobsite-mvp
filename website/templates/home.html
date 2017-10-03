@@ -45,17 +45,23 @@
   {% block content %}
       <div class="welcome-links">
         <a href="/search/startups/" style="background-image: url('{% static 'images/default/tower.jpg' %}');">
-          <span class="overlay"></span>
+          <div class="overlay">
+            <div class="slogan">Find amazing startups to work with</div>
+          </div>
           <span>Startups</span>
         </a>
           <div class="welcome-card">
-            <span class="overlay"></span>
+            <div class="overlay">
+              <div class="slogan">Find the perfect job</div>
+            </div>
             <a href="/search/jobs/">
-              <div class="text-center">Opportunities</div>
+              <div class="text-center oppo">Opportunities</div>
             </a>
           </div>
         <a href="/search/partners/" style="background-image: url('{% static 'images/default/gates.jpg' %}');">
-            <span class="overlay"></span>
+            <div class="overlay">
+              <div class="slogan">Find skilled members to collaborate with</div>
+            </div>
             <span>Members</span>
         </a>
       </div>

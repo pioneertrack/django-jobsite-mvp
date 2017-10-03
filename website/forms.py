@@ -5,10 +5,8 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth.forms import PasswordChangeForm
 from django.forms.fields import ValidationError
-from django.db.models import IntegerField
-from django.core.validators import EmailValidator
-from django import template
-from django.utils.safestring import mark_safe
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Field
 # get a way to log the errors:
 import logging
 # convert the errors to text
@@ -21,7 +19,7 @@ logging.basicConfig(filename='errorlog.txt')
 class NewRegistrationForm(RegistrationFormUniqueEmail):
     captcha = NoReCaptchaField()
     create_both_profiles = forms.BooleanField(label='Both', required=False,
-                                             widget=forms.CheckboxInput(attrs={'id': 'select-both-profiles'}))
+                                              widget=forms.CheckboxInput(attrs={'id': 'select-both-profiles'}))
 
     def __init__(self, *args, **kwargs):
         super(RegistrationFormUniqueEmail, self).__init__(*args, **kwargs)
@@ -38,7 +36,7 @@ class NewRegistrationForm(RegistrationFormUniqueEmail):
             ALLOWED_DOMAINS = settings.ALLOWED_DOMAINS
         else:
             ALLOWED_DOMAINS = ['berkeley.edu']
-        if not ALLOWED_DOMAINS: # If we allow any domain
+        if not ALLOWED_DOMAINS:  # If we allow any domain
             return submitted_data
 
         domain = submitted_data.split('@')[1]
@@ -48,7 +46,7 @@ class NewRegistrationForm(RegistrationFormUniqueEmail):
             raise forms.ValidationError(
                 u'You must register using an email address with a valid '
                 'berkeley email ({}).'
-                .format(', '.join(ALLOWED_DOMAINS))
+                    .format(', '.join(ALLOWED_DOMAINS))
             )
         return submitted_data
 
@@ -60,7 +58,8 @@ class NewRegistrationForm(RegistrationFormUniqueEmail):
 
     class Meta:
         model = models.MyUser
-        fields = ['first_name', 'last_name', 'email', 'is_individual', 'is_founder', 'create_both_profiles', 'password1', 'password2']
+        fields = ['first_name', 'last_name', 'email', 'is_individual', 'is_founder', 'create_both_profiles',
+                  'password1', 'password2']
         labels = {
             'is_individual': 'Create individual profile',
             'is_founder': 'Create startup profile',
@@ -69,13 +68,20 @@ class NewRegistrationForm(RegistrationFormUniqueEmail):
 
 
 class ProfileForm(forms.ModelForm):
-    image = forms.ImageField(label='Profile image',required=True, error_messages ={'invalid':"Image files only"}, widget = forms.FileInput)
+    image = forms.ImageField(label='Profile image', required=True, error_messages={'invalid': "Image files only"},
+                             widget=forms.FileInput)
 
     def __init__(self, *args, **kwargs):
         super(ProfileForm, self).__init__(*args, **kwargs)
         self.initial['alt_email'] = None
         if len(self.instance.image.name) > 0:
             self.fields['image'].required = False
+
+        helper = self.helper = FormHelper(self)
+        self.fields['bio'].widget.attrs.update({'placeholder': 'I am a senior who enjoys tech and education. I am looking forward to working with startups and would love to get mentored by Cal alums who have experience with operations.'})
+        self.fields['skills'].widget.attrs.update({'placeholder': 'Python, javascript, SQL, data analysis, financial modeling, photography, UX/UI, Microsoft office, social media…'})
+        self.fields['interests'].widget.attrs.update({'placeholder': 'Sports, writing, edtech, travel, health'})
+        self.fields['courses'].widget.attrs.update({'placeholder': 'UGBA 104, CS70, Econ 100B'})
 
     def is_valid(self):
         log.info(force_text(self.errors))
@@ -91,8 +97,9 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = profile.Profile
-        fields = ('image', 'bio', 'positions', 'role',  'skills', 'year', 'alt_email', 'interests',
-                  'major', 'courses', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'linkedin', 'website', 'github')
+        fields = ('image', 'bio', 'positions', 'role', 'skills', 'year', 'alt_email', 'interests',
+                  'major', 'courses', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'linkedin', 'website',
+                  'github')
         labels = {
             'has_startup_exp': 'I have worked at a startup before',
             'has_funding_exp': 'I have experience with funding a startup',
@@ -107,7 +114,8 @@ class ProfileForm(forms.ModelForm):
 
 
 class FounderForm(forms.ModelForm):
-    logo = forms.ImageField(label='Logo',required=True, error_messages ={'invalid':"Image files only"}, widget = forms.FileInput)
+    logo = forms.ImageField(label='Logo', required=True, error_messages={'invalid': "Image files only"},
+                            widget=forms.FileInput)
 
     def __init__(self, *args, **kwargs):
         super(FounderForm, self).__init__(*args, **kwargs)
@@ -141,6 +149,11 @@ class FounderForm(forms.ModelForm):
 
 
 class ExperienceForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ExperienceForm, self).__init__(*args, **kwargs)
+        self.fields['company'].widget.attrs.update({'placeholder': 'Visa'})
+        self.fields['position'].widget.attrs.update({'placeholder': 'Analyst'})
+        self.fields['description'].widget.attrs.update({'placeholder': 'Used SQL to create weekly reports to focus on core team metrics.'})
 
     def is_valid(self):
         log.info(force_text(self.errors))
@@ -148,7 +161,7 @@ class ExperienceForm(forms.ModelForm):
 
     class Meta:
         model = profile.Experience
-        fields=('company', 'position','start_date', 'currently_working','end_date', 'description')
+        fields = ('company', 'position', 'start_date', 'currently_working', 'end_date', 'description')
         widgets = {
             'start_date': forms.DateInput(),
             'end_date': forms.DateInput()
@@ -163,7 +176,7 @@ class FundingForm(forms.ModelForm):
 
     class Meta:
         model = profile.Funding
-        fields=('stage', 'raised')
+        fields = ('stage', 'raised')
 
 
 class JobForm(forms.ModelForm):
@@ -174,7 +187,7 @@ class JobForm(forms.ModelForm):
 
     class Meta:
         model = profile.Job
-        fields=('title', 'level', 'pay', 'description')
+        fields = ('title', 'level', 'pay', 'description')
 
 
 class ChangePasswordForm(PasswordChangeForm):
@@ -184,7 +197,6 @@ class ChangePasswordForm(PasswordChangeForm):
 
 
 class ChangeAlternateEmailForm(forms.ModelForm):
-
     class Meta:
         model = profile.Profile
         fields = ('alt_email',)
@@ -192,4 +204,3 @@ class ChangeAlternateEmailForm(forms.ModelForm):
 
 class ResendActivationEmailForm(forms.Form):
     email = forms.EmailField(required=True)
-

@@ -1086,6 +1086,7 @@ def profile_update(request):
                       'reset': True,
                       'title': 'Update your profile',
                       'is_first_login': is_first_login,
+                      'profile_edit': True,
                       'next_url': reverse('website:startup_update') if user.is_founder else reverse('website:profile')
                   })
 
@@ -1152,6 +1153,7 @@ def startup_update(request):
                       'reset': True,
                       'is_first_login': is_first_login,
                       'title': 'Update Startup',
+                      'profile_edit': True,
                       'next_url': reverse('website:startup_profile')
                   })
 
