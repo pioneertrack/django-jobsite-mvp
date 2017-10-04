@@ -73,9 +73,12 @@ ul#cd-navigation div.nice-select ul.list li {
 }
 
 .welcome-links {
-    display: flex;
+    display: none;
     height: 100%;
     overflow: hidden;
+}
+.welcome-links.visible {
+    display: flex;
 }
 
 .welcome-links a {

@@ -68,3 +68,9 @@
   {% endblock %}
 
 {% endif %}
+
+{% block js %}
+  {{ block.super }}
+  <script src="{% static 'waitForImages/dist/jquery.waitforimages.min.js' %}"></script>
+  <script src="{% static 'js/home.js' %}"></script>
+{% endblock %}

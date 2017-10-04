@@ -374,3 +374,6 @@ a.fill-out-later{
   font-family: roboto;
   margin-top: 0px;
 }
+.error-message {
+  color: red;
+}
