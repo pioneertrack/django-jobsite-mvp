@@ -184,7 +184,7 @@ class Profile(models.Model):
     positions = ChoiceArrayField(models.CharField(choices=POSITIONS, max_length=1, default='0'))
     role = models.CharField(max_length=4, choices=PRIMARY_ROLE)
     skills = models.TextField(verbose_name='Skills', max_length=500)
-    year = models.CharField(verbose_name='Cal Association', max_length=4, choices=YEAR_IN_SCHOOL_CHOICES)
+    year = models.CharField(verbose_name='Cal Affiliation', max_length=4, choices=YEAR_IN_SCHOOL_CHOICES)
 
     interests = models.TextField(verbose_name='Interests', max_length=500, blank=True, null=False)
     courses = models.TextField(verbose_name='Courses', max_length=400, blank=True, null=False)
