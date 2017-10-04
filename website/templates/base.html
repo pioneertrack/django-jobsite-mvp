@@ -33,6 +33,7 @@
 
 </head>
 <body {% if not user.is_authenticated or not profile_edit %}style="height: 100%"{% endif %}>
+
 {% if is_mobile %}
   <div canvas="container">
     <header class="cd-auto-hide-header">
@@ -112,7 +113,7 @@
 
     </header> <!-- .cd-auto-hide-header -->
 
-    <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %}"
+    <main class="cd-main-content mc-padding"
 {#    {% if profile_edit %}profile-edit{% endif %} {% if not user.first_login and profile_edit %}not-first-login{% endif %}"#}
           style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}">
       {% if messages and user.is_authenticated %}
@@ -158,30 +159,15 @@
             {% if search_category %}
               {{ search_category }}
             {% elif not founder %}
-              Partners
+              People
             {% endif %}
           </div>
         </div>
 
-        <input id="partners" form="mainform" type="radio" name="select-category" value="partners"
-               {% if not founder and not search_category %}checked{% elif search_category == 'partners' %}
-               checked{% endif %}/>
-        <label for="partners">
-          Partners
-          <i class="fa fa-circle-o"></i>
-          <i class="fa fa-dot-circle-o"></i>
-        </label>
-        <input id="employees" form="mainform" type="radio" name="select-category" value="employees"
-               {% if search_category == 'employees' %}checked{% endif %}/>
-        <label for="employees">
-          Employees
-          <i class="fa fa-circle-o"></i>
-          <i class="fa fa-dot-circle-o"></i>
-        </label>
-        <input id="freelancers" form="mainform" type="radio" name="select-category" value="freelancers"
-               {% if search_category == 'freelancers' %}checked{% endif %}/>
-        <label for="freelancers">
-          Freelancers
+        <input id="people" form="mainform" type="radio" name="select-category" value="people"
+               {% if search_category == 'people' %}checked{% endif %}/>
+        <label for="people">
+          People
           <i class="fa fa-circle-o"></i>
           <i class="fa fa-dot-circle-o"></i>
         </label>
@@ -218,51 +204,14 @@
       </div>
 
     </div>
-    <div class="checkboxes partners">
-      <div class="top">
-        <div class="filter-header text-capitalize link-blue">
-          Search for
-        </div>
-        <div class="filter-header text-right current text-capitalize">
-          Partners
-        </div>
-      </div>
-      {% for item in p_context %}
-        <div class="filter-container">
-          <div class="filter-title-block">
-            {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
-          </div>
-          {% for subitem in item.1 %}
-            <input id="{{ subitem.0 }}_{{ item.0 }}_partners" form="mainform" type="checkbox"
-                   value="{{ subitem.0 }}"
-                   name="{{ item.0 }}_partners"
-                   class="text-capitalize"
-                {% if mobile_filter %}
-                  {% in_list mobile_filter item.0|add:"_partners" as b_val %}
-                   {% if subitem.0 in b_val %}checked{% endif %}
-                {% endif %}/>
-            <label for="{{ subitem.0 }}_{{ item.0 }}_partners"
-                {% if forloop.counter > 3 %} class="_hidden" {% endif %}
-            >
-              {{ subitem.1 }}
-              <i class="fa fa-square"></i>
-              <i class="fa fa-check-square"></i>
-            </label>
-          {% endfor %}
-          {% if item.1|length > 3 %}
-            <button class="btn btn-primary filter-show">Show all</button>
-          {% endif %}
-        </div>
-      {% endfor %}
-    </div>
 
-    <div class="checkboxes employees">
+    <div class="checkboxes people">
       <div class="top">
         <div class="filter-header text-capitalize link-blue">
           Search for
         </div>
         <div class="filter-header text-right current text-capitalize">
-          Employees
+          People
         </div>
       </div>
       {% for item in p_context %}
@@ -271,80 +220,15 @@
             {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
           </div>
           {% for subitem in item.1 %}
-            <input id="{{ subitem.0 }}_{{ item.0 }}_employees" form="mainform" type="checkbox"
+            <input id="{{ subitem.0 }}_{{ item.0 }}" form="mainform" type="checkbox"
                    value="{{ subitem.0 }}"
-                   name="{{ item.0 }}_employees"
+                   name="{{ item.0 }}"
                    class="text-capitalize"
                 {% if mobile_filter %}
-                  {% in_list mobile_filter item.0|add:"_employees" as b_val %}
+                  {% in_list mobile_filter item.0 as b_val %}
                    {% if subitem.0 in b_val %}checked{% endif %}
                 {% endif %}/>
-            <label for="{{ subitem.0 }}_{{ item.0 }}_employees"
-                {% if forloop.counter > 3 %} class="_hidden" {% endif %}
-            >
-              {{ subitem.1 }}
-              <i class="fa fa-square"></i>
-              <i class="fa fa-check-square"></i>
-            </label>
-          {% endfor %}
-          {% if item.1|length > 3 %}
-            <button class="btn btn-primary filter-show">Show all</button>
-          {% endif %}
-        </div>
-      {% endfor %}
-      {% for item in e_context %}
-        <div class="filter-container">
-          <div class="filter-title-block">
-            {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
-          </div>
-          {% for subitem in item.1 %}
-            <input id="{{ subitem.0 }}_{{ item.0 }}_employees" form="mainform" type="checkbox"
-                   value="{{ subitem.0 }}"
-                   name="{{ item.0 }}_employees"
-                   class="text-capitalize"
-                {% if mobile_filter %}
-                  {% in_list mobile_filter item.0|add:"_employees" as b_val %}
-                   {% if subitem.0 in b_val %}checked{% endif %}
-                {% endif %}/>
-            <label for="{{ subitem.0 }}_{{ item.0 }}_employees"
-                {% if forloop.counter > 3 %} class="_hidden" {% endif %}
-            >
-              {{ subitem.1 }}
-              <i class="fa fa-square"></i>
-              <i class="fa fa-check-square"></i>
-            </label>
-          {% endfor %}
-          {% if item.1|length > 3 %}
-            <button class="btn btn-primary filter-show">Show all</button>
-          {% endif %}
-        </div>
-      {% endfor %}
-    </div>
-
-    <div class="checkboxes freelancers">
-      <div class="top">
-        <div class="filter-header text-capitalize link-blue">
-          Search for
-        </div>
-        <div class="filter-header text-right current text-capitalize">
-          Freelancers
-        </div>
-      </div>
-      {% for item in p_context %}
-        <div class="filter-container">
-          <div class="filter-title-block">
-            {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
-          </div>
-          {% for subitem in item.1 %}
-            <input id="{{ subitem.0 }}_{{ item.0 }}_freelancers" form="mainform" type="checkbox"
-                   value="{{ subitem.0 }}"
-                   name="{{ item.0 }}_freelancers"
-                   class="text-capitalize"
-                {% if mobile_filter %}
-                  {% in_list mobile_filter item.0|add:"_freelancers" as b_val %}
-                   {% if subitem.0 in b_val %}checked{% endif %}
-                {% endif %}/>
-            <label for="{{ subitem.0 }}_{{ item.0 }}_freelancers"
+            <label for="{{ subitem.0 }}_{{ item.0 }}"
                 {% if forloop.counter > 3 %} class="_hidden" {% endif %}
             >
               {{ subitem.1 }}
