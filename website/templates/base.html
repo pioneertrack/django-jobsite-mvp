@@ -112,11 +112,9 @@
 
     </header> <!-- .cd-auto-hide-header -->
 
-    <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %}
-    {% if profile_edit %}profile-edit{% endif %} {% if not user.first_login and profile_edit %}not-first-login{% endif %}"
-{#    {% if not profile_edit %}#}
-        style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}">
-{#    {% endif %}>#}
+    <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %}"
+{#    {% if profile_edit %}profile-edit{% endif %} {% if not user.first_login and profile_edit %}not-first-login{% endif %}"#}
+          style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}">
       {% if messages and user.is_authenticated %}
 {#        <ul class="messages {% if  filter_startups or filter_people or filter_jobs %}tags{% endif %}">#}
 {#        </ul>#}
@@ -509,11 +507,9 @@
     {% endif %}
 
   </header> <!-- .cd-auto-hide-header -->
-    <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %}
-    {% if profile_edit %}profile-edit{% endif %} {% if not user.first_login and profile_edit %}not-first-login{% endif %}"
-{#    {% if not profile_edit %}#}
-        style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}">
-{#    {% endif %}>#}
+    <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %}"
+{#    {% if profile_edit %}profile-edit{% endif %} {% if not user.first_login and profile_edit %}not-first-login{% endif %}"#}
+          style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}">
 
 {#  <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %} {% if profile_edit %}profile-edit{% endif %}"#}
 {#    {% if not profile_edit %}#}

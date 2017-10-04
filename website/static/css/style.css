@@ -89,7 +89,12 @@ ul#cd-navigation div.nice-select ul.list li {
     vertical-align: middle;
     position: relative;
 }
-
+.welcome-links a.welcome-startups {
+    background-image: url("../images/default/tower.jpg");
+}
+.welcome-links a.welcome-members {
+    background-image: url("../images/default/gates.jpg");
+}
 .welcome-links a span {
     position: absolute;
     top:50%;
