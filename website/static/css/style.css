@@ -94,23 +94,8 @@ ul#cd-navigation div.nice-select ul.list li {
     position: absolute;
     top:50%;
     left: 50%;
-    /*z-index: 100;*/
     font-size: 48px;
     transform: translate(-50%, -50%);
-}
-
-.welcome-links a:hover {
-    /*width: 100%;*/
-    /*display: block;*/
-    /*height: 90vh;*/
-    /*background-position: center center;*/
-    /*background-repeat: no-repeat;*/
-    /*background-size: cover;*/
-    /*background-color: #3c3c3c;*/
-    /*color: white;*/
-    /*text-align: center;*/
-    /*vertical-align: middle;*/
-    /*font-size: 20px;*/
 }
 
 .welcome-links a > .overlay, .welcome-card > div.overlay {
@@ -132,7 +117,7 @@ ul#cd-navigation div.nice-select ul.list li {
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     -ms-transition: all 0.5s ease;
-    transition: all 0.5s ease;    /*z-index: 10;*/
+    transition: all 0.5s ease;
 }
 
 .welcome-links .welcome-card div.oppo {
