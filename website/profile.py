@@ -161,12 +161,12 @@ class CustomImageField(models.ImageField):
 
 
 def user_directory_path(instance, filename):
-    return 'images/user_{0}/{1}.jpg'.format(instance.id, instance.id)
+    return 'images/user_images/user_{0}/image_{1}.jpg'.format(instance.user.id, instance.user.id)
 
 
 def company_logo_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return 'images/company_logos/user_{0}/{1}.jpg'.format(instance.id, instance.id)
+    return 'images/user_images/user_{0}/logo_{1}.jpg'.format(instance.user.id, instance.user.id)
 
 
 class Profile(models.Model):
