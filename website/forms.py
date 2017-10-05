@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth.forms import PasswordChangeForm
 from django.forms.fields import ValidationError
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field
+from crispy_forms.layout import Layout, Field, HTML
 # get a way to log the errors:
 import logging
 # convert the errors to text
@@ -77,7 +77,9 @@ class ProfileForm(forms.ModelForm):
         if len(self.instance.image.name) > 0:
             self.fields['image'].required = False
 
-        helper = self.helper = FormHelper(self)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.layout = Layout(Field('image', template='forms/image-input.html' ))
         self.fields['bio'].widget.attrs.update({'placeholder': 'I am a senior who enjoys tech and education. I am looking forward to working with startups and would love to get mentored by Cal alums who have experience with operations.'})
         self.fields['skills'].widget.attrs.update({'placeholder': 'Python, javascript, SQL, data analysis, financial modeling, photography, UX/UI, Microsoft office, social media…'})
         self.fields['interests'].widget.attrs.update({'placeholder': 'Sports, writing, edtech, travel, health'})
@@ -122,6 +124,11 @@ class FounderForm(forms.ModelForm):
         self.initial['alt_email'] = None
         if len(self.instance.logo.name) > 0:
             self.fields['logo'].required = False
+
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.helper.layout = Layout(Field('logo', template='forms/image-input.html' ))
+
 
     def clean_alt_email(self):
         email = self.cleaned_data['alt_email']

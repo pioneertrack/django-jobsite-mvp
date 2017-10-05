@@ -1,0 +1,16 @@
+<div id="div_{{ field.auto_id }}" class="control-group">
+  <label for="{{ field.id_for_label }}" class="control-label{% if field.field.required %} requiredField{% endif %}">
+    {{ field.label|safe }}<span class="asteriskField">*</span>
+  </label>
+  <div class="inline-container">
+    <div class="controls inline">
+      <input class="fileinput fileUpload" id="{{ field.auto_id }}" name="{{ field.name }}" type="file" {% if field.field.required %}required=""{% endif %}>
+    </div>
+
+    {% if form.image.value %}
+      <div class="img-responsive inline" style="background-image: url('{{ form.instance.image.url }}');"></div>
+    {% elif form.logo.value %}
+      <div class="img-responsive inline" style="background-image: url('{{ form.instance.logo.url }}');"></div>
+    {% endif %}
+  </div>
+</div>

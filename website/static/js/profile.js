@@ -64,7 +64,7 @@ $(function() {
         }
     });
 
-    var submitButton = form.querySelector( "button:not([type=button]), input[type=submit]" );
+    var submitButton = form.querySelector( "input[type=submit]" );
     submitButton.addEventListener( "click", function( event ) {
         var invalidFields = form.querySelectorAll( ":invalid" ),
             errorMessages = form.querySelectorAll( ".error-message" ),

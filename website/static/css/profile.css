@@ -377,3 +377,20 @@ a.fill-out-later{
 .error-message {
   color: red;
 }
+.profile-form-container .img-responsive.inline {
+  float: right;
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: 1px solid navy;
+}
+.controls.inline {
+  display: inline-block;
+  vertical-align: top;
+}
+.profile-form-container .inline-container {
+  overflow: hidden;
+  clear: both;
+}
