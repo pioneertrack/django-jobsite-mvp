@@ -561,7 +561,7 @@ def search(request):
 
 @login_required
 @user_passes_test(lambda user: user.is_individual and hasattr(user, 'profile'),
-                  login_url=reverse_lazy('website:add_profile'))
+                  login_url=reverse_lazy('website:profile_update'))
 def user_profile(request):
     last_login = request.user.last_login
     current_time = timezone.now()
@@ -590,7 +590,7 @@ def user_profile(request):
 
 @login_required
 @user_passes_test(lambda user: user.is_founder and hasattr(user, 'founder'),
-                  login_url=reverse_lazy('website:add_startup'))
+                  login_url=reverse_lazy('website:startup_update'))
 def startup_profile(request):
     user = get_object_or_404(models.MyUser, pk=request.user.id)
     last_login = user.last_login
