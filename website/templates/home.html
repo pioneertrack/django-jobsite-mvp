@@ -44,21 +44,33 @@
 
   {% block content %}
       <div class="welcome-links">
-        <a href="/search/startups/" style="background-image: url('{% static 'images/default/tower.jpg' %}');">
-          <span class="overlay"></span>
+        <a class="welcome-startups" href="/search/" data-category="startups">
+          <div class="overlay">
+            <div class="slogan">Find amazing startups to work with</div>
+          </div>
           <span>Startups</span>
         </a>
           <div class="welcome-card">
-            <span class="overlay"></span>
-            <a href="/search/jobs/">
-              <div class="text-center">Opportunities</div>
+            <div class="overlay">
+              <div class="slogan">Find the perfect job</div>
+            </div>
+            <a href="/search/" data-category="jobs">
+              <div class="text-center oppo">Opportunities</div>
             </a>
           </div>
-        <a href="/search/partners/" style="background-image: url('{% static 'images/default/gates.jpg' %}');">
-            <span class="overlay"></span>
+        <a class="welcome-members" href="/search/" data-category="people">
+            <div class="overlay">
+              <div class="slogan">Find skilled members to collaborate with</div>
+            </div>
             <span>Members</span>
         </a>
       </div>
   {% endblock %}
 
 {% endif %}
+
+{% block js %}
+  {{ block.super }}
+  <script src="{% static 'waitForImages/dist/jquery.waitforimages.min.js' %}"></script>
+  <script src="{% static 'js/home.js' %}"></script>
+{% endblock %}

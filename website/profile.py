@@ -170,41 +170,44 @@ def company_logo_path(instance, filename):
 
 
 class Profile(models.Model):
-    role = models.CharField(max_length = 4, choices = PRIMARY_ROLE, default='NONE', blank = True, null = False)
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
-    bio = models.TextField(verbose_name='Bio', max_length=500, blank=False, null=False)
-    image = CustomImageField(upload_to=user_directory_path, default='images/default/default-profile.jpg', blank=True,
-                              null=False)
+    image = CustomImageField(upload_to=user_directory_path)
     image_thumbnail = ImageSpecField(source='image',
-                                      processors=[ResizeToFit(100, 100, False)],
-                                      format='PNG',
-                                      options={'quality': 100})
+                                     processors=[ResizeToFit(100, 100, False)],
+                                     format='PNG',
+                                     options={'quality': 100})
     image_thumbnail_large = ImageSpecField(source='image',
-                                      processors=[ResizeToFit(300, 300, False)],
-                                      format='PNG',
-                                      options={'quality': 100})
+                                           processors=[ResizeToFit(300, 300, False)],
+                                           format='PNG',
+                                           options={'quality': 100})
+    bio = models.TextField(verbose_name='Bio', max_length=500)
+    positions = ChoiceArrayField(models.CharField(choices=POSITIONS, max_length=1, default='0'))
+    role = models.CharField(max_length=4, choices=PRIMARY_ROLE)
+    skills = models.TextField(verbose_name='Skills', max_length=500)
+    year = models.CharField(verbose_name='Cal Affiliation', max_length=4, choices=YEAR_IN_SCHOOL_CHOICES)
+
     interests = models.TextField(verbose_name='Interests', max_length=500, blank=True, null=False)
-    skills = models.TextField(verbose_name='Skills', max_length=500, blank=False, null=False)
     courses = models.TextField(verbose_name='Courses', max_length=400, blank=True, null=False)
     alt_email = models.EmailField(max_length=255, db_index=True, null=True, blank=True)
-    year = models.CharField(verbose_name='Year', max_length=4, choices=YEAR_IN_SCHOOL_CHOICES, default='NONE',
-                            blank=True, null=False)
-    hours_week = models.CharField(verbose_name='Hours per Week', max_length=1, choices=HOURS_AVAILABLE, default='0')
+    hours_week = models.CharField(verbose_name='Hours per Week', max_length=1, choices=HOURS_AVAILABLE, blank=True)
     has_startup_exp = models.BooleanField(verbose_name='Startup Experience', blank=True, default=False)
     has_funding_exp = models.BooleanField(verbose_name='Funding Experience', blank=True, default=False)
     linkedin = models.URLField(verbose_name='Linkedin', null=False, blank=True)
     website = models.URLField(verbose_name='Website', null=False, blank=True)
     github = models.URLField(verbose_name='Github', null=False, blank=True)
-    major = models.CharField(verbose_name='Major', max_length=5, choices=MAJORS, default='UND')
-    role = models.CharField(max_length=4, choices=PRIMARY_ROLE, default='NONE', blank=True, null=False)
-    positions = ChoiceArrayField(models.CharField(choices=POSITIONS, max_length=1, default='0'), default=['0'])
+    major = models.CharField(verbose_name='Major', max_length=5, choices=MAJORS, blank=True)
+
     is_filled = models.BooleanField(verbose_name='You profile not filled', null=False, default=False)
 
     def __str__(self):
         return self.user.email
 
     def check_is_filled(self):
-        if len(self.bio) > 1 and (len(self.skills) > 0 or self.experience_set.count() > 0):
+        if len(self.bio) > 1 and (len(self.skills) > 0 or self.experience_set.count() > 0) and (
+                len(self.image.name) > 0) and (
+                not self.positions is None) and (
+                not self.role is None) and (
+                not self.year is None):
             self.is_filled = True
         else:
             self.is_filled = False
@@ -223,32 +226,33 @@ class Experience(models.Model):
 
 class Founder(models.Model):
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
-    logo = CustomImageField(upload_to=company_logo_path, default='images/default/default-logo.jpg', blank=True,
-                             null=False)
+    logo = CustomImageField(upload_to=company_logo_path)
     logo_thumbnail = ImageSpecField(source='logo',
-                                      processors=[ResizeToFit(100, 100, False)],
-                                      format='PNG',
-                                      options={'quality': 100})
+                                    processors=[ResizeToFit(100, 100, False)],
+                                    format='PNG',
+                                    options={'quality': 100})
     logo_thumbnail_large = ImageSpecField(source='logo',
-                                      processors=[ResizeToFit(300, 300, False)],
-                                      format='PNG',
-                                      options={'quality': 100})
-    startup_name = models.CharField(verbose_name='Startup Name', max_length=99, blank=False)
-    description = models.TextField(verbose_name='Description', blank=False, null=False)
+                                          processors=[ResizeToFit(300, 300, False)],
+                                          format='PNG',
+                                          options={'quality': 100})
+    startup_name = models.CharField(verbose_name='Startup Name', max_length=99)
+    stage = models.CharField(verbose_name='Stage', max_length=1, choices=STAGE)
+    employee_count = models.IntegerField(verbose_name='Employees')
+    description = models.TextField(verbose_name='Description')
+    field = models.CharField(verbose_name='Field', max_length=4, choices=CATEGORY)
+
     alt_email = models.EmailField(max_length=255, db_index=True, null=True, blank=True)
-    stage = models.CharField(verbose_name='Stage', max_length=1, choices=STAGE, default='0')
-    employee_count = models.IntegerField(verbose_name='Employees', default=1)
     display_funding = models.BooleanField(blank=True, default=False)
     website = models.URLField(verbose_name='Website', blank=True, null=False)
     facebook = models.URLField(verbose_name='Facebook', blank=True, null=False)
-    field = models.CharField(verbose_name='Field', max_length=4, choices=CATEGORY, blank=True, null=False)
     is_filled = models.BooleanField(verbose_name='You startup profile not filled', null=False, default=False)
 
     def __str__(self):
         return self.user.email
 
     def save(self, *args, **kwargs):
-        if len(self.description) > 1:
+        if len(self.description) > 1 and (len(self.logo.name) > 0) and (len(self.startup_name) > 0) and (
+        not self.stage is None) and (not self.employee_count is None) and (len(self.description) > 0) and (not self.field is None):
             self.is_filled = True
         else:
             self.is_filled = False
@@ -281,9 +285,21 @@ class Connection(models.Model):
     message = models.TextField(verbose_name='Message', null=True)
 
 
-@receiver(post_save, sender=user.MyUser)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created and instance.is_individual:
-        Profile.objects.create(user=instance)
-    if created and instance.is_founder:
-        Founder.objects.create(user=instance)
+# @receiver(post_save, sender=user.MyUser)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created and instance.is_individual:
+#         Profile.objects.create(user=instance)
+#     if created and instance.is_founder:
+#         Founder.objects.create(user=instance)
+
+
+# @receiver(post_save, sender=Profile)
+# def profile_first_login(sender, instance, created, **kwargs):
+#     if instance.user.first_login:
+#         instance.user.set_first_login()
+#
+#
+# @receiver(post_save, sender=Founder)
+# def founder_first_login(sender, instance, created, **kwargs):
+#     if instance.user.first_login:
+#         instance.user.set_first_login()

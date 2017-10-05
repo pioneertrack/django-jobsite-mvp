@@ -2,577 +2,471 @@
 {% load website_tags %}
 {% load imagekit %}
 <!DOCTYPE html>
-<html lang="en" xmlns="" {% if not user.is_authenticated %}style="height: 100%"{% endif %}>
+<html lang="en" xmlns="" {% if not user.is_authenticated or not profile_edit%}style="height: 100%"{% endif %}>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="google-site-verification" content="nPkjkzj2J7V1MRk-0QBYC7GQnfKtWPBdCvvL0Y_qGbM"/>
-    <link rel='shortcut icon' type='image/x-icon' href='{% static 'img/favicon.ico' %}?r=1'/>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="google-site-verification" content="nPkjkzj2J7V1MRk-0QBYC7GQnfKtWPBdCvvL0Y_qGbM"/>
+  <link rel='shortcut icon' type='image/x-icon' href='{% static 'img/favicon.ico' %}?r=1'/>
 
-    {% block css %}
-        <link rel="stylesheet" href="{% static 'bootstrap-3/dist/css/bootstrap.min.css' %}" type="text/css">
-        {% if is_mobile %}
-            <link rel="stylesheet" href="{% static 'slidebars-fork/dist/slidebars.min.css' %}" type="text/css">
-        {% else %}
-            <link rel="stylesheet" href="{% static 'nice-select/css/nice-select.css' %}" type="text/css">
-        {% endif %}
-        <link rel="stylesheet" href="{% static 'custom-scrollbar/jquery.mCustomScrollbar.min.css' %}" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300" rel="stylesheet">
-        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.css">
-        <link rel="stylesheet" href="{% static 'css/login.css' %}" type="text/css">
-        <link rel="stylesheet" href="{% static 'css/profile.css' %}" type="text/css">
-        <link rel="stylesheet" href="{% static 'css/searchbar.css' %}" type="text/css">
-        <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
-        <script src="{% static 'jquery-modern/dist/jquery.min.js' %}"></script>
-    {% endblock css %}
+  {% block css %}
+    <link rel="stylesheet" href="{% static 'bootstrap-3/dist/css/bootstrap.min.css' %}" type="text/css">
+    {% if is_mobile %}
+      <link rel="stylesheet" href="{% static 'slidebars-fork/dist/slidebars.min.css' %}" type="text/css">
+    {% else %}
+      <link rel="stylesheet" href="{% static 'nice-select/css/nice-select.css' %}" type="text/css">
+    {% endif %}
+    <link rel="stylesheet" href="{% static 'custom-scrollbar/jquery.mCustomScrollbar.min.css' %}" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.css">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/searchbar.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <script src="{% static 'jquery-modern/dist/jquery.min.js' %}"></script>
+  {% endblock css %}
 
-    <title>{% block title %}{% endblock %}</title>
+  <title>{% block title %}{% endblock %}</title>
 
 </head>
-<body {% if not user.is_authenticated %}style="height: 100%"{% endif %}>
+<body {% if not user.is_authenticated or not profile_edit %}style="height: 100%"{% endif %}>
+
 {% if is_mobile %}
-    <div canvas="container">
-        <header class="cd-auto-hide-header">
-            <div class="logo"><a href="/"><img src="{% static 'favicon/logo.jpg' %}"/></a></div>
-            <nav class="cd-primary-nav">
-                {% if user.is_authenticated %}
-                    <a href="#cd-navigation" class="nav-trigger">
-      			<span>
-      				<em aria-hidden="true"></em>
-      				Menu
-      			</span>
-                    </a><!-- .nav-trigger -->
-                    <ul id="cd-navigation">
-                        {% if user.is_individual %}
-                            <li>
-                                <a href="{% url 'website:profile' %}">
-                                    My Profile
-                                </a>
-                            </li>
-                        {% endif %}
-                        {% if user.is_founder %}
-                            <li>
-                                <a href="{% url 'website:startup_profile' %}">
-                                    {% if user.is_individual %}
-                                        Startup Profile
-                                    {% else %}
-                                        My profile
-                                    {% endif %}
-                                </a>
-                            </li>
-                        {% endif %}
-                        <li><a href="{% url 'website:settings' %}">Settings</a></li>
-                        <li><a href="/logout/">Logout</a></li>
-                    </ul>
-                {% elif not user.is_authenticated %}
-                    <div class="unauth-nav">
-                        {% if request.path != '/register/' %}
-                            <button type="button" class="btn btn-register">Register</button>
-                        {% else %}
-                            <button type="button" class="btn btn-login">Login</button>
-                        {% endif %}
-                    </div>
-                {% endif %}
-            </nav> <!-- .cd-primary-nav -->
-
-            {% if user.is_authenticated %}
-                <nav class="cd-secondary-nav">
-
-                    <form id="mainform" action="/search/" autocomplete="off" method="POST">
-                        {% csrf_token %}
-
-                        <div id="search" class="cd-main-search is-visible">
-
-                            <div class="searchform">
-
-                                <div class="cd-show-filter toggle-id-1">
-                                    <i class="fa fa-bars" aria-hidden="true"></i>
-                                </div>
-
-                                <input class="for-mobile" type="search" name="query" placeholder="Search... ">
-
-                                <div class="cd-search-button for-mobile">
-                                    <button id="searchbutton" type="submit" class="btn btn-success">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </form>
-
-                </nav> <!-- .cd-secondary-nav -->
-            {% endif %}
-
-        </header> <!-- .cd-auto-hide-header -->
-
-        <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %}" {% if not user.is_authenticated %} style="background-color:#25283D; min-height: 100%"{% endif %} >
-            {% if messages and user.is_authenticated %}
-                <ul class="messages {% if  filter_startups or filter_people or filter_jobs %}tags{% endif %}">
-                </ul>
-                <div style="position:fixed;width:30%;z-index:1000;bottom:1.5%;right:1%;">
-                    {% for message in messages %}
-                        <div class="message alert {% if message.tags %} alert-{{ message.tags }} {% endif %} fade in"
-                             style="position:relative; z-index:1000; width:100%;">
-                            <a href="#" class="close" data-dismiss="alert">&times;</a>
-                            {% if message.tags %}<strong>{{ message.tags|capfirst }}!</strong>{% endif %} {{ message }}.
-                        </div>
-                    {% endfor %}
-                </div>
-            {% elif user.is_authenticated %}
-                <div class="messages"></div>
-            {% endif %}
-            {% block mobile_content %}{% endblock %}
-        </main> <!-- .cd-main-content -->
-
-        <a href="#0" class="cd-top"></a>
-
-        {#    <div class="loading-overlay">#}
-        {#      <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>#}
-        {#    </div>#}
-
-    </div>
-
-    <div off-canvas="id-1 left reveal" class="mobile-filters search-select">
-        <div class="mobile-filter-header">
-            <div class="filter-header">
-                <a class="toggle-id-1">Back</a>
-            </div>
-        </div>
-
-        <div class="checkboxes">
-            <div class="filter-container search-category">
-                <div class="top">
-                    <div class="filter-header text-capitalize link-blue">
-                        Search for
-                    </div>
-                    <div class="filter-header text-right current text-capitalize">
-                        {% if search_category %}
-                            {{ search_category }}
-                        {% elif not founder %}
-                            Partners
-                        {% endif %}
-                    </div>
-                </div>
-
-                <input id="partners" form="mainform" type="radio" name="select-category" value="partners"
-                       {% if not founder and not search_category %}checked{% elif search_category == 'partners' %}
-                       checked{% endif %}/>
-                <label for="partners">
-                    Partners
-                    <i class="fa fa-circle-o"></i>
-                    <i class="fa fa-dot-circle-o"></i>
-                </label>
-                <input id="employees" form="mainform" type="radio" name="select-category" value="employees"
-                       {% if search_category == 'employees' %}checked{% endif %}/>
-                <label for="employees">
-                    Employees
-                    <i class="fa fa-circle-o"></i>
-                    <i class="fa fa-dot-circle-o"></i>
-                </label>
-                <input id="freelancers" form="mainform" type="radio" name="select-category" value="freelancers"
-                       {% if search_category == 'freelancers' %}checked{% endif %}/>
-                <label for="freelancers">
-                    Freelancers
-                    <i class="fa fa-circle-o"></i>
-                    <i class="fa fa-dot-circle-o"></i>
-                </label>
-                <input id="startups" form="mainform" type="radio" name="select-category" value="startups"
-                       {% if search_category == 'startups' %}checked{% endif %}/>
-                <label for="startups">
-                    Startups
-                    <i class="fa fa-circle-o"></i>
-                    <i class="fa fa-dot-circle-o"></i>
-                </label>
-                <input id="jobs" form="mainform" type="radio" name="select-category" value="jobs"
-                       {% if search_category == 'jobs' %}checked{% endif %}/>
-                <label for="jobs">
-                    Jobs
-                    <i class="fa fa-circle-o"></i>
-                    <i class="fa fa-dot-circle-o"></i>
-                </label>
-            </div>
-        </div>
-
-
-    </div>
-
-    <div off-canvas="id-2 left overlay" class="mobile-filters filter-select">
-        <div class="mobile-filter-header">
-            <div class="filter-header">
-                <a class="toggle-id-2">Back</a>
-            </div>
-            <div class="filter-header">
-                Filters
-            </div>
-            <div class="filter-header">
-                <a id="reset">Reset</a>
-            </div>
-
-        </div>
-        <div class="checkboxes partners">
-            <div class="top">
-                <div class="filter-header text-capitalize link-blue">
-                    Search for
-                </div>
-                <div class="filter-header text-right current text-capitalize">
-                    Partners
-                </div>
-            </div>
-            {% for item in p_context %}
-                <div class="filter-container">
-                    <div class="filter-title-block">
-                        {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
-                    </div>
-                    {% for subitem in item.1 %}
-                        <input id="{{ subitem.0 }}_{{ item.0 }}_partners" form="mainform" type="checkbox"
-                               value="{{ subitem.0 }}"
-                               name="{{ item.0 }}_partners"
-                               class="text-capitalize"
-                                {% if mobile_filter %}
-                                    {% in_list mobile_filter item.0|add:"_partners" as b_val %}
-                               {% if subitem.0 in b_val %}checked{% endif %}
-                                {% endif %}/>
-                        <label for="{{ subitem.0 }}_{{ item.0 }}_partners"
-                                {% if forloop.counter > 3 %} class="_hidden" {% endif %}
-                        >
-                            {{ subitem.1 }}
-                            <i class="fa fa-square"></i>
-                            <i class="fa fa-check-square"></i>
-                        </label>
-                    {% endfor %}
-                    {% if item.1|length > 3 %}
-                        <button class="btn btn-primary filter-show">Show all</button>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        </div>
-
-        <div class="checkboxes employees">
-            <div class="top">
-                <div class="filter-header text-capitalize link-blue">
-                    Search for
-                </div>
-                <div class="filter-header text-right current text-capitalize">
-                    Employees
-                </div>
-            </div>
-            {% for item in p_context %}
-                <div class="filter-container">
-                    <div class="filter-title-block">
-                        {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
-                    </div>
-                    {% for subitem in item.1 %}
-                        <input id="{{ subitem.0 }}_{{ item.0 }}_employees" form="mainform" type="checkbox"
-                               value="{{ subitem.0 }}"
-                               name="{{ item.0 }}_employees"
-                               class="text-capitalize"
-                                {% if mobile_filter %}
-                                    {% in_list mobile_filter item.0|add:"_employees" as b_val %}
-                               {% if subitem.0 in b_val %}checked{% endif %}
-                                {% endif %}/>
-                        <label for="{{ subitem.0 }}_{{ item.0 }}_employees"
-                                {% if forloop.counter > 3 %} class="_hidden" {% endif %}
-                        >
-                            {{ subitem.1 }}
-                            <i class="fa fa-square"></i>
-                            <i class="fa fa-check-square"></i>
-                        </label>
-                    {% endfor %}
-                    {% if item.1|length > 3 %}
-                        <button class="btn btn-primary filter-show">Show all</button>
-                    {% endif %}
-                </div>
-            {% endfor %}
-            {% for item in e_context %}
-                <div class="filter-container">
-                    <div class="filter-title-block">
-                        {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
-                    </div>
-                    {% for subitem in item.1 %}
-                        <input id="{{ subitem.0 }}_{{ item.0 }}_employees" form="mainform" type="checkbox"
-                               value="{{ subitem.0 }}"
-                               name="{{ item.0 }}_employees"
-                               class="text-capitalize"
-                                {% if mobile_filter %}
-                                    {% in_list mobile_filter item.0|add:"_employees" as b_val %}
-                               {% if subitem.0 in b_val %}checked{% endif %}
-                                {% endif %}/>
-                        <label for="{{ subitem.0 }}_{{ item.0 }}_employees"
-                                {% if forloop.counter > 3 %} class="_hidden" {% endif %}
-                        >
-                            {{ subitem.1 }}
-                            <i class="fa fa-square"></i>
-                            <i class="fa fa-check-square"></i>
-                        </label>
-                    {% endfor %}
-                    {% if item.1|length > 3 %}
-                        <button class="btn btn-primary filter-show">Show all</button>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        </div>
-
-        <div class="checkboxes freelancers">
-            <div class="top">
-                <div class="filter-header text-capitalize link-blue">
-                    Search for
-                </div>
-                <div class="filter-header text-right current text-capitalize">
-                    Freelancers
-                </div>
-            </div>
-            {% for item in p_context %}
-                <div class="filter-container">
-                    <div class="filter-title-block">
-                        {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
-                    </div>
-                    {% for subitem in item.1 %}
-                        <input id="{{ subitem.0 }}_{{ item.0 }}_freelancers" form="mainform" type="checkbox"
-                               value="{{ subitem.0 }}"
-                               name="{{ item.0 }}_freelancers"
-                               class="text-capitalize"
-                                {% if mobile_filter %}
-                                    {% in_list mobile_filter item.0|add:"_freelancers" as b_val %}
-                               {% if subitem.0 in b_val %}checked{% endif %}
-                                {% endif %}/>
-                        <label for="{{ subitem.0 }}_{{ item.0 }}_freelancers"
-                                {% if forloop.counter > 3 %} class="_hidden" {% endif %}
-                        >
-                            {{ subitem.1 }}
-                            <i class="fa fa-square"></i>
-                            <i class="fa fa-check-square"></i>
-                        </label>
-                    {% endfor %}
-                    {% if item.1|length > 3 %}
-                        <button class="btn btn-primary filter-show">Show all</button>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        </div>
-
-        <div class="checkboxes jobs">
-            <div class="top">
-                <div class="filter-header text-capitalize link-blue">
-                    Search for
-                </div>
-                <div class="filter-header text-right current text-capitalize">
-                    Jobs
-                </div>
-            </div>
-            {% for item in job_context %}
-                <div class="filter-container">
-                    <div class="filter-title-block">
-                        {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
-                    </div>
-                    {% for subitem in item.1 %}
-                        <input id="{{ subitem.0 }}_{{ item.0 }}_jobs" form="mainform" type="checkbox"
-                               value="{{ subitem.0 }}"
-                               name="{{ item.0 }}"
-                               class="text-capitalize"
-                                {% if mobile_filter %}
-                                    {% in_list mobile_filter item.0 as b_val %}
-                               {% if subitem.0 in b_val %}checked{% endif %}
-                                {% endif %}/>
-                        <label for="{{ subitem.0 }}_{{ item.0 }}_jobs"
-                                {% if forloop.counter > 3 %} class="_hidden" {% endif %}
-                        >
-                            {{ subitem.1 }}
-                            <i class="fa fa-square"></i>
-                            <i class="fa fa-check-square"></i>
-                        </label>
-                    {% endfor %}
-                    {% if item.1|length > 3 %}
-                        <button class="btn btn-primary filter-show">Show all</button>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        </div>
-
-        <div class="checkboxes startups">
-            <div class="top">
-                <div class="filter-header text-capitalize link-blue">
-                    Search for
-                </div>
-                <div class="filter-header text-right current text-capitalize">
-                    Startups
-                </div>
-            </div>
-            {% for item in f_context %}
-                <div class="filter-container">
-                    <div class="filter-title-block">
-                        {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
-                    </div>
-                    {% for subitem in item.1 %}
-                        <input id="{{ subitem.0 }}_{{ item.0 }}_startups" form="mainform" type="checkbox"
-                               value="{{ subitem.0 }}"
-                               name="{{ item.0 }}"
-                               class="text-capitalize"
-                                {% if mobile_filter %}
-                                    {% in_list mobile_filter item.0 as b_val %}
-                               {% if subitem.0 in b_val %}checked{% endif %}
-                                {% endif %}/>
-                        <label for="{{ subitem.0 }}_{{ item.0 }}_startups"
-                                {% if forloop.counter > 3 %} class="_hidden" {% endif %}
-                        >
-                            {{ subitem.1 }}
-                            <i class="fa fa-square"></i>
-                            <i class="fa fa-check-square"></i>
-                        </label>
-                    {% endfor %}
-                    {% if item.1|length > 3 %}
-                        <button class="btn btn-primary filter-show">Show all</button>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        </div>
-
-        <div class="checkboxes bottom">
-            <div class="filter-header">
-                <button class="btn btn-primary toggle-id-1-find">Done</button>
-            </div>
-            <div class="filter-header">
-                <button form="mainform" type="submit" class="btn btn-primary toggle-id-1-find">Find</button>
-            </div>
-        </div>
-
-    </div>
-
-{% else %}
-
+  <div canvas="container">
     <header class="cd-auto-hide-header">
-        <div class="logo"><a href="/"><img src="{% static 'favicon/logo.jpg' %}"/></a></div>
-        <nav class="cd-primary-nav">
-            {% if user.is_authenticated %}
-                <a href="#cd-navigation" class="nav-trigger">
-      			<span>
-      				<em aria-hidden="true"></em>
-      				Menu
-      			</span>
-                </a><!-- .nav-trigger -->
-                <ul id="cd-navigation">
-
-                    <li>
-                        {% if user.is_founder and user.is_individual %}
-                            <a href="" id="profiles_holder">
-                                <select class="filter small" style="display: none;">
-                                    <option data-display="My Profiles">Nothing</option>
-                                    {% if user.is_individual %}
-                                        <option value="{% url 'website:profile' %}">My Profile</option>
-                                    {% endif %}
-
-                                    {% if user.is_founder %}
-                                        <option value="{% url 'website:startup_profile' %}">Startup Profile</option>
-                                    {% endif %}
-                                </select>
-                            </a>
-                        {% else %}
-                            {% if user.is_founder %}
-                                <a href="{% url 'website:startup_profile' %}">My Profile</a>
-                            {% else %}
-                                <a href="{% url 'website:profile' %}">
-                                    {% if user.profile.image.url %}
-                                        <img id="headerthumbnail" src="{{ user.profile.image_thumbnail.url }}">
-                                    {% endif %}
-                                    My Profile
-                                </a>
-                            {% endif %}
-                        {% endif %}
-                    </li>
-
-                    <li><a href="{% url 'website:settings' %}">Settings</a></li>
-                    <li><a href="/logout/">Logout</a></li>
-                </ul>
-            {% elif not user.is_authenticated %}
-                <div class="unauth-nav">
-                    {% if request.path != '/register/' %}
-                        <button type="button" class="btn btn-register">Register</button>
-                    {% else %}
-                        <button type="button" class="btn btn-login">Login</button>
-                    {% endif %}
-                </div>
-            {% endif %}
-        </nav> <!-- .cd-primary-nav -->
-
+      <div class="logo"><a href="/"><img src="{% static 'favicon/logo.png' %}"/></a></div>
+      <nav class="cd-primary-nav">
         {% if user.is_authenticated %}
-            {% block search_form %}{% endblock search_form %}
+          <a href="#cd-navigation" class="nav-trigger">
+                      <span>
+                        <em aria-hidden="true"></em>
+                        Menu
+                      </span>
+          </a><!-- .nav-trigger -->
+          <ul id="cd-navigation">
+            {% if not user.first_login %}
+              {% if user.is_individual %}
+                <li>
+                  <a href="{% url 'website:profile' %}">
+                    My Profile
+                  </a>
+                </li>
+              {% endif %}
+              {% if user.is_founder %}
+                <li>
+                  <a href="{% url 'website:startup_profile' %}">
+                    {% if user.is_individual %}
+                      Startup Profile
+                    {% else %}
+                      My profile
+                    {% endif %}
+                  </a>
+                </li>
+              {% endif %}
+              <li><a href="{% url 'website:settings' %}">Settings</a></li>
+            {% endif %}
+            <li><a href="/logout/">Logout</a></li>
+          </ul>
+        {% elif not user.is_authenticated %}
+          <div class="unauth-nav">
+            {% if request.path != '/register/' %}
+              <button type="button" class="btn btn-register">Register</button>
+            {% else %}
+              <button type="button" class="btn btn-login">Login</button>
+            {% endif %}
+          </div>
         {% endif %}
+      </nav> <!-- .cd-primary-nav -->
+
+      {% if user.is_authenticated %}
+        <nav class="cd-secondary-nav">
+
+          <form id="mainform" action="/search/" autocomplete="off" method="POST">
+            {% csrf_token %}
+
+            <div id="search" class="cd-main-search is-visible">
+
+              <div class="searchform">
+
+                <div class="cd-show-filter toggle-id-1">
+                  <i class="fa fa-bars" aria-hidden="true"></i>
+                </div>
+
+                <input class="for-mobile" type="search" name="query" placeholder="Search... ">
+
+                <div class="cd-search-button for-mobile">
+                  <button id="searchbutton" type="submit" class="btn btn-success">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+          </form>
+
+        </nav> <!-- .cd-secondary-nav -->
+      {% endif %}
 
     </header> <!-- .cd-auto-hide-header -->
 
-    <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %}"
+    <main class="cd-main-content mc-padding"
+{#    {% if profile_edit %}profile-edit{% endif %} {% if not user.first_login and profile_edit %}not-first-login{% endif %}"#}
           style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}">
-        {% if messages and user.is_authenticated %}
-            <ul class="messages {% if  filter_startups or filter_people or filter_jobs %}tags{% endif %}">
-            </ul>
-            <div style="position:fixed;width:30%;z-index:1000;bottom:1.5%;right:1%;">
-                {% for message in messages %}
-                    <div class="message alert {% if message.tags %} alert-{{ message.tags }} {% endif %} fade in"
-                         style="position:relative; z-index:1000; width:100%;">
-                        <a href="#" class="close" data-dismiss="alert">&times;</a>
-                        {% if message.tags %}<strong>{{ message.tags|capfirst }}!</strong>{% endif %} {{ message }}.
-                    </div>
-                {% endfor %}
+      {% if messages and user.is_authenticated %}
+{#        <ul class="messages {% if  filter_startups or filter_people or filter_jobs %}tags{% endif %}">#}
+{#        </ul>#}
+        <div style="position:fixed;width:30%;z-index:1000;bottom:1.5%;right:1%;">
+          {% for message in messages %}
+            <div class="message alert {% if message.tags %} alert-{{ message.tags }} {% endif %} fade in"
+                 style="position:relative; z-index:1000; width:100%;">
+              <a href="#" class="close" data-dismiss="alert">&times;</a>
+              {% if message.tags %}<strong>{{ message.tags|capfirst }}!</strong>{% endif %} {{ message }}.
             </div>
-        {% endif %}
-        {% block content %}{% endblock %}
+          {% endfor %}
+        </div>
+      {% elif user.is_authenticated %}
+        <div class="messages"></div>
+      {% endif %}
+      {% block mobile_content %}{% endblock %}
     </main> <!-- .cd-main-content -->
 
     <a href="#0" class="cd-top"></a>
 
+    {#    <div class="loading-overlay">#}
+    {#      <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>#}
+    {#    </div>#}
+
+  </div>
+
+  <div off-canvas="id-1 left reveal" class="mobile-filters search-select">
+    <div class="mobile-filter-header">
+      <div class="filter-header">
+        <a class="toggle-id-1">Back</a>
+      </div>
+    </div>
+
+    <div class="checkboxes">
+      <div class="filter-container search-category">
+        <div class="top">
+          <div class="filter-header text-capitalize link-blue">
+            Search for
+          </div>
+          <div class="filter-header text-right current text-capitalize">
+            {% if search_category %}
+              {{ search_category }}
+            {% elif not founder %}
+              People
+            {% endif %}
+          </div>
+        </div>
+
+        <input id="people" form="mainform" type="radio" name="select-category" value="people"
+               {% if search_category == 'people' %}checked{% endif %}/>
+        <label for="people">
+          People
+          <i class="fa fa-circle-o"></i>
+          <i class="fa fa-dot-circle-o"></i>
+        </label>
+        <input id="startups" form="mainform" type="radio" name="select-category" value="startups"
+               {% if search_category == 'startups' %}checked{% endif %}/>
+        <label for="startups">
+          Startups
+          <i class="fa fa-circle-o"></i>
+          <i class="fa fa-dot-circle-o"></i>
+        </label>
+        <input id="jobs" form="mainform" type="radio" name="select-category" value="jobs"
+               {% if search_category == 'jobs' %}checked{% endif %}/>
+        <label for="jobs">
+          Jobs
+          <i class="fa fa-circle-o"></i>
+          <i class="fa fa-dot-circle-o"></i>
+        </label>
+      </div>
+    </div>
+
+
+  </div>
+
+  <div off-canvas="id-2 left overlay" class="mobile-filters filter-select">
+    <div class="mobile-filter-header">
+      <div class="filter-header">
+        <a class="toggle-id-2">Back</a>
+      </div>
+      <div class="filter-header">
+        Filters
+      </div>
+      <div class="filter-header">
+        <a id="reset">Reset</a>
+      </div>
+
+    </div>
+
+    <div class="checkboxes people">
+      <div class="top">
+        <div class="filter-header text-capitalize link-blue">
+          Search for
+        </div>
+        <div class="filter-header text-right current text-capitalize">
+          People
+        </div>
+      </div>
+      {% for item in p_context %}
+        <div class="filter-container">
+          <div class="filter-title-block">
+            {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
+          </div>
+          {% for subitem in item.1 %}
+            <input id="{{ subitem.0 }}_{{ item.0 }}" form="mainform" type="checkbox"
+                   value="{{ subitem.0 }}"
+                   name="{{ item.0 }}"
+                   class="text-capitalize"
+                {% if mobile_filter %}
+                  {% in_list mobile_filter item.0 as b_val %}
+                   {% if subitem.0 in b_val %}checked{% endif %}
+                {% endif %}/>
+            <label for="{{ subitem.0 }}_{{ item.0 }}"
+                {% if forloop.counter > 3 %} class="_hidden" {% endif %}
+            >
+              {{ subitem.1 }}
+              <i class="fa fa-square"></i>
+              <i class="fa fa-check-square"></i>
+            </label>
+          {% endfor %}
+          {% if item.1|length > 3 %}
+            <button class="btn btn-primary filter-show">Show all</button>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="checkboxes jobs">
+      <div class="top">
+        <div class="filter-header text-capitalize link-blue">
+          Search for
+        </div>
+        <div class="filter-header text-right current text-capitalize">
+          Jobs
+        </div>
+      </div>
+      {% for item in job_context %}
+        <div class="filter-container">
+          <div class="filter-title-block">
+            {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
+          </div>
+          {% for subitem in item.1 %}
+            <input id="{{ subitem.0 }}_{{ item.0 }}_jobs" form="mainform" type="checkbox"
+                   value="{{ subitem.0 }}"
+                   name="{{ item.0 }}"
+                   class="text-capitalize"
+                {% if mobile_filter %}
+                  {% in_list mobile_filter item.0 as b_val %}
+                   {% if subitem.0 in b_val %}checked{% endif %}
+                {% endif %}/>
+            <label for="{{ subitem.0 }}_{{ item.0 }}_jobs"
+                {% if forloop.counter > 3 %} class="_hidden" {% endif %}
+            >
+              {{ subitem.1 }}
+              <i class="fa fa-square"></i>
+              <i class="fa fa-check-square"></i>
+            </label>
+          {% endfor %}
+          {% if item.1|length > 3 %}
+            <button class="btn btn-primary filter-show">Show all</button>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="checkboxes startups">
+      <div class="top">
+        <div class="filter-header text-capitalize link-blue">
+          Search for
+        </div>
+        <div class="filter-header text-right current text-capitalize">
+          Startups
+        </div>
+      </div>
+      {% for item in f_context %}
+        <div class="filter-container">
+          <div class="filter-title-block">
+            {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
+          </div>
+          {% for subitem in item.1 %}
+            <input id="{{ subitem.0 }}_{{ item.0 }}_startups" form="mainform" type="checkbox"
+                   value="{{ subitem.0 }}"
+                   name="{{ item.0 }}"
+                   class="text-capitalize"
+                {% if mobile_filter %}
+                  {% in_list mobile_filter item.0 as b_val %}
+                   {% if subitem.0 in b_val %}checked{% endif %}
+                {% endif %}/>
+            <label for="{{ subitem.0 }}_{{ item.0 }}_startups"
+                {% if forloop.counter > 3 %} class="_hidden" {% endif %}
+            >
+              {{ subitem.1 }}
+              <i class="fa fa-square"></i>
+              <i class="fa fa-check-square"></i>
+            </label>
+          {% endfor %}
+          {% if item.1|length > 3 %}
+            <button class="btn btn-primary filter-show">Show all</button>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="checkboxes bottom">
+      <div class="filter-header">
+        <button class="btn btn-primary toggle-id-1-find">Done</button>
+      </div>
+      <div class="filter-header">
+        <button form="mainform" type="submit" class="btn btn-primary toggle-id-1-find">Find</button>
+      </div>
+    </div>
+
+  </div>
+
+{% else %}
+
+  <header class="cd-auto-hide-header">
+    <div class="logo"><a href="/"><img src="{% static 'favicon/logo.png' %}"/></a></div>
+    <nav class="cd-primary-nav">
+      {% if user.is_authenticated %}
+        <a href="#cd-navigation" class="nav-trigger">
+      			<span>
+      				<em aria-hidden="true"></em>
+      				Menu
+      			</span>
+        </a><!-- .nav-trigger -->
+        <ul id="cd-navigation">
+          {% if not user.first_login %}
+            <li>
+              {% if user.is_founder and user.is_individual %}
+                <a href="" id="profiles_holder">
+                  <select class="filter small" style="display: none;">
+                    <option data-display="My Profiles">Nothing</option>
+                    {% if user.is_individual %}
+                      <option value="{% url 'website:profile' %}">My Profile</option>
+                    {% endif %}
+
+                    {% if user.is_founder %}
+                      <option value="{% url 'website:startup_profile' %}">Startup Profile</option>
+                    {% endif %}
+                  </select>
+                </a>
+              {% else %}
+                {% if user.is_founder %}
+                  <a href="{% url 'website:startup_profile' %}">My Profile</a>
+                {% else %}
+                  <a href="{% url 'website:profile' %}">
+                    {% if user.profile.image.url %}
+                      <img id="headerthumbnail" src="{{ user.profile.image_thumbnail.url }}">
+                    {% endif %}
+                    My Profile
+                  </a>
+                {% endif %}
+              {% endif %}
+            </li>
+            <li><a href="{% url 'website:settings' %}">Settings</a></li>
+          {% endif %}
+          <li><a href="/logout/">Logout</a></li>
+        </ul>
+      {% elif not user.is_authenticated %}
+        <div class="unauth-nav">
+          {% if request.path != '/register/' %}
+            <button type="button" class="btn btn-register">Register</button>
+          {% else %}
+            <button type="button" class="btn btn-login">Login</button>
+          {% endif %}
+        </div>
+      {% endif %}
+    </nav> <!-- .cd-primary-nav -->
+
+    {% if user.is_authenticated %}
+      {% block search_form %}{% endblock search_form %}
+    {% endif %}
+
+  </header> <!-- .cd-auto-hide-header -->
+    <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %}"
+{#    {% if profile_edit %}profile-edit{% endif %} {% if not user.first_login and profile_edit %}not-first-login{% endif %}"#}
+          style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}">
+
+{#  <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %} {% if profile_edit %}profile-edit{% endif %}"#}
+{#    {% if not profile_edit %}#}
+{#        style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}"#}
+{#    {% endif %}#}
+{#  >#}
+    {% if messages and user.is_authenticated %}
+{#      <ul class="messages {% if  filter_startups or filter_people or filter_jobs %}tags{% endif %}">#}
+{#      </ul>#}
+      <div style="position:fixed;width:30%;z-index:1000;bottom:1.5%;right:1%;">
+        {% for message in messages %}
+          <div class="message alert {% if message.tags %} alert-{{ message.tags }} {% endif %} fade in"
+               style="position:relative; z-index:1000; width:100%;">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            {% if message.tags %}<strong>{{ message.tags|capfirst }}!</strong>{% endif %} {{ message }}.
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main> <!-- .cd-main-content -->
+
+  <a href="#0" class="cd-top"></a>
+
 {% endif %}
 
 {% block user_info %}
-    {% if user.first_name %}
-        <script type="text/javascript">
-            name = {%if not user.is_founder%}'{{user.first_name|safe}}'
-                {%else%}'{{user.founder.startup_name|safe}}';{%endif%}
-            user = '{{user.id|safe}}';
-        </script>
-    {% endif %}
+  {% if user.first_name %}
+    <script type="text/javascript">
+      name = {%if not user.is_founder%}'{{user.first_name|safe}}';
+        {%else%}'{{user.founder.startup_name|safe}}';{%endif%}
+      user = '{{user.id|safe}}';
+    </script>
+  {% endif %}
 {% endblock %}
 
 {% if GOOGLE_ANALYTICS_PROPERTY_ID %}
-    <script>
-        (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r;
-            i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments);
-            }, i[r].l = 1 * new Date();
-            a = s.createElement(o),
-                m = s.getElementsByTagName(o)[0];
-            a.async = 1;
-            a.src = g;
-            m.parentNode.insertBefore(a, m);
-        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+  <script>
+    (function(i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments);
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+          m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m);
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-        ga('create', '{{ GOOGLE_ANALYTICS_PROPERTY_ID }}', '{{ GOOGLE_ANALYTICS_DOMAIN }}');
-        ga('send', 'pageview');
+    ga('create', '{{ GOOGLE_ANALYTICS_PROPERTY_ID }}', '{{ GOOGLE_ANALYTICS_DOMAIN }}');
+    ga('send', 'pageview');
 
-    </script>
+  </script>
 {% endif %}
 {% block js %}
-        <script src="{% static 'jquery-modern/dist/jquery.min.js' %}"></script>
-        <script src="{% static 'bootstrap-3/dist/js/bootstrap.min.js' %}"></script>
-        {% if is_mobile %}
-            <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
-            <script src="{% static 'slidebars-fork/dist/slidebars.min.js' %}"></script>
-            <script src="{% static 'detect_swipe/jquery.detect_swipe.js' %}"></script>
-            <script src="{% static 'js/mobile.js' %}"></script>
-        {% else %}
-            <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
-            <script src="{% static 'js/responsive.js' %}"></script>
-        {% endif %}
-        <script src="{% static 'js/Modernizer.js' %}"></script>
-        <script src="{% static 'custom-scrollbar/jquery.mCustomScrollbar.concat.min.js' %}"></script>
-        <script src="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.js"></script>
-        <script src="{% static 'js/navbar.js' %}"></script>
-        <script src="{% static 'js/script.js' %}"></script>
-{#        <script src="{% static 'underscore/underscore.js' %}"></script>#}
-    {% endblock js %}
+  <script src="{% static 'jquery-modern/dist/jquery.min.js' %}"></script>
+  <script src="{% static 'bootstrap-3/dist/js/bootstrap.min.js' %}"></script>
+  {% if is_mobile %}
+    <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
+    <script src="{% static 'slidebars-fork/dist/slidebars.min.js' %}"></script>
+    <script src="{% static 'detect_swipe/jquery.detect_swipe.js' %}"></script>
+    <script src="{% static 'js/mobile.js' %}"></script>
+  {% else %}
+    <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
+    <script src="{% static 'js/responsive.js' %}"></script>
+  {% endif %}
+  <script src="{% static 'js/Modernizer.js' %}"></script>
+  <script src="{% static 'custom-scrollbar/jquery.mCustomScrollbar.concat.min.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.js"></script>
+  <script src="{% static 'js/navbar.js' %}"></script>
+  <script src="{% static 'js/script.js' %}"></script>
+  {#        <script src="{% static 'underscore/underscore.js' %}"></script>#}
+{% endblock js %}
 </body>
 </html>

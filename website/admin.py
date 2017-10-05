@@ -38,7 +38,7 @@ class MyUserAdmin(BaseUserAdmin):
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     list_display = ('email', 'first_name', 'last_name', 'is_individual', 'is_founder', 'is_active', 'is_admin',
-                    'is_account_disabled', 'get_year', 'registered_at')
+                    'is_account_disabled', 'get_year', 'registered_at', 'last_login')
     list_filter = ('is_admin','is_active', 'is_founder', 'registered_at')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
@@ -139,7 +139,7 @@ class FounderResource(resources.ModelResource):
 
 
 class FounderAdmin(ImportExportModelAdmin):
-    list_display = ('user','startup_name','stage','field','employee_count',)
+    list_display = ('user','startup_name','stage','field','employee_count', 'is_filled')
     list_filter = ('stage','field','is_filled')
     fieldsets = (
         (None,         {'fields': ['user','startup_name','logo','display_funding']}),
@@ -148,7 +148,7 @@ class FounderAdmin(ImportExportModelAdmin):
     )
     inlines = (FundingInline,)
 
-    ordering = ('user',)
+    ordering = ('user', 'is_filled')
 
     resource_class = FounderResource
     pass
@@ -279,7 +279,7 @@ class ProfileResource(resources.ModelResource):
 
 
 class ProfileAdmin(ImportExportModelAdmin):
-    list_display = ('user', 'major', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp')
+    list_display = ('user', 'major', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'is_filled')
     list_filter = ('major','year','has_startup_exp','has_funding_exp', 'is_filled')
     fieldsets = (
         (None,         {'fields': ['user','bio','interests']}),
@@ -290,7 +290,7 @@ class ProfileAdmin(ImportExportModelAdmin):
     )
     inlines = (ExperienceInline,)
 
-    ordering = ('user',)
+    ordering = ('user', 'is_filled')
 
     resource_class = ProfileResource
     pass

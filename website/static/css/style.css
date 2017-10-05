@@ -73,8 +73,12 @@ ul#cd-navigation div.nice-select ul.list li {
 }
 
 .welcome-links {
-    display: flex;
+    display: none;
     height: 100%;
+    overflow: hidden;
+}
+.welcome-links.visible {
+    display: flex;
 }
 
 .welcome-links a {
@@ -88,45 +92,43 @@ ul#cd-navigation div.nice-select ul.list li {
     vertical-align: middle;
     position: relative;
 }
-
+.welcome-links a.welcome-startups {
+    background-image: url("../images/default/tower.jpg");
+}
+.welcome-links a.welcome-members {
+    background-image: url("../images/default/gates.jpg");
+}
 .welcome-links a span {
     position: absolute;
     top:50%;
     left: 50%;
-    /*z-index: 100;*/
     font-size: 48px;
     transform: translate(-50%, -50%);
 }
 
-.welcome-links a:hover {
-    /*width: 100%;*/
-    /*display: block;*/
-    /*height: 90vh;*/
-    /*background-position: center center;*/
-    /*background-repeat: no-repeat;*/
-    /*background-size: cover;*/
-    /*background-color: #3c3c3c;*/
-    /*color: white;*/
-    /*text-align: center;*/
-    /*vertical-align: middle;*/
-    /*font-size: 20px;*/
+.welcome-links a > .overlay, .welcome-card > div.overlay {
+    width:100%;
+    height:100%;
+    top: 100%;
+    left: 0;
+    position:absolute;
+    opacity:1;
+    background: rgba(44,62,80,0.7);
 }
 
-.welcome-links a > .overlay {
-    display: none;
-}
-
-.welcome-links a:hover > .overlay, .welcome-card:hover > .overlay {
+.welcome-links a:hover > .overlay, .welcome-card:hover > div.overlay {
     display: block;
     width:100%;
     height:100%;
-    position:absolute;
-    background-color:#3c3c3c;
-    opacity:0.5;
-    /*z-index: 10;*/
+    top: 0;
+    webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    transition: all 0.5s ease;
 }
 
-.welcome-links .welcome-card div {
+.welcome-links .welcome-card div.oppo {
     font-size: 48px;
     position: absolute;
     bottom: 0;
@@ -149,21 +151,35 @@ ul#cd-navigation div.nice-select ul.list li {
     width: 25%;
     border-radius: 10px;
     overflow: hidden;
- -webkit-box-shadow: inset 0px -75px 30px -8px rgba(50, 50, 50, 0.75);
--moz-box-shadow:    inset 0px -75px 30px -8px rgba(50, 50, 50, 0.75);
-box-shadow:         inset 0px -75px 30px -8px rgba(50, 50, 50, 0.75);}
-
+    -webkit-box-shadow: inset 0px -75px 30px -8px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow:    inset 0px -75px 30px -8px rgba(50, 50, 50, 0.75);
+    box-shadow:         inset 0px -75px 30px -8px rgba(50, 50, 50, 0.75);
+}
 .welcome-links .welcome-card a {
     display: block;
     height: 100%;
     width: 100%;
     top: 0;
 }
-
-html, body {
-    min-height: 100%; height: 100%;
+html {
+    min-height: 100%;
 }
-
+body {
+    min-height: 100%;
+}
+height-100 {
+    height: 100%
+}
 .mc-padding {
     padding-top: 80px;
+}
+.overlay .slogan {
+    text-align: center;
+    font-size: 1.6em;
+    margin-top: 120px;
+    color: white;
+}
+
+.welcome-card .overlay .slogan {
+    margin-top: 20px;
 }
