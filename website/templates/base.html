@@ -81,7 +81,8 @@
         {% endif %}
       </nav> <!-- .cd-primary-nav -->
 
-      {% if user.is_authenticated %}
+      {% if user.is_authenticated and not user.first_login %}
+        {% if user.profile.is_filled and user.is_individual and user.founder.is_filled and user.is_founder %}
         <nav class="cd-secondary-nav">
 
           <form id="mainform" action="/search/" autocomplete="off" method="POST">
@@ -109,6 +110,7 @@
           </form>
 
         </nav> <!-- .cd-secondary-nav -->
+        {% endif %}
       {% endif %}
 
     </header> <!-- .cd-auto-hide-header -->
@@ -135,10 +137,6 @@
     </main> <!-- .cd-main-content -->
 
     <a href="#0" class="cd-top"></a>
-
-    {#    <div class="loading-overlay">#}
-    {#      <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>#}
-    {#    </div>#}
 
   </div>
 

@@ -250,7 +250,7 @@ class Founder(models.Model):
     def __str__(self):
         return self.user.email
 
-    def save(self, *args, **kwargs):
+    def check_is_filled(self, *args, **kwargs):
         if len(self.description) > 1 and (len(self.logo.name) > 0) and (len(self.startup_name) > 0) and (
         not self.stage is None) and (not self.employee_count is None) and (len(self.description) > 0) and (not self.field is None):
             self.is_filled = True

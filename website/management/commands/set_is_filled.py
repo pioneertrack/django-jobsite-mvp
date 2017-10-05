@@ -9,7 +9,7 @@ class Command(BaseCommand):
         with transaction.atomic():
             result = Founder.objects.all()
             for item in result:
-                item.save()
+                item.check_is_filled()
         self.stdout.write(self.style.SUCCESS('Updated "%s" Founder Profiles' % result.count()))
         with transaction.atomic():
             result = Profile.objects.all()

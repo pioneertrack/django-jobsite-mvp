@@ -121,6 +121,33 @@ def tf_idf(tokenized_users, query, term_index):
     return [tup[0] for tup in sorted(all_users_tfidf, key=lambda x: similarity(x[1], search_vector), reverse=True)]
 
 
+def check_profiles(view_func):
+    def _wrapped_view_func(request, *args, **kwargs):
+        user = request.user
+        redirect_url = None
+        if user.first_login:
+            if user.is_individual and not hasattr(user, 'profile'):
+                messages.success(request, "Welcome to BearFounders! Please tell us about yourself.")
+                redirect_url = 'website:profile_update'
+            elif user.is_founder and not hasattr(user, 'founder'):
+                messages.success(request, "Welcome to BearFounders! Please tell us about you startup.")
+                redirect_url ='website:startup_update'
+        else:
+            p = lambda val: not val.profile.is_filled if hasattr(val, 'profile') else True
+            f = lambda val: not val.founder.is_filled if hasattr(val, 'founder') else True
+            if p(user) and user.is_individual:
+                messages.success(request, "Please fill in the information about yourself.")
+                redirect_url = 'website:profile_update'
+            elif f(user) and user.is_founder:
+                messages.success(request, "Please fill in the information about you startup.")
+                redirect_url ='website:startup_update'
+        if redirect_url is not None:
+            return redirect(redirect_url)
+        else:
+            return view_func(request, *args, **kwargs)
+    return _wrapped_view_func
+
+
 # Create your views here.
 @csrf_exempt
 @login_required(login_url='login/')
@@ -149,25 +176,9 @@ def connect(request):
 
 
 @login_required(login_url='login/')
+@check_profiles
 def index(request):
     user = request.user
-    redirect_url = None
-    if user.first_login:
-        if user.is_individual and not hasattr(user, 'profile'):
-            messages.success(request, "Welcome to BearFounders! Please tell us about yourself.")
-            redirect_url = 'website:profile_update'
-        elif user.is_founder and not hasattr(user, 'founder'):
-            messages.success(request, "Welcome to BearFounders! Please tell us about you startup.")
-            redirect_url ='website:startup_update'
-    else:
-        if user.is_individual and not hasattr(user, 'profile') or not user.profile.is_filled:
-            messages.success(request, "Please fill in the information about yourself.")
-            redirect_url = 'website:profile_update'
-        elif user.is_founder and not hasattr(user, 'founder') or not user.founder.is_filled:
-            messages.success(request, "Please fill in the information about you startup.")
-            redirect_url ='website:startup_update'
-        if redirect_url is not None:
-            return redirect(redirect_url)
 
     return render(request, 'home.html',
                   merge_dicts(JOB_CONTEXT, {
@@ -178,6 +189,7 @@ def index(request):
 
 
 @login_required(login_url='login/')
+@check_profiles
 def search(request):
     search_index = {}
     skillset = ['python', 'java', 'c', 'c++', 'c#', 'matlab', 'hadoop', 'mongodb', 'javascript', 'node.js',
@@ -186,24 +198,6 @@ def search(request):
                 'kafka', 'html', 'css', 'word', 'powerpoint', 'ruby', 'rails', 'django', 'flask', 'data', 'd3.js',
                 'tensorflow', 'theano', 'redis', 'sql', 'mysql', 'sqlite', 'php', '.net', 'laravel', 'jquery', 'ios',
                 'android']
-    user = request.user
-    redirect_url = None
-    if user.first_login:
-        if user.is_individual and not hasattr(user, 'profile'):
-            messages.success(request, "Welcome to BearFounders! Please tell us about yourself.")
-            redirect_url = 'website:profile_update'
-        elif user.is_founder and not hasattr(user, 'founder'):
-            messages.success(request, "Welcome to BearFounders! Please tell us about you startup.")
-            redirect_url ='website:startup_update'
-    else:
-        if user.is_individual and not hasattr(user, 'profile') or not user.profile.is_filled:
-            messages.success(request, "Please fill in the information about yourself.")
-            redirect_url = 'website:profile_update'
-        elif user.is_founder and not hasattr(user, 'founder') or not user.founder.is_filled:
-            messages.success(request, "Please fill in the information about you startup.")
-            redirect_url ='website:startup_update'
-    if redirect_url is not None:
-        return redirect(redirect_url)
 
     post = request.method == 'POST'
 
@@ -577,8 +571,7 @@ def search(request):
 
 
 @login_required
-@user_passes_test(lambda user: user.is_individual and hasattr(user, 'profile'),
-                  login_url=reverse_lazy('website:profile_update'))
+@check_profiles
 def user_profile(request):
     last_login = request.user.last_login
     current_time = timezone.now()
@@ -587,8 +580,8 @@ def user_profile(request):
     experience = request.user.profile.experience_set.order_by('-end_date')
 
     # in case user click on fill out later button in profile update
-    if request.user.first_login:
-        request.user.set_first_login()
+    # if request.user.first_login:
+    #     request.user.set_first_login()
 
     # TODO: need to remember normal alg for that
     positions = []
@@ -606,8 +599,7 @@ def user_profile(request):
 
 
 @login_required
-@user_passes_test(lambda user: user.is_founder and hasattr(user, 'founder'),
-                  login_url=reverse_lazy('website:startup_update'))
+@check_profiles
 def startup_profile(request):
     user = get_object_or_404(models.MyUser, pk=request.user.id)
     last_login = user.last_login
@@ -618,8 +610,8 @@ def startup_profile(request):
     total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
 
     # in case user click on fill out later button in profile update
-    if request.user.first_login:
-        request.user.set_first_login()
+    # if request.user.first_login:
+    #     request.user.set_first_login()
 
     return render(request, 'founder.html', merge_dicts(JOB_CONTEXT, {
                       'profile': True,
@@ -752,8 +744,9 @@ def startup_update(request):
             for obj2 in objs2:
                 if obj2.raised > 0:
                     obj2.save()
-            messages.success(request, 'Your profile was successfully updated!')
 
+            founder.check_is_filled()
+            messages.success(request, 'Your startup profile was successfully updated!')
             user.set_first_login()
             return redirect('website:startup_profile')
         else:
@@ -773,6 +766,7 @@ def startup_update(request):
 
 
 @login_required
+@check_profiles
 def get_profile_view(request, id):
     user = get_object_or_404(models.MyUser, pk=id)
     last_login = user.last_login
@@ -797,6 +791,7 @@ def get_profile_view(request, id):
 
 
 @login_required
+@check_profiles
 def get_startup_view(request, id):
     user = get_object_or_404(models.MyUser, pk=id)
     last_login = user.last_login
