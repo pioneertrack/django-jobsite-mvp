@@ -56,7 +56,7 @@
                 </div>
               {% endfor %}
             {% endfor %}
-            {% crispy profile_form %}
+            {% crispy profile_form profile_form.helper %}
 
             {% if show_exp %}
               <h1>Experience</h1>
