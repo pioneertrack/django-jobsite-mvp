@@ -151,6 +151,7 @@ def connect(request):
 @login_required(login_url='login/')
 def index(request):
     user = request.user
+    redirect_url = None
     if user.first_login:
         if user.is_individual and not hasattr(user, 'profile'):
             messages.success(request, "Welcome to BearFounders! Please tell us about yourself.")
@@ -158,7 +159,15 @@ def index(request):
         elif user.is_founder and not hasattr(user, 'founder'):
             messages.success(request, "Welcome to BearFounders! Please tell us about you startup.")
             redirect_url ='website:startup_update'
-        return redirect(redirect_url)
+    else:
+        if user.is_individual and not hasattr(user, 'profile') or not user.profile.is_filled:
+            messages.success(request, "Please fill in the information about yourself.")
+            redirect_url = 'website:profile_update'
+        elif user.is_founder and not hasattr(user, 'founder') or not user.founder.is_filled:
+            messages.success(request, "Please fill in the information about you startup.")
+            redirect_url ='website:startup_update'
+        if redirect_url is not None:
+            return redirect(redirect_url)
 
     return render(request, 'home.html',
                   merge_dicts(JOB_CONTEXT, {
@@ -178,7 +187,7 @@ def search(request):
                 'tensorflow', 'theano', 'redis', 'sql', 'mysql', 'sqlite', 'php', '.net', 'laravel', 'jquery', 'ios',
                 'android']
     user = request.user
-
+    redirect_url = None
     if user.first_login:
         if user.is_individual and not hasattr(user, 'profile'):
             messages.success(request, "Welcome to BearFounders! Please tell us about yourself.")
@@ -186,6 +195,14 @@ def search(request):
         elif user.is_founder and not hasattr(user, 'founder'):
             messages.success(request, "Welcome to BearFounders! Please tell us about you startup.")
             redirect_url ='website:startup_update'
+    else:
+        if user.is_individual and not hasattr(user, 'profile') or not user.profile.is_filled:
+            messages.success(request, "Please fill in the information about yourself.")
+            redirect_url = 'website:profile_update'
+        elif user.is_founder and not hasattr(user, 'founder') or not user.founder.is_filled:
+            messages.success(request, "Please fill in the information about you startup.")
+            redirect_url ='website:startup_update'
+    if redirect_url is not None:
         return redirect(redirect_url)
 
     post = request.method == 'POST'
