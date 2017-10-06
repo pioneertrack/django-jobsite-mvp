@@ -10,9 +10,9 @@ class Command(BaseCommand):
             result = Founder.objects.all()
             for item in result:
                 item.check_is_filled()
-        self.stdout.write(self.style.SUCCESS('Updated "%s" Founder Profiles' % result.count()))
+        self.stdout.write(self.style.SUCCESS('Updated "{}" Founder Profiles'.format(result.count())))
         with transaction.atomic():
             result = Profile.objects.all()
             for item in result:
                 item.check_is_filled()
-        self.stdout.write(self.style.SUCCESS('Updated "%s" User Profiles' % result.count()))
+        self.stdout.write(self.style.SUCCESS('Updated "{}" User Profiles'.format(result.count())))
