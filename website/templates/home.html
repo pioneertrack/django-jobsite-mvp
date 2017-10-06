@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load static from staticfiles %}
 
 {% block title %}
 {% trans "Home" %}
@@ -42,35 +43,34 @@
 {% else %}
 
   {% block content %}
-    <div class="container">
-      <div class="home row">
-        <div class="col col-md-4 text-center slide-in-left">
-          <h1><i style="font-size:5em;" class="fa fa-search" aria-hidden="true"></i></h1>
-          <h1>Search</h1>
-          <p>Search for people based on their name, year, major, or skillset. Find people who fit your needs and have
-            the experience you require.</p>
-          <p>Search for startups who are hiring based on name, industry, and positions available</p>
-        </div>
-        <div class="col col-md-4 text-center slide-in-top">
-          <h1><i style="font-size:5em;" class="fa fa-handshake-o" aria-hidden="true"></i></h1>
-          <h1>Connect</h1>
-          <p>After you think you have found the right match, send a connection request. This will email the user saying
-            that there is an interest in their profile. Give them more information about yourself and what you are
-            hiring/looking for</p>
-        </div>
-        <div class="col col-md-4 text-center slide-in-right">
-          <h1><i style="font-size:5em;" class="fa fa-wrench" aria-hidden="true"></i></h1>
-          <h1>Build</h1>
-          <p>After both parties reach an agreement on the pay/partnership, start working on your project together! It's
-            quick and easy.</p>
-        </div>
+      <div class="welcome-links">
+        <a class="welcome-startups" href="/search/" data-category="startups">
+          <div class="overlay">
+            <div class="slogan">Find amazing startups to work with</div>
+          </div>
+          <span>Startups</span>
+        </a>
+          <div class="welcome-card">
+            <div class="overlay">
+              <div class="slogan">Find the perfect job</div>
+            </div>
+            <a href="/search/" data-category="jobs">
+              <div class="text-center oppo">Opportunities</div>
+            </a>
+          </div>
+        <a class="welcome-members" href="/search/" data-category="people">
+            <div class="overlay">
+              <div class="slogan">Find skilled members to collaborate with</div>
+            </div>
+            <span>Members</span>
+        </a>
       </div>
-      <div class="home row text-center" style="padding-top: 50px;">
-        <div class='col col-md-6 col-md-offset-3'>
-          <p>If there are any problems with your account please email <strong>help@bearfounders.com</strong></p>
-        </div>
-      </div>
-    </div>
   {% endblock %}
 
 {% endif %}
+
+{% block js %}
+  {{ block.super }}
+  <script src="{% static 'waitForImages/dist/jquery.waitforimages.min.js' %}"></script>
+  <script src="{% static 'js/home.js' %}"></script>
+{% endblock %}

@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ['.bearfounders.com', '54.215.142.223']
 # Application definition
 
 INSTALLED_APPS = [
+    'website',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,6 +49,8 @@ INSTALLED_APPS = [
     'import_export',
     'django_extensions',
     'imagekit',
+    'mailer',
+    'landing',
     'mailer',
     'django_elasticsearch_dsl',
 
@@ -70,7 +73,7 @@ ROOT_URLCONF = 'berkeleyconnect.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # 'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,14 +81,10 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'website.views.google_analytics',
-                'website.context_processors.is_mobile'
+                'website.context_processors.is_mobile',
+                'website.context_processors.search_enabled',
+                'website.context_processors.google_analytics',
             ],
-            # 'loaders': [
-            #     'django.template.loaders.filesystem.Loader',
-            #     'django.template.loaders.app_directories.Loader',
-            # ],
-
         },
     },
 ]
@@ -160,7 +159,7 @@ MEDIA_URL = '/media/'
 
 AUTH_USER_MODEL = 'website.MyUser'
 
-ACCOUNT_ACTIVATION_DAYS = 1 # One-day activation window;
+ACCOUNT_ACTIVATION_DAYS = 7
 
 AUTHENTICATION_BACKENDS = (
         'django.contrib.auth.backends.ModelBackend',

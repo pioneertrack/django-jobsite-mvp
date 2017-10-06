@@ -1,4 +1,53 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto);
+
+.profile-form ::-webkit-input-placeholder {
+  color:gray;
+  font-size: 0.9em;
+  font-style: italic;
+  font-weight: lighter;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  line-height: 1.2em;
+  word-spacing: 0.3em;
+}
+
+.profile-form ::-moz-placeholder {
+  color:gray;
+  font-size: 0.9em;
+  font-style: italic;
+  font-weight: lighter;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  line-height: 1.2em;
+  word-spacing: 0.3em;
+}
+
+.profile-form :-moz-placeholder {
+  color:gray;
+  font-size: 0.9em;
+  font-style: italic;
+  font-weight: lighter;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  line-height: 1.2em;
+  word-spacing: 0.3em;
+}
+
+.profile-form :-ms-input-placeholder {
+  color:gray;
+  font-size: 0.8em;
+  font-style: italic;
+  font-weight: lighter;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  line-height: 1.2em;
+  word-spacing: 0.3em;
+}
+.profile-form :focus::-webkit-input-placeholder {opacity: 0; transition: opacity 0.3s ease;}
+.profile-form :focus::-moz-placeholder          {opacity: 0; transition: opacity 0.3s ease;}
+.profile-form :focus:-moz-placeholder           {opacity: 0; transition: opacity 0.3s ease;}
+.profile-form :focus:-ms-input-placeholder      {opacity: 0; transition: opacity 0.3s ease;}
+
 /*Bootstrap button outline override*/
 .btn-outline {
     background-color: transparent;
@@ -295,4 +344,53 @@ a.fill-out-later{
 }
 .profile-image {
   border: 5px solid rgba(0,0,30,0.8);
+}
+.profile-form-container h1.text-red {
+  text-align: center;
+  font-size: 2em;
+  font-family: roboto;
+  color: red;
+  margin-top: 0px;
+}
+.profile-form-container h1, .profile-form-container h2 {
+  color:navy;
+}
+.profile-form-container h1.text-navy {
+  text-align: center;
+  font-size: 2em;
+  font-family: roboto;
+  margin-top: 0px;
+}
+.profile-form-container h2.text-red {
+  text-align: center;
+  font-size: 1.8em;
+  font-family: roboto;
+  color: red;
+  margin-top: 0px;
+}
+.profile-form-container h2.text-navy {
+  text-align: center;
+  font-size: 1.8em;
+  font-family: roboto;
+  margin-top: 0px;
+}
+.error-message {
+  color: red;
+}
+.profile-form-container .img-responsive.inline {
+  float: right;
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: 1px solid navy;
+}
+.controls.inline {
+  display: inline-block;
+  vertical-align: top;
+}
+.profile-form-container .inline-container {
+  overflow: hidden;
+  clear: both;
 }

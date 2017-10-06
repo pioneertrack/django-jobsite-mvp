@@ -40,18 +40,26 @@ CSS/JS is a main navbar with a secondary navbar under it. The main nav will hide
 
 1. Clone git repository
 
-2. Install application requirements:</br>
-`pip install -r requirements/common.txt`</br>
+2. Install application requirements:
+
+`pip install -r requirements/common.txt`
+
 `pip install -r requirements/prod.txt`
 
-3. Setup your local development environment by copying</br>
+3. Setup your local development environment by copying
+
 `./berkleyconnect/local/local_setting.py` to `./berkleyconnect` directory and adjust settings (DATABASES, EMAIL Settings, etc.) in that file to meet your needs.
 
-4. Create local migrations</br>
-`./manage.py makemigrations`</br>
-After that apply migrations for database from you local settings</br>
+4. Create local migrations
+
+`./manage.py makemigrations`
+
+After that apply migrations for database from you local settings
+
 `./manage.py migrate`
 
-5. I add bower support to manage assets libraries. So the nodejs+bower must be installed on the computer. Bower must be installed globally. For install static assets run:</br>
-`bower install`</br>
+5. I add bower support to manage assets libraries. So the nodejs+bower must be installed on the computer. Bower must be installed globally. For install static assets run:
+
+`bower install`
+
 In the root folder for the project

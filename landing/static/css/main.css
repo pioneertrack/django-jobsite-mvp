@@ -1,0 +1,101 @@
+html, body, header {
+    height: 100%;
+}
+
+#intro {
+    height: 100%;
+    background: url("../img/hero.jpg") no-repeat center center fixed;
+    background-color: linear-gradient(#B2B2B2);
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.navbar-brand {
+    color: #041E41;
+    font-weight: bold;
+}
+
+.navbar-nav .nav-item .nav-link {
+    color: #041E41;
+}
+
+.navbar-nav .nav-item .sign-up {
+    width: 100px;
+    background-color: #041E41;
+}
+
+.hero-title {
+    letter-spacing: 4px;
+    text-shadow: 3px 3px 3px #696969;
+}
+
+hr {
+    background-color: #041E41;
+}
+
+.section-header {
+    font-size: 50px;
+}
+
+.job-description {
+
+}
+
+.quote {
+    font: italic 24px Georgia, serif;
+}
+
+.startup-logo {
+    -webkit-filter: grayscale(250%);
+    -moz-filter: grayscale(250%);
+    -o-filter: grayscale(250%);
+    filter: grayscale(250%);
+}
+
+.startup-logo:hover {
+    -webkit-filter: grayscale(0%);
+    -moz-filter: grayscale(0%);
+    -o-filter: grayscale(0%);
+    filter: grayscale(0%);
+}
+
+
+/*Small devices (landscape phones, 576px and up)*/
+@media (max-width: 575px) {
+    body {
+
+    }
+
+    .hero-title {
+        font-size: 50px;
+    }
+
+    .section-header {
+        font-size: 20px;
+    }
+}
+
+/*Medium devices (tablets, 768px and up)*/
+@media (max-width: 767px) {
+    body {
+
+    }
+
+    .section-header {
+        font-size: 35px;
+    }
+
+    .member-card {
+
+    }
+
+    #copyright {
+        text-align: center;
+    }
+}
+
+#about p, #about p.about-text {
+    font-size: 1.3rem;
+}

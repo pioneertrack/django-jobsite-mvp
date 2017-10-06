@@ -1,6 +1,11 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto);
 .asteriskField {
-    display: none;
+  display: none;
+}
+#profileform .asteriskField {
+  color: red;
+  margin-left: 5px;
+  display: inline;
 }
 a:link , a:hover, a:visited, a:active {
   text-decoration: none;
@@ -346,8 +351,8 @@ html {
 
 .cd-main-content {
   /*background-color: #d3d3d3;*/
-  /*height: 100%;*/
-  padding-top:80px;
+  height: 100%;
+  /*padding-top:10vh;*/
 }
 .messages {
   padding-top: 95px;
@@ -415,7 +420,8 @@ html {
     display: table-cell;
   }
   .cd-auto-hide-header {
-    height: 80px;
+    /*height: 10vh;*/
+    /*border-bottom: 1px solid #25283D;*/
   }
   .cd-auto-hide-header .nav-trigger {
     display: none;
@@ -424,5 +430,16 @@ html {
   .cd-secondary-nav {
     height: 70px;
     overflow: visible;
+  }
+}
+
+/** for new homepage*/
+@media all and (max-height: 800px) {
+  .cd-main-content {
+    /*padding-top:80px;*/
+  }
+  .cd-auto-hide-header {
+    height: 80px;
+    border-bottom: 1px solid #25283D;
   }
 }

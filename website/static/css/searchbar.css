@@ -592,30 +592,24 @@
 .nice-select.no-overflow .list .option:hover .list{
   display: block;
 }
-.checkboxes.startups, .checkboxes.jobs, .checkboxes.partners, .checkboxes.employees, .checkboxes.freelancers,
-.selects.startups, .selects.jobs, .selects.partners, .selects.employees, .selects.freelancers {
+.checkboxes.startups, .checkboxes.jobs, .checkboxes.people,
+.selects.startups, .selects.jobs, .selects.people {
   display: none;
 }
 .tags.startups.is-visible,
 .tags.jobs.is-visible,
-.tags.partners.is-visible,
-.tags.employees.is-visible,
-.tags.freelancers.is-visible {
+.tags.people.is-visible {
   display: flex;
 }
 
 .checkboxes.startups.is-visible,
 .checkboxes.jobs.is-visible,
-.checkboxes.partners.is-visible,
-.checkboxes.employees.is-visible,
-.checkboxes.freelancers.is-visible {
+.checkboxes.people.is-visible {
   display: block;
 }
 .selects.startups.is-visible,
 .selects.jobs.is-visible,
-.selects.partners.is-visible,
-.selects.employees.is-visible,
-.selects.freelancers.is-visible {
+.selects.people.is-visible {
   /*display: block;*/
   display: flex;
   flex-flow: row nowrap;
@@ -641,7 +635,6 @@
 .tags:hover .filter-container {
   flex-wrap: wrap;
 }
-
 .cd-secondary-nav.cd-search-nav.first {
   display: flex;
   align-items: center;
@@ -650,7 +643,6 @@
 .cd-secondary-nav.cd-search-nav.first::after {
   content: normal;
 }
-
 .label-year, .label-years, .label-stage, .label-category {
   background-color: #6f6f9f;
 }
@@ -674,7 +666,6 @@
   cursor: pointer;
 }
 .messages {
-  padding-top: 125px;
   -webkit-transition: all .5s ease;
   -moz-transition: all .5s ease;
   transition: all .5s ease;
