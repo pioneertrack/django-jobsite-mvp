@@ -1,6 +1,6 @@
 from import_export import resources, fields, widgets
 from import_export.admin import ImportExportModelAdmin
-
+from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
@@ -38,7 +38,7 @@ class MyUserAdmin(BaseUserAdmin):
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     list_display = ('email', 'first_name', 'last_name', 'is_individual', 'is_founder', 'is_active', 'is_admin',
-                    'is_account_disabled', 'get_year', 'registered_at', 'last_login')
+                    'is_account_disabled', 'get_year', 'registered_at', 'last_login', 'get_profile_is_filled', 'get_founder_is_filled')
     list_filter = ('is_admin','is_active', 'is_founder', 'registered_at')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
@@ -56,6 +56,21 @@ class MyUserAdmin(BaseUserAdmin):
     search_fields = ('email',)
     ordering = ('email',)
     filter_horizontal = ()
+
+    def get_profile_is_filled(self, obj):
+        if obj.is_individual and hasattr(obj, 'profile'):
+            return obj.profile.is_filled
+        return None
+    get_profile_is_filled.short_description = _('Pr is filled')
+    get_profile_is_filled.boolean = True
+
+    def get_founder_is_filled(self, obj):
+        if obj.is_founder and hasattr(obj, 'founder'):
+            return obj.founder.is_filled
+        return None
+    get_founder_is_filled.short_description = _('St is filled')
+    get_founder_is_filled.boolean = True
+
     def get_inline_instances(self, request, obj=None):
         if not obj:
             return list()
@@ -139,20 +154,24 @@ class FounderResource(resources.ModelResource):
 
 
 class FounderAdmin(ImportExportModelAdmin):
-    list_display = ('user','startup_name','stage','field','employee_count', 'is_filled')
+    list_display = ('user','startup_name','stage','field','employee_count', 'get_is_filled')
     list_filter = ('stage','field','is_filled')
     fieldsets = (
-        (None,         {'fields': ['user','startup_name','logo','display_funding']}),
+        (None,         {'fields': ['user','startup_name','logo','display_funding', 'is_filled']}),
         ('Basic Info', {'fields': ['description','stage','employee_count','field']}),
         ('Contact',    {'fields': ['website','facebook']})
     )
+    ordering = ('user',)
+    search_fields = ('user__email',)
     inlines = (FundingInline,)
-
-    ordering = ('user', 'is_filled')
-
     resource_class = FounderResource
     pass
 
+    def get_is_filled(self, obj):
+        return obj.is_filled
+    get_is_filled.short_description = _('is filled')
+    get_is_filled.admin_order_field = 'is_filled'
+    get_is_filled.boolean = True
 
 # Classes for positions
 class JobResource(resources.ModelResource):
@@ -279,21 +298,27 @@ class ProfileResource(resources.ModelResource):
 
 
 class ProfileAdmin(ImportExportModelAdmin):
-    list_display = ('user', 'major', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'is_filled')
+    list_display = ('user', 'major', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'get_is_filled')
     list_filter = ('major','year','has_startup_exp','has_funding_exp', 'is_filled')
     fieldsets = (
-        (None,         {'fields': ['user','bio','interests']}),
+        (None,         {'fields': ['user','bio','interests', 'is_filled']}),
         ('School',     {'fields': ['year', 'role', 'major', 'courses']}),
         ('Work',       {'fields': ['hours_week', 'positions']}),
         ('Experience', {'fields': ['has_startup_exp','has_funding_exp','skills']}),
         ('Contact',    {'fields': ['linkedin','website','github']})
     )
+    ordering = ('user',)
+    search_fields = ('user__email',)
     inlines = (ExperienceInline,)
-
-    ordering = ('user', 'is_filled')
-
     resource_class = ProfileResource
     pass
+
+    def get_is_filled(self, obj):
+        return obj.is_filled
+    get_is_filled.short_description = _('is filled')
+    get_is_filled.admin_order_field = 'is_filled'
+    get_is_filled.boolean = True
+
 
 admin.site.register(MyUser, MyUserAdmin)
 admin.site.register(Founder, FounderAdmin)
