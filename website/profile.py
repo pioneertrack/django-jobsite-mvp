@@ -204,8 +204,7 @@ class Profile(models.Model):
 
     def check_is_filled(self, save=True):
         if len(self.bio) > 1 and (len(self.skills) > 0 or self.experience_set.count() > 0) and (
-                len(self.image.name) > 0) and (
-                not self.positions != []) and (
+                len(self.image.name) > 0) and (self.positions != []) and (
                 not self.role is '') and (
                 not self.year is ''):
             self.is_filled = True
