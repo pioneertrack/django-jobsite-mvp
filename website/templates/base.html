@@ -2,7 +2,7 @@
 {% load website_tags %}
 {% load imagekit %}
 <!DOCTYPE html>
-<html lang="en" xmlns="" {% if not user.is_authenticated or not profile_edit%}style="height: 100%"{% endif %}>
+<html lang="en" xmlns="" {% if not user.is_authenticated or not profile_edit %}style="height: 100%"{% endif %}>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport"
@@ -81,8 +81,7 @@
         {% endif %}
       </nav> <!-- .cd-primary-nav -->
 
-      {% if user.is_authenticated and not user.first_login %}
-        {% if user.profile.is_filled and user.is_individual and user.founder.is_filled and user.is_founder %}
+      {% if user.is_authenticated and not user.first_login and search_enabled %}
         <nav class="cd-secondary-nav">
 
           <form id="mainform" action="/search/" autocomplete="off" method="POST">
@@ -110,17 +109,15 @@
           </form>
 
         </nav> <!-- .cd-secondary-nav -->
-        {% endif %}
       {% endif %}
 
     </header> <!-- .cd-auto-hide-header -->
 
     <main class="cd-main-content mc-padding"
-{#    {% if profile_edit %}profile-edit{% endif %} {% if not user.first_login and profile_edit %}not-first-login{% endif %}"#}
+        {#    {% if profile_edit %}profile-edit{% endif %} {% if not user.first_login and profile_edit %}not-first-login{% endif %}"#}
           style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}">
       {% if messages and user.is_authenticated %}
-{#        <ul class="messages {% if  filter_startups or filter_people or filter_jobs %}tags{% endif %}">#}
-{#        </ul>#}
+        <div class="messages"></div>
         <div style="position:fixed;width:30%;z-index:1000;bottom:1.5%;right:1%;">
           {% for message in messages %}
             <div class="message alert {% if message.tags %} alert-{{ message.tags }} {% endif %} fade in"
@@ -389,18 +386,18 @@
     {% endif %}
 
   </header> <!-- .cd-auto-hide-header -->
-    <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %}"
-{#    {% if profile_edit %}profile-edit{% endif %} {% if not user.first_login and profile_edit %}not-first-login{% endif %}"#}
-          style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}">
+  <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %}"
+      {#    {% if profile_edit %}profile-edit{% endif %} {% if not user.first_login and profile_edit %}not-first-login{% endif %}"#}
+        style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}">
 
-{#  <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %} {% if profile_edit %}profile-edit{% endif %}"#}
-{#    {% if not profile_edit %}#}
-{#        style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}"#}
-{#    {% endif %}#}
-{#  >#}
+    {#  <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %} {% if profile_edit %}profile-edit{% endif %}"#}
+    {#    {% if not profile_edit %}#}
+    {#        style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}"#}
+    {#    {% endif %}#}
+    {#  >#}
     {% if messages and user.is_authenticated %}
-{#      <ul class="messages {% if  filter_startups or filter_people or filter_jobs %}tags{% endif %}">#}
-{#      </ul>#}
+      {#      <ul class="messages {% if  filter_startups or filter_people or filter_jobs %}tags{% endif %}">#}
+      {#      </ul>#}
       <div style="position:fixed;width:30%;z-index:1000;bottom:1.5%;right:1%;">
         {% for message in messages %}
           <div class="message alert {% if message.tags %} alert-{{ message.tags }} {% endif %} fade in"

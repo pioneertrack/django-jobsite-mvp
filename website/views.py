@@ -336,6 +336,7 @@ def search(request):
         return render(request, 'search.html',
                       merge_dicts(JOB_CONTEXT,
                                   {
+                                      'search_enabled': True,
                                       'searched': to_return,
                                       'oldroles': roles,
                                       'oldmajors': majors,
@@ -816,21 +817,6 @@ class MyRegistrationView(RegistrationView):
         if request.user.is_authenticated():
             return HttpResponseRedirect('/')
         return super(MyRegistrationView, self).dispatch(request, *args, **kwargs)
-
-
-def google_analytics(request):
-    """
-    Use the variables returned in this function to
-    render your Google Analytics tracking code template.
-    """
-    ga_prop_id = getattr(settings, 'GOOGLE_ANALYTICS_PROPERTY_ID', False)
-    ga_domain = getattr(settings, 'GOOGLE_ANALYTICS_DOMAIN', False)
-    if not settings.DEBUG and ga_prop_id and ga_domain:
-        return {
-            'GOOGLE_ANALYTICS_PROPERTY_ID': ga_prop_id,
-            'GOOGLE_ANALYTICS_DOMAIN': ga_domain,
-        }
-    return {}
 
 
 def resend_activation_email(request):
