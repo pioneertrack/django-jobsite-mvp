@@ -444,6 +444,7 @@
 
   </script>
 {% endif %}
+
 {% block js %}
   <script src="{% static 'jquery-modern/dist/jquery.min.js' %}"></script>
   <script src="{% static 'bootstrap-3/dist/js/bootstrap.min.js' %}"></script>
@@ -461,138 +462,7 @@
   <script src="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.js"></script>
   <script src="{% static 'js/navbar.js' %}"></script>
   <script src="{% static 'js/script.js' %}"></script>
-  {#        <script src="{% static 'underscore/underscore.js' %}"></script>#}
+  <script src="{% static 'underscore/underscore.js' %}"></script>
 {% endblock js %}
-</body>
-
-{% block search_person_template %}
-    <script type="text/html" id="search_person_template">
-        <div class="col col-md-4" style="height:400px;">
-            <a class="card-hover" href='/profiles/<%= item.id %>'>
-                <div class="card">
-                    <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
-                    <div>
-                        <div class="avatar" style="background-image: url('<%= item.image %>');"></div>
-                    </div>
-                    <div class="content">
-                        <h2><%= item.user.first_name %> <%= item.user.last_name %></h2>
-
-                        <% if (item.year != 'NONE') { %><h3 style="margin-top:0"> <%= item.year_display %> </h3><% } %>
-
-                        <% if (item.has_startup_exp) { %>
-                        <span class="label label-default">Has startup experience</span>
-                        <% } %>
-
-                        <% if (item.has_founding_exp) { %>
-                        <span class="label label-default">Has funding experience</span>
-                        <% } %>
-
-                        <% if (item.year != 'NONE') { %>
-                        <span class="label label-primary"> <%= item.year_display %> </span>
-                        <% } %>
-
-                        <span class="label label-primary"><%= item.major_display %></span>
-
-                        <% if (item.role != 'NONE') { %><span class="label label-info"><%= item.role %></span><% } %>
-
-                        <% if (item.skills.length > 0) { _.each(item.skills.split(','), function (skill) { %>
-                        <span class="label label-info"><%= skill %></span>
-                        <% })} %>
-
-                        <span class="label label-success"><%= item.hours_week %> hr/wk</span>
-
-                        <% if (item.experience_set.length > 0) { _.each(item.experience_set, function (experience) { %>
-                        <span class="label label-danger">Worked at <%= experience.company %></span>
-                        <% })} %>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </script>
-{% endblock search_person_template %}
-
-{% block search_startup_template %}
-    <script type="text/html" id="search_startup_template">
-        <div class="col col-md-4" style="height:400px;">
-            <a class="card-hover" href='/startups/<%= item.id %>'>
-                <div class="card">
-                    <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
-                    <div>
-                        <div class="avatar" style="background-image: url('');"></div>
-                    </div>
-                    <div class="content">
-                        <h2><%= item.startup_name %></h2>
-                        <h4><%= item.stage_display %> • <%= item.employee_count %> Employee</h4>
-                        <hr>
-                        <div class="founderdescription cut-text" data-cut="200">
-                            <p><%= item.description %><p>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </script>
-{% endblock search_startup_template %}
-
-{% block search_job_template %}
-    <script type="text/html" id="search_job_template">
-        <div class="col col-md-4 item">
-            <a class="card-hover" href='/startups/<%= item.id %>'>
-                <div class="card job-card">
-                    <div class="header-bg" style="height:100px; background-color:#25283D;">
-                        <h2><%= item.founder.startup_name %></h2>
-                        <div class="avatar" style="background-image: url('<%= item.founder.logo %>');"></div>
-                    </div>
-                    <div class="offer-content">
-                        <div class="info">
-                            <h3><%= item.title %></h3>
-                            <div class="pcomp">
-                                <div class="mdata">
-                                <span class="font-weight-bold">Job position:&nbsp;</span><span><%= item.level_display %></span>
-                                </div>
-                                <div class="mdata">
-                                <span class="font-weight-bold">Compensation type:&nbsp;</span><span><%= item.pay_display %></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="description cut-text" data-cut="200">
-                            <p><%= item.description %></p>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </script>
-{% endblock search_job_template %}
-
-<!-- current_user.founder.logo.url -->
-
-{% block empty_search_template %}
-    <script type="text/html" id="empty_search_template">
-        <div class="col col-md-12 text-center">
-            <h1><i class="fa fa-exclamation-circle" aria-hidden="true"></i> There were no users that matched your search
-                query! Try another search.</h1>
-        </div>
-    </script>
-{% endblock empty_search_template %}
-{% block js %}
-        <script src="{% static 'jquery-modern/dist/jquery.min.js' %}"></script>
-        <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
-        {% if is_mobile %}
-            <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
-            <script src="{% static 'slidebars-fork/dist/slidebars.min.js' %}"></script>
-            <script src="{% static 'detect_swipe/jquery.detect_swipe.js' %}"></script>
-            <script src="{% static 'js/mobile.js' %}"></script>
-        {% else %}
-            <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
-            <script src="{% static 'js/responsive.js' %}"></script>
-        {% endif %}
-        <script src="{% static 'js/Modernizer.js' %}"></script>
-        <script src="{% static 'custom-scrollbar/jquery.mCustomScrollbar.concat.min.js' %}"></script>
-        <script src="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.js"></script>
-        <script src="{% static 'js/navbar.js' %}"></script>
-        <script src="{% static 'js/script.js' %}"></script>
-        <script src="{% static 'underscore/underscore.js' %}"></script>
-    {% endblock js %}
 </body>
 </html>

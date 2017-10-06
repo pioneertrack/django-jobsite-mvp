@@ -35,7 +35,6 @@ ALLOWED_HOSTS = ['.bearfounders.com', '54.215.142.223']
 # Application definition
 
 INSTALLED_APPS = [
-    'website',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,10 +49,9 @@ INSTALLED_APPS = [
     'django_extensions',
     'imagekit',
     'mailer',
-    'landing',
-    'mailer',
     'django_elasticsearch_dsl',
 
+    'landing',
     'website',
     'search',
 ]
