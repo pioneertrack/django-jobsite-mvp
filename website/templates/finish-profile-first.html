@@ -1,0 +1,41 @@
+{% extends 'finish-profile-form-base.html' %}
+{% load i18n %}
+
+
+{% block profileform %}
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <input type="hidden" name="currentstep" value="1">
+  <div class="form-group">
+    <div class="align-left form-header">
+      <p> 1.) Upload your Profile Image * </p>
+    </div>
+    <!-- <div class="center-block profile-image-cancel">
+      <div class=""
+    </div> -->
+    <div class="center-block profile-image-wrapper">
+      <img class="profile-image-change delete-icon" src="/static/images/trash-icon.png" alt="chagne image">
+      <br />
+      <img class="image-holder" src="" alt="Your Profile Image">
+    </div>
+    <div class="center-block profile-image-button-wrapper">
+      <label class="custom-file-upload">
+          <input id="propic-upload-input" name="profileimage" accept="image/*" type="file"  class="special-upload" type="file"/>
+          Upload Image
+      </label>
+      <p class="help-block">Please keep it under 10 MB</p>
+    </div>
+
+  </div>
+
+  {% with formItemHeader=' 2.) Write a little bit about yourself' formitemRequired=True textareaName='bio' textareaPH='I like to...' %}
+    {% include './partials/textarea.html' %}
+  {% endwith %}
+
+
+  {% with formItemHeader='3.) What type of position are you looking for?' formitemRequired=True checkboxname='typesOfWork' cblist=formDat.position_types %}
+    {% include './partials/checkbox.html' %}
+  {% endwith %}
+  <button type="submit" class="btn btn-primary"> Save, Go to Skills </button>
+</form>
+{% endblock %}

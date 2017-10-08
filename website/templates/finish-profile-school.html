@@ -1,0 +1,29 @@
+{% extends 'finish-profile-form-base.html' %}
+{% load i18n %}
+
+
+{% block profileform %}
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="currentstep" value="3">
+    {% with formItemHeader='1.) What are some of your Interests?' formitemRequired=True textareaName='interests' textareaPH='Python, Javascript, SQL...' %}
+      {% include './partials/textarea.html' %}
+    {% endwith %}
+
+      {% with formItemHeader='2.) What is your primary major?' formitemRequired=True ddlist=formDat.primary_majors ddclass='primarymajorMod'  ddselectionlabel='Please select a major' %}
+        {% include './partials/dropdown.html' %}
+      {% endwith %}
+
+    {% with formItemHeader='3.) What is some of your relevant coursework? ' formitemRequired=True textareaName='relcoursework' textareaPH='EECS101' %}
+      {% include './partials/textarea.html' %}
+    {% endwith %}
+
+    {% with formItemHeader='4.) How many hours a week are you willing to work?' formitemRequired=True ddlist=formDat.hours_available ddclass='hoursavailableMod' ddselectionlabel='Select Hours' %}
+      {% include './partials/dropdown.html' %}
+    {% endwith %}
+    <button type="submit" class="btn btn-primary"> Save, Go to Experiences! </button>
+  </form>
+
+
+
+{% endblock %}

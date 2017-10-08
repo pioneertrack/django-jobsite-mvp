@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}
+Profile Setup
+{% endblock %}
+
+
+{% block content %}
+<div class="container-wrapper">
+  <div class="container profile-breadcrumbs-page">
+
+    <div class="page-header center-block">
+      {% if formDat.first_login %}
+        <h1>Welcome to Bear Founders </h1>
+      {% endif %}
+
+
+      <h3>
+          <small>
+        {% for item in formDat.menu %}
+          {% if item.curStep == formDat.userStep %}
+
+              {{item.header}}
+
+           {% endif %}
+
+        {% endfor %}
+
+       <span data-toggle="tooltip" data-placement="top" title="This helps us match you better" class="glyphicon glyphicon-info-sign"> </span>
+          </small>
+      </h3>
+      <div class="pills-wrapper profile-breadcrumbs-menu center-block margin-sm center-ul-wrapper" >
+        <ul class="nav nav-pills">
+          {% for item in formDat.menu %}
+
+              <li role="presentation" {% if item.curStep == formDat.userStep %} class="active" {% elif not item.active %} class="disabled"  {% endif %} ><a href="#"> {{ item.name }}</a></li>
+
+          {% endfor %}
+
+        </ul>
+      </div>
+
+      <div class="loading-indicator-wrapper reloading-page-wrapper gone center-block">
+        <img class="loading-icon reloading-page" src="/static/images/loading_icon.gif" alt="loading">
+      </div>
+
+      {% for e in errors %}
+      <div class="alert-wrapper">
+        <div class="alert alert-danger alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <strong>{{ e.strong }}</strong> {{ e.text }}
+        </div>
+      </div>
+      {% endfor %}
+
+      <div class="form-wrapper">
+        {% block profileform %}
+        {% endblock %}
+    </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+  <script src="/static/js/app.bundle.js"></script>
+  <script src="/static/js/vendor.bundle.js"></script>
+{% endblock %}

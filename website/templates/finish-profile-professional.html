@@ -1,0 +1,27 @@
+{% extends 'finish-profile-form-base.html' %}
+{% load i18n %}
+
+
+{% block profileform %}
+  <form method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="currentstep" value="4">
+    {% csrf_token %}
+    {% with formItemHeader=' 1.) If applicable, please list your linkedin profile URL ' formitemRequired=False inputName='linkedin' inputPH='https://www.linkedin.com/in/colin-o-neill-0117a2ba/' %}
+      {% include './partials/input.html' %}
+    {% endwith %}
+
+    {% with formItemHeader=' 2.) If you have a personal website, drop the link!' formitemRequired=False inputName='personalwebsite' inputPH='https://johnsmith.com' %}
+      {% include './partials/input.html' %}
+    {% endwith %}
+    {% with formItemHeader=' 3.) Add your github handle, if you have one' formitemRequired=False inputName='githuburl' inputPH='https://github.com/considine' %}
+      {% include './partials/input.html' %}
+    {% endwith %}
+
+    {% with formItemHeader='4.) Startup History' formitemRequired=False checkboxname='startuphistory' cblist=formDat.startup_history %}
+      {% include './partials/checkbox.html' %}
+    {% endwith %}
+      <button type="submit" class="btn btn-primary"> Set your work experience! </button>
+
+  </form>
+
+{% endblock %}
