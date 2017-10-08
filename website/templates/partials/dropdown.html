@@ -1,0 +1,21 @@
+{% extends './form-item-base.html' %}
+
+{% block forminput %}
+<div class="dropdown-module inline-block {{ ddclass }}">
+  <div class="dropdown-selection-wrapper">
+    <p class="dropdown-selection">  <span class="red"> {{ ddselectionlabel }} </span> </p>
+    <input class="form-control" type="hidden" placeholder="your selection is...">
+  </div>
+  <div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      Dropdown
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        {% for x in ddlist %}
+         <li><a data-dropdownval="{{ x.0 }}" >{{ x.1 }}</a></li>
+        {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}
