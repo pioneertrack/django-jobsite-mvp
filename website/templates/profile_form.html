@@ -33,10 +33,10 @@
               <h2 class="text-navy">Tell us about yourself</h2>
             {% endif %}
           {% else %}
-            {% if show_exp and user.profile.is_filled or user.founder.is_filled %}
+            {% if search_enabled %}
               <h1>Basic info</h1>
             {% else %}
-              <h2 class="text-navy">You must fill out required fields to become available in the search</h2>
+              <h2 class="text-red">Please complete your profile to access Bear Founders</h2>
             {% endif %}
           {% endif %}
           <hr>
@@ -156,10 +156,10 @@
               <h2 class="text-navy">Tell us about yourself</h2>
             {% endif %}
           {% else %}
-            {% if show_exp and user.profile.is_filled or user.founder.is_filled %}
+            {% if search_enabled %}
               <h1>Basic info</h1>
             {% else %}
-              <h2 class="text-navy">You must fill out required fields to become available in the search</h2>
+              <h2 class="text-red">Please complete your profile to access Bear Founders</h2>
             {% endif %}
           {% endif %}
           <hr>

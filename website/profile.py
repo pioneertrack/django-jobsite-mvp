@@ -203,16 +203,16 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.email
 
-    def check_is_filled(self):
+    def check_is_filled(self, save=True):
         if len(self.bio) > 1 and (len(self.skills) > 0 or self.experience_set.count() > 0) and (
-                len(self.image.name) > 0) and (
-                not self.positions is None) and (
-                not self.role is None) and (
-                not self.year is None):
+                len(self.image.name) > 0) and (self.positions != []) and (
+                not self.role is '') and (
+                not self.year is ''):
             self.is_filled = True
         else:
             self.is_filled = False
-        self.save()
+        if save:
+            self.save()
 
 
 class Experience(models.Model):
@@ -251,13 +251,14 @@ class Founder(models.Model):
     def __str__(self):
         return self.user.email
 
-    def save(self, *args, **kwargs):
+    def check_is_filled(self, save=True):
         if len(self.description) > 1 and (len(self.logo.name) > 0) and (len(self.startup_name) > 0) and (
-        not self.stage is None) and (not self.employee_count is None) and (len(self.description) > 0) and (not self.field is None):
+        not self.stage is '') and (not self.employee_count is None) and (len(self.description) > 0) and (not self.field is ''):
             self.is_filled = True
         else:
             self.is_filled = False
-        super(Founder, self).save(*args, **kwargs)
+        if save:
+            self.save()
 
 
 class Funding(models.Model):
