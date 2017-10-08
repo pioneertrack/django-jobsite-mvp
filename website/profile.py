@@ -181,6 +181,7 @@ class Profile(models.Model):
                                            format='PNG',
                                            options={'quality': 100})
     bio = models.TextField(verbose_name='Bio', max_length=500)
+    profile_step = models.IntegerField(verbose_name="Step on profile completion")
     positions = ChoiceArrayField(models.CharField(choices=POSITIONS, max_length=1, default='0'))
     role = models.CharField(max_length=4, choices=PRIMARY_ROLE)
     skills = models.TextField(verbose_name='Skills', max_length=500)
