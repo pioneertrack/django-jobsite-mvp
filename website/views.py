@@ -1,4 +1,5 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
+from django.http import JsonResponse
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth import authenticate, login, update_session_auth_hash
@@ -36,6 +37,9 @@ from website import forms
 from website import models
 from website import profile as prof
 from .profile import Founder, Job
+
+
+from .utils import ValidatePostItems
 
 
 def merge_dicts(*args):
@@ -687,6 +691,153 @@ def profile_update(request):
                       'next_url': reverse('website:startup_update') if user.is_founder else reverse('website:profile')
                   }))
 
+@login_required
+def profile_breadcrumbs_update_step(request, updatedStep):
+
+    profile = None if not hasattr(request.user, 'profile') else request.user.profile
+    # if profile == None or int(profile.profile_step) < int(updatedStep):
+    #     return JsonResponse({"success" : False, "error" : "No profile on this account"})
+
+    # profile.profile_step = int(updatedStep)
+    # print (updatedStep)
+    # profile.save()
+
+    request.session['userstep'] = str(updatedStep)
+    return JsonResponse({'success': True})
+
+@login_required
+def profile_info_breadcrumbs(request):
+    # sanitize previous input if there is one
+    user = request.user
+    formDat = {}
+    position_types = prof.POSITIONS
+    menuItems  = [
+        {"name" : "Profile", "curStep" : "1", "header" : "Tell us about yourself"},
+        {"name" : "Skills", "curStep" : "2", "header" : "What are you good at?"},
+        {"name" : "School", "curStep" : "3", "header" : "What's your concentration in the classroom"},
+        {"name" : "Professional", "curStep" : "4", "header" : "What sort of professional repuation do  you have?"}
+    ]
+    formDat["hours_available"] = prof.HOURS_AVAILABLE
+    formDat["primary_majors"] = prof.MAJORS
+    formDat["position_types"] = position_types
+    formDat["primary_roles"] = prof.PRIMARY_ROLE
+    formDat["startup_history"] = (
+        ("has_startup_exp", "I have worked at a startup before"),
+        ("has_funding_exp", "I have experience funding a startup")
+    )
+    formDat["first_login"] = user.first_login
+    step_progression = {
+    "1" : "finish-profile-first.html",
+    "2" : "finish-profile-skills.html",
+    "3" : "finish-profile-school.html",
+    "4" : "finish-profile-professional.html"    }
+    profile = None if not hasattr(user, 'profile') else user.profile
+    if profile: curstep = str(profile.profile_step)
+    elif ("currentstep" in request.POST): curstep = str(request.POST["currentstep"])
+    else: curstep = "1"
+
+
+
+    errors = []
+
+    userstep = curstep if 'userstep' not in request.session else request.session['userstep']
+    if "currentstep" in request.POST:
+        userstep = request.POST["currentstep"]
+    if request.method == "POST":
+        print (request.POST)
+        # potentially create profile
+        # MAKE KEYS
+        if "currentstep" not in request.POST:
+            pass
+
+        elif request.POST["currentstep"] == "1":
+            # has to be the first step
+            # verify parameters
+            if not profile:
+                try:
+                    profile = prof.Profile.objects.create(user=user, image=request.FILES["profileimage"], bio=request.POST["bio"], positions=request.POST.getlist('positions'), profile_step=curstep)
+                except Exception as e:
+                    errors.append({"strong" : "Missing fields! Please fill them out"})
+                    print (e)
+            # else:
+            else:   
+                try:
+                    checkboxes  = [x[0] for x in prof.POSITIONS]
+                    ValidatePostItems(expectedFields={"bio" : "bio"}, optionalFields={}, request=request, saveObj = profile, atleastOne={"positions" : checkboxes})
+                    profile.save()
+                except ValueError:
+                    errors.append({"strong" : "missing fields!", "text" : "please fill out all required fields!"})
+            # profile.user = user
+            # profile.image = request.FILES["profileimage"]
+            # profile.updateSavedImage(request.FILES["profileimage"])
+            # profile.bio = request.POST["bio"]
+            # profile.positions = request.POST.getlist('positions')
+            # profile.profile_step = curstep
+            # profile.save()
+
+
+
+        elif request.POST["currentstep"] == "2" and profile:
+            # verify parameters
+            expected = {"primaryroles" : "role", "skills" : "skills"}
+            optional = {"altemail" : "alt_email"}
+            try:
+                ValidatePostItems(expectedFields=expected, optionalFields=optional, request=request, saveObj = profile)
+                profile.save()
+            except:
+                errors.append({"strong" : "missing fields!", "text" : "please fill out all required fields!"})
+        elif request.POST["currentstep"] == "3" and profile:
+            # verify parameters
+            expected = {"interests" : "interests", "major" : "major", "relcoursework": "courses", "numhours" : "hours_week"}
+            optional = {}
+            print ("got request")
+            try:
+                ValidatePostItems(expectedFields=expected, optionalFields=optional, request=request, saveObj = profile)
+                profile.save()
+            except:
+
+                errors.append({"strong" : "missing fields!", "text" : "please fill out all required fields!"})
+
+
+        elif request.POST["currentstep"] == "4" and profile:
+            try:
+                ValidatePostItems(optionalFields={"linkedin" : "linkedin", "personalwebsite" : "website", "githuburl" : "github", "has_startup_exp" : "has_startup_exp", "has_funding_exp" : "has_funding_exp"}, expectedFields={}, request = request, saveObj=profile)
+            except:
+                errors.append({"strong" : "missing fields!", "text" : "please fill out all required fields!"})
+
+
+
+
+
+        if len(errors) == 0:
+        # increment curstep
+            if (int(userstep) == int(curstep)):
+                curstep= str(int(curstep) +1)
+                userstep = curstep
+            elif (profile and profile.profile_step):
+                curstep = str(profile.profile_step)
+                userstep = curstep
+            if curstep == '5':
+                return HttpResponseRedirect('/')
+            # curstep="2"
+            #  Save profile if not saved
+            profile.profile_step = int(curstep)
+            profile.save()
+    elif request.method == "GET":
+        pass
+    formDat["menu"] = menuItems
+    # curstep="2"
+
+    formDat["curStep"] = curstep
+
+    if 'userstep' in request.session: del request.session['userstep']
+    for it in range(len(menuItems)):
+        menuItems[it]["active"] =  True
+        if menuItems[it]["curStep"] == curstep:
+            break
+    formDat['userStep'] = userstep
+    user.set_first_login()
+    return render(request, step_progression[userstep], merge_dicts(JOB_CONTEXT, {"formDat" : formDat, 'errors' : errors}))
 
 @login_required
 def startup_update(request):
