@@ -52,12 +52,14 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'website.middleware.RemoveVaryCookiesMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'website.middleware.SessionHeaderMiddleware',
 ]
 
 ROOT_URLCONF = 'berkeleyconnect.urls'
@@ -184,6 +186,17 @@ MAILER_EMAIL_MAX_BATCH = 10
 MAILER_EMAIL_MAX_DEFERRED = 5
 
 MAILER_EMAIL_THROTTLE = 1
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/var/tmp/django_cache',
+        'TIMEOUT': None,
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000
+        }
+    }
+}
 
 try:
   from .local_settings import *
