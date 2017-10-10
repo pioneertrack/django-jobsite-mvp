@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load i18n %}
 {% load website_tags %}
 {% block title %}
@@ -504,6 +505,8 @@
 
 {% endif %}
 
+{% block search_templates %}
+
 {% block search_person_template %}
     <script type="text/html" id="search_person_template">
         <div class="col col-md-4" style="height:400px;">
@@ -614,3 +617,10 @@
         </div>
     </script>
 {% endblock empty_search_template %}
+
+{% endblock search_templates %}
+
+{% block js %}
+  {{ block.super }}
+  <script src="{% static 'js/search.js' %}"></script>
+{% endblock js %}

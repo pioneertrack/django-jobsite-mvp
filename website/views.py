@@ -191,7 +191,7 @@ def index(request):
 def search(request):
     search_index = {}
     skillset = ['python', 'java', 'c', 'c++', 'c#', 'matlab', 'hadoop', 'mongodb', 'javascript', 'node.js',
-                'angular.js', 'react.js', 'meteor.js', 'aws', 'elasticeearch', 'spark', 'go', 'haskell',
+                'angular.js', 'react.js', 'meteor.js', 'aws', 'elasticsearch', 'spark', 'go', 'haskell',
                 'machine learning',
                 'kafka', 'html', 'css', 'word', 'powerpoint', 'ruby', 'rails', 'django', 'flask', 'data', 'd3.js',
                 'tensorflow', 'theano', 'redis', 'sql', 'mysql', 'sqlite', 'php', '.net', 'laravel', 'jquery', 'ios',

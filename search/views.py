@@ -56,7 +56,7 @@ class SearchView(LoginRequiredMixin, FormView):
         if current_offset < 0:
             current_offset = 0
 
-        if category == 'partners':
+        if category == 'people':
             res = self.people_search(request, category, query_string, per_page, current_offset)
 
         elif category == 'startups':
