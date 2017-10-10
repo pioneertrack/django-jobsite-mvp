@@ -11,7 +11,7 @@ from django.core.files.storage import FileSystemStorage
 from custom_storages import MediaStorage
 
 HOURS_AVAILABLE = (
-    ('0', '0 - 5'),
+    ('0', '1 - 5'),
     ('1', '5 - 10'),
     ('2', '10 - 15'),
     ('3', '15 - 20'),
