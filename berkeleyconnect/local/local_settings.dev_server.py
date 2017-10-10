@@ -76,7 +76,7 @@ EMAIL_PORT = 587
 
 ELASTICSEARCH_DSL={
     'default': {
-        'hosts': 'elastic:changeme@localhost:9200'
+        'hosts': 'search-bearfounders-hudt5zn5xt6o2pyr2zz3o2ebqu.us-west-1.es.amazonaws.com'
     },
 }
 
