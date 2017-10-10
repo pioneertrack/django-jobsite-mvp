@@ -240,15 +240,20 @@
   z-index: 3;
   display: inline-block;
   height: 100%;
-  border-radius: 50%;
   line-height: inherit;
   margin-bottom: 6px;
 }
-#headerthumbnail {
-  height: 50px;
-  width: 50px;
-  border-radius: 50%;
+.profile-thumb {
+  border: 1px solid navy;
+  height: 48px;
+  width: 48px;
   line-height: inherit;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 5px 0 0px;
 }
 .img-responsive {
   width: 300px;
