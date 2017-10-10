@@ -225,7 +225,7 @@ def search(request):
     if select_category == 'people':
 
         kwargs = {'is_active': True, 'is_individual': True, 'is_account_disabled': False,
-                  'profile__is_filled': True}
+                  'profile__is_filled': True }
 
         years = majors = roles = filter = filter_hidden = active_selects = filter_mobile = None
         if post_data:
@@ -275,7 +275,7 @@ def search(request):
                     elif item == '0':
                         kwargs['profile__has_startup_exp'] = True
 
-        result = models.MyUser.objects.filter(**kwargs)
+        result = models.MyUser.objects.filter(**kwargs).exclude(profile__positions__exact=['5'])
 
         for r in result:
             experience = [stem_remove_stop_words(arr) for arr in [
@@ -911,7 +911,7 @@ class Settings(LoginRequiredMixin, generic.FormView):
         # if self.request.user.is_individual and hasattr(self.request.user, 'profile'):
         #     context['alternate_email_form'] = self.alternate_email_form_class(
         #         initial={'alt_email': self.request.user.profile.alt_email})
-        context.update(**CONTEXT)
+        # context.update(**CONTEXT)
         context.update(**JOB_CONTEXT)
         return context
 

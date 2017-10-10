@@ -113,6 +113,7 @@ POSITIONS = (
     ('2', 'Part-Time'),
     ('3', 'Full-Time'),
     ('4', 'Contract'),
+    ('5', 'Not Looking'),
 )
 
 
@@ -201,6 +202,11 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.email
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if '5' in self.positions:
+            self.positions = ['5']
+        super(Profile, self).save(force_insert, force_update, using , update_fields)
 
     def check_is_filled(self, save=True):
         if len(self.bio) > 1 and (len(self.skills) > 0 or self.experience_set.count() > 0) and (
