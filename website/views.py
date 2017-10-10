@@ -50,14 +50,6 @@ def merge_dicts(*args):
 
 stemmer = PorterStemmer()
 
-CONTEXT = {
-    'years': prof.YEAR_IN_SCHOOL_CHOICES,
-    'majors': prof.MAJORS,
-    'roles': prof.PRIMARY_ROLE,
-    'fields': prof.CATEGORY,
-    'position': prof.POSITION
-}
-
 JOB_CONTEXT = {
     'p_context': [
         ('year', list(prof.YEAR_IN_SCHOOL_CHOICES), {'class': 'label-year', 'name': 'affiliation'}),
@@ -72,6 +64,7 @@ JOB_CONTEXT = {
             ('3', 'Full-Time'),
             ('4', 'Freelance')
         ], {'class': 'label-position'}),
+        ('hours', list(prof.HOURS_AVAILABLE), {'class': 'label-hours', 'name': 'Available'})
     ],
     'f_context': [
         ('stage', list(prof.STAGE), {'class': 'label-stage'}),
@@ -244,6 +237,7 @@ def search(request):
             roles = post_data['role']
             experience = post_data['experience']
             position = post_data['position']
+            hours = post_data['hours']
 
             filter = None
             if filter_hidden != None:
@@ -255,6 +249,7 @@ def search(request):
                 'role': roles,
                 'experience': experience,
                 'position': position,
+                'hours': hours
             }
 
             if len(years) > 1 or (not '' in years and len(years) > 0):
@@ -269,6 +264,9 @@ def search(request):
             if len(position) > 1 or (not '' in position and len(position) > 0):
                 kwargs['profile__positions__overlap'] = position
                 active_selects.append('position')
+            if len(hours) > 1 or (not '' in hours and len(hours) > 0):
+                kwargs['profile__hours_week__in'] = hours
+                active_selects.append('hours')
             if len(experience) > 1 or (not '' in experience and len(experience) > 0):
                 active_selects.append('experience')
                 for item in experience:
