@@ -204,14 +204,6 @@ CACHES = {
     }
 }
 
-
-ELASTICSEARCH_DSL={
-    'default': {
-        'hosts': 'elastic:changeme@localhost:9200'
-    },
-}
-
-
 try:
   from .local_settings import *
 except ImportError:

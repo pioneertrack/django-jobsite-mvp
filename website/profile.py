@@ -1,7 +1,5 @@
 from django.db import models
 from website import models as user
-from django.db.models.signals import post_save, pre_save
-from django.dispatch import receiver
 from django.utils import timezone
 from django.contrib.postgres.fields import ArrayField
 from django import forms
@@ -296,23 +294,3 @@ class Connection(models.Model):
     receiver = models.ForeignKey(user.MyUser, verbose_name='Receiver', null=True, related_name='receiver')
     to_startup = models.BooleanField(verbose_name='Receiver is startup', default=False)
     message = models.TextField(verbose_name='Message', null=True)
-
-
-# @receiver(post_save, sender=user.MyUser)
-# def create_user_profile(sender, instance, created, **kwargs):
-#     if created and instance.is_individual:
-#         Profile.objects.create(user=instance)
-#     if created and instance.is_founder:
-#         Founder.objects.create(user=instance)
-
-
-# @receiver(post_save, sender=Profile)
-# def profile_first_login(sender, instance, created, **kwargs):
-#     if instance.user.first_login:
-#         instance.user.set_first_login()
-#
-#
-# @receiver(post_save, sender=Founder)
-# def founder_first_login(sender, instance, created, **kwargs):
-#     if instance.user.first_login:
-#         instance.user.set_first_login()
