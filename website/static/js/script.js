@@ -140,6 +140,14 @@ $(function(){
     }
   });
 
+	$('#mainform').submit(function(e) {
+	    var d = new Date();
+    d.setTime(d.getTime() + (24 * 60 * 60 * 1000));
+    var expires = 'expires=' + d.toUTCString();
+    document.cookie = 'select-category=None;' +
+        expires + ';path=/';
+  })
+
 	setTimeout(function() {
 		$('.message').fadeOut('slow');
 	}, 3500);

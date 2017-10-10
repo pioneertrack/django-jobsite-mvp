@@ -32,6 +32,18 @@ $(function() {
 
   }
 
+  $('[name="positions"]').change(function(e) {
+    if ($(this).val() == '5') {
+      $('[name="positions"]:checked').each(function() {
+        if ($(this).val() !== '5') {
+          $(this).prop('checked', false)
+        }
+      })
+    } else {
+      $('[name="positions"][value="5"]').prop('checked', false)
+    }
+  })
+
   $('#profileform .set #funding').formset({
     prefix: 'funding_set',
     deleteCssClass: 'remove',
