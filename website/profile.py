@@ -201,6 +201,13 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.email
 
+    def get_positions_display(self):
+        choices = self._meta.get_field('positions').base_field.choices
+        display = []
+        for item in self.positions:
+            display.append(choices.__getitem__(int(item))[1])
+        return display
+
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if '5' in self.positions:
             self.positions = ['5']

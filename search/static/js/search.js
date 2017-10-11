@@ -35,7 +35,7 @@ $(function() {
       data.forEach(function(item) {
         switch (item._type) {
           case 'people_document':
-            $('main .container .row').append(person({'item': item._source}));
+            $('main .container .row').append(person({'data': item}));
             break;
           case 'startup_document':
             $('main .container .row').append(startup({'item': item._source}));
@@ -50,7 +50,7 @@ $(function() {
 
     } else if (currentPage == '0') {
       // underscore template (base.html)
-      $('main .container').
+      $('main .container .row').
           html(_.template($('#empty_search_template').html())());
     }
   }
@@ -62,11 +62,32 @@ $(function() {
     if (!end_of_results && !is_active_request) {
       is_active_request = true;
 
-
-
       $.ajax('/search/' + currentPage + '/', {
         method: 'GET',
         // data: $('#mainform').serializeArray(),
+        success: function(response) {
+          is_active_request = false;
+          render_search(response);
+          if (response.length) {
+            currentPage++;
+          }
+          else {
+            end_of_results = true;
+          }
+        },
+        error: function() {
+          is_active_request = false;
+        },
+      });
+    }
+  }
+
+  function postSearchResults() {
+    if (!end_of_results && !is_active_request) {
+      is_active_request = true;
+      $.ajax('/search/', {
+        method: 'POST',
+        data: $('#mainform').serializeArray(),
         success: function(response) {
           is_active_request = false;
           render_search(response);
@@ -104,7 +125,7 @@ $(function() {
     end_of_results = false;
 
     // clear main container
-    $('main .container').html('');
+    $('main .container .row').html('');
 
     // "redirect" to mainpage
     // history.pushState({}, 'Home', '/');
@@ -113,7 +134,7 @@ $(function() {
     $('body,html').animate({scrollTop: 0}, 0);
 
     // results
-    getSearchResults();
+    postSearchResults();
 
     // prevent actual submit
     return false;

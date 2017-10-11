@@ -278,6 +278,7 @@ def search(request):
         result = models.MyUser.objects.filter(**kwargs).exclude(profile__positions__exact=['5'])
 
         for r in result:
+            a = r.profile.get_positions_display()
             experience = [stem_remove_stop_words(arr) for arr in [
                 x.description.lower().replace('\n', ' ').replace('\r', '').translate(
                     {ord(c): None for c in string.punctuation}).split() for x in r.profile.experience_set.all()]]
@@ -350,7 +351,7 @@ def search(request):
         else:
             to_return = list(to_return)
             shuffle(to_return)
-        return render(request, 'search.html',
+        return render(request, 'old_search.html',
                       merge_dicts(JOB_CONTEXT,
                                   {
                                       'search_enabled': True,
@@ -464,7 +465,7 @@ def search(request):
             to_return = list(to_return)
             shuffle(to_return)
 
-        return render(request, 'search.html',
+        return render(request, 'old_search.html',
                       merge_dicts(JOB_CONTEXT,
                                   {
                                       'searched': to_return,
@@ -569,7 +570,7 @@ def search(request):
             to_return = list(to_return)
             shuffle(to_return)
 
-        return render(request, 'search.html',
+        return render(request, 'old_search.html',
                       merge_dicts(JOB_CONTEXT, {
                           'searched': to_return,
                           'search_category': select_category,
@@ -581,7 +582,7 @@ def search(request):
                           'mobile_filter': filter_mobile
                       }))
     else:
-        return render(request, 'search.html',
+        return render(request, 'old_search.html',
                       merge_dicts(JOB_CONTEXT, {
                           'posted': False,
                           'reset': True,

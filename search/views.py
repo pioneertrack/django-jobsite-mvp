@@ -60,7 +60,6 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
     form_class = forms.Form
     post_data = None
     category = None
-    post_data = None
     per_page = 9
     page = 0
     offset = 0
@@ -87,7 +86,6 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
 
     def get(self, request, *args, **kwargs):
         self.page = kwargs.get('page', 0)
-
         post_data = request.session.get('post_search_data')
         self.post_data = json.loads(post_data) if not post_data is None else None
         self.category = request.COOKIES.get('select-category') if request.COOKIES.get('select-category') else 'people'
@@ -95,31 +93,12 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
         return self.render_to_response(self.get_context_data())
 
     def post(self, request, *args, **kwargs):
-        category = request.POST.get('select-category', 'partners')
-        query_string = request.POST.get('query', '')
         self.page = kwargs.get('page', 0)
-
-        if category == 'people':
-            res = self.people_search()
-
-        elif category == 'startups':
-            res = self.startup_search()
-
-        elif category == 'jobs':
-            res = self.job_search()
-
-        else:
-            return JsonResponse({'error': 'Unknown request'})
-
-        search_response = {
-            'category': category,
-            'items': {}
-        }
-        for hit in res:
-            id = hit.meta.id
-            search_response['items'][id] = hit.to_dict()
-
-        return JsonResponse(search_response)
+        post_data = json.dumps(dict(request.POST))
+        request.session['post_search_data'] = post_data
+        self.post_data = json.loads(post_data)
+        self.category = self.post_data['select-category'][0]
+        return self.render_to_response(self.get_context_data())
 
     def people_search(self):
         query_string = self.post_data['query'][0] if self.post_data else ''
@@ -141,6 +120,7 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
                         {'term': {'user.is_active': True}},
                         {'term': {'user.is_individual': True}},
                         {'term': {'user.is_account_disabled': False}},
+                        {'term': {'is_filled': True}},
                     ]
                 }
             }

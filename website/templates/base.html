@@ -84,7 +84,7 @@
       {% if user.is_authenticated and not user.first_login and search_enabled %}
         <nav class="cd-secondary-nav">
 
-          <form id="mainform" action="/search/" autocomplete="off" method="POST">
+          <form id="mainform" action="/old_search/" autocomplete="off" method="POST">
             {% csrf_token %}
 
             <div id="search" class="cd-main-search is-visible">

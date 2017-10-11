@@ -440,10 +440,10 @@
                       <span class="label label-info">{{ skill }}</span>
                     {% endfor %}
                     <span class="label label-success">{{ curr_item.get_hours_week_display }} hr/wk</span>
-                    {% for work in curr_item.profile.experience_set.all %}
+                    {% for work in curr_item.experience_set %}
                       <span class="label label-danger">Worked at {{ work.company }}</span>
                     {% endfor %}
-                    {% for item in curr_item.positions_display %}
+                    {% for item in curr_item.get_positions_display %}
                       <span class="label label-warning">{{ item }}</span>
                     {% endfor %}
                     <!--<div style = "padding:10px;">
@@ -515,7 +515,8 @@
   {% block search_person_template %}
     <script type="text/html" id="search_person_template">
       <div class="col col-md-4" style="height:400px;">
-        <a class="card-hover" href='/profiles/<%= item.id %>'>
+        <% var item = data._source %>
+        <a class="card-hover" href='/profiles/<%= data._id %>'>
           <div class="card">
             <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
             <div>
@@ -524,7 +525,7 @@
             <div class="content">
               <h2><%= item.user.first_name %> <%= item.user.last_name %></h2>
 
-              <% if (item.year != 'NONE') { %><h3 style="margin-top:0"> <%= item.year_display %> </h3><% } %>
+              <h3 style="margin-top:0"> <%= item.get_year_display %> </h3>
 
               <% if (item.has_startup_exp) { %>
               <span class="label label-default">Has startup experience</span>
@@ -534,15 +535,13 @@
               <span class="label label-default">Has funding experience</span>
               <% } %>
 
-              <% if (item.year != 'NONE') { %>
-              <span class="label label-primary"> <%= item.year_display %> </span>
-              <% } %>
+              <span class="label label-primary"> <%= item.get_year_display %> </span>
 
-              <span class="label label-primary"><%= item.major_display %></span>
+              <span class="label label-primary"><%= item.get_major_display %></span>
 
-              <% if (item.role != 'NONE') { %><span class="label label-info"><%= item.role %></span><% } %>
+              <span class="label label-info"><%= item.get_role_display %></span>
 
-              <% if (item.skills.length > 0) { _.each(item.skills.split(','), function (skill) { %>
+              <% if (item.skills.length > 0) { _.each(item.skills.split(',').slice(0,4), function (skill) { %>
               <span class="label label-info"><%= skill %></span>
               <% })} %>
 
@@ -551,6 +550,10 @@
               <% if (item.experience_set.length > 0) { _.each(item.experience_set, function (experience) { %>
               <span class="label label-danger">Worked at <%= experience.company %></span>
               <% })} %>
+
+              <% _.each(item.get_positions_display, function (item) { %>
+              <span class="label label-warning"><%= item %></span>
+              <% }) %>
             </div>
           </div>
         </a>
@@ -561,11 +564,12 @@
   {% block search_startup_template %}
     <script type="text/html" id="search_startup_template">
       <div class="col col-md-4" style="height:400px;">
-        <a class="card-hover" href='/startups/<%= item.id %>'>
+        <% var item = data._source %>
+        <a class="card-hover" href='/startups/<%= data._id %>'>
           <div class="card">
             <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
             <div>
-              <div class="avatar" style="background-image: url('');"></div>
+              <div class="avatar" style="background-image: url('<%= item.logo %>');"></div>
             </div>
             <div class="content">
               <h2><%= item.startup_name %></h2>
@@ -584,8 +588,9 @@
 
   {% block search_job_template %}
     <script type="text/html" id="search_job_template">
+      <% var item = data._source %>
       <div class="col col-md-4 item">
-        <a class="card-hover" href='/startups/<%= item.id %>'>
+        <a class="card-hover" href='/startups/<%= data._id %>'>
           <div class="card job-card">
             <div class="header-bg" style="height:100px; background-color:#25283D;">
               <h2><%= item.founder.startup_name %></h2>
