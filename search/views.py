@@ -1,12 +1,10 @@
-from django.db.models.functions.base import Lower
-from django.shortcuts import render
 from django.views.generic.edit import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django import forms
 from search.documents import PeopleDocument, StartupDocument, JobDocument
-from elasticsearch_dsl import FacetedSearch
 import website.profile as profile
+import json
 
 JOB_CONTEXT = {
     'p_context': [
@@ -15,8 +13,6 @@ JOB_CONTEXT = {
         ('role', list(profile.PRIMARY_ROLE), {'class': 'label-role', 'name': 'role'}),
         ('experience', [('0', 'Has startup experience'), ('1', 'Has funding experience')],
          {'class': 'label-experience'}),
-    ],
-    'e_context': [
         ('position', [
             ('0', 'Partner'),
             ('1', 'Intern'),
@@ -24,6 +20,7 @@ JOB_CONTEXT = {
             ('3', 'Full-Time'),
             ('4', 'Freelance')
         ], {'class': 'label-position'}),
+        ('hours', list(profile.HOURS_AVAILABLE), {'class': 'label-hours', 'name': 'Available'})
     ],
     'f_context': [
         ('stage', list(profile.STAGE), {'class': 'label-stage'}),
@@ -37,33 +34,79 @@ JOB_CONTEXT = {
 }
 
 
+class JSONResponseMixin(object):
+    """
+    A mixin that can be used to render a JSON response.
+    """
+    def render_to_json_response(self, context, **response_kwargs):
+        """
+        Returns a JSON response, transforming 'context' to make the payload.
+        """
+        return JsonResponse(
+            self.get_data(context), safe=False,
+            **response_kwargs
+        )
+
+    def get_data(self, context):
+        """
+        Returns an object that will be serialized as JSON by json.dumps().
+        """
+        return context
+
+
 # Create your views here.
-class SearchView(LoginRequiredMixin, FormView):
-    template_name = 'search_view.html'
+class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
+    template_name = 'search.html'
     form_class = forms.Form
+    post_data = None
+    category = None
+    post_data = None
+    per_page = 9
+    page = 0
+    offset = 0
+
+    def render_to_response(self, context):
+        if self.request.is_ajax():
+            return self.render_to_json_response(context.get('items'))
+        else:
+            return super(SearchView, self).render_to_response(context)
 
     def get_context_data(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
-        context.update(JOB_CONTEXT)
+        if self.category == 'people':
+            res = self.people_search()
+        elif self.category == 'startups':
+            res = self.startup_search()
+        elif self.category == 'jobs':
+            res = self.job_search()
+        context.update({'items': res.hits.hits })
+        if self.request.method == 'GET' and not self.request.is_ajax():
+            context.update(JOB_CONTEXT)
+
         return context
 
-    def post(self, request, page=0, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
+        self.page = kwargs.get('page', 0)
+
+        post_data = request.session.get('post_search_data')
+        self.post_data = json.loads(post_data) if not post_data is None else None
+        self.category = request.COOKIES.get('select-category') if request.COOKIES.get('select-category') else 'people'
+
+        return self.render_to_response(self.get_context_data())
+
+    def post(self, request, *args, **kwargs):
         category = request.POST.get('select-category', 'partners')
         query_string = request.POST.get('query', '')
-        current_page = int(page)
-        per_page = 9
-        current_offset = (current_page * per_page) - 1
-        if current_offset < 0:
-            current_offset = 0
+        self.page = kwargs.get('page', 0)
 
         if category == 'people':
-            res = self.people_search(request, category, query_string, per_page, current_offset)
+            res = self.people_search()
 
         elif category == 'startups':
-            res = self.startup_search(request, query_string, per_page, current_offset)
+            res = self.startup_search()
 
         elif category == 'jobs':
-            res = self.job_search(request, query_string, per_page, current_offset)
+            res = self.job_search()
 
         else:
             return JsonResponse({'error': 'Unknown request'})
@@ -78,16 +121,20 @@ class SearchView(LoginRequiredMixin, FormView):
 
         return JsonResponse(search_response)
 
-    def people_search(self, request, category, query_string, per_page, current_offset):
-        position = request.POST.getlist('position_' + category)
-        years = request.POST.getlist('year_' + category)
-        majors = request.POST.getlist('major_' + category)
-        roles = request.POST.getlist('role_' + category)
-        experience = request.POST.getlist('experience_' + category)
+    def people_search(self):
+        query_string = self.post_data['query'][0] if self.post_data else ''
+        years = majors = roles = experience = position = hours = []
+        if self.post_data:
+            years = self.post_data['year']
+            majors = self.post_data['major']
+            roles = self.post_data['role']
+            experience = self.post_data['experience']
+            position = self.post_data['position']
+            hours = self.post_data['hours']
 
         query = {
-            'from': current_offset,
-            'size': per_page,
+            'from': self.offset,
+            'size': self.per_page,
             'query': {
                 'bool': {
                     'filter': [
@@ -152,14 +199,16 @@ class SearchView(LoginRequiredMixin, FormView):
                     query['query']['bool']['filter'].append({'term': {'has_startup_exp': True}})
         return PeopleDocument.search().from_dict(query).execute()
 
-    def startup_search(self, request, query_string, per_page, current_offset):
-
-        fields = request.POST.getlist('fields')
-        stage = request.POST.getlist('stage')
+    def startup_search(self):
+        query_string = self.post_data['query'][0] if self.post_data else ''
+        fields = stage = []
+        if self.post_data:
+            fields = self.post_data['fields']
+            stage = self.post_data['stage']
 
         query = {
-            'from': current_offset,
-            'size': per_page,
+            'from': self.offset,
+            'size': self.per_page,
             'query': {
                 'bool': {
                     'filter': [
@@ -200,10 +249,16 @@ class SearchView(LoginRequiredMixin, FormView):
         query._index = 'startup'
         return query.execute()
 
-    def job_search(self, request, query_string, per_page, current_offset):
+    def job_search(self):
+        query_string = self.post_data['query'][0] if self.post_data else ''
+        if self.post_data:
+            job_category = self.post_data['category']
+            level = self.post_data['level']
+            pay = self.post_data['pay']
+
         query = {
-            'from': current_offset,
-            'size': per_page,
+            'from': self.offset,
+            'size': self.per_page,
             'query': {
                 'bool': {
                     'filter': [
@@ -225,10 +280,6 @@ class SearchView(LoginRequiredMixin, FormView):
                     ]
                 }
             }
-
-        job_category = request.POST.getlist('category')
-        level = request.POST.getlist('level')
-        pay = request.POST.getlist('pay')
 
         if '' in level:
             level.remove('')

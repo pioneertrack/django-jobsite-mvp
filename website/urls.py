@@ -5,7 +5,7 @@ from website import views
 
 
 urlpatterns = [
-  url(r'^search/$', views.search, name='search'),
+  url(r'^old_search/$', views.search, name='search'),
   url(r'^profile/update', views.profile_update, name='profile_update'),
   url(r'^startup/update/$', views.startup_update, name='startup_update'),
   url(r'^profile/$', views.user_profile, name='profile'),

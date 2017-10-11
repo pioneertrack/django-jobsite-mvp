@@ -199,7 +199,7 @@ def search(request):
 
     post = request.method == 'POST'
     select_category = request.COOKIES.get('select-category')
-
+    select_category = 'people'
     query = ''
     tokenized_users = []
     if post:
@@ -790,20 +790,18 @@ def startup_update(request):
 @login_required
 @check_profiles
 def get_profile_view(request, id):
-    user = get_object_or_404(models.MyUser, pk=id)
-    last_login = user.last_login
+    profile = get_object_or_404(prof.Profile, pk=id)
+    last_login = profile.user.last_login
     current_time = timezone.now()
     cr = current_time - last_login
     cd = cr.total_seconds() < 86400
-    if user is None:
-        return HttpResponseRedirect('/')
     # TODO: need to remember normal alg for that
     positions = []
-    for item in user.profile.positions:
+    for item in profile.positions:
         positions.append(prof.POSITIONS.__getitem__(int(item))[1])
-    exp = user.profile.experience_set.order_by('-end_date')
+    exp = profile.experience_set.order_by('-end_date')
     return render(request, 'profile_info.html', merge_dicts(JOB_CONTEXT, {
-                      'profile': user.profile,
+                      'profile': profile,
                       'experience': exp,
                       'reset': True,
                       'last_login': last_login,
@@ -815,22 +813,21 @@ def get_profile_view(request, id):
 @login_required
 @check_profiles
 def get_startup_view(request, id):
-    user = get_object_or_404(models.MyUser, pk=id)
-    last_login = user.last_login
+    founder = get_object_or_404(prof.Founder, pk=id)
+    last_login = founder.user.last_login
     current_time = timezone.now()
     cr = current_time - last_login
     cd = cr.total_seconds() < 86400
-    if user is None:
-        return HttpResponseRedirect('/')
-    jobs = user.founder.job_set.order_by('title')
+    jobs = founder.job_set.order_by('title')
     return render(request, 'founder_info.html', merge_dicts(JOB_CONTEXT, {
-                      'founder': user.founder,
+                      'founder': founder,
                       'profile': False,
                       'jobs': jobs,
                       'reset': True,
                       'last_login': last_login,
                       'cd': cd,
                   }))
+
 
 @method_decorator(never_cache, name='dispatch')
 class MyRegistrationView(RegistrationView):

@@ -1,4 +1,5 @@
 $(function() {
+
   function cutText() {
     $('.cut-text').each(function(i) {
       len = $(this).text().length;
@@ -14,10 +15,10 @@ $(function() {
   // Search
   // ########
 
-  // underscore template for person (base.html)
-  var person = _.template($("#search_person_template").html());
-  var startup = _.template($("#search_startup_template").html());
-  var job = _.template($("#search_job_template").html());
+  // underscore templates
+  var person = _.template($('#search_person_template').html());
+  var startup = _.template($('#search_startup_template').html());
+  var job = _.template($('#search_job_template').html());
 
   var currentPage = 0;
   var currentSearchData = [];
@@ -29,18 +30,18 @@ $(function() {
    * @param data Object
    */
   function render_search(data) {
-    if (Object.keys(data.items).length) {
+    if (data.length > 0) {
 
-      Object.keys(data.items).forEach(function(key) {
-        switch (data.category) {
-          case 'people':
-            $('main .container').append(person({"item": data.items[key]}));
+      data.forEach(function(item) {
+        switch (item._type) {
+          case 'people_document':
+            $('main .container .row').append(person({'item': item._source}));
             break;
-          case 'startups':
-            $('main .container').append(startup({"item": data.items[key]}));
+          case 'startup_document':
+            $('main .container .row').append(startup({'item': item._source}));
             break;
-          case 'jobs':
-            $('main .container').append(job({"item": data.items[key]}));
+          case 'job_document':
+            $('main .container .row').append(job({'item': item._source}));
             break;
         }
       });
@@ -50,7 +51,7 @@ $(function() {
     } else if (currentPage == '0') {
       // underscore template (base.html)
       $('main .container').
-          html(_.template($("#empty_search_template").html())());
+          html(_.template($('#empty_search_template').html())());
     }
   }
 
@@ -60,9 +61,12 @@ $(function() {
   function getSearchResults() {
     if (!end_of_results && !is_active_request) {
       is_active_request = true;
-      $.ajax('/api/search/' + currentPage + '/', {
-        method: "POST",
-        data: $('#mainform').serializeArray(),
+
+
+
+      $.ajax('/search/' + currentPage + '/', {
+        method: 'GET',
+        // data: $('#mainform').serializeArray(),
         success: function(response) {
           is_active_request = false;
           render_search(response);
@@ -75,7 +79,7 @@ $(function() {
         },
         error: function() {
           is_active_request = false;
-        }
+        },
       });
     }
   }
@@ -84,11 +88,9 @@ $(function() {
    * Lazy load search result on scroll
    */
   function searchLazyLoad() {
-    if (location.pathname == '/') {
-      if ($(window).scrollTop() + $(window).height() >=
-          $(document).height() - 250) {
-        getSearchResults();
-      }
+    if ($(window).scrollTop() + $(window).height() >=
+        $(document).height() - 250) {
+      getSearchResults();
     }
   }
 
@@ -105,7 +107,7 @@ $(function() {
     $('main .container').html('');
 
     // "redirect" to mainpage
-    history.pushState({}, 'Home', '/');
+    // history.pushState({}, 'Home', '/');
 
     // scroll to top
     $('body,html').animate({scrollTop: 0}, 0);
@@ -116,4 +118,9 @@ $(function() {
     // prevent actual submit
     return false;
   });
-})
+
+  $(window).scroll(function() {
+    searchLazyLoad();
+  });
+
+});

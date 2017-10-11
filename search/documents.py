@@ -32,8 +32,9 @@ class PeopleDocument(DocType):
     })
     positions = fields.StringField()
     image = fields.StringField(attr="image_to_string")
-    major_display = fields.StringField(attr="get_major_display")
-    year_display = fields.StringField(attr="get_year_display")
+    get_major_display = fields.StringField(attr="get_major_display")
+    get_year_display = fields.StringField(attr="get_year_display")
+    get_role_display = fields.StringField(attr="get_role_display")
     major = fields.StringField(
         attr="major",
         analyzer=analyzer(
