@@ -113,6 +113,7 @@ POSITIONS = (
     ('2', 'Part-Time'),
     ('3', 'Full-Time'),
     ('4', 'Contract'),
+    ("5", "None")
 )
 
 
@@ -181,12 +182,10 @@ class Profile(models.Model):
                                            format='PNG',
                                            options={'quality': 100})
     bio = models.TextField(verbose_name='Bio', max_length=500)
-    profile_step = models.IntegerField(verbose_name="Step on profile completion")
     positions = ChoiceArrayField(models.CharField(choices=POSITIONS, max_length=1, default='0'))
     role = models.CharField(max_length=4, choices=PRIMARY_ROLE)
     skills = models.TextField(verbose_name='Skills', max_length=500)
     year = models.CharField(verbose_name='Cal Affiliation', max_length=4, choices=YEAR_IN_SCHOOL_CHOICES)
-
     interests = models.TextField(verbose_name='Interests', max_length=500, blank=True, null=False)
     courses = models.TextField(verbose_name='Courses', max_length=400, blank=True, null=False)
     alt_email = models.EmailField(max_length=255, db_index=True, null=True, blank=True)
