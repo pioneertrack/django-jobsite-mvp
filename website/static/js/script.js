@@ -146,6 +146,7 @@ $(function(){
 			var expires = 'expires=' + d.toUTCString();
 			document.cookie = 'select-category=None;' +
 					expires + ';path=/';
+			history.pushState({filter: $('#mainform').serializeArray()})
   })
 
 	setTimeout(function() {

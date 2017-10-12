@@ -128,7 +128,7 @@ $(function() {
     $(window).unbind('scroll', searchLazyLoad);
     $(window).scroll(searchLazyLoad);
 
-    sessionStorage.setItem(JSON.stringify())
+    // sessionStorage.setItem(JSON.stringify())
 
     // clear main container
     $('main .container .row').html('');
