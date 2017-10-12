@@ -11,8 +11,8 @@ urlpatterns = [
   url(r'^profile/$', views.user_profile, name='profile'),
   url(r'^startup_profile/$', views.startup_profile, name='startup_profile'),
 
-  url(r'^profile_breadcrumbs/$', views.profile_info_breadcrumbs, name="profile_breadcrumbs"),
-  url(r'^profile_breadcrumbs/(?P<updatedStep>\d+)$', views.profile_breadcrumbs_update_step, name="profile_breadcrumbs_step"),
+  url(r'^profile/step/$', views.profile_step, name="profile_step"),
+  url(r'^profile/step/image$', views.profile_step_image, name="profile_step_image"),
 
   url(r'^profiles/(?P<id>\d+)/$',views.get_profile_view,name='get_profile_view'),
   url(r'^startups/(?P<id>\d+)/$',views.get_startup_view,name='get_startup_view'),

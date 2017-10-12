@@ -3,7 +3,7 @@ def ValidatePostItems(expectedFields, optionalFields, request, saveObj, atleastO
     for item in expectedFields:
         print (item, request.POST)
         if item not in request.POST:
-            raise ValueError("Value not passed in post!")
+            raise ValueError("Value not passed in post! " + item)
         setattr(saveObj, expectedFields[item], request.POST[item])
 # optional inputs, dropdowns, and text areas
     for item in optionalFields:
