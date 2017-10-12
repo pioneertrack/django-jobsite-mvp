@@ -28,8 +28,5 @@ venv/
 
 JavaScripts Dev
 /node_modules/*
-/dev/*
-/webpack.config.js
 /package-lock.json
-/package.json
 .sass-cache/*
