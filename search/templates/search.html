@@ -455,7 +455,7 @@
 
             </div>
 
-          {% else %}
+          {% elif item_type == 'people_document' %}
 
             <div class="col col-md-4" style="height:400px;">
 
@@ -466,14 +466,14 @@
                        style="height:100px; background-color:#25283D;"></div>
                   <div>
                     <div class="avatar"
-                         style="background-image: url('{{ curr_item.founder.logo.url }}');">
+                         style="background-image: url('{{ curr_item.logo }}');">
                     </div>
                   </div>
                   <div class="content">
-                    <h2>{{ curr_item.founder.startup_name }}</h2>
+                    <h2>{{ curr_item.startup_name }}</h2>
                     <h4>{{ curr_item.founder.get_stage_display }}
-                      • {{ curr_item.founder.employee_count }}
-                      Employee{{ curr_item.founder.employee_count|pluralize }}</h4>
+                      • {{ curr_item.employee_count }}
+                      Employee{{ curr_item.employee_count|pluralize }}</h4>
                     <hr>
                     <script type="text/javascript">
                       $(function() {
@@ -486,11 +486,8 @@
                       });
                     </script>
                     <div class="founderdescription">
-                      <p>{{ curr_item.founder.description }}<p>
+                      <p>{{ curr_item.description }}<p>
                     </div>
-                    <!--<div style = "padding:10px;">
-                        <a href="/users/{{user.id}}" class="btn btn-primary btn-outline">View profile</a>
-                        </div>-->
                   </div>
                 </div>
               </a>
@@ -573,7 +570,7 @@
             </div>
             <div class="content">
               <h2><%= item.startup_name %></h2>
-              <h4><%= item.stage_display %> • <%= item.employee_count %> Employee</h4>
+              <h4><%= item.get_stage_display %> • <%= item.employee_count %> Employee</h4>
               <hr>
               <div class="founderdescription cut-text" data-cut="200">
                 <p><%= item.description %>

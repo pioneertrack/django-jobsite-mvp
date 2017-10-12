@@ -38,10 +38,10 @@ $(function() {
             $('main .container .row').append(person({'data': item}));
             break;
           case 'startup_document':
-            $('main .container .row').append(startup({'item': item._source}));
+            $('main .container .row').append(startup({'data': item}));
             break;
           case 'job_document':
-            $('main .container .row').append(job({'item': item._source}));
+            $('main .container .row').append(job({'data': item}));
             break;
         }
       });

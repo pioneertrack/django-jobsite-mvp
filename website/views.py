@@ -199,7 +199,6 @@ def search(request):
 
     post = request.method == 'POST'
     select_category = request.COOKIES.get('select-category')
-    select_category = 'people'
     query = ''
     tokenized_users = []
     if post:
@@ -407,10 +406,12 @@ def search(request):
                                                                                                                ' ').replace(
                     '\r', '').translate({ord(c): None for c in string.punctuation}).split() for x in
                 r.founder.job_set.all()]]
+
             attr = [stem_remove_stop_words(arr) for arr in [
                 x.lower().replace('\n', ' ').replace('\r', '').translate(
                     {ord(c): None for c in string.punctuation}).split() for x in
                 [r.first_name + " " + r.last_name, r.founder.startup_name, r.founder.description]]]
+
             total = list(itertools.chain.from_iterable(jobs + attr))
             for i, word in enumerate(total):
                 if word in search_index:

@@ -9,8 +9,32 @@ if hasattr(settings, 'PRODUCTION') and settings.PRODUCTION:
 else:
     people_index_name = 'dev_people'
 
+# Startup search document
+if hasattr(settings, 'PRODUCTION') and settings.PRODUCTION:
+    startup_index_name = 'startup'
+else:
+    startup_index_name = 'dev_startup'
+
+# Job search document
+if hasattr(settings, 'PRODUCTION') and settings.PRODUCTION:
+    job_index_name = 'job'
+else:
+    job_index_name = 'dev_job'
+
 people = Index(people_index_name)
 people.settings(
+    number_of_shards=1,
+    number_of_replicas=0,
+)
+
+startup = Index(startup_index_name)
+startup.settings(
+    number_of_shards=1,
+    number_of_replicas=0,
+)
+
+job = Index(job_index_name)
+job.settings(
     number_of_shards=1,
     number_of_replicas=0,
 )
@@ -77,60 +101,35 @@ class PeopleDocument(DocType):
         ]
 
 
-# Startup search document
-if hasattr(settings, 'PRODUCTION') and settings.PRODUCTION:
-    startup_index_name = 'startup'
-else:
-    startup_index_name = 'dev_startup'
-
-startup = Index(startup_index_name)
-startup.settings(
-    number_of_shards=1,
-    number_of_replicas=0,
-)
-
-
 @startup.doc_type
 class StartupDocument(DocType):
-    stage_display = fields.StringField(attr="get_stage_display")
+    job_set = fields.NestedField(properties={
+        'title': fields.StringField(),
+        'description': fields.StringField(),
+        'level': fields.StringField(attr="get_level_display"),
+        'pay': fields.StringField(attr="get_pay_display")
+    })
     user = fields.ObjectField(properties={
         'is_active': fields.BooleanField(),
-        'is_individual': fields.BooleanField(),
+        'is_founder': fields.BooleanField(),
         'is_account_disabled': fields.BooleanField(),
-        'is_founder': fields.BooleanField()
+        'first_name': fields.StringField(),
+        'last_name': fields.StringField(),
     })
-
-    field = fields.StringField(
-        attr="field",
-        analyzer=analyzer(
-            'standard_field',
-            tokenizer="standard",
-            filter=["standard"]
-        )
-    )
+    logo = fields.StringField(attr="logo_to_string")
+    get_stage_display = fields.StringField(attr="get_stage_display")
+    get_field_display = fields.StringField(attr="get_field_display")
 
     class Meta:
         model = Founder
         fields = [
-            'id',
             'startup_name',
             'description',
+            'is_filled',
             'stage',
+            'field',
             'employee_count'
         ]
-
-
-# Job search document
-if hasattr(settings, 'PRODUCTION') and settings.PRODUCTION:
-    job_index_name = 'job'
-else:
-    job_index_name = 'dev_job'
-
-job = Index(job_index_name)
-job.settings(
-    number_of_shards=1,
-    number_of_replicas=0,
-)
 
 
 @job.doc_type

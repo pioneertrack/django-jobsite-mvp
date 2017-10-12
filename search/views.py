@@ -85,19 +85,23 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
         return context
 
     def get(self, request, *args, **kwargs):
-        self.page = kwargs.get('page', 0)
-        post_data = request.session.get('post_search_data')
+        self.page = int(kwargs.get('page', 0))
+        post_data = request.session.get('post_search_data') if request.is_ajax() else None
         self.post_data = json.loads(post_data) if not post_data is None else None
-        self.category = request.COOKIES.get('select-category') if request.COOKIES.get('select-category') else 'people'
+        if post_data:
+            self.category = self.post_data['select-category'][0]
+        else:
+            self.category = request.COOKIES.get('select-category') if request.COOKIES.get('select-category') else 'people'
 
         return self.render_to_response(self.get_context_data())
 
     def post(self, request, *args, **kwargs):
-        self.page = kwargs.get('page', 0)
+        self.page = int(kwargs.get('page', 0))
         post_data = json.dumps(dict(request.POST))
         request.session['post_search_data'] = post_data
         self.post_data = json.loads(post_data)
         self.category = self.post_data['select-category'][0]
+
         return self.render_to_response(self.get_context_data())
 
     def people_search(self):
@@ -110,6 +114,7 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
             experience = self.post_data['experience']
             position = self.post_data['position']
             hours = self.post_data['hours']
+        self.offset = 0 if self.page == 0 else self.page * self.per_page
 
         query = {
             'from': self.offset,
@@ -185,6 +190,7 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
         if self.post_data:
             fields = self.post_data['fields']
             stage = self.post_data['stage']
+        self.offset = 0 if self.page == 0 else self.page * self.per_page
 
         query = {
             'from': self.offset,
@@ -195,6 +201,7 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
                         {'term': {'user.is_active': True}},
                         {'term': {'user.is_account_disabled': False}},
                         {'term': {'user.is_founder': True}},
+                        {'term': {'is_filled': True}},
                     ]
                 }
             }
@@ -208,6 +215,12 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
                     'fields': [
                         'startup_name',
                         'description',
+                        'user.first_name',
+                        'user.last_name'
+                        'job_set.title',
+                        'job_set.description',
+                        'job_set.level',
+                        'job_set.pay',
                     ]
                 }
             }
