@@ -3,6 +3,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django import forms
 from search.documents import PeopleDocument, StartupDocument, JobDocument
+from django.utils.decorators import method_decorator
+from django.views.decorators.vary import vary_on_headers
+from website.decorators import check_profiles
 import website.profile as profile
 import json
 
@@ -78,20 +81,23 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
             res = self.startup_search()
         elif self.category == 'jobs':
             res = self.job_search()
-        context.update({'items': res.hits.hits })
+        context.update({'items': res.hits.hits, 'search_category': self.category })
         if self.request.method == 'GET' and not self.request.is_ajax():
             context.update(JOB_CONTEXT)
 
         return context
 
+    @method_decorator(check_profiles)
+    @method_decorator(vary_on_headers('User-Agent', 'X-Session-Header'))
     def get(self, request, *args, **kwargs):
         self.page = int(kwargs.get('page', 0))
         post_data = request.session.get('post_search_data') if request.is_ajax() else None
-        self.post_data = json.loads(post_data) if not post_data is None else None
+        self.category = request.COOKIES.get('select-category') if request.COOKIES.get('select-category') else 'people'
+        if post_data is None and self.category not in ['people', 'startups', 'jobs']:
+            post_data = request.session.get('post_search_data')
         if post_data:
+            self.post_data = json.loads(post_data)
             self.category = self.post_data['select-category'][0]
-        else:
-            self.category = request.COOKIES.get('select-category') if request.COOKIES.get('select-category') else 'people'
 
         return self.render_to_response(self.get_context_data())
 
@@ -244,10 +250,12 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
 
     def job_search(self):
         query_string = self.post_data['query'][0] if self.post_data else ''
+        job_category = level = pay = []
         if self.post_data:
             job_category = self.post_data['category']
             level = self.post_data['level']
             pay = self.post_data['pay']
+        self.offset = 0 if self.page == 0 else self.page * self.per_page
 
         query = {
             'from': self.offset,
@@ -255,7 +263,9 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
             'query': {
                 'bool': {
                     'filter': [
-                        {'term': {'founder.is_filled': True}}
+                        {'term': {'founder.is_filled': True}},
+                        {'term': {'founder.user.is_active': True}},
+                        {'term': {'founder.user.is_account_disabled': False}},
                     ]
                 }
             }
@@ -270,6 +280,7 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
                         'title',
                         'description',
                         'founder.startup_name',
+                        'founder.description',
                     ]
                 }
             }

@@ -39,6 +39,11 @@ job.settings(
     number_of_replicas=0,
 )
 
+leave_default = analyzer(
+        'leave_default',
+        tokenizer="standard",
+        filter=["standard"]
+)
 
 @people.doc_type
 class PeopleDocument(DocType):
@@ -62,30 +67,9 @@ class PeopleDocument(DocType):
     get_role_display = fields.StringField(attr="get_role_display")
     get_hours_week_display = fields.StringField(attr="get_hours_week_display")
 
-    major = fields.StringField(
-        attr="major",
-        analyzer=analyzer(
-            'standard_major',
-            tokenizer="standard",
-            filter=["standard"]
-        )
-    )
-    year = fields.StringField(
-        attr="year",
-        analyzer=analyzer(
-            'standard_year',
-            tokenizer="standard",
-            filter=["standard"]
-        )
-    )
-    role = fields.StringField(
-        attr="role",
-        analyzer=analyzer(
-            'standard_role',
-            tokenizer="standard",
-            filter=["standard"]
-        )
-    )
+    major = fields.StringField(attr="major", analyzer=leave_default)
+    year = fields.StringField(attr="year", analyzer=leave_default)
+    role = fields.StringField(attr="role", analyzer=leave_default)
 
     class Meta:
         model = Profile
@@ -103,12 +87,6 @@ class PeopleDocument(DocType):
 
 @startup.doc_type
 class StartupDocument(DocType):
-    job_set = fields.NestedField(properties={
-        'title': fields.StringField(),
-        'description': fields.StringField(),
-        'level': fields.StringField(attr="get_level_display"),
-        'pay': fields.StringField(attr="get_pay_display")
-    })
     user = fields.ObjectField(properties={
         'is_active': fields.BooleanField(),
         'is_founder': fields.BooleanField(),
@@ -116,9 +94,17 @@ class StartupDocument(DocType):
         'first_name': fields.StringField(),
         'last_name': fields.StringField(),
     })
+    job_set = fields.NestedField(properties={
+        'title': fields.StringField(),
+        'description': fields.StringField(),
+        'level': fields.StringField(attr="get_level_display"),
+        'pay': fields.StringField(attr="get_pay_display")
+    })
     logo = fields.StringField(attr="logo_to_string")
     get_stage_display = fields.StringField(attr="get_stage_display")
     get_field_display = fields.StringField(attr="get_field_display")
+    stage = fields.StringField(attr='stage', analyzer=leave_default)
+    field = fields.StringField(attr='field', analyzer=leave_default)
 
     class Meta:
         model = Founder
@@ -126,49 +112,33 @@ class StartupDocument(DocType):
             'startup_name',
             'description',
             'is_filled',
-            'stage',
-            'field',
             'employee_count'
         ]
 
 
 @job.doc_type
 class JobDocument(DocType):
-    pay_display = fields.StringField(attr="get_pay_display")
-    level_display = fields.StringField(attr="get_level_display")
     founder = fields.ObjectField(properties={
+        'id': fields.IntegerField(),
         'startup_name': fields.StringField(),
-        'logo': fields.StringField(attr="logo_to_string"),
+        'description': fields.StringField(),
+        'logo': fields.StringField(attr="logo.url"),
         'is_filled': fields.BooleanField(),
-        'field': fields.StringField(attr="field", analyzer=analyzer(
-            'standard_field',
-            tokenizer="standard",
-            filter=["standard"]
-        )),
+        'field': fields.StringField(attr="field", analyzer=leave_default),
+        'user': fields.ObjectField(properties={
+            'is_active': fields.BooleanField(),
+            'is_account_disabled': fields.BooleanField(),
+        })
     })
+    get_pay_display = fields.StringField(attr="get_pay_display")
+    get_level_display = fields.StringField(attr="get_level_display")
 
-    pay = fields.StringField(
-        attr="pay",
-        analyzer=analyzer(
-            'standard_pay',
-            tokenizer="standard",
-            filter=["standard"]
-        )
-    )
-
-    level = fields.StringField(
-        attr="level",
-        analyzer=analyzer(
-            'standard_level',
-            tokenizer="standard",
-            filter=["standard"]
-        )
-    )
+    pay = fields.StringField(attr="pay", analyzer=leave_default)
+    level = fields.StringField(attr="level", analyzer=leave_default)
 
     class Meta:
         model = Job
         fields = [
-            'id',
             'title',
             'description'
         ]

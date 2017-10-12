@@ -364,18 +364,21 @@
     <div class='container' style="padding-top: 30px; padding-bottom:30px;">
       <div class='row'>
         {% for item in items %}
+
           {% get item "_type" as item_type %}
           {% get item "_source" as curr_item %}
+          {% get item "_id" as item_id %}
+
           {% if item_type == 'job_document' %}
-            {% with curr_item=item.founder.user %}
+
               <div class="col col-md-4 item">
 
-                <a class="card-hover" href='/startups/{{ curr_item.id }}'>
+                <a class="card-hover" href='/startups/{{ curr_item.founder.id }}'>
                   <div class="card job-card">
                     <div class="header-bg" style="height:100px; background-color:#25283D;">
                       <h2>{{ curr_item.founder.startup_name }}</h2>
                       <div class="avatar"
-                           style="background-image: url('{{ curr_item.founder.logo.url }}');">
+                           style="background-image: url('{{ curr_item.founder.logo }}');">
                       </div>
                     </div>
                     <div class="offer-content">
@@ -384,11 +387,11 @@
                         <div class="pcomp">
                           <div class="mdata">
                             <span
-                                class="font-weight-bold">Job position:&nbsp;</span><span>{{ item.get_level_display }}</span>
+                                class="font-weight-bold">Job position:&nbsp;</span><span>{{ curr_item.get_level_display }}</span>
                           </div>
                           <div class="mdata">
                             <span
-                                class="font-weight-bold">Compensation type:&nbsp;</span><span>{{ item.get_pay_display }}</span>
+                                class="font-weight-bold">Compensation type:&nbsp;</span><span>{{ curr_item.get_pay_display }}</span>
                           </div>
                         </div>
                       </div>
@@ -404,17 +407,16 @@
                         });
                       </script>
                       <div class="description">
-                        <p>{{ item.description }}</p>
+                        <p>{{ curr_item.description }}</p>
                       </div>
                     </div>
                   </div>
                 </a>
-
               </div>
-            {% endwith %}
+
           {% elif item_type == 'people_document' %}
+
             <div class="col col-md-4" style="height:400px;">
-              {% get item "_id" as item_id %}
               <a class="card-hover" href='/profiles/{{ item_id }}'>
                 <div class="card">
                   <div class="header-bg"
@@ -434,7 +436,9 @@
                       <span class="label label-default">Has funding experience</span>
                     {% endif %}
                     <span class="label label-primary">{{ curr_item.get_year_display }}</span>
-                    <span class="label label-primary">{{ curr_item.get_major_display }}</span>
+                    {% if curr_item.major.strip != "" %}
+                      <span class="label label-primary">{{ curr_item.get_major_display }}</span>
+                    {% endif %}
                     <span class="label label-info">{{ curr_item.get_role_display }}</span>
                     {% for skill in skills|slice:":5" %}
                       <span class="label label-info">{{ skill }}</span>
@@ -455,11 +459,9 @@
 
             </div>
 
-          {% elif item_type == 'people_document' %}
+          {% elif item_type == 'startup_document' %}
 
             <div class="col col-md-4" style="height:400px;">
-
-              {% get item "_id" as item_id %}
               <a class="card-hover" href='/startups/{{ item_id }}'>
                 <div class="card">
                   <div class="header-bg"
@@ -494,9 +496,10 @@
 
             </div>
           {% endif %}
+
         {% empty %}
           <div class="col col-md-12 text-center">
-            <h1><i class="fa fa-exclamation-circle" aria-hidden="true"></i> There were no users that matched
+            <h1><i class="fa fa-exclamation-circle" aria-hidden="true"></i> There were no results that matched
               your search
               query! Try another search.</h1>
           </div>
@@ -534,7 +537,9 @@
 
               <span class="label label-primary"> <%= item.get_year_display %> </span>
 
+              <% if (item.major.length > 0) { %>
               <span class="label label-primary"><%= item.get_major_display %></span>
+              <% } %>
 
               <span class="label label-info"><%= item.get_role_display %></span>
 
@@ -542,7 +547,7 @@
               <span class="label label-info"><%= skill %></span>
               <% })} %>
 
-              <span class="label label-success"><%= item.hours_week %> hr/wk</span>
+              <span class="label label-success"><%= item.get_hours_week_display %> hr/wk</span>
 
               <% if (item.experience_set.length > 0) { _.each(item.experience_set, function (experience) { %>
               <span class="label label-danger">Worked at <%= experience.company %></span>
@@ -598,10 +603,10 @@
                 <h3><%= item.title %></h3>
                 <div class="pcomp">
                   <div class="mdata">
-                    <span class="font-weight-bold">Job position:&nbsp;</span><span><%= item.level_display %></span>
+                    <span class="font-weight-bold">Job position:&nbsp;</span><span><%= item.get_level_display %></span>
                   </div>
                   <div class="mdata">
-                    <span class="font-weight-bold">Compensation type:&nbsp;</span><span><%= item.pay_display %></span>
+                    <span class="font-weight-bold">Compensation type:&nbsp;</span><span><%= item.get_pay_display %></span>
                   </div>
                 </div>
               </div>
@@ -620,7 +625,7 @@
   {% block empty_search_template %}
     <script type="text/html" id="empty_search_template">
       <div class="col col-md-12 text-center">
-        <h1><i class="fa fa-exclamation-circle" aria-hidden="true"></i> There were no users that matched your search
+        <h1><i class="fa fa-exclamation-circle" aria-hidden="true"></i> There were no results that matched your search
           query! Try another search.</h1>
       </div>
     </script>

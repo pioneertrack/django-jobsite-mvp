@@ -1,10 +1,9 @@
-from django.shortcuts import render, HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, HttpResponse, HttpResponseRedirect, get_object_or_404, redirect
 from django.views import generic
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.template import Context, loader, RequestContext
-from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from registration.backends.hmac.views import RegistrationView
 from django.contrib import messages
@@ -39,6 +38,7 @@ from .profile import Founder, Job
 from django.views.decorators.vary import vary_on_headers
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
+from website.decorators import check_profiles
 
 
 def merge_dicts(*args):
@@ -115,33 +115,6 @@ def tf_idf(tokenized_users, query, term_index):
         freq = term_frequency(word, query) / len(query)
         search_vector.append(freq * idf_dict[word])
     return [tup[0] for tup in sorted(all_users_tfidf, key=lambda x: similarity(x[1], search_vector), reverse=True)]
-
-
-def check_profiles(view_func):
-    def _wrapped_view_func(request, *args, **kwargs):
-        user = request.user
-        redirect_url = None
-        if user.first_login:
-            if user.is_individual and not hasattr(user, 'profile') or user.profile.is_filled == False:
-                messages.success(request, "Welcome to BearFounders! Please tell us about yourself.")
-                redirect_url = 'website:profile_update'
-            elif user.is_founder and not hasattr(user, 'founder') or user.founder.is_filled == False:
-                messages.success(request, "Welcome to BearFounders! Please tell us about you startup.")
-                redirect_url ='website:startup_update'
-        else:
-            p = lambda val: not val.profile.is_filled if hasattr(val, 'profile') else True
-            f = lambda val: not val.founder.is_filled if hasattr(val, 'founder') else True
-            if p(user) and user.is_individual:
-                messages.success(request, "Please fill in the information about yourself.")
-                redirect_url = 'website:profile_update'
-            elif f(user) and user.is_founder:
-                messages.success(request, "Please fill in the information about you startup.")
-                redirect_url ='website:startup_update'
-        if redirect_url is not None:
-            return redirect(redirect_url)
-        else:
-            return view_func(request, *args, **kwargs)
-    return _wrapped_view_func
 
 
 # Create your views here.

@@ -20,7 +20,7 @@ $(function() {
   var startup = _.template($('#search_startup_template').html());
   var job = _.template($('#search_job_template').html());
 
-  var currentPage = 0;
+  var currentPage = 1;
   var currentSearchData = [];
   var end_of_results = false;
   var is_active_request = false;
@@ -73,6 +73,7 @@ $(function() {
           }
           else {
             end_of_results = true;
+            $(window).unbind('scroll', searchLazyLoad);
           }
         },
         error: function() {
@@ -91,11 +92,12 @@ $(function() {
         success: function(response) {
           is_active_request = false;
           render_search(response);
-          if (Object.keys(response).length) {
+          if (response.length) {
             currentPage++;
           }
           else {
             end_of_results = true;
+            $(window).unbind('scroll', searchLazyLoad);
           }
         },
         error: function() {
@@ -123,12 +125,13 @@ $(function() {
     currentPage = 0;
     currentSearchData = [];
     end_of_results = false;
+    $(window).unbind('scroll', searchLazyLoad);
+    $(window).scroll(searchLazyLoad);
+
+    sessionStorage.setItem(JSON.stringify())
 
     // clear main container
     $('main .container .row').html('');
-
-    // "redirect" to mainpage
-    // history.pushState({}, 'Home', '/');
 
     // scroll to top
     $('body,html').animate({scrollTop: 0}, 0);
@@ -140,8 +143,6 @@ $(function() {
     return false;
   });
 
-  $(window).scroll(function() {
-    searchLazyLoad();
-  });
+  $(window).scroll(searchLazyLoad);
 
 });
