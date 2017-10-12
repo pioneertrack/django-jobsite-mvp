@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10645,74 +10645,942 @@ function defaultFor(arg, val) { return typeof arg !== 'undefined' ? arg : val; }
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 5 */
+/* 5 */,
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_view_controllers_image_instant_upload__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lib_view_controllers_component_state_changer_js__ = __webpack_require__(3);
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_view_controllers_component_state_changer_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_urlLocationService_js__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_localStorageCacheService_js__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_formSavingService_js__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__lib_view_controllers_image_instant_upload__ = __webpack_require__(2);
 var settings = __webpack_require__(1);
 
-
-var iu = new __WEBPACK_IMPORTED_MODULE_0__lib_view_controllers_image_instant_upload__["a" /* default */](settings.selectors.PROFILE_BREADCRUMBS_PROPIC_INPUT, null);
-
-
-var cu = new __WEBPACK_IMPORTED_MODULE_1__lib_view_controllers_component_state_changer_js__["a" /* default */]();
-var loadingState = new __WEBPACK_IMPORTED_MODULE_1__lib_view_controllers_component_state_changer_js__["a" /* default */]();
-
-var loadingIndicator = loadingState.addState(settings.selectors.PROFILE_RELOAD_PAGE_INDICATOR);
-loadingState.addState(settings.selectors.FORM_WRAPPER);
+__webpack_require__(0);
+__webpack_require__(7);
 
 
+var DDService = __webpack_require__(4);
 
+var ddPrimaryService = new DDService({'rootModuleSelector' : '.primaryroles', 'inputTargetName' : "primaryroles"});
+var ddMajors = new DDService({'inputTargetName' : 'major', 'rootModuleSelector' : '.primarymajorMod'});
+var ddHours = new DDService({'inputTargetName' : 'numhours', 'rootModuleSelector' : '.hoursavailableMod'});
+var ddStartup = new DDService({'inputTargetName' : 'hasstartup', 'rootModuleSelector' : '.hasstartupToRegister'});
+var ddCalAffil = new DDService({'inputTargetName' : 'calaffiliation', 'rootModuleSelector' : '.calaffiliation'});
+// Now set dropdowns
+var allDropdowns = [ddPrimaryService, ddMajors, ddHours, ddStartup];
+ddPrimaryService.listenForDropDown();
+ddMajors.listenForDropDown();
+ddHours.listenForDropDown();
+ddStartup.listenForDropDown();
+ddCalAffil.listenForDropDown();
+
+
+
+
+
+
+var cu = new __WEBPACK_IMPORTED_MODULE_0__lib_view_controllers_component_state_changer_js__["a" /* default */]();
 var profileImageView = cu.addState(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER);
 var cancelButton = cu.addState(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_CANCEL);
 var uploadButton = cu.addState(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_UPBUTTON);
 
-var DDService = __webpack_require__(4);
-
-var ddPrimaryService = new DDService();
-var ddMajors = new DDService();
-var ddHours = new DDService();
 
 
-ddPrimaryService.listenForDropDown({'rootModuleSelector' : '.primaryroles', 'inputTargetName' : "primaryroles"});
-ddMajors.listenForDropDown({'inputTargetName' : 'major', 'rootModuleSelector' : '.primarymajorMod'});
-ddMajors.listenForDropDown({'inputTargetName' : 'numhours', 'rootModuleSelector' : '.hoursavailableMod'});
-// ddHours.listenForDropDown({'inputTargetName' : 'numhours'});
 
-iu.addHook(iu.ON_IMAGE_ADDED,  function () {
 
+
+
+$(document).ready(function(){
+
+
+  // Jump to first anchor
+  __WEBPACK_IMPORTED_MODULE_3__services_formSavingService_js__["a" /* default */].setFormFromSerialized(__WEBPACK_IMPORTED_MODULE_2__services_localStorageCacheService_js__["a" /* default */].getObjectInLocalStorage(settings.localStorageKeys.PROFILE_FORM_DATA), "form");
+
+  /* Since the forms have been updated, reset the dropdown labels */
+  ddPrimaryService.resetDropDowns();
+  ddMajors.resetDropDowns();
+  ddHours.resetDropDowns();
+  ddStartup.resetDropDowns();
+  ddCalAffil.resetDropDowns();
+
+
+
+  __WEBPACK_IMPORTED_MODULE_1__services_urlLocationService_js__["a" /* default */].jumptToAnchor(__WEBPACK_IMPORTED_MODULE_2__services_localStorageCacheService_js__["a" /* default */].getStringWithDefault(settings.localStorageKeys.CURRENT_STEP, "step-1"));
+  $('#smartwizard').smartWizard({"useURLhash" : true});
+  $("#smartwizard").on("leaveStep", function(e, anchorObject, stepNumber, stepDirection) {
+      //todo remove
+      __WEBPACK_IMPORTED_MODULE_2__services_localStorageCacheService_js__["a" /* default */].saveObjectInLocalStorage(settings.localStorageKeys.PROFILE_FORM_DATA, __WEBPACK_IMPORTED_MODULE_3__services_formSavingService_js__["a" /* default */].getSerializedForm("form"));
+      if (stepDirection === "forward") {
+          if (! allinputsFilled("#step-" + (stepNumber + 1) + " " + ".required")) {
+            alert("please fill out all fields!");
+            return false;
+          }
+
+       }
+       var nextStep;
+       if (stepDirection === "forward") nextStep = stepNumber + 1;
+       else nextStep = stepNumber - 1;
+       __WEBPACK_IMPORTED_MODULE_2__services_localStorageCacheService_js__["a" /* default */].setString(settings.localStorageKeys.CURRENT_STEP, "step-" + (nextStep + 1))
+       return true;
+    });
+});
+
+
+//utility func, see if any empty inputs
+function allinputsFilled (selector) {
+  var allFilled = true;
+  $(selector).each (function(index) {
+
+    if ($(this).val() == null || $(this).val() === "") {
+      allFilled = false;
+    }
+  });
+  return allFilled;
+}
+
+
+$( document ).ready(function () {
+  // console.log();
+  $(settings.selectors.FINISH_PROFILE_BUTTON).click(function() {
+    if (! allinputsFilled(".required")) {
+      alert ("Please make sure you've completed all requirements on every step");
+      event.preventDefault();
+    }
+  });
+})
+
+// IMAGE UPLOAD
+
+
+// Profile image watcher
+
+var iu = new __WEBPACK_IMPORTED_MODULE_4__lib_view_controllers_image_instant_upload__["a" /* default */](settings.selectors.PROFILE_BREADCRUMBS_PROPIC_INPUT, false);
+
+
+iu.addHook(iu.ON_IMAGE_ADDED,  function (f) {
+  var fd = new FormData();
+  fd.append("profileimage", f[0]);
+  console.log(f[0]);
+  $.ajax ({
+    type: 'POST',
+     data: fd,
+     url : settings.routes.PROFILE_STEP_IMAGE_UPLOAD,
+     async: true,
+     processData : false,
+     contentType: false,
+          cache: false,
+     success: function (data) {
+
+      }
+    });
 });
 
 iu.addHook(iu.ON_IMAGE_LOADED,  function (str) {
   // set image
+
   $(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER + " img.image-holder").attr("src", str);
+  __WEBPACK_IMPORTED_MODULE_2__services_localStorageCacheService_js__["a" /* default */].setImageDataString(settings.localStorageKeys.PROFILE_IMAGE_DATA, str);
   cu.setState(profileImageView);
+
+
+
+// Save image
+  // var formData = new FormData($("form"));
+
+  // Save image to server
+
 });
+
+var savedImageStr = __WEBPACK_IMPORTED_MODULE_2__services_localStorageCacheService_js__["a" /* default */].getImageDataString(settings.localStorageKeys.PROFILE_IMAGE_DATA);
+if (savedImageStr != null) {
+  $(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER + " img.image-holder").attr("src", savedImageStr);
+  $(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_INPUT).removeClass("required");
+  cu.setState(profileImageView);
+
+}
+
 
 
 /* driver code */
 $(settings.selectors.DELETE_ICON).click(function () {
-  cu.setState(uploadButton);
   iu.deleteFiles();
+  __WEBPACK_IMPORTED_MODULE_2__services_localStorageCacheService_js__["a" /* default */].unsetImageKey(settings.localStorageKeys.PROFILE_IMAGE_DATA);
+  cu.setState(uploadButton);
 });
 
 
 
-// Listen for click on
-$(settings.selectors.PROFILE_BREADCRUMBS_MENU + " " + settings.selectors.PROFILE_BREADCRUMBS_ENABLED_MENU_ITEM).click(function() {
-  loadingState.setState(loadingIndicator);
-  $.get(settings.routes.PROFILE_STEP_UPDATE_ROUTE + ($( this ).index() + 1), function(resp) {
-    // Reload page
-    if (resp.success != true) return;
-
-    var loc = window.location;
-    window.location = loc.protocol + '//' + loc.host + loc.pathname + loc.search;
-
-  });
+// On add  startup
+$(settings.selectors.ADD_STARTUP_BUTTON).click(function() {
+  $(settings.selectors.STARTUP_PROFILE_FORM_VAL).val("yes");
+  $("form").submit();
 })
+
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(jQuery) {/*! 
+ * SmartWizard v4.2.2
+ * The awesome jQuery step wizard plugin with Bootstrap support
+ * http://www.techlaboratory.net/smartwizard
+ *
+ * Created by Dipu Raj
+ * http://dipuraj.me
+ *
+ * Licensed under the terms of the MIT License
+ * https://github.com/techlab/SmartWizard/blob/master/LICENSE
+ */
+
+;(function ($, window, document, undefined) {
+    "use strict";
+    // Default options
+
+    var defaults = {
+        selected: 0, // Initial selected step, 0 = first step
+        keyNavigation: true, // Enable/Disable keyboard navigation(left and right keys are used if enabled)
+        autoAdjustHeight: true, // Automatically adjust content height
+        cycleSteps: false, // Allows to cycle the navigation of steps
+        backButtonSupport: true, // Enable the back button support
+        useURLhash: true, // Enable selection of the step based on url hash
+        showStepURLhash: true, // Show url hash based on step
+        lang: { // Language variables for button
+            next: 'Next',
+            previous: 'Previous'
+        },
+        toolbarSettings: {
+            toolbarPosition: 'bottom', // none, top, bottom, both
+            toolbarButtonPosition: 'right', // left, right
+            showNextButton: true, // show/hide a Next button
+            showPreviousButton: true, // show/hide a Previous button
+            toolbarExtraButtons: [] // Extra buttons to show on toolbar, array of jQuery input/buttons elements
+        },
+        anchorSettings: {
+            anchorClickable: true, // Enable/Disable anchor navigation
+            enableAllAnchors: false, // Activates all anchors clickable all times
+            markDoneStep: true, // Add done css
+            markAllPreviousStepsAsDone: true, // When a step selected by url hash, all previous steps are marked done
+            removeDoneStepOnNavigateBack: false, // While navigate back done step after active step will be cleared
+            enableAnchorOnDoneStep: true // Enable/Disable the done steps navigation
+        },
+        contentURL: null, // content url, Enables Ajax content loading. Can also set as data data-content-url on anchor
+        contentCache: true, // cache step contents, if false content is fetched always from ajax url
+        ajaxSettings: {}, // Ajax extra settings
+        disabledSteps: [], // Array Steps disabled
+        errorSteps: [], // Highlight step with errors
+        hiddenSteps: [], // Hidden steps
+        theme: 'default', // theme for the wizard, related css need to include for other than default theme
+        transitionEffect: 'none', // Effect on navigation, none/slide/fade
+        transitionSpeed: '400'
+    };
+
+    // The plugin constructor
+    function SmartWizard(element, options) {
+        // Merge user settings with default, recursively
+        this.options = $.extend(true, {}, defaults, options);
+        // Main container element
+        this.main = $(element);
+        // Navigation bar element
+        this.nav = this.main.children('ul');
+        // Step anchor elements
+        this.steps = $("li > a", this.nav);
+        // Content container
+        this.container = this.main.children('div');
+        // Content pages
+        this.pages = this.container.children('div');
+        // Active step index
+        this.current_index = null;
+        // Call initial method
+        this.init();
+    }
+
+    $.extend(SmartWizard.prototype, {
+
+        init: function () {
+            // Set the elements
+            this._setElements();
+            // Add toolbar
+            this._setToolbar();
+            // Assign plugin events
+            this._setEvents();
+
+            var idx = this.options.selected;
+            // Get selected step from the url
+            if (this.options.useURLhash) {
+                // Get step number from url hash if available
+                var hash = window.location.hash;
+                if (hash && hash.length > 0) {
+                    var elm = $("a[href*='" + hash + "']", this.nav);
+                    if (elm.length > 0) {
+                        var id = this.steps.index(elm);
+                        idx = id >= 0 ? id : idx;
+                    }
+                }
+            }
+
+            if (idx > 0 && this.options.anchorSettings.markDoneStep && this.options.anchorSettings.markAllPreviousStepsAsDone) {
+                // Mark previous steps of the active step as done
+                this.steps.eq(idx).parent('li').prevAll().addClass("done");
+            }
+
+            // Show the initial step
+            this._showStep(idx);
+        },
+
+        // PRIVATE FUNCTIONS
+
+        _setElements: function () {
+            // Set the main element
+            this.main.addClass('sw-main sw-theme-' + this.options.theme);
+            // Set anchor elements
+            this.nav.addClass('nav nav-tabs step-anchor'); // nav-justified  nav-pills
+            // Make the anchor clickable
+            if (this.options.anchorSettings.enableAllAnchors !== false && this.options.anchorSettings.anchorClickable !== false) {
+                this.steps.parent('li').addClass('clickable');
+            }
+            // Set content container
+            this.container.addClass('sw-container tab-content');
+            // Set content pages
+            this.pages.addClass('step-content');
+
+            // Disabled steps
+            var mi = this;
+            if (this.options.disabledSteps && this.options.disabledSteps.length > 0) {
+                $.each(this.options.disabledSteps, function (i, n) {
+                    mi.steps.eq(n).parent('li').addClass('disabled');
+                });
+            }
+            // Error steps
+            if (this.options.errorSteps && this.options.errorSteps.length > 0) {
+                $.each(this.options.errorSteps, function (i, n) {
+                    mi.steps.eq(n).parent('li').addClass('danger');
+                });
+            }
+            // Hidden steps
+            if (this.options.hiddenSteps && this.options.hiddenSteps.length > 0) {
+                $.each(this.options.hiddenSteps, function (i, n) {
+                    mi.steps.eq(n).parent('li').addClass('hidden');
+                });
+            }
+
+            return true;
+        },
+        _setToolbar: function () {
+            // Skip right away if the toolbar is not enabled
+            if (this.options.toolbarSettings.toolbarPosition === 'none') {
+                return true;
+            }
+
+            // Create the toolbar buttons
+            var btnNext = this.options.toolbarSettings.showNextButton !== false ? $('<button></button>').text(this.options.lang.next).addClass('btn btn-default sw-btn-next').attr('type', 'button') : null;
+            var btnPrevious = this.options.toolbarSettings.showPreviousButton !== false ? $('<button></button>').text(this.options.lang.previous).addClass('btn btn-default sw-btn-prev').attr('type', 'button') : null;
+            var btnGroup = $('<div></div>').addClass('btn-group navbar-btn sw-btn-group pull-' + this.options.toolbarSettings.toolbarButtonPosition).attr('role', 'group').append(btnPrevious, btnNext);
+
+            // Add extra toolbar buttons
+            var btnGroupExtra = null;
+
+            if (this.options.toolbarSettings.toolbarExtraButtons && this.options.toolbarSettings.toolbarExtraButtons.length > 0) {
+                btnGroupExtra = $('<div></div>').addClass('btn-group navbar-btn sw-btn-group-extra pull-' + this.options.toolbarSettings.toolbarButtonPosition).attr('role', 'group');
+                $.each(this.options.toolbarSettings.toolbarExtraButtons, function (i, n) {
+                    btnGroupExtra.append(n.clone(true));
+                });
+            }
+
+            var toolbarTop, toolbarBottom;
+            // Append toolbar based on the position
+            switch (this.options.toolbarSettings.toolbarPosition) {
+                case 'top':
+                    toolbarTop = $('<nav></nav>').addClass('navbar btn-toolbar sw-toolbar sw-toolbar-top');
+                    toolbarTop.append(btnGroup);
+                    if (this.options.toolbarSettings.toolbarButtonPosition === 'left') {
+                        toolbarTop.append(btnGroupExtra);
+                    } else {
+                        toolbarTop.prepend(btnGroupExtra);
+                    }
+                    this.container.before(toolbarTop);
+                    break;
+                case 'bottom':
+                    toolbarBottom = $('<nav></nav>').addClass('navbar btn-toolbar sw-toolbar sw-toolbar-bottom');
+                    toolbarBottom.append(btnGroup);
+                    if (this.options.toolbarSettings.toolbarButtonPosition === 'left') {
+                        toolbarBottom.append(btnGroupExtra);
+                    } else {
+                        toolbarBottom.prepend(btnGroupExtra);
+                    }
+                    this.container.after(toolbarBottom);
+                    break;
+                case 'both':
+                    toolbarTop = $('<nav></nav>').addClass('navbar btn-toolbar sw-toolbar sw-toolbar-top');
+                    toolbarTop.append(btnGroup);
+                    if (this.options.toolbarSettings.toolbarButtonPosition === 'left') {
+                        toolbarTop.append(btnGroupExtra);
+                    } else {
+                        toolbarTop.prepend(btnGroupExtra);
+                    }
+                    this.container.before(toolbarTop);
+
+                    toolbarBottom = $('<nav></nav>').addClass('navbar btn-toolbar sw-toolbar sw-toolbar-bottom');
+                    toolbarBottom.append(btnGroup.clone(true));
+                    if (this.options.toolbarSettings.toolbarButtonPosition === 'left') {
+                        toolbarBottom.append(btnGroupExtra.clone(true));
+                    } else {
+                        toolbarBottom.prepend(btnGroupExtra.clone(true));
+                    }
+                    this.container.after(toolbarBottom);
+                    break;
+                default:
+                    toolbarBottom = $('<nav></nav>').addClass('navbar btn-toolbar sw-toolbar sw-toolbar-bottom');
+                    toolbarBottom.append(btnGroup);
+                    if (this.options.toolbarSettings.toolbarButtonPosition === 'left') {
+                        toolbarBottom.append(btnGroupExtra);
+                    } else {
+                        toolbarBottom.prepend(btnGroupExtra);
+                    }
+                    this.container.after(toolbarBottom);
+                    break;
+            }
+            return true;
+        },
+        _setEvents: function () {
+            // Anchor click event
+            var mi = this;
+            $(this.steps).on("click", function (e) {
+                e.preventDefault();
+                if (mi.options.anchorSettings.anchorClickable === false) {
+                    return true;
+                }
+                var idx = mi.steps.index(this);
+                if (mi.options.anchorSettings.enableAnchorOnDoneStep === false && mi.steps.eq(idx).parent('li').hasClass('done')) {
+                    return true;
+                }
+
+                if (idx !== mi.current_index) {
+                    if (mi.options.anchorSettings.enableAllAnchors !== false && mi.options.anchorSettings.anchorClickable !== false) {
+                        mi._showStep(idx);
+                    } else {
+                        if (mi.steps.eq(idx).parent('li').hasClass('done')) {
+                            mi._showStep(idx);
+                        }
+                    }
+                }
+            });
+
+            // Next button event
+            $('.sw-btn-next', this.main).on("click", function (e) {
+                e.preventDefault();
+                if (mi.steps.index(this) !== mi.current_index) {
+                    mi._showNext();
+                }
+            });
+
+            // Previous button event
+            $('.sw-btn-prev', this.main).on("click", function (e) {
+                e.preventDefault();
+                if (mi.steps.index(this) !== mi.current_index) {
+                    mi._showPrevious();
+                }
+            });
+
+            // Keyboard navigation event
+            if (this.options.keyNavigation) {
+                $(document).keyup(function (e) {
+                    mi._keyNav(e);
+                });
+            }
+
+            // Back/forward browser button event
+            if (this.options.backButtonSupport) {
+                $(window).on('hashchange', function (e) {
+                    if (!mi.options.useURLhash) {
+                        return true;
+                    }
+                    if (window.location.hash) {
+                        var elm = $("a[href*='" + window.location.hash + "']", mi.nav);
+                        if (elm && elm.length > 0) {
+                            e.preventDefault();
+                            mi._showStep(mi.steps.index(elm));
+                        }
+                    }
+                });
+            }
+
+            return true;
+        },
+        _showNext: function () {
+            var si = this.current_index + 1;
+            // Find the next not disabled step
+            for (var i = si; i < this.steps.length; i++) {
+                if (!this.steps.eq(i).parent('li').hasClass('disabled') && !this.steps.eq(i).parent('li').hasClass('hidden')) {
+                    si = i;
+                    break;
+                }
+            }
+
+            if (this.steps.length <= si) {
+                if (!this.options.cycleSteps) {
+                    return false;
+                }
+                si = 0;
+            }
+            this._showStep(si);
+            return true;
+        },
+        _showPrevious: function () {
+            var si = this.current_index - 1;
+            // Find the previous not disabled step
+            for (var i = si; i >= 0; i--) {
+                if (!this.steps.eq(i).parent('li').hasClass('disabled') && !this.steps.eq(i).parent('li').hasClass('hidden')) {
+                    si = i;
+                    break;
+                }
+            }
+            if (0 > si) {
+                if (!this.options.cycleSteps) {
+                    return false;
+                }
+                si = this.steps.length - 1;
+            }
+            this._showStep(si);
+            return true;
+        },
+        _showStep: function (idx) {
+            // If step not found, skip
+            if (!this.steps.eq(idx)) {
+                return false;
+            }
+            // If current step is requested again, skip
+            if (idx == this.current_index) {
+                return false;
+            }
+            // If it is a disabled step, skip
+            if (this.steps.eq(idx).parent('li').hasClass('disabled') || this.steps.eq(idx).parent('li').hasClass('hidden')) {
+                return false;
+            }
+            // Load step content
+            this._loadStepContent(idx);
+            return true;
+        },
+        _loadStepContent: function (idx) {
+            var mi = this;
+            // Get current step elements
+            var curTab = this.steps.eq(this.current_index);
+            // Get the direction of step navigation
+            var stepDirection = '';
+            var elm = this.steps.eq(idx);
+            var contentURL = elm.data('content-url') && elm.data('content-url').length > 0 ? elm.data('content-url') : this.options.contentURL;
+
+            if (this.current_index !== null && this.current_index !== idx) {
+                stepDirection = this.current_index < idx ? "forward" : "backward";
+            }
+
+            // Trigger "leaveStep" event
+            if (this.current_index !== null && this._triggerEvent("leaveStep", [curTab, this.current_index, stepDirection]) === false) {
+                return false;
+            }
+
+            if (contentURL && contentURL.length > 0 && (!elm.data('has-content') || !this.options.contentCache)) {
+                // Get ajax content and then show step
+                var selPage = elm.length > 0 ? $(elm.attr("href"), this.main) : null;
+
+                var ajaxSettings = $.extend(true, {}, {
+                    url: contentURL,
+                    type: "POST",
+                    data: { step_number: idx },
+                    dataType: "text",
+                    beforeSend: function () {
+                        elm.parent('li').addClass('loading');
+                    },
+                    error: function (jqXHR, status, message) {
+                        elm.parent('li').removeClass('loading');
+                        $.error(message);
+                    },
+                    success: function (res) {
+                        if (res && res.length > 0) {
+                            elm.data('has-content', true);
+                            selPage.html(res);
+                        }
+                        elm.parent('li').removeClass('loading');
+                        mi._transitPage(idx);
+                    }
+                }, this.options.ajaxSettings);
+
+                $.ajax(ajaxSettings);
+            } else {
+                // Show step
+                this._transitPage(idx);
+            }
+            return true;
+        },
+        _transitPage: function (idx) {
+            var mi = this;
+            // Get current step elements
+            var curTab = this.steps.eq(this.current_index);
+            var curPage = curTab.length > 0 ? $(curTab.attr("href"), this.main) : null;
+            // Get step to show elements
+            var selTab = this.steps.eq(idx);
+            var selPage = selTab.length > 0 ? $(selTab.attr("href"), this.main) : null;
+            // Get the direction of step navigation
+            var stepDirection = '';
+            if (this.current_index !== null && this.current_index !== idx) {
+                stepDirection = this.current_index < idx ? "forward" : "backward";
+            }
+
+            var stepPosition = 'middle';
+            if (idx === 0) {
+                stepPosition = 'first';
+            } else if (idx === this.steps.length - 1) {
+                stepPosition = 'final';
+            }
+
+            this.options.transitionEffect = this.options.transitionEffect.toLowerCase();
+            this.pages.finish();
+            if (this.options.transitionEffect === 'slide') {
+                // normal slide
+                if (curPage && curPage.length > 0) {
+                    curPage.slideUp('fast', this.options.transitionEasing, function () {
+                        selPage.slideDown(mi.options.transitionSpeed, mi.options.transitionEasing);
+                    });
+                } else {
+                    selPage.slideDown(this.options.transitionSpeed, this.options.transitionEasing);
+                }
+            } else if (this.options.transitionEffect === 'fade') {
+                // normal fade
+                if (curPage && curPage.length > 0) {
+                    curPage.fadeOut('fast', this.options.transitionEasing, function () {
+                        selPage.fadeIn('fast', mi.options.transitionEasing, function () {
+                            $(this).show();
+                        });
+                    });
+                } else {
+                    selPage.fadeIn(this.options.transitionSpeed, this.options.transitionEasing, function () {
+                        $(this).show();
+                    });
+                }
+            } else {
+                if (curPage && curPage.length > 0) {
+                    curPage.hide();
+                }
+                selPage.show();
+            }
+            // Change the url hash to new step
+            this._setURLHash(selTab.attr("href"));
+            // Update controls
+            this._setAnchor(idx);
+            // Set the buttons based on the step
+            this._setButtons(idx);
+            // Fix height with content
+            this._fixHeight(idx);
+            // Update the current index
+            this.current_index = idx;
+
+            // Trigger "showStep" event
+            this._triggerEvent("showStep", [selTab, this.current_index, stepDirection, stepPosition]);
+            return true;
+        },
+        _setAnchor: function (idx) {
+            // Current step anchor > Remove other classes and add done class
+            this.steps.eq(this.current_index).parent('li').removeClass("active danger loading");
+            if (this.options.anchorSettings.markDoneStep !== false && this.current_index !== null) {
+                this.steps.eq(this.current_index).parent('li').addClass("done");
+                if (this.options.anchorSettings.removeDoneStepOnNavigateBack !== false) {
+                    this.steps.eq(idx).parent('li').nextAll().removeClass("done");
+                }
+            }
+
+            // Next step anchor > Remove other classes and add active class
+            this.steps.eq(idx).parent('li').removeClass("done danger loading").addClass("active");
+            return true;
+        },
+        _setButtons: function (idx) {
+            // Previous/Next Button enable/disable based on step
+            if (!this.options.cycleSteps) {
+                if (0 >= idx) {
+                    $('.sw-btn-prev', this.main).addClass("disabled");
+                } else {
+                    $('.sw-btn-prev', this.main).removeClass("disabled");
+                }
+                if (this.steps.length - 1 <= idx) {
+                    $('.sw-btn-next', this.main).addClass("disabled");
+                } else {
+                    $('.sw-btn-next', this.main).removeClass("disabled");
+                }
+            }
+            return true;
+        },
+
+        // HELPER FUNCTIONS
+
+        _keyNav: function (e) {
+            var mi = this;
+            // Keyboard navigation
+            switch (e.which) {
+                case 37:
+                    // left
+                    mi._showPrevious();
+                    e.preventDefault();
+                    break;
+                case 39:
+                    // right
+                    mi._showNext();
+                    e.preventDefault();
+                    break;
+                default:
+                    return; // exit this handler for other keys
+            }
+        },
+        _fixHeight: function (idx) {
+            // Auto adjust height of the container
+            if (this.options.autoAdjustHeight) {
+                var selPage = this.steps.eq(idx).length > 0 ? $(this.steps.eq(idx).attr("href"), this.main) : null;
+                this.container.finish().animate({ minHeight: selPage.outerHeight() }, this.options.transitionSpeed, function () {});
+            }
+            return true;
+        },
+        _triggerEvent: function (name, params) {
+            // Trigger an event
+            var e = $.Event(name);
+            this.main.trigger(e, params);
+            if (e.isDefaultPrevented()) {
+                return false;
+            }
+            return e.result;
+        },
+        _setURLHash: function (hash) {
+            if (this.options.showStepURLhash && window.location.hash !== hash) {
+                window.location.hash = hash;
+            }
+        },
+
+        // PUBLIC FUNCTIONS
+
+        theme: function (v) {
+            if (this.options.theme === v) {
+                return false;
+            }
+            this.main.removeClass('sw-theme-' + this.options.theme);
+            this.options.theme = v;
+            this.main.addClass('sw-theme-' + this.options.theme);
+            // Trigger "themeChanged" event
+            this._triggerEvent("themeChanged", [this.options.theme]);
+        },
+        next: function () {
+            this._showNext();
+        },
+        prev: function () {
+            this._showPrevious();
+        },
+        reset: function () {
+            // Trigger "beginReset" event
+            if (this._triggerEvent("beginReset") === false) {
+                return false;
+            }
+
+            // Reset all elements and classes
+            this.container.stop(true);
+            this.pages.stop(true);
+            this.pages.hide();
+            this.current_index = null;
+            this._setURLHash(this.steps.eq(this.options.selected).attr("href"));
+            $(".sw-toolbar", this.main).remove();
+            this.steps.removeClass();
+            this.steps.parents('li').removeClass();
+            this.steps.data('has-content', false);
+            this.init();
+
+            // Trigger "endReset" event
+            this._triggerEvent("endReset");
+        },
+        stepState: function (stepArray, state) {
+            var mi = this;
+            stepArray = $.isArray(stepArray) ? stepArray : [stepArray];
+            var selSteps = $.grep(this.steps, function (n, i) {
+                return $.inArray(i, stepArray) !== -1 && i !== mi.current_index;
+            });
+            if (selSteps && selSteps.length > 0) {
+                switch (state) {
+                    case 'disable':
+                        $(selSteps).parents('li').addClass('disabled');
+                        break;
+                    case 'enable':
+                        $(selSteps).parents('li').removeClass('disabled');
+                        break;
+                    case 'hide':
+                        $(selSteps).parents('li').addClass('hidden');
+                        break;
+                    case 'show':
+                        $(selSteps).parents('li').removeClass('hidden');
+                        break;
+                }
+            }
+        }
+    });
+
+    // Wrapper for the plugin
+    $.fn.smartWizard = function (options) {
+        var args = arguments;
+        var instance;
+
+        if (options === undefined || typeof options === 'object') {
+            return this.each(function () {
+                if (!$.data(this, "smartWizard")) {
+                    $.data(this, "smartWizard", new SmartWizard(this, options));
+                }
+            });
+        } else if (typeof options === 'string' && options[0] !== '_' && options !== 'init') {
+            instance = $.data(this[0], 'smartWizard');
+
+            if (options === 'destroy') {
+                $.data(this, 'smartWizard', null);
+            }
+
+            if (instance instanceof SmartWizard && typeof instance[options] === 'function') {
+                return instance[options].apply(instance, Array.prototype.slice.call(args, 1));
+            } else {
+                return this;
+            }
+        }
+    };
+})(jQuery, window, document);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = ({
+
+    /**
+     * Directs the page to a specific ID anchor
+     * @see https://stackoverflow.com/questions/13735912/anchor-jumping-by-using-javascript
+     * @param  {string} anchorTag id on the page to jump to
+     * @return {void}
+     */
+    jumptToAnchor : function(anchorTag) {
+      // is history supported? then use it. otherwise jump manually
+      if (history) {
+        var url = location.href;               //Save down the URL without hash.
+        url = "#"+anchorTag;                 //Go to the target element.
+        console.log(url);
+        history.replaceState(null,null,url);   //Don't like hashes. Changing it back.
+      }
+      else {
+        var top = document.getElementById(h).offsetTop;
+        window.scrollTo(0, top);
+      }
+    }
+});
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Module for interfacing with the local storage
+ */
+/* harmony default export */ __webpack_exports__["a"] = ({
+
+  /**
+   * Useful for saving JSON in ls
+   * @param  {string} key the localstorage key
+   * @param  {object} obj the object to save
+   * @return {void}
+   */
+  saveObjectInLocalStorage : function (key, obj) {
+    localStorage.setItem(key, JSON.stringify(obj));
+  },
+
+
+  /**
+   * Attempts to get something in localstorage throws error if not existent
+   * @param  {string} key the key of the object
+   * @return {void}
+   */
+  getObjectInLocalStorage : function (key) {
+    var obj =  localStorage.getItem(key);
+    if (obj == null) obj = JSON.stringify({});
+    return JSON.parse(obj);
+  },
+
+
+  setImageDataString : function (key, dataStr) {
+    localStorage.setItem(key, dataStr);
+  },
+
+  getImageDataString : function(key) {
+    return localStorage.getItem(key);
+  },
+
+  unsetImageKey : function (key) {
+    localStorage.removeItem(key);
+  },
+
+  setString : function (key, str) {
+    localStorage.setItem(key, str);
+  },
+
+  getStringWithDefault : function (key, defaultStep) {
+    var it = localStorage.getItem(key);
+    return (it==null) ? defaultStep : it;
+  }
+});
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {
+__webpack_require__(0);
+/**
+ * Service for saving the contents of a form, as well as filling out a form with existing contents
+ */
+/* harmony default export */ __webpack_exports__["a"] = ({
+  getSerializedForm : function(formSelector) {
+    var saveFormItems = {text : {}, checkboxes : []};
+    $(formSelector + " input[type='text'], input[type='hidden'], textarea").each(function () {
+      if ($( this ).val() != null && $( this ).val()  !== "" && $( this ).attr('name') != null) {
+        if ($( this ).attr('name')  === "csrfmiddlewaretoken") return; // skip middleware
+        saveFormItems["text"][$( this ).attr('name')] = $( this ).val();
+      }
+    });
+
+    // Also save all the check boxes
+    $(formSelector + " input:checked").each(function() {
+      saveFormItems["checkboxes"].push($( this ).attr('name'));
+    });
+
+    return saveFormItems;
+  },
+
+  setFormFromSerialized : function (serialized, formSelector) {
+    if (serialized["text"] == null) return;
+    for (var key in serialized["text"]) {
+      if (serialized["text"].hasOwnProperty(key)) {
+        $(formSelector + " input[name='"+key+"'], textarea[name='"+key+"']").val(serialized["text"][key]);
+      }
+    }
+    console.log(serialized);
+
+    for (var i=0; i<serialized["checkboxes"].length; i++) {
+      $(formSelector + " input[type='checkbox'][name='"+ serialized["checkboxes"][i] +"']").prop('checked', true);
+    }
+
+  }
+
+
+
+
+});
 
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
