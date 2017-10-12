@@ -1,4 +1,4 @@
 {% extends './form-item-base.html' %}
 {% block forminput %}
-  <input name="{{ inputName }}" class="form-control" placeholder="{{ inputPH }}"></textarea>
+  <input name="{{ inputName }}" class="form-control {% if formitemRequired %} required {% endif %}" placeholder="{{ inputPH }}" ></textarea>
 {% endblock %}
