@@ -111,13 +111,15 @@ label {
     .profile-breadcrumbs-page .page-header .pills-wrapper {
       border-radius: 4px;
       background-color: white; }
-  .profile-breadcrumbs-page .form-wrapper .profile-image-wrapper img {
-    max-width: 400px; }
-  .profile-breadcrumbs-page .form-wrapper .form-group {
-    margin: 16px;
-    padding: 16px;
+  .profile-breadcrumbs-page .profile-image-wrapper img {
+    max-width: 200px; }
+  .profile-breadcrumbs-page .form-group {
     background-color: white;
     border-radius: 4px; }
+    .profile-breadcrumbs-page .form-group .checkbox-container {
+      padding-right: 8px; }
+  .profile-breadcrumbs-page .form-control.invalid-input {
+    border-color: #dc3545; }
   .profile-breadcrumbs-page .profile-image-change {
     max-height: 25px;
     margin: 8px;
