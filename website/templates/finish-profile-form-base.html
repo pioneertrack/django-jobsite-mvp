@@ -42,7 +42,7 @@ Profile Setup
       </div>
 
       <div class="loading-indicator-wrapper reloading-page-wrapper gone center-block">
-        <img class="loading-icon reloading-page" src="/static/images/loading_icon.gif" alt="loading">
+        <img class="loading-icon reloading-page" src="{% static 'images/loading_icon.gif' %}" alt="loading">
       </div>
 
       {% for e in errors %}
@@ -66,6 +66,6 @@ Profile Setup
 
 
 {% block js %}
-  <script src="/static/js/app.bundle.js"></script>
-  <script src="/static/js/vendor.bundle.js"></script>
+  <script src="{% static 'js/app.bundle.js' %}"></script>
+  <script src="{% static 'js/vendor.bundle.js' %}"></script>
 {% endblock %}

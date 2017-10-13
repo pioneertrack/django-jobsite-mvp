@@ -6,9 +6,9 @@ Profile Setup
 {% endblock %}
 
 {% block css %}
-<link rel="stylesheet" href="/static/css/custom-css.css" type="text/css">
-<link rel="stylesheet" href="/static/css/smart_wizard.min.css" type="text/css">
-<link rel="stylesheet" href="/static/css/smart_wizard_theme_arrows.css" type="text/css">
+<link rel="stylesheet" href="{% static 'css/custom-css.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'css/smart_wizard.min.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'css/smart_wizard_theme_arrows.css' %}" type="text/css">
 {{ block.super }}
 {% endblock %}
 
@@ -47,7 +47,7 @@ Profile Setup
                     <div class=""
                   </div> -->
                   <div class="center-block profile-image-wrapper">
-                    <img class="profile-image-change delete-icon" src="/static/images/trash-icon.png" alt="chagne image">
+                    <img class="profile-image-change delete-icon" src="{% static 'images/trash-icon.png' %}" alt="chagne image">
                     <br />
                     <img class="image-holder" src="" alt="Your Profile Image">
                   </div>
@@ -150,6 +150,6 @@ Profile Setup
 
 {% block js %}
 
-  <script src="/static/js/profile_step.bundle.js"></script>
-  <script src="/static/js/vendor.bundle.js"></script>
+  <script src="{% static 'js/profile_step.bundle.js' %}"></script>
+  <script src="{% static 'js/vendor.bundle.js' %}"></script>
 {% endblock %}
