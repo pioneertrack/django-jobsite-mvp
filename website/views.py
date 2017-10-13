@@ -37,6 +37,9 @@ from website import forms
 from website import models
 from website import profile as prof
 from .profile import Founder, Job
+from django.views.decorators.vary import vary_on_headers
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import method_decorator
 
 
 from .utils import ValidatePostItems
@@ -50,14 +53,6 @@ def merge_dicts(*args):
 
 
 stemmer = PorterStemmer()
-
-CONTEXT = {
-    'years': prof.YEAR_IN_SCHOOL_CHOICES,
-    'majors': prof.MAJORS,
-    'roles': prof.PRIMARY_ROLE,
-    'fields': prof.CATEGORY,
-    'position': prof.POSITION
-}
 
 JOB_CONTEXT = {
     'p_context': [
@@ -73,6 +68,7 @@ JOB_CONTEXT = {
             ('3', 'Full-Time'),
             ('4', 'Freelance')
         ], {'class': 'label-position'}),
+        ('hours', list(prof.HOURS_AVAILABLE), {'class': 'label-hours', 'name': 'Available'})
     ],
     'f_context': [
         ('stage', list(prof.STAGE), {'class': 'label-stage'}),
@@ -130,10 +126,10 @@ def check_profiles(view_func):
         user = request.user
         redirect_url = None
         if user.first_login:
-            if user.is_individual and not hasattr(user, 'profile'):
+            if user.is_individual and not hasattr(user, 'profile') or user.profile.is_filled == False:
                 messages.success(request, "Welcome to BearFounders! Please tell us about yourself.")
                 redirect_url = 'website:profile_update'
-            elif user.is_founder and not hasattr(user, 'founder'):
+            elif user.is_founder and not hasattr(user, 'founder') or user.founder.is_filled == False:
                 messages.success(request, "Welcome to BearFounders! Please tell us about you startup.")
                 redirect_url ='website:startup_update'
         else:
@@ -181,6 +177,7 @@ def connect(request):
 
 @login_required(login_url='login/')
 @check_profiles
+@vary_on_headers('User-Agent')
 def index(request):
     user = request.user
 
@@ -194,6 +191,7 @@ def index(request):
 
 @login_required(login_url='login/')
 @check_profiles
+@vary_on_headers('User-Agent', 'X-Session-Header')
 def search(request):
     search_index = {}
     skillset = ['python', 'java', 'c', 'c++', 'c#', 'matlab', 'hadoop', 'mongodb', 'javascript', 'node.js',
@@ -204,31 +202,46 @@ def search(request):
                 'android']
 
     post = request.method == 'POST'
+    select_category = request.COOKIES.get('select-category')
 
-    select_category = request.POST['select-category'] if post else request.COOKIES.get('select-category')
-    query = request.POST['query'] if post else ''
+    query = ''
+    tokenized_users = []
+    if post:
+        request.session['post_search_data'] = json.dumps(dict(request.POST))
+        request.session['post_filter_people'] = request.POST['filter_people']
+        request.session['post_filter_jobs'] = request.POST['filter_jobs']
+        request.session['post_filter_startups'] = request.POST['filter_startups']
+
+        response = HttpResponseRedirect(reverse('website:search'))
+        return response
+    else:
+        post_data = json.loads(request.session.get('post_search_data')) if select_category == 'None' else None
+        if post_data:
+            select_category = post_data['select-category'][0]
+            query = post_data['query'][0]
+
     phrase = False
     if (query.startswith("'") and query.endswith("'")) or (query.startswith("'") and query.endswith("'")) and len(
             query) > 1:
         phrase = True
     words = stem_remove_stop_words(query.translate({ord(c): None for c in string.punctuation}).lower().split())
 
-    tokenized_users = []
     if select_category == 'people':
 
         kwargs = {'is_active': True, 'is_individual': True, 'is_account_disabled': False,
-                  'profile__is_filled': True}
+                  'profile__is_filled': True }
 
         years = majors = roles = filter = filter_hidden = active_selects = filter_mobile = None
-        if post:
+        if post_data:
             active_selects = []
-            filter_hidden = request.POST.get('filter_people')
+            filter_hidden = request.session.get('post_filter_people')
 
-            years = request.POST.getlist('year')
-            majors = request.POST.getlist('major')
-            roles = request.POST.getlist('role')
-            experience = request.POST.getlist('experience')
-            position = request.POST.getlist('position')
+            years = post_data['year']
+            majors = post_data['major']
+            roles = post_data['role']
+            experience = post_data['experience']
+            position = post_data['position']
+            hours = post_data['hours']
 
             filter = None
             if filter_hidden != None:
@@ -240,6 +253,7 @@ def search(request):
                 'role': roles,
                 'experience': experience,
                 'position': position,
+                'hours': hours
             }
 
             if len(years) > 1 or (not '' in years and len(years) > 0):
@@ -254,6 +268,9 @@ def search(request):
             if len(position) > 1 or (not '' in position and len(position) > 0):
                 kwargs['profile__positions__overlap'] = position
                 active_selects.append('position')
+            if len(hours) > 1 or (not '' in hours and len(hours) > 0):
+                kwargs['profile__hours_week__in'] = hours
+                active_selects.append('hours')
             if len(experience) > 1 or (not '' in experience and len(experience) > 0):
                 active_selects.append('experience')
                 for item in experience:
@@ -262,7 +279,7 @@ def search(request):
                     elif item == '0':
                         kwargs['profile__has_startup_exp'] = True
 
-        result = models.MyUser.objects.filter(**kwargs)
+        result = models.MyUser.objects.filter(**kwargs).exclude(profile__positions__exact=['5'])
 
         for r in result:
             experience = [stem_remove_stop_words(arr) for arr in [
@@ -364,11 +381,11 @@ def search(request):
         }
 
         fields = active_selects = filter = filter_hidden = filter_mobile = None
-        if post:
+        if post_data:
             active_selects = []
-            filter_hidden = request.POST.get('filter_startups')
-            fields = request.POST.getlist('fields')
-            stage = request.POST.getlist('stage')
+            filter_hidden = request.session.get('post_filter_startups')
+            fields = post_data['fields']
+            stage = post_data['stage']
 
             filter_mobile = {
                 'fields': fields,
@@ -473,12 +490,12 @@ def search(request):
         }
 
         category = level = pay = active_selects = filter = filter_hidden = filter_mobile = None
-        if post:
+        if post_data:
             active_selects = []
-            category = request.POST.getlist('category')
-            level = request.POST.getlist('level')
-            pay = request.POST.getlist('pay')
-            filter_hidden = request.POST.get('filter_jobs')
+            category = post_data['category']
+            level = post_data['level']
+            pay = post_data['pay']
+            filter_hidden = request.session.get('post_filter_jobs')
 
             filter = None
             if filter_hidden != None:
@@ -577,6 +594,7 @@ def search(request):
 
 @login_required
 @check_profiles
+@never_cache
 def user_profile(request):
     last_login = request.user.last_login
     current_time = timezone.now()
@@ -605,6 +623,7 @@ def user_profile(request):
 
 @login_required
 @check_profiles
+@never_cache
 def startup_profile(request):
     user = get_object_or_404(models.MyUser, pk=request.user.id)
     last_login = user.last_login
@@ -629,6 +648,7 @@ def startup_profile(request):
 
 
 @login_required
+@never_cache
 def profile_update(request):
     user = request.user
     is_first_login = user.first_login
@@ -802,6 +822,7 @@ def profile_step(request):
 
 
 @login_required
+@never_cache
 def startup_update(request):
     user = request.user
     is_first_login = user.first_login
@@ -914,7 +935,7 @@ def get_startup_view(request, id):
                       'cd': cd,
                   }))
 
-
+@method_decorator(never_cache, name='dispatch')
 class MyRegistrationView(RegistrationView):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated():
@@ -922,6 +943,7 @@ class MyRegistrationView(RegistrationView):
         return super(MyRegistrationView, self).dispatch(request, *args, **kwargs)
 
 
+@never_cache
 def resend_activation_email(request):
     email_body_template = 'registration/activation_email.txt'
     email_subject_template = 'registration/activation_email_subject.txt'
@@ -975,6 +997,7 @@ def job_list(request, pk):
     return render(request, 'job_list.html', {'founder': founder, 'jobs': jobs})
 
 
+@method_decorator(never_cache, name='dispatch')
 class Settings(LoginRequiredMixin, generic.FormView):
     success_url = reverse_lazy('website:settings')
     form_class = forms.ChangePasswordForm
@@ -991,7 +1014,7 @@ class Settings(LoginRequiredMixin, generic.FormView):
         # if self.request.user.is_individual and hasattr(self.request.user, 'profile'):
         #     context['alternate_email_form'] = self.alternate_email_form_class(
         #         initial={'alt_email': self.request.user.profile.alt_email})
-        context.update(**CONTEXT)
+        # context.update(**CONTEXT)
         context.update(**JOB_CONTEXT)
         return context
 
@@ -1020,6 +1043,7 @@ class Settings(LoginRequiredMixin, generic.FormView):
 #         return redirect(self.get_success_url())
 
 
+@method_decorator(never_cache, name='dispatch')
 class ChangeAccountStatus(LoginRequiredMixin, generic.RedirectView):
     url = reverse_lazy('website:settings')
 
@@ -1031,6 +1055,7 @@ class ChangeAccountStatus(LoginRequiredMixin, generic.RedirectView):
         return super(ChangeAccountStatus, self).post(request, *args, **kwargs)
 
 
+@method_decorator(never_cache, name='dispatch')
 class DeleteProfile(LoginRequiredMixin, generic.RedirectView):
     url = reverse_lazy('website:settings')
 

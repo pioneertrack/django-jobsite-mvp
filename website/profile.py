@@ -11,7 +11,7 @@ from django.core.files.storage import FileSystemStorage
 from custom_storages import MediaStorage
 
 HOURS_AVAILABLE = (
-    ('0', '0 - 5'),
+    ('0', '1 - 5'),
     ('1', '5 - 10'),
     ('2', '10 - 15'),
     ('3', '15 - 20'),
@@ -113,7 +113,7 @@ POSITIONS = (
     ('2', 'Part-Time'),
     ('3', 'Full-Time'),
     ('4', 'Contract'),
-    ("5", "None")
+    ('5', 'Not Looking'),
 )
 
 
@@ -186,6 +186,7 @@ class Profile(models.Model):
     role = models.CharField(max_length=4, choices=PRIMARY_ROLE)
     skills = models.TextField(verbose_name='Skills', max_length=500)
     year = models.CharField(verbose_name='Cal Affiliation', max_length=4, choices=YEAR_IN_SCHOOL_CHOICES)
+
     interests = models.TextField(verbose_name='Interests', max_length=500, blank=True, null=False)
     courses = models.TextField(verbose_name='Courses', max_length=400, blank=True, null=False)
     alt_email = models.EmailField(max_length=255, db_index=True, null=True, blank=True)
@@ -201,6 +202,11 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.email
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if '5' in self.positions:
+            self.positions = ['5']
+        super(Profile, self).save(force_insert, force_update, using , update_fields)
 
     def check_is_filled(self, save=True):
         if len(self.bio) > 1 and (len(self.skills) > 0 or self.experience_set.count() > 0) and (
