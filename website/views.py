@@ -128,10 +128,10 @@ def check_profiles(view_func):
         if user.first_login:
             if user.is_individual and not hasattr(user, 'profile') or user.profile.is_filled == False:
                 messages.success(request, "Welcome to BearFounders! Please tell us about yourself.")
-                redirect_url = 'website:profile_update'
+                redirect_url = 'website:profile_step'
             elif user.is_founder and not hasattr(user, 'founder') or user.founder.is_filled == False:
                 messages.success(request, "Welcome to BearFounders! Please tell us about you startup.")
-                redirect_url ='website:startup_update'
+                redirect_url ='website:profile_step'
         else:
             p = lambda val: not val.profile.is_filled if hasattr(val, 'profile') else True
             f = lambda val: not val.founder.is_filled if hasattr(val, 'founder') else True
@@ -772,38 +772,31 @@ def profile_step(request):
     )
     formDat["hasStartup"] = (("yes", 'Yes'), ("no" , 'No'))
     if request.method == "POST":
-        print (request.POST)
-        # Validate
-        # 'interests': ['testing'], 'personalwebsite': [''], 'githuburl': [''],
-        # 'calaffiliation': ['SO'], 'numhours': ['2'], 'csrfmiddlewaretoken':
-        #  ['bSlvCIh9EvaBbgTbTtMZ826uUrmNDt8vW5Z75HjJizfIaoQKAy1rCZuPr1sybEuv'],
-        #  'relcoursework': ['testintg'], 'major': ['ECON'], 'profileimage': [''],
-        #   'startupProfile': ['yes'], '3': ['True'], 'bio': ['asdf'], 'linkedin':
-        #    [''], '2': ['True'], 'has_funding_exp': ['True'], 'skills': ['asdf'], 'primaryroles': ['BIZ']
         user = request.user
         profile = None if not hasattr(user, 'profile') else user.profile
 
         if not profile:
             errors.append({"Need Image" : "Please go to step 1 and re add your profile image"})
         else:
+
             expected = {"primaryroles" : "role",
                      "skills" : "skills",
-                      "has_funding_exp" : "has_funding_exp",
                        "major" : "major",
                        "bio" : "bio",
-                       "numhours" : "hours_week",
+                       "numberhoursinput" : "hours_week",
                        "linkedin" : "linkedin",
                        "relcoursework" : "courses",
-                       "numhours" : "hours_week",
                        "calaffiliation" : "year",
                        "githuburl" : "github",
                        "personalwebsite" : "website",
-                       "interests" : "interests"
+                       "interests" : "interests",
+
                         }
+            checkboxes = {"positions_check[]" : "positions"}
             optional = {}
             # print (expected)
             try:
-                ValidatePostItems(expectedFields=expected, optionalFields=optional, request=request, saveObj = profile)
+                ValidatePostItems(expectedFields=expected, optionalFields=optional, request=request, checkboxes=checkboxes, saveObj = profile)
                 profile.is_filled=True
                 print (request.POST["startupProfile"])
                 profile.save()
@@ -814,7 +807,6 @@ def profile_step(request):
 
 
             except Exception as e:
-                print (e)
                 errors.append({"strong" : "missing fields!", "text" : "please fill out all required fields!"})
 
 
