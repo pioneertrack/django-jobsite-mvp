@@ -13,6 +13,9 @@ Profile Setup
 {% endblock %}
 
 {% block content %}
+<div class="preloader" style="background-image: url({% static 'images/loading_icon.gif' %})">
+
+</div>
 <div class="container-wrapper">
   <div class="container profile-breadcrumbs-page">
 
@@ -37,7 +40,7 @@ Profile Setup
               <li><a href="#step-5">Step 5<br /><small>Startup</small></a></li>
           </ul>
 
-          <div>
+          <div {% if errors %} class="missing-data" {% endif %}>
               <div id="step-1" class="">
                 <div class="form-group">
                   <div class="align-left form-header">
@@ -69,13 +72,13 @@ Profile Setup
                 {% endwith %}
 
 
-                {% with formItemHeader='3.) What type of position are you looking for?' formitemRequired=True checkboxname='typesOfWork' cblist=formDat.position_types %}
+                {% with formItemHeader='3.) What type of position are you looking for?' formitemRequired=True checkboxname='typesOfWork' checkboxgroup='positions_check[]' cblist=formDat.position_types %}
                   {% include './partials/checkbox.html' %}
                 {% endwith %}
 
               </div>
               <!-- END STEP 1  -->
-              <div id="step-2" class="">
+              <div id="step-2" class="step-section">
                 {% with formItemHeader='1.) What is the primary role you are looking for?' formitemRequired=True ddlist=formDat.primary_roles ddclass='primaryroles' ddselectionlabel='Please select your position!' %}
                   {% include './partials/dropdown.html' %}
                 {% endwith %}
@@ -91,24 +94,30 @@ Profile Setup
                 {% endwith %}
 
               </div>
-              <div id="step-3" class="">
-                {% with formItemHeader='1.) What are some of your Interests?' formitemRequired=True textareaName='interests' textareaPH='Sports, writing, edtech, travel, health' %}
+              <div id="step-3" class="step-section">
+                <div class="center-block">
+                  <a href="#step-4"> I'll do this later </a>
+                </div>
+                {% with formItemHeader='1.) What are some of your Interests?' formitemRequired=False textareaName='interests' textareaPH='Sports, writing, edtech, travel, health' %}
                   {% include './partials/textarea.html' %}
                 {% endwith %}
 
-                  {% with formItemHeader='2.) What is your primary major?' formitemRequired=True ddlist=formDat.primary_majors ddclass='primarymajorMod'  ddselectionlabel='Please select a major' %}
+                  {% with formItemHeader='2.) What is your primary major?' formitemRequired=False ddlist=formDat.primary_majors ddclass='primarymajorMod'  ddselectionlabel='Please select a major' %}
                     {% include './partials/dropdown.html' %}
                   {% endwith %}
 
-                {% with formItemHeader='3.) What is some of your relevant coursework? ' formitemRequired=True textareaName='relcoursework' textareaPH='UGBA 104, CS70, Econ 100B' %}
+                {% with formItemHeader='3.) What is some of your relevant coursework? ' formitemRequired=False textareaName='relcoursework' textareaPH='UGBA 104, CS70, Econ 100B' %}
                   {% include './partials/textarea.html' %}
                 {% endwith %}
 
-                {% with formItemHeader='4.) How many hours a week are you willing to work?' formitemRequired=True ddlist=formDat.hours_available ddclass='hoursavailableMod' ddselectionlabel='Select Hours' %}
+                {% with formItemHeader='4.) How many hours a week are you willing to work?' formitemRequired=False ddlist=formDat.hours_available ddclass='hoursavailableMod' ddselectionlabel='Select Hours' %}
                   {% include './partials/dropdown.html' %}
                 {% endwith %}
               </div>
-              <div id="step-4" class="">
+              <div id="step-4" class="step-section">
+                <div class="center-block">
+                  <a href="#step-5"> I'll do this later </a>
+                </div>
                 {% with formItemHeader=' 1.) If applicable, please list your linkedin profile URL ' formitemRequired=False inputName='linkedin' inputPH='https://www.linkedin.com/in/colin-o-neill-0117a2ba/' %}
                   {% include './partials/input.html' %}
                 {% endwith %}
@@ -125,7 +134,7 @@ Profile Setup
                 {% endwith %}
               </div>
 
-              <div id="step-5" class="">
+              <div id="step-5" class="step-section">
 
                 <div class="center-block">
                   <h5> That's all! Please finish by clicking step inside, or, if you have a startup you would like to register, Add Startup Profile </h5>
