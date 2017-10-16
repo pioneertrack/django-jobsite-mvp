@@ -6,7 +6,7 @@
     <div class="checkbox checkbox-container inline form-check-inline">
       <label>
         {% with val=True %}
-        <input type="checkbox" name="{{ position.0 }}" value={{ val }} class="{% if formitemRequired %} required{% endif %}">
+        <input type="checkbox" {% if checkboxgroup %} name="{{ checkboxgroup }}" value="{{ position.0 }}" {% else %} value="{{ val }}" name="{{ position.0 }}" {% endif %} class="{% if formitemRequired %} required{% endif %}">
         {% endwith %}
         {{ position.1 }}
       </label>
