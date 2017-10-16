@@ -8,12 +8,29 @@ $profile-change-icon-animation : changeHeightAnimation;
   min-height: 100%;
 }
 
+
+.preloader {
+  top: 0;
+  bottom : 0;
+  position: fixed;
+  background-color: white;
+  z-index: 99999;
+  left: 0;
+  right: 0;
+  background-position: center;
+  background-repeat: no-repeat;;
+
+}
+
+
 .dropdown-module {
   .dropdown-selection {
     font-weight: bold;
   }
 }
 .profile-breadcrumbs-page {
+  
+
   font-family: Helvetica;
   max-width: 700px;
   .page-header {
