@@ -100,6 +100,17 @@ label {
   background-color: #eee;
   min-height: 100%; }
 
+.preloader {
+  top: 0;
+  bottom: 0;
+  position: fixed;
+  background-color: white;
+  z-index: 99999;
+  left: 0;
+  right: 0;
+  background-position: center;
+  background-repeat: no-repeat; }
+
 .dropdown-module .dropdown-selection {
   font-weight: bold; }
 
@@ -112,7 +123,7 @@ label {
       border-radius: 4px;
       background-color: white; }
   .profile-breadcrumbs-page .profile-image-wrapper img {
-    max-width: 200px; }
+    max-width: 125px; }
   .profile-breadcrumbs-page .form-group {
     background-color: white;
     border-radius: 4px; }
