@@ -15,23 +15,27 @@ export default {
 
     // Also save all the check boxes
     $(formSelector + " input:checked").each(function() {
-      saveFormItems["checkboxes"].push($( this ).attr('name'));
+      saveFormItems["checkboxes"].push({"name" : $( this ).attr('name'), "value" : $(this).val()});
     });
-
+    console.log(saveFormItems);
     return saveFormItems;
   },
 
   setFormFromSerialized : function (serialized, formSelector) {
+  
     if (serialized["text"] == null) return;
     for (var key in serialized["text"]) {
       if (serialized["text"].hasOwnProperty(key)) {
         $(formSelector + " input[name='"+key+"'], textarea[name='"+key+"']").val(serialized["text"][key]);
       }
     }
-    console.log(serialized);
-
     for (var i=0; i<serialized["checkboxes"].length; i++) {
-      $(formSelector + " input[type='checkbox'][name='"+ serialized["checkboxes"][i] +"']").prop('checked', true);
+
+      $(formSelector + " input[type='checkbox'][name='"+ serialized["checkboxes"][i]["name"] +"']").each(function() {
+        if ($(this).val() === serialized["checkboxes"][i]["value"]) {
+          $(this).prop("checked", true);
+        }
+      });
     }
 
   }
