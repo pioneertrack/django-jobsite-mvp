@@ -10343,6 +10343,8 @@ module.exports.selectors = {
   "REQUIRED_IMAGE_FLAG" : ".requiredImageFlag",
   "ADD_STARTUP_BUTTON" : ".add-startup-then-finish",
   "STARTUP_PROFILE_FORM_VAL" : ".startupProfileInput",
+  "LOADING_IMAGE" : ".preloader",
+  "POSITION_CHECK_SELECTOR" : "input[name='positions_check[]']"
 }
 
 module.exports.routes = {
@@ -10666,7 +10668,7 @@ var DDService = __webpack_require__(4);
 
 var ddPrimaryService = new DDService({'rootModuleSelector' : '.primaryroles', 'inputTargetName' : "primaryroles"});
 var ddMajors = new DDService({'inputTargetName' : 'major', 'rootModuleSelector' : '.primarymajorMod'});
-var ddHours = new DDService({'inputTargetName' : 'numhours', 'rootModuleSelector' : '.hoursavailableMod'});
+var ddHours = new DDService({'inputTargetName' : 'numberhoursinput', 'rootModuleSelector' : '.hoursavailableMod'});
 var ddStartup = new DDService({'inputTargetName' : 'hasstartup', 'rootModuleSelector' : '.hasstartupToRegister'});
 var ddCalAffil = new DDService({'inputTargetName' : 'calaffiliation', 'rootModuleSelector' : '.calaffiliation'});
 // Now set dropdowns
@@ -10689,16 +10691,73 @@ var uploadButton = cu.addState(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_UPB
 
 
 
+function validateFields (stepId, goToStep) {
+  $(stepId + " .required").each(function() {
+    if ($(this).val() == null || $(this).val() === "") {
 
+      $(this).closest(".form-group").find("p").css("color", "red");
+      if (goToStep) {
+        // console.log($(this).closest('.step-section').attr("id") + " is this step");
+        __WEBPACK_IMPORTED_MODULE_1__services_urlLocationService_js__["a" /* default */].jumptToAnchor($(this).closest('.step-section').attr("id"));
+      }
+    }
+  });
+}
+
+
+function notLookingCheckBoxes () {
+
+  function isThisNotLooking ($this) {
+    return ("notlooking" === $this.parent().text().replace(/\s+/g,' ').trim().replace(" ", "").toLowerCase());
+  }
+
+  function removeChecks ($this) {
+    var foundIt = false;
+    if (isThisNotLooking($this)) {
+      foundIt = true
+      $this.closest(".form-group").find("label").css('color', "gray");
+      $(settings.selectors.POSITION_CHECK_SELECTOR).prop("checked", false);
+      $this.prop("checked", true);
+      $(settings.selectors.POSITION_CHECK_SELECTOR).checked = true;
+      $this.parent().css("color", "black");
+    }
+    return foundIt;
+  }
+
+  $(settings.selectors.POSITION_CHECK_SELECTOR +  ":checked").each(function() {
+    removeChecks($(this));
+  });
+
+
+  $(settings.selectors.POSITION_CHECK_SELECTOR).on("click", function() {
+    if (!removeChecks($(this))) {
+    $(this).closest(".form-group").find("label").css('color', "black");
+      $( settings.selectors.POSITION_CHECK_SELECTOR ).each(function() {
+
+        if (isThisNotLooking($(this))) {
+            $(this).prop("checked", false);
+        }
+      });
+    }
+    // else {
+    //     $(this).closest(".form-group").find("label").css('color', "black");
+    //     $(settings.selectors.POSITION_CHECK_SELECTOR).each(function() {
+    //
+    //     });
+    // }
+  })
+}
 
 
 
 $(document).ready(function(){
 
 
-  // Jump to first anchor
-  __WEBPACK_IMPORTED_MODULE_3__services_formSavingService_js__["a" /* default */].setFormFromSerialized(__WEBPACK_IMPORTED_MODULE_2__services_localStorageCacheService_js__["a" /* default */].getObjectInLocalStorage(settings.localStorageKeys.PROFILE_FORM_DATA), "form");
 
+  $(settings.selectors.LOADING_IMAGE).css("display", "none");
+  // Jump to first anchor
+  // FormSavingService.setFormFromSerialized(LocalStorageService.getObjectInLocalStorage(settings.localStorageKeys.PROFILE_FORM_DATA), "form");
+  notLookingCheckBoxes();
   /* Since the forms have been updated, reset the dropdown labels */
   ddPrimaryService.resetDropDowns();
   ddMajors.resetDropDowns();
@@ -10709,13 +10768,14 @@ $(document).ready(function(){
 
 
   __WEBPACK_IMPORTED_MODULE_1__services_urlLocationService_js__["a" /* default */].jumptToAnchor(__WEBPACK_IMPORTED_MODULE_2__services_localStorageCacheService_js__["a" /* default */].getStringWithDefault(settings.localStorageKeys.CURRENT_STEP, "step-1"));
+  validateFields(".missing-data", true);
   $('#smartwizard').smartWizard({"useURLhash" : true});
   $("#smartwizard").on("leaveStep", function(e, anchorObject, stepNumber, stepDirection) {
       //todo remove
       __WEBPACK_IMPORTED_MODULE_2__services_localStorageCacheService_js__["a" /* default */].saveObjectInLocalStorage(settings.localStorageKeys.PROFILE_FORM_DATA, __WEBPACK_IMPORTED_MODULE_3__services_formSavingService_js__["a" /* default */].getSerializedForm("form"));
       if (stepDirection === "forward") {
           if (! allinputsFilled("#step-" + (stepNumber + 1) + " " + ".required")) {
-            alert("please fill out all fields!");
+            validateFields("#step-" + (stepNumber+1));
             return false;
           }
 
@@ -10732,8 +10792,13 @@ $(document).ready(function(){
 //utility func, see if any empty inputs
 function allinputsFilled (selector) {
   var allFilled = true;
-  $(selector).each (function(index) {
 
+  $(selector).each (function(index) {
+    if ($(this).attr("type") == "checkbox" && ! $("input[name='" + $(this).attr("name") + "']:checked").val())
+    {
+        $("input[name='" + $(this).attr("name") + "']").closest(".form-group").find("label").css("color", "red");
+        allFilled = false;
+    }
     if ($(this).val() == null || $(this).val() === "") {
       allFilled = false;
     }
@@ -10746,7 +10811,7 @@ $( document ).ready(function () {
   // console.log();
   $(settings.selectors.FINISH_PROFILE_BUTTON).click(function() {
     if (! allinputsFilled(".required")) {
-      alert ("Please make sure you've completed all requirements on every step");
+      validateFields(".missing-data", true);
       event.preventDefault();
     }
   });
@@ -10763,7 +10828,7 @@ var iu = new __WEBPACK_IMPORTED_MODULE_4__lib_view_controllers_image_instant_upl
 iu.addHook(iu.ON_IMAGE_ADDED,  function (f) {
   var fd = new FormData();
   fd.append("profileimage", f[0]);
-  console.log(f[0]);
+
   $.ajax ({
     type: 'POST',
      data: fd,
@@ -11556,23 +11621,27 @@ __webpack_require__(0);
 
     // Also save all the check boxes
     $(formSelector + " input:checked").each(function() {
-      saveFormItems["checkboxes"].push($( this ).attr('name'));
+      saveFormItems["checkboxes"].push({"name" : $( this ).attr('name'), "value" : $(this).val()});
     });
-
+    console.log(saveFormItems);
     return saveFormItems;
   },
 
   setFormFromSerialized : function (serialized, formSelector) {
+  
     if (serialized["text"] == null) return;
     for (var key in serialized["text"]) {
       if (serialized["text"].hasOwnProperty(key)) {
         $(formSelector + " input[name='"+key+"'], textarea[name='"+key+"']").val(serialized["text"][key]);
       }
     }
-    console.log(serialized);
-
     for (var i=0; i<serialized["checkboxes"].length; i++) {
-      $(formSelector + " input[type='checkbox'][name='"+ serialized["checkboxes"][i] +"']").prop('checked', true);
+
+      $(formSelector + " input[type='checkbox'][name='"+ serialized["checkboxes"][i]["name"] +"']").each(function() {
+        if ($(this).val() === serialized["checkboxes"][i]["value"]) {
+          $(this).prop("checked", true);
+        }
+      });
     }
 
   }

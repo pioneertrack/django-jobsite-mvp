@@ -10343,6 +10343,8 @@ module.exports.selectors = {
   "REQUIRED_IMAGE_FLAG" : ".requiredImageFlag",
   "ADD_STARTUP_BUTTON" : ".add-startup-then-finish",
   "STARTUP_PROFILE_FORM_VAL" : ".startupProfileInput",
+  "LOADING_IMAGE" : ".preloader",
+  "POSITION_CHECK_SELECTOR" : "input[name='positions_check[]']"
 }
 
 module.exports.routes = {
