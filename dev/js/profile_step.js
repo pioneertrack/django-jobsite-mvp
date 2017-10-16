@@ -8,7 +8,7 @@ var DDService = require("bootstrap-dropdown-selector");
 
 var ddPrimaryService = new DDService({'rootModuleSelector' : '.primaryroles', 'inputTargetName' : "primaryroles"});
 var ddMajors = new DDService({'inputTargetName' : 'major', 'rootModuleSelector' : '.primarymajorMod'});
-var ddHours = new DDService({'inputTargetName' : 'numhours', 'rootModuleSelector' : '.hoursavailableMod'});
+var ddHours = new DDService({'inputTargetName' : 'numberhoursinput', 'rootModuleSelector' : '.hoursavailableMod'});
 var ddStartup = new DDService({'inputTargetName' : 'hasstartup', 'rootModuleSelector' : '.hasstartupToRegister'});
 var ddCalAffil = new DDService({'inputTargetName' : 'calaffiliation', 'rootModuleSelector' : '.calaffiliation'});
 // Now set dropdowns
@@ -31,16 +31,73 @@ var uploadButton = cu.addState(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_UPB
 
 
 
+function validateFields (stepId, goToStep) {
+  $(stepId + " .required").each(function() {
+    if ($(this).val() == null || $(this).val() === "") {
 
+      $(this).closest(".form-group").find("p").css("color", "red");
+      if (goToStep) {
+        // console.log($(this).closest('.step-section').attr("id") + " is this step");
+        UrlLocationService.jumptToAnchor($(this).closest('.step-section').attr("id"));
+      }
+    }
+  });
+}
+
+
+function notLookingCheckBoxes () {
+
+  function isThisNotLooking ($this) {
+    return ("notlooking" === $this.parent().text().replace(/\s+/g,' ').trim().replace(" ", "").toLowerCase());
+  }
+
+  function removeChecks ($this) {
+    var foundIt = false;
+    if (isThisNotLooking($this)) {
+      foundIt = true
+      $this.closest(".form-group").find("label").css('color', "gray");
+      $(settings.selectors.POSITION_CHECK_SELECTOR).prop("checked", false);
+      $this.prop("checked", true);
+      $(settings.selectors.POSITION_CHECK_SELECTOR).checked = true;
+      $this.parent().css("color", "black");
+    }
+    return foundIt;
+  }
+
+  $(settings.selectors.POSITION_CHECK_SELECTOR +  ":checked").each(function() {
+    removeChecks($(this));
+  });
+
+
+  $(settings.selectors.POSITION_CHECK_SELECTOR).on("click", function() {
+    if (!removeChecks($(this))) {
+    $(this).closest(".form-group").find("label").css('color', "black");
+      $( settings.selectors.POSITION_CHECK_SELECTOR ).each(function() {
+
+        if (isThisNotLooking($(this))) {
+            $(this).prop("checked", false);
+        }
+      });
+    }
+    // else {
+    //     $(this).closest(".form-group").find("label").css('color', "black");
+    //     $(settings.selectors.POSITION_CHECK_SELECTOR).each(function() {
+    //
+    //     });
+    // }
+  })
+}
 
 
 
 $(document).ready(function(){
 
 
-  // Jump to first anchor
-  FormSavingService.setFormFromSerialized(LocalStorageService.getObjectInLocalStorage(settings.localStorageKeys.PROFILE_FORM_DATA), "form");
 
+  $(settings.selectors.LOADING_IMAGE).css("display", "none");
+  // Jump to first anchor
+  // FormSavingService.setFormFromSerialized(LocalStorageService.getObjectInLocalStorage(settings.localStorageKeys.PROFILE_FORM_DATA), "form");
+  notLookingCheckBoxes();
   /* Since the forms have been updated, reset the dropdown labels */
   ddPrimaryService.resetDropDowns();
   ddMajors.resetDropDowns();
@@ -51,13 +108,14 @@ $(document).ready(function(){
 
 
   UrlLocationService.jumptToAnchor(LocalStorageService.getStringWithDefault(settings.localStorageKeys.CURRENT_STEP, "step-1"));
+  validateFields(".missing-data", true);
   $('#smartwizard').smartWizard({"useURLhash" : true});
   $("#smartwizard").on("leaveStep", function(e, anchorObject, stepNumber, stepDirection) {
       //todo remove
       LocalStorageService.saveObjectInLocalStorage(settings.localStorageKeys.PROFILE_FORM_DATA, FormSavingService.getSerializedForm("form"));
       if (stepDirection === "forward") {
           if (! allinputsFilled("#step-" + (stepNumber + 1) + " " + ".required")) {
-            alert("please fill out all fields!");
+            validateFields("#step-" + (stepNumber+1));
             return false;
           }
 
@@ -74,8 +132,13 @@ $(document).ready(function(){
 //utility func, see if any empty inputs
 function allinputsFilled (selector) {
   var allFilled = true;
-  $(selector).each (function(index) {
 
+  $(selector).each (function(index) {
+    if ($(this).attr("type") == "checkbox" && ! $("input[name='" + $(this).attr("name") + "']:checked").val())
+    {
+        $("input[name='" + $(this).attr("name") + "']").closest(".form-group").find("label").css("color", "red");
+        allFilled = false;
+    }
     if ($(this).val() == null || $(this).val() === "") {
       allFilled = false;
     }
@@ -88,7 +151,7 @@ $( document ).ready(function () {
   // console.log();
   $(settings.selectors.FINISH_PROFILE_BUTTON).click(function() {
     if (! allinputsFilled(".required")) {
-      alert ("Please make sure you've completed all requirements on every step");
+      validateFields(".missing-data", true);
       event.preventDefault();
     }
   });
@@ -105,7 +168,7 @@ var iu = new ImageUploader(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_INPUT, 
 iu.addHook(iu.ON_IMAGE_ADDED,  function (f) {
   var fd = new FormData();
   fd.append("profileimage", f[0]);
-  console.log(f[0]);
+
   $.ajax ({
     type: 'POST',
      data: fd,
