@@ -1,7 +1,7 @@
 
-def ValidatePostItems(expectedFields, optionalFields, request, saveObj, atleastOne={}):
+def ValidatePostItems(expectedFields, optionalFields, request, saveObj, checkboxes={}, atleastOne={}):
     for item in expectedFields:
-        print (item, request.POST)
+
         if item not in request.POST:
             raise ValueError("Value not passed in post! " + item)
         setattr(saveObj, expectedFields[item], request.POST[item])
@@ -10,6 +10,11 @@ def ValidatePostItems(expectedFields, optionalFields, request, saveObj, atleastO
         if item in request.POST:
             # validate emails
             setattr(saveObj, optionalFields[item], request.POST[item])
+
+    for item in checkboxes:
+        if item not in request.POST:
+            raise ValueError("Value not passed in post! " + item)
+        setattr(saveObj, checkboxes[item], request.POST.getlist(item))
 # Checkboxes, optional and expected
     if len( atleastOne ) > 0:
         found = []
