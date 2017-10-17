@@ -79,7 +79,7 @@ Profile Setup
               </div>
               <!-- END STEP 1  -->
               <div id="step-2" class="step-section">
-                {% with formItemHeader='1.) What is the primary role you are looking for?' formitemRequired=True ddlist=formDat.primary_roles ddclass='primaryroles' ddselectionlabel='Please select your position!' %}
+                {% with formItemHeader='1.) Which role best describes you?' formitemRequired=True ddlist=formDat.primary_roles ddclass='primaryroles' ddselectionlabel='Please select your position!' %}
                   {% include './partials/dropdown.html' %}
                 {% endwith %}
 
@@ -142,8 +142,8 @@ Profile Setup
 
                 <input type='hidden' class="startupProfileInput" name="startupProfile" value="no">
                 <div class="center-block">
-                  <button type="submit" class="btn btn-secondary finish-profile-button"> Step Inside </button>
-                  <button type="button" class="btn btn-primary add-startup-then-finish"> Add Startup Profile </button>
+                  <button type="submit" class="btn btn-primary finish-profile-button"> Step Inside </button>
+                  <button type="button" class="btn btn-secondary add-startup-then-finish"> Add Startup Profile </button>
 
                 </div>
              </div>
