@@ -1,7 +1,9 @@
 jQuery(document).ready(function($) {
 
-  $('#selector').niceSelect();
-  $('.cd-search-nav.first select.filter').niceSelect();
+  if (history.state.hasOwnProperty('filter') === false) {
+    $('#selector').niceSelect();
+    $('.cd-search-nav.first select.filter').niceSelect();
+  }
   $('ul#cd-navigation select.filter').niceSelect();
   $('ul#cd-navigation ul.list li:first').hide();
 
