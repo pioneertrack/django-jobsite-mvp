@@ -378,7 +378,7 @@
                     <div class="header-bg" style="height:100px; background-color:#25283D;">
                       <h2>{{ curr_item.founder.startup_name }}</h2>
                       <div class="avatar"
-                           style="background-image: url('{{ curr_item.founder.logo }}');">
+                           {% if curr_item.founder.logo %}style="background-image: url('{{ curr_item.founder.logo_thumbnail }}');"{% endif %}>
                       </div>
                     </div>
                     <div class="offer-content">
@@ -423,7 +423,7 @@
                        style="height:100px; background-color:#25283D;"></div>
                   <div>
                     <div class="avatar"
-                         style="background-image: url('{{ curr_item.image }}');">
+                         {% if  curr_item.image %}style="background-image: url('{{ curr_item.image_thumbnail }}');"{% endif %}>
                     </div>
                   </div>
                   <div class="content">
@@ -468,7 +468,7 @@
                        style="height:100px; background-color:#25283D;"></div>
                   <div>
                     <div class="avatar"
-                         style="background-image: url('{{ curr_item.logo }}');">
+                         {% if curr_item.logo %}style="background-image: url('{{ curr_item.logo_thumbnail }}');"{% endif %}>
                     </div>
                   </div>
                   <div class="content">

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from registration.forms import RegistrationFormUniqueEmail
 from nocaptcha_recaptcha.fields import NoReCaptchaField
 from website import models, profile
@@ -74,8 +75,8 @@ class ProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProfileForm, self).__init__(*args, **kwargs)
         self.initial['alt_email'] = None
-        if len(self.instance.image.name) > 0:
-            self.fields['image'].required = False
+        # if len(self.instance.image.name) > 0:
+        #     self.fields['image'].required = False
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False

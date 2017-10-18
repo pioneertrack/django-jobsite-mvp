@@ -25,3 +25,4 @@ venv/
 /static/
 /berkeleyconnect/local_settings.py
 /bower_components/
+/node_modules/

@@ -204,6 +204,10 @@ CACHES = {
     }
 }
 
+
+# IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = 'website.profile.FixJustInTime'
+
+
 try:
   from .local_settings import *
 except ImportError:
