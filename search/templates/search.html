@@ -378,7 +378,7 @@
                     <div class="header-bg" style="height:100px; background-color:#25283D;">
                       <h2>{{ curr_item.founder.startup_name }}</h2>
                       <div class="avatar"
-                           {% if curr_item.logo %}style="background-image: url('{{ curr_item.founder.logo }}');"{% endif %}>
+                           {% if curr_item.founder.logo %}style="background-image: url('{{ curr_item.founder.logo }}');"{% endif %}>
                       </div>
                     </div>
                     <div class="offer-content">
@@ -440,9 +440,13 @@
                       <span class="label label-primary">{{ curr_item.get_major_display }}</span>
                     {% endif %}
                     <span class="label label-info">{{ curr_item.get_role_display }}</span>
-                    {% for skill in curr_item.skills|slice:":5" %}
-                      <span class="label label-info">{{ skill }}</span>
-                    {% endfor %}
+                    {% with  curr_item.skills|split:"," as skills %}
+                      {% for skill in skills|slice:":5" %}
+                        {% if skill.strip != "" %}
+                          <span class="label label-info">{{ skill }}</span>
+                        {% endif %}
+                      {% endfor %}
+                    {% endwith %}
                     <span class="label label-success">{{ curr_item.get_hours_week_display }} hr/wk</span>
                     {% for work in curr_item.experience_set %}
                       <span class="label label-danger">Worked at {{ work.company }}</span>

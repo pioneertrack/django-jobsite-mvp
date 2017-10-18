@@ -122,7 +122,7 @@ class JobDocument(DocType):
         'id': fields.IntegerField(),
         'startup_name': fields.StringField(),
         'description': fields.StringField(),
-        'logo': fields.StringField(attr="logo.url"),
+        'logo': fields.StringField(attr="logo_to_string"),
         'is_filled': fields.BooleanField(),
         'field': fields.StringField(attr="field", analyzer=leave_default),
         'user': fields.ObjectField(properties={
