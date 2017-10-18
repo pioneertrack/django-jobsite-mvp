@@ -378,7 +378,7 @@
                     <div class="header-bg" style="height:100px; background-color:#25283D;">
                       <h2>{{ curr_item.founder.startup_name }}</h2>
                       <div class="avatar"
-                           {% if curr_item.founder.logo %}style="background-image: url('{{ curr_item.founder.logo_thumbnail }}');"{% endif %}>
+                           {% if curr_item.logo %}style="background-image: url('{{ curr_item.founder.logo }}');"{% endif %}>
                       </div>
                     </div>
                     <div class="offer-content">
@@ -423,7 +423,7 @@
                        style="height:100px; background-color:#25283D;"></div>
                   <div>
                     <div class="avatar"
-                         {% if  curr_item.image %}style="background-image: url('{{ curr_item.image_thumbnail }}');"{% endif %}>
+                         {% if  curr_item.image %}style="background-image: url('{{ curr_item.image }}');"{% endif %}>
                     </div>
                   </div>
                   <div class="content">
@@ -440,7 +440,7 @@
                       <span class="label label-primary">{{ curr_item.get_major_display }}</span>
                     {% endif %}
                     <span class="label label-info">{{ curr_item.get_role_display }}</span>
-                    {% for skill in skills|slice:":5" %}
+                    {% for skill in curr_item.skills|slice:":5" %}
                       <span class="label label-info">{{ skill }}</span>
                     {% endfor %}
                     <span class="label label-success">{{ curr_item.get_hours_week_display }} hr/wk</span>
@@ -450,9 +450,6 @@
                     {% for item in curr_item.get_positions_display %}
                       <span class="label label-warning">{{ item }}</span>
                     {% endfor %}
-                    <!--<div style = "padding:10px;">
-                          <a href="/users/{{user.id}}" class="btn btn-primary btn-outline">View profile</a>
-                          </div>-->
                   </div>
                 </div>
               </a>
@@ -468,12 +465,12 @@
                        style="height:100px; background-color:#25283D;"></div>
                   <div>
                     <div class="avatar"
-                         {% if curr_item.logo %}style="background-image: url('{{ curr_item.logo_thumbnail }}');"{% endif %}>
+                         {% if curr_item.logo %}style="background-image: url('{{ curr_item.logo }}');"{% endif %}>
                     </div>
                   </div>
                   <div class="content">
                     <h2>{{ curr_item.startup_name }}</h2>
-                    <h4>{{ curr_item.founder.get_stage_display }}
+                    <h4>{{ curr_item.get_stage_display }}
                       • {{ curr_item.employee_count }}
                       Employee{{ curr_item.employee_count|pluralize }}</h4>
                     <hr>
