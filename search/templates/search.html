@@ -553,9 +553,11 @@
 
               <span class="label label-info"><%= item.get_role_display %></span>
 
-              <% if (item.skills.length > 0) { _.each(item.skills.split(',').slice(0,4), function (skill) { %>
+              <% if (item.skills.length > 0) { _.each(item.skills.split(',').slice(0,4), function (skill) {
+                if (skill.trim().length > 0) {
+              %>
               <span class="label label-info"><%= skill %></span>
-              <% })} %>
+              <% }})} %>
 
               <span class="label label-success"><%= item.get_hours_week_display %> hr/wk</span>
 

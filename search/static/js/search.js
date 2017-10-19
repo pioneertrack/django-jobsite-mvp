@@ -110,9 +110,13 @@ $(function () {
   /**
    * Lazy load search result on scroll
    */
+  function searchLazyLoadMobile(){
+      if( $(window).scrollTop() + $(window).height() >= $(document).height() - 500 ) {
+        getSearchResults()
+      }
+  }
   function searchLazyLoad () {
-    if ($(window).scrollTop() + $(window).height() >=
-      $(document).height() - 250) {
+    if ($(window).scrollTop() + $(window).height() >= $(document).height() - 500) {
       getSearchResults()
     }
   }
@@ -141,8 +145,8 @@ $(function () {
     end_of_results = false
     $(window).unbind('scroll', searchLazyLoad)
     $(window).scroll(searchLazyLoad)
-
-    // sessionStorage.setItem(JSON.stringify())
+    $(document).unbind('touchmove', searchLazyLoadMobile)
+    $(document).on('touchmove', searchLazyLoadMobile);
 
     // clear main container
     $('main .container .row').html('')
@@ -158,6 +162,7 @@ $(function () {
   })
 
   $(window).scroll(searchLazyLoad)
+  $(document).on('touchmove', searchLazyLoadMobile);
 
   if (history.state !== null && history.state.hasOwnProperty('search_state')) {
     var search_state = history.state.search_state;

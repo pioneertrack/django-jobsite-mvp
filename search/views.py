@@ -114,12 +114,12 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
         query_string = self.post_data['query'][0] if self.post_data else ''
         years = majors = roles = experience = position = hours = []
         if self.post_data:
-            years = self.post_data['year']
-            majors = self.post_data['major']
-            roles = self.post_data['role']
-            experience = self.post_data['experience']
-            position = self.post_data['position']
-            hours = self.post_data['hours']
+            if not self.post_data.get('year') is None: years = self.post_data['year']
+            if not self.post_data.get('major') is None: majors = self.post_data['major']
+            if not self.post_data.get('role') is None: roles = self.post_data['role']
+            if not self.post_data.get('experience') is None: experience = self.post_data['experience']
+            if not self.post_data.get('position') is None: position = self.post_data['position']
+            if not self.post_data.get('hours') is None: hours = self.post_data['hours']
         self.offset = 0 if self.page == 0 else self.page * self.per_page
 
         query = {
@@ -188,14 +188,18 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
                     query['query']['bool']['filter'].append({'term': {'has_funding_exp': True}})
                 elif item == '0':
                     query['query']['bool']['filter'].append({'term': {'has_startup_exp': True}})
-        return PeopleDocument.search().from_dict(query).execute()
+
+        query = PeopleDocument.search().from_dict(query)
+        # TODO: In some reason query index name is clears
+        query._index = 'people'
+        return query.execute()
 
     def startup_search(self):
         query_string = self.post_data['query'][0] if self.post_data else ''
         fields = stage = []
         if self.post_data:
-            fields = self.post_data['fields']
-            stage = self.post_data['stage']
+            if not self.post_data.get('fields') is None: fields = self.post_data['fields']
+            if not self.post_data.get('stage') is None: stage = self.post_data['stage']
         self.offset = 0 if self.page == 0 else self.page * self.per_page
 
         query = {
@@ -252,9 +256,9 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
         query_string = self.post_data['query'][0] if self.post_data else ''
         job_category = level = pay = []
         if self.post_data:
-            job_category = self.post_data['category']
-            level = self.post_data['level']
-            pay = self.post_data['pay']
+            if not self.post_data.get('category') is None: job_category = self.post_data['category']
+            if not self.post_data.get('level') is None: level = self.post_data['level']
+            if not self.post_data.get('pay') is None: pay = self.post_data['pay']
         self.offset = 0 if self.page == 0 else self.page * self.per_page
 
         query = {
@@ -303,4 +307,7 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
         if len(job_category) > 0:
             query['query']['bool']['filter'].append({'terms': {'founder.field': job_category}})
 
-        return JobDocument.search().from_dict(query).execute()
+        # TODO: In some reason query index name is clears
+        query = JobDocument.search().from_dict(query)
+        query._index = 'job'
+        return query.execute()
