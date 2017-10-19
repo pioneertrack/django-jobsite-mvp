@@ -1,6 +1,6 @@
 jQuery(document).ready(function($) {
 
-  if (history.state.hasOwnProperty('filter') === false) {
+  if (history.state === null || history.state.hasOwnProperty('search_state') === false) {
     $('#selector').niceSelect();
     $('.cd-search-nav.first select.filter').niceSelect();
   }

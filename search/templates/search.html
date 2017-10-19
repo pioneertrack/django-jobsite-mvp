@@ -9,152 +9,161 @@
 
 {% if is_mobile %}
 
-  {#  {% block mobile_content %}#}
-  {#    <div class='container' style="padding-top: 30px; padding-bottom:30px;">#}
-  {#      <div class='row'>#}
-  {#        {% for item in items %}#}
-  {#          {% if item|get:"_type" == 'job_document' %}#}
-  {#            {% with curr_item = item|get:"_source" %}#}
-  {#              <div class="col col-md-4 item">#}
-  {##}
-  {#                <a class="card-hover" href='/startups/{{ curr_item.id }}'>#}
-  {#                  <div class="card job-card">#}
-  {#                    <div class="header-bg" style="height:100px; background-color:#25283D;">#}
-  {#                      <h2>{{ curr_item.founder.startup_name }}</h2>#}
-  {#                      <div class="avatar"#}
-  {#                           style="background-image: url('{{ curr_item.founder.logo.url }}');">#}
-  {#                      </div>#}
-  {#                    </div>#}
-  {#                    <div class="offer-content">#}
-  {#                      <div class="info">#}
-  {#                        <h3>{{ item.title }}</h3>#}
-  {#                        <div class="pcomp">#}
-  {#                          <div class="mdata">#}
-  {#                            <span#}
-  {#                                class="font-weight-bold">Job position:&nbsp;</span><span>{{ item.get_level_display }}</span>#}
-  {#                          </div>#}
-  {#                          <div class="mdata">#}
-  {#                            <span#}
-  {#                                class="font-weight-bold">Compensation type:&nbsp;</span><span>{{ item.get_pay_display }}</span>#}
-  {#                          </div>#}
-  {#                        </div>#}
-  {#                      </div>#}
-  {#                      <script type="text/javascript">#}
-  {#                        $(function() {#}
-  {#                          $('.description p').each(function(i) {#}
-  {#                            var text = $(this).text().trim();#}
-  {#                            len = text.length;#}
-  {#                            if (len > 200) {#}
-  {#                              $(this).text(text.substr(0, 200) + '...');#}
-  {#                            }#}
-  {#                          });#}
-  {#                        });#}
-  {#                      </script>#}
-  {#                      <div class="description">#}
-  {#                        <p>{{ item.description }}</p>#}
-  {#                      </div>#}
-  {#                    </div>#}
-  {#                  </div>#}
-  {#                </a>#}
-  {##}
-  {#              </div>#}
-  {#            {% endwith %}#}
-  {#          {% else %}#}
-  {#            {% with curr_item=item|get:"_source" %}#}
-  {#              {% if search_category == 'people' %}#}
-  {#                <div class="col col-md-4" style="height:400px;">#}
-  {##}
-  {#                  <a class="card-hover" href='/profiles/{{ curr_item.id }}'>#}
-  {#                    <div class="card">#}
-  {#                      <div class="header-bg"#}
-  {#                           style="height:100px; background-color:#25283D;"></div>#}
-  {#                      <div>#}
-  {#                        <div class="avatar"#}
-  {#                             style="background-image: url('{{ curr_item.profile.image.url }}');">#}
-  {#                        </div>#}
-  {#                      </div>#}
-  {#                      <div class="content">#}
-  {#                        <h2>{{ curr_item.first_name }} {{ curr_item.last_name }}</h2>#}
-  {#                        <h3 style="margin-top:0">{{ curr_item.profile.get_year_display }}</h3>#}
-  {#                        {% if curr_item.profile.has_startup_exp %}#}
-  {#                          <span class="label label-default">Has startup experience</span>#}
-  {#                        {% endif %}#}
-  {#                        {% if curr_item.profile.has_funding_exp %}#}
-  {#                          <span class="label label-default">Has funding experience</span>#}
-  {#                        {% endif %}#}
-  {#                        <span class="label label-primary">{{ curr_item.profile.get_year_display }}</span>#}
-  {#                        <span class="label label-primary">{{ curr_item.profile.get_major_display }}</span>#}
-  {#                        <span class="label label-info">{{ curr_item.profile.get_role_display }}</span>#}
-  {#                        {% for skill in skills|slice:":5" %}#}
-  {#                          <span class="label label-info">{{ skill }}</span>#}
-  {#                        {% endfor %}#}
-  {#                        <span class="label label-success">{{ curr_item.profile.get_hours_week_display }} hr/wk</span>#}
-  {#                        {% for work in curr_item.profile.experience_set.all %}#}
-  {#                          <span class="label label-danger">Worked at {{ work.company }}</span>#}
-  {#                        {% endfor %}#}
-  {#                        {% for item in curr_item.positions_display %}#}
-  {#                          <span class="label label-warning">{{ item }}</span>#}
-  {#                        {% endfor %}#}
-  {#                        <!--<div style = "padding:10px;">#}
-  {#                        <a href="/users/{{user.id}}" class="btn btn-primary btn-outline">View profile</a>#}
-  {#                        </div>-->#}
-  {#                      </div>#}
-  {#                    </div>#}
-  {#                  </a>#}
-  {##}
-  {#                </div>#}
-  {#              {% else %}#}
-  {#                <div class="col col-md-4" style="height:400px;">#}
-  {##}
-  {#                  <a class="card-hover" href='/startups/{{ curr_item.id }}'>#}
-  {#                    <div class="card">#}
-  {#                      <div class="header-bg"#}
-  {#                           style="height:100px; background-color:#25283D;"></div>#}
-  {#                      <div>#}
-  {#                        <div class="avatar"#}
-  {#                             style="background-image: url('{{ curr_item.founder.logo.url }}');">#}
-  {#                        </div>#}
-  {#                      </div>#}
-  {#                      <div class="content">#}
-  {#                        <h2>{{ curr_item.founder.startup_name }}</h2>#}
-  {#                        <h4>{{ curr_item.founder.get_stage_display }}#}
-  {#                          • {{ curr_item.founder.employee_count }}#}
-  {#                          Employee{{ curr_item.founder.employee_count|pluralize }}</h4>#}
-  {#                        <hr>#}
-  {#                        <script type="text/javascript">#}
-  {#                          $(function() {#}
-  {#                            $('.founderdescription').each(function(i) {#}
-  {#                              len = $(this).text().length;#}
-  {#                              if (len > 300) {#}
-  {#                                $(this).text($(this).text().substr(0, 200) + '...');#}
-  {#                              }#}
-  {#                            });#}
-  {#                          });#}
-  {#                        </script>#}
-  {#                        <div class="founderdescription">#}
-  {#                          <p>{{ curr_item.founder.description }}<p>#}
-  {#                        </div>#}
-  {#                        <!--<div style = "padding:10px;">#}
-  {#                        <a href="/users/{{user.id}}" class="btn btn-primary btn-outline">View profile</a>#}
-  {#                        </div>-->#}
-  {#                      </div>#}
-  {#                    </div>#}
-  {#                  </a>#}
-  {##}
-  {#                </div>#}
-  {#              {% endif %}#}
-  {#            {% endwith %}#}
-  {#          {% endif %}#}
-  {#        {% empty %}#}
-  {#          <div class="col col-md-12 text-center">#}
-  {#            <h1><i class="fa fa-exclamation-circle" aria-hidden="true"></i> There were no users that matched#}
-  {#              your search#}
-  {#              query! Try another search.</h1>#}
-  {#          </div>#}
-  {#        {% endfor %}#}
-  {#      </div>#}
-  {#    </div>#}
-  {#  {% endblock %}#}
+  {% block mobile_content %}
+    <div class='container' style="padding-top: 30px; padding-bottom:30px;">
+      <div class='row'>
+        {% for item in items %}
+
+          {% get item "_type" as item_type %}
+          {% get item "_source" as curr_item %}
+          {% get item "_id" as item_id %}
+
+          {% if item_type == 'job_document' %}
+
+            <div class="col col-md-4 item">
+
+              <a class="card-hover" href='/startups/{{ curr_item.founder.id }}'>
+                <div class="card job-card">
+                  <div class="header-bg" style="height:100px; background-color:#25283D;">
+                    <h2>{{ curr_item.founder.startup_name }}</h2>
+                    <div class="avatar"
+                         {% if curr_item.founder.logo %}style="background-image: url('{{ curr_item.founder.logo }}');"{% endif %}>
+                    </div>
+                  </div>
+                  <div class="offer-content">
+                    <div class="info">
+                      <h3>{{ curr_item.title }}</h3>
+                      <div class="pcomp">
+                        <div class="mdata">
+                              <span
+                                  class="font-weight-bold">Job position:&nbsp;</span><span>{{ curr_item.get_level_display }}</span>
+                        </div>
+                        <div class="mdata">
+                              <span
+                                  class="font-weight-bold">Compensation type:&nbsp;</span><span>{{ curr_item.get_pay_display }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <script type="text/javascript">
+                      $(function () {
+                        $('.description p').each(function (i) {
+                          var text = $(this).text().trim()
+                          len = text.length
+                          if (len > 200) {
+                            $(this).text(text.substr(0, 200) + '...')
+                          }
+                        })
+                      })
+                    </script>
+                    <div class="description">
+                      <p>{{ curr_item.description }}</p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+
+            </div>
+
+          {% elif item_type == 'people_document' %}
+
+            <div class="col col-md-4" style="height:400px;">
+
+              <a class="card-hover" href='/profiles/{{ item_id }}'>
+                <div class="card">
+                  <div class="header-bg"
+                       style="height:100px; background-color:#25283D;"></div>
+                  <div>
+                    <div class="avatar"
+                         {% if  curr_item.image %}style="background-image: url('{{ curr_item.image }}');"{% endif %}>
+                    </div>
+                  </div>
+                  <div class="content">
+                    <h2>{{ curr_item.user.first_name }} {{ curr_item.user.last_name }}</h2>
+                    <h3 style="margin-top:0">{{ curr_item.get_year_display }}</h3>
+                    {% if curr_item.has_startup_exp %}
+                      <span class="label label-default">Has startup experience</span>
+                    {% endif %}
+                    {% if curr_item.has_funding_exp %}
+                      <span class="label label-default">Has funding experience</span>
+                    {% endif %}
+                    <span class="label label-primary">{{ curr_item.get_year_display }}</span>
+                    {% if curr_item.major.strip != "" %}
+                      <span class="label label-primary">{{ curr_item.get_major_display }}</span>
+                    {% endif %}
+                    <span class="label label-info">{{ curr_item.get_role_display }}</span>
+                    {% with  curr_item.skills|split:"," as skills %}
+                      {% for skill in skills|slice:":5" %}
+                        {% if skill.strip != "" %}
+                          <span class="label label-info">{{ skill }}</span>
+                        {% endif %}
+                      {% endfor %}
+                    {% endwith %}
+                    <span class="label label-success">{{ curr_item.profile.get_hours_week_display }} hr/wk</span>
+                    {% for work in curr_item.experience_set %}
+                      <span class="label label-danger">Worked at {{ work.company }}</span>
+                    {% endfor %}
+                    {% for item in curr_item.get_positions_display %}
+                      <span class="label label-warning">{{ item }}</span>
+                    {% endfor %}
+                  </div>
+                </div>
+              </a>
+
+            </div>
+
+          {% elif item_type == 'startup_document' %}
+
+            <div class="col col-md-4" style="height:400px;">
+
+              <a class="card-hover" href='/startups/{{ item_id }}'>
+                <div class="card">
+                  <div class="header-bg"
+                       style="height:100px; background-color:#25283D;"></div>
+                  <div>
+                    <div class="avatar"
+                         {% if curr_item.logo %}style="background-image: url('{{ curr_item.logo }}');"{% endif %}>
+                    </div>
+                  </div>
+                  <div class="content">
+                    <h2>{{ curr_item.startup_name }}</h2>
+                    <h4>{{ curr_item.get_stage_display }}
+                      • {{ curr_item.employee_count }}
+                      Employee{{ curr_item.employee_count|pluralize }}</h4>
+                    <hr>
+                    <script type="text/javascript">
+                      $(function () {
+                        $('.founderdescription').each(function (i) {
+                          len = $(this).text().length
+                          if (len > 300) {
+                            $(this).text($(this).text().substr(0, 200) + '...')
+                          }
+                        })
+                      })
+                    </script>
+                    <div class="founderdescription">
+                      <p>{{ curr_item.description }}<p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+
+            </div>
+
+          {% endif %}
+
+        {% empty %}
+
+          <div class="col col-md-12 text-center">
+            <h1><i class="fa fa-exclamation-circle" aria-hidden="true"></i>There were no results that matched
+              your search
+              query! Try another search.</h1>
+          </div>
+
+        {% endfor %}
+
+      </div>
+    </div>
+  {% endblock %}
 
 {% else %}
 
@@ -371,48 +380,48 @@
 
           {% if item_type == 'job_document' %}
 
-              <div class="col col-md-4 item">
+            <div class="col col-md-4 item">
 
-                <a class="card-hover" href='/startups/{{ curr_item.founder.id }}'>
-                  <div class="card job-card">
-                    <div class="header-bg" style="height:100px; background-color:#25283D;">
-                      <h2>{{ curr_item.founder.startup_name }}</h2>
-                      <div class="avatar"
-                           {% if curr_item.founder.logo %}style="background-image: url('{{ curr_item.founder.logo }}');"{% endif %}>
-                      </div>
-                    </div>
-                    <div class="offer-content">
-                      <div class="info">
-                        <h3>{{ item.title }}</h3>
-                        <div class="pcomp">
-                          <div class="mdata">
-                            <span
-                                class="font-weight-bold">Job position:&nbsp;</span><span>{{ curr_item.get_level_display }}</span>
-                          </div>
-                          <div class="mdata">
-                            <span
-                                class="font-weight-bold">Compensation type:&nbsp;</span><span>{{ curr_item.get_pay_display }}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <script type="text/javascript">
-                        $(function() {
-                          $('.description p').each(function(i) {
-                            var text = $(this).text().trim();
-                            len = text.length;
-                            if (len > 200) {
-                              $(this).text(text.substr(0, 200) + '...');
-                            }
-                          });
-                        });
-                      </script>
-                      <div class="description">
-                        <p>{{ curr_item.description }}</p>
-                      </div>
+              <a class="card-hover" href='/startups/{{ curr_item.founder.id }}'>
+                <div class="card job-card">
+                  <div class="header-bg" style="height:100px; background-color:#25283D;">
+                    <h2>{{ curr_item.founder.startup_name }}</h2>
+                    <div class="avatar"
+                         {% if curr_item.founder.logo %}style="background-image: url('{{ curr_item.founder.logo }}');"{% endif %}>
                     </div>
                   </div>
-                </a>
-              </div>
+                  <div class="offer-content">
+                    <div class="info">
+                      <h3>{{ curr_item.title }}</h3>
+                      <div class="pcomp">
+                        <div class="mdata">
+                            <span
+                                class="font-weight-bold">Job position:&nbsp;</span><span>{{ curr_item.get_level_display }}</span>
+                        </div>
+                        <div class="mdata">
+                            <span
+                                class="font-weight-bold">Compensation type:&nbsp;</span><span>{{ curr_item.get_pay_display }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <script type="text/javascript">
+                      $(function () {
+                        $('.description p').each(function (i) {
+                          var text = $(this).text().trim()
+                          len = text.length
+                          if (len > 200) {
+                            $(this).text(text.substr(0, 200) + '...')
+                          }
+                        })
+                      })
+                    </script>
+                    <div class="description">
+                      <p>{{ curr_item.description }}</p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
 
           {% elif item_type == 'people_document' %}
 
@@ -428,7 +437,7 @@
                   </div>
                   <div class="content">
                     <h2>{{ curr_item.user.first_name }} {{ curr_item.user.last_name }}</h2>
-                    <h3 style="margin-top:0">{{ curr_item.year_display }}</h3>
+                    <h3 style="margin-top:0">{{ curr_item.get_year_display }}</h3>
                     {% if curr_item.has_startup_exp %}
                       <span class="label label-default">Has startup experience</span>
                     {% endif %}
@@ -479,14 +488,14 @@
                       Employee{{ curr_item.employee_count|pluralize }}</h4>
                     <hr>
                     <script type="text/javascript">
-                      $(function() {
-                        $('.founderdescription').each(function(i) {
-                          len = $(this).text().length;
+                      $(function () {
+                        $('.founderdescription').each(function (i) {
+                          len = $(this).text().length
                           if (len > 300) {
-                            $(this).text($(this).text().substr(0, 200) + '...');
+                            $(this).text($(this).text().substr(0, 200) + '...')
                           }
-                        });
-                      });
+                        })
+                      })
                     </script>
                     <div class="founderdescription">
                       <p>{{ curr_item.description }}<p>
@@ -593,7 +602,7 @@
     <script type="text/html" id="search_job_template">
       <% var item = data._source %>
       <div class="col col-md-4 item">
-        <a class="card-hover" href='/startups/<%= data._id %>'>
+        <a class="card-hover" href='/startups/<%= item.founder.id %>'>
           <div class="card job-card">
             <div class="header-bg" style="height:100px; background-color:#25283D;">
               <h2><%= item.founder.startup_name %></h2>
@@ -607,7 +616,8 @@
                     <span class="font-weight-bold">Job position:&nbsp;</span><span><%= item.get_level_display %></span>
                   </div>
                   <div class="mdata">
-                    <span class="font-weight-bold">Compensation type:&nbsp;</span><span><%= item.get_pay_display %></span>
+                    <span
+                        class="font-weight-bold">Compensation type:&nbsp;</span><span><%= item.get_pay_display %></span>
                   </div>
                 </div>
               </div>

@@ -126,7 +126,14 @@ $(function () {
     var expires = 'expires=' + d.toUTCString()
     document.cookie = 'select-category=None;' +
       expires + ';path=/'
-    history.pushState({filter: $('#mainform').serializeArray()}, 'search')
+    var search_state = {
+      filter: $('#mainform').serializeArray(),
+      tags_people: $('#tags_people').html(),
+      tags_startups: $('#tags_startups').html(),
+      tags_jobs: $('#tags_jobs').html(),
+    }
+
+    history.pushState({search_state: search_state}, 'search');
 
     // clear previous data
     currentPage = 0
@@ -152,17 +159,23 @@ $(function () {
 
   $(window).scroll(searchLazyLoad)
 
-  $.each(history.state.filter, function (key, item) {
-    if ($('select[name="' + item.name + '"]').size() > 0) {
-      $('select[name=' + item.name + '] option[value="'+ item.value +'"]').prop('selected', true);
-    } else {
-      if ($('[name="' + item.name + '"]').size() > 0) {
-        $('[name="' + item.name + '"]').val(item.value);
+  if (history.state !== null && history.state.hasOwnProperty('search_state')) {
+    var search_state = history.state.search_state;
+    $.each(search_state.filter, function (key, item) {
+      if ($('select[name="' + item.name + '"]').size() > 0) {
+        $('select[name=' + item.name + '] option[value="'+ item.value +'"]').prop('selected', true);
+      } else {
+        if ($('[name="' + item.name + '"]').size() > 0) {
+          $('[name="' + item.name + '"]').val(item.value);
+        }
       }
-    }
-  });
+    });
+    $('#tags_people').html(search_state.tags_people)
+    $('#tags_startups').html(search_state.tags_startups)
+    $('#tags_jobs').html(search_state.tags_jobs)
+  }
 
-  if (history.state.hasOwnProperty('filter')) {
+  if (history.state !== null && history.state.hasOwnProperty('search_state')) {
     $('#selector').niceSelect();
     $('.cd-search-nav.first select.filter').niceSelect();
   }
