@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django import forms
 from search.documents import PeopleDocument, StartupDocument, JobDocument
+import search.documents as s_docs
 from django.utils.decorators import method_decorator
 from django.views.decorators.vary import vary_on_headers
 from website.decorators import check_profiles
@@ -201,7 +202,7 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
 
         query = PeopleDocument.search().from_dict(query)
         # TODO: In some reason query index name is clears
-        query._index = 'people'
+        query._index = s_docs.people_index_name
         return query.execute()
 
     def startup_search(self):
@@ -259,7 +260,7 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
 
         query = StartupDocument.search().from_dict(query)
         # TODO: In some reason query index name is clears
-        query._index = 'startup'
+        query._index = s_docs.startup_index_name
         return query.execute()
 
     def job_search(self):
@@ -319,5 +320,5 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
 
         # TODO: In some reason query index name is clears
         query = JobDocument.search().from_dict(query)
-        query._index = 'job'
+        query._index = s_docs.job_index_name
         return query.execute()
