@@ -172,14 +172,6 @@
     <nav class="cd-secondary-nav">
       <form id="mainform" action="/search/" autocomplete="off" method="POST">
         {% csrf_token %}
-        <input type="hidden" value="{% if people_hidden %}{{ people_hidden }}{% endif %}"
-               name="filter_people"
-               id="filter_people">
-        <input type="hidden" value="{% if jobs_hidden %}{{ jobs_hidden }}{% endif %}" name="filter_jobs"
-               id="filter_jobs">
-        <input type="hidden" value="{% if startups_hidden %}{{ startups_hidden }}{% endif %}"
-               name="filter_startups"
-               id="filter_startups">
 
         <div id="search" class="cd-main-search is-visible">
           <div class="searchform">

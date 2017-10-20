@@ -75,8 +75,8 @@ class ProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProfileForm, self).__init__(*args, **kwargs)
         self.initial['alt_email'] = None
-        # if len(self.instance.image.name) > 0:
-        #     self.fields['image'].required = False
+        if self.instance.image and len(self.instance.image.name) > 0:
+            self.fields['image'].required = False
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
@@ -123,7 +123,7 @@ class FounderForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(FounderForm, self).__init__(*args, **kwargs)
         self.initial['alt_email'] = None
-        if len(self.instance.logo.name) > 0:
+        if self.instance.logo and len(self.instance.logo.name) > 0:
             self.fields['logo'].required = False
 
         self.helper = FormHelper(self)

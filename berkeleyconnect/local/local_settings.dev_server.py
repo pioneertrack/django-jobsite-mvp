@@ -80,3 +80,4 @@ ELASTICSEARCH_DSL={
     },
 }
 
+ELASTIC_PREFIX = 'dev'

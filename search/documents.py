@@ -4,22 +4,19 @@ from django.conf import settings
 from elasticsearch_dsl import analyzer, tokenizer
 
 # Profile search document
-if hasattr(settings, 'PRODUCTION') and settings.PRODUCTION:
-    people_index_name = 'people'
-else:
-    people_index_name = 'dev_people'
+people_index_name = 'people'
+if hasattr(settings, 'ELASTIC_PREFIX') and settings.ELASTIC_PREFIX:
+    people_index_name = settings.ELASTIC_PREFIX + '_' + people_index_name
 
 # Startup search document
-if hasattr(settings, 'PRODUCTION') and settings.PRODUCTION:
-    startup_index_name = 'startup'
-else:
-    startup_index_name = 'dev_startup'
+startup_index_name = 'startup'
+if hasattr(settings, 'ELASTIC_PREFIX') and settings.ELASTIC_PREFIX:
+    startup_index_name = settings.ELASTIC_PREFIX + '_' + startup_index_name
 
 # Job search document
-if hasattr(settings, 'PRODUCTION') and settings.PRODUCTION:
-    job_index_name = 'job'
-else:
-    job_index_name = 'dev_job'
+job_index_name = 'job'
+if hasattr(settings, 'ELASTIC_PREFIX') and settings.ELASTIC_PREFIX:
+    job_index_name = settings.ELASTIC_PREFIX + '_' + job_index_name
 
 people = Index(people_index_name)
 people.settings(

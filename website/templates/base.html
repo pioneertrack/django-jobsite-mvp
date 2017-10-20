@@ -84,7 +84,7 @@
       {% if user.is_authenticated and not user.first_login and search_enabled %}
         <nav class="cd-secondary-nav">
 
-          <form id="mainform" action="/old_search/" autocomplete="off" method="POST">
+          <form id="mainform" action="/search/" autocomplete="off" method="POST">
             {% csrf_token %}
 
             <div id="search" class="cd-main-search is-visible">
@@ -456,6 +456,7 @@
     <script src="{% static 'slidebars-fork/dist/slidebars.min.js' %}"></script>
     <script src="{% static 'detect_swipe/jquery.detect_swipe.js' %}"></script>
     <script src="{% static 'js/mobile.js' %}"></script>
+    <script src="{% static 'js/search.js' %}"></script>
   {% else %}
     <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
     <script src="{% static 'js/responsive.js' %}"></script>

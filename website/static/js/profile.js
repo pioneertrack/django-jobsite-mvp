@@ -105,7 +105,7 @@ $(function() {
   }
 
   // Replace the validation UI for all forms
-  var forms = document.querySelectorAll( "form" );
+  var forms = document.querySelectorAll( "form#profileform" );
   for ( var i = 0; i < forms.length; i++ ) {
       replaceValidationUI( forms[ i ] );
   }

@@ -6,6 +6,7 @@ from search.documents import PeopleDocument, StartupDocument, JobDocument
 from django.utils.decorators import method_decorator
 from django.views.decorators.vary import vary_on_headers
 from website.decorators import check_profiles
+from django.utils import timezone
 import website.profile as profile
 import json
 
@@ -41,6 +42,7 @@ class JSONResponseMixin(object):
     """
     A mixin that can be used to render a JSON response.
     """
+
     def render_to_json_response(self, context, **response_kwargs):
         """
         Returns a JSON response, transforming 'context' to make the payload.
@@ -81,8 +83,8 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
             res = self.startup_search()
         elif self.category == 'jobs':
             res = self.job_search()
-        context.update({'items': res.hits.hits, 'search_category': self.category })
-        if self.request.method == 'GET' and not self.request.is_ajax():
+        context.update({'items': res.hits.hits, 'search_category': self.category})
+        if self.request.method == 'GET' and not self.request.is_ajax() or self.request.method == 'POST' and not self.request.is_ajax():
             context.update(JOB_CONTEXT)
 
         return context
@@ -91,11 +93,15 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
     @method_decorator(vary_on_headers('User-Agent', 'X-Session-Header'))
     def get(self, request, *args, **kwargs):
         self.page = int(kwargs.get('page', 0))
-        post_data = request.session.get('post_search_data') if request.is_ajax() else None
-        self.category = request.COOKIES.get('select-category') if request.COOKIES.get('select-category') else 'people'
-        if post_data is None and self.category not in ['people', 'startups', 'jobs']:
+        self.category = None
+        # Check for cookie from get request get category from it if exists
+        if not request.COOKIES.get('select-category') is None:
+            self.category = request.COOKIES.get('select-category')
+            if not request.session.get('post_search_data') is None:
+                del request.session['post_search_data']
+        # If not it's a get request after initiating search from previous post request
+        elif not request.session.get('post_search_data') is None:
             post_data = request.session.get('post_search_data')
-        if post_data:
             self.post_data = json.loads(post_data)
             self.category = self.post_data['select-category'][0]
 
@@ -107,8 +113,12 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
         request.session['post_search_data'] = post_data
         self.post_data = json.loads(post_data)
         self.category = self.post_data['select-category'][0]
+        response = self.render_to_response(self.get_context_data())
+        # Remove category cookie if exist
+        if not request.COOKIES.get('select-category') is None:
+            response.set_cookie('select-category', expires=timezone.now() - timezone.timedelta(days=365))
 
-        return self.render_to_response(self.get_context_data())
+        return response
 
     def people_search(self):
         query_string = self.post_data['query'][0] if self.post_data else ''
