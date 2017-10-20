@@ -7,9 +7,12 @@ from django.contrib.auth.models import Group
 
 from website.models import MyUser
 from website.forms import NewRegistrationForm
-from website.profile import Profile, Experience, Founder, Funding, Job, Connection
+from website.profile import Profile, Experience
+from website.profile import Founder, Funding, Job
+from website.profile import Connection
 
-from website.profile import STAGE, LEVELS, CATEGORY, PRIMARY_ROLE, MAJORS, YEAR_IN_SCHOOL_CHOICES, FUNDING_ROUNDS, POSITION, HOURS_AVAILABLE
+from website.profile import STAGE, LEVELS, CATEGORY, PRIMARY_ROLE, MAJORS, YEAR_IN_SCHOOL_CHOICES, FUNDING_ROUNDS, \
+    POSITION, HOURS_AVAILABLE
 
 
 # Classes for My Users (All users)
@@ -27,17 +30,19 @@ class FounderInline(admin.StackedInline):
     fk_name = 'user'
 
 
+# class UserResource(resources.ModelResource):
+
 class MyUserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
     # add_form = NewRegistrationForm
     inlines = (ProfileInline, FounderInline)
-    list_select_related = ('profile', )
+    list_select_related = ('profile',)
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     list_display = ('email', 'first_name', 'last_name', 'is_individual', 'is_founder', 'is_active', 'is_admin',
-                    'is_account_disabled', 'get_year')
-    list_filter = ('is_admin','is_active', 'is_founder',)
+                    'is_account_disabled', 'get_year', 'registered_at', 'last_login', 'get_profile_is_filled', 'get_founder_is_filled')
+    list_filter = ('is_admin','is_active', 'is_founder', 'registered_at')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name')}),
@@ -48,8 +53,9 @@ class MyUserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('first_name', 'last_name', 'email', 'is_founder', 'password1', 'password2', 'is_admin', 'is_active')}
-        ),
+            'fields': (
+            'first_name', 'last_name', 'email', 'is_founder', 'password1', 'password2', 'is_admin', 'is_active')}
+         ),
     )
     search_fields = ('email',)
     ordering = ('email',)
@@ -59,6 +65,7 @@ class MyUserAdmin(BaseUserAdmin):
         if obj.is_individual and hasattr(obj, 'profile'):
             return obj.profile.is_filled
         return None
+
     get_profile_is_filled.short_description = _('Pr is filled')
     get_profile_is_filled.boolean = True
 
@@ -66,6 +73,7 @@ class MyUserAdmin(BaseUserAdmin):
         if obj.is_founder and hasattr(obj, 'founder'):
             return obj.founder.is_filled
         return None
+
     get_founder_is_filled.short_description = _('St is filled')
     get_founder_is_filled.boolean = True
 
@@ -76,6 +84,7 @@ class MyUserAdmin(BaseUserAdmin):
 
     def get_year(self, instance):
         return instance.profile.year
+
     get_year.short_description = 'Year'
 
 
@@ -86,20 +95,30 @@ class FundingInline(admin.TabularInline):
 
 
 class FounderResource(resources.ModelResource):
-    seed     = fields.Field(widget=widgets.ForeignKeyWidget(Funding), column_name='Seed')
+    seed = fields.Field(widget=widgets.ForeignKeyWidget(Funding), column_name='Seed')
     series_a = fields.Field(widget=widgets.ForeignKeyWidget(Funding), column_name='Series A')
     series_b = fields.Field(widget=widgets.ForeignKeyWidget(Funding), column_name='Series B')
     series_c = fields.Field(widget=widgets.ForeignKeyWidget(Funding), column_name='Series C')
+
     class Meta:
         model = Founder
 
-        fields = ('user', 'seed', 'series_a', 'series_b', 'series_c', 'field',
-                 'user__first_name', 'user__last_name', 'startup_name', 'facebook',
-                 'description', 'stage', 'employee_count', 'website')
+        fields = ('user__email', 'seed', 'series_a', 'series_b', 'series_c', 'field',
+                  'user__first_name', 'user__last_name', 'user__last_login', 'user__registered_at', 'startup_name',
+                  'facebook', 'description', 'stage', 'employee_count', 'website')
 
-        export_order = ('user', 'user__first_name', 'user__last_name',
+        export_order = ('user__email', 'user__first_name', 'user__last_name', 'user__registered_at', 'user__last_login',
                         'startup_name', 'stage', 'field', 'description', 'employee_count',
                         'website', 'facebook', 'seed', 'series_a', 'series_b', 'series_c')
+
+    def dehydrate_user_last_login(self, founder):
+        return founder.user.last_login
+
+    def dehydrate_user_registered_at(self, founder):
+        return founder.user.registered_at
+
+    def dehydrate_user_email(self, founder):
+        return founder.user.email
 
     def dehydrate_user(self, founder):
         return founder.user
@@ -110,18 +129,21 @@ class FounderResource(resources.ModelResource):
             if int(f.stage) == 0:
                 return f.raised
         return 0
+
     def dehydrate_series_a(self, obj):
         fundings = Funding.objects.filter(founder=obj.id)
         for f in fundings:
             if int(f.stage) == 1:
                 return f.raised
         return 0
+
     def dehydrate_series_b(self, obj):
         fundings = Funding.objects.filter(founder=obj.id)
         for f in fundings:
             if int(f.stage) == 2:
                 return f.raised
         return 0
+
     def dehydrate_series_c(self, obj):
         fundings = Funding.objects.filter(founder=obj.id)
         for f in fundings:
@@ -134,17 +156,24 @@ class FounderResource(resources.ModelResource):
 
     def dehydrate_field(self, founder):
         cat_dict = dict(CATEGORY)
-        return cat_dict.get(founder.field,'')
+        return cat_dict.get(founder.field, '')
 
     def get_export_headers(self):
         headers = []
-        model_fields = self.Meta.model._meta.get_fields() + ProfileInline.model._meta.get_fields()
+        model_fields = self.Meta.model._meta.get_fields()
+        # + ProfileInline.model._meta.get_fields()
         for field in self.get_fields():
             header = ''
             if field.column_name == 'user__last_name':
                 header = 'Last Name'
             elif field.column_name == 'user__first_name':
                 header = 'First Name'
+            elif field.column_name == 'user__last_login':
+                header = 'Last Login'
+            elif field.column_name == 'user__registered_at':
+                header = 'Registered At'
+            elif field.column_name == 'user__email':
+                header = 'User'
             else:
                 header = next((x.verbose_name for x in model_fields if x.name == field.column_name), field.column_name)
             headers.append(header)
@@ -152,12 +181,12 @@ class FounderResource(resources.ModelResource):
 
 
 class FounderAdmin(ImportExportModelAdmin):
-    list_display = ('user','startup_name','stage','field','employee_count', 'get_is_filled')
-    list_filter = ('stage','field','is_filled')
+    list_display = ('user', 'startup_name', 'stage', 'field', 'employee_count', 'get_is_filled')
+    list_filter = ('stage', 'field', 'is_filled')
     fieldsets = (
-        (None,         {'fields': ['user','startup_name','logo','display_funding', 'is_filled']}),
-        ('Basic Info', {'fields': ['description','stage','employee_count','field']}),
-        ('Contact',    {'fields': ['website','facebook']})
+        (None, {'fields': ['user', 'startup_name', 'logo', 'display_funding', 'is_filled']}),
+        ('Basic Info', {'fields': ['description', 'stage', 'employee_count', 'field']}),
+        ('Contact', {'fields': ['website', 'facebook']})
     )
     ordering = ('user__email',)
     search_fields = ('user__email',)
@@ -167,9 +196,11 @@ class FounderAdmin(ImportExportModelAdmin):
 
     def get_is_filled(self, obj):
         return obj.is_filled
+
     get_is_filled.short_description = _('is filled')
     get_is_filled.admin_order_field = 'is_filled'
     get_is_filled.boolean = True
+
 
 # Classes for positions
 class JobResource(resources.ModelResource):
@@ -178,17 +209,17 @@ class JobResource(resources.ModelResource):
 
         fields = ('founder', 'founder__startup_name', 'title', 'pay', 'description', 'level')
 
-        export_order = ('founder__startup_name','title','pay','level','description')
+        export_order = ('founder__startup_name', 'title', 'pay', 'level', 'description')
 
     def dehydrate_founder(self, position):
-        return position.founder.user
+        return position.founder.user.email
 
     def dehydrate_pay(self, position):
-        return POSITION[int(position.pay)][1]
+        return position.get_pay_display()
 
     def dehydrate_level(self, position):
         lev_dict = dict(LEVELS)
-        return lev_dict.get(position.level,'')
+        return lev_dict.get(position.level, '')
 
     def get_export_headers(self):
         headers = []
@@ -206,8 +237,8 @@ class JobResource(resources.ModelResource):
 
 
 class JobAdmin(ImportExportModelAdmin):
-    list_display = ('founder','title','pay','level')
-    list_filter = ('pay','level')
+    list_display = ('founder', 'title', 'pay', 'level')
+    list_filter = ('pay', 'level')
 
     ordering = ('founder',)
 
@@ -243,29 +274,26 @@ class ProfileResource(resources.ModelResource):
         fields = ('user', 'user__first_name', 'user__last_name', 'bio',
                   'interests', 'skills', 'courses', 'year', 'hours_week',
                   'has_startup_exp', 'has_funding_exp', 'linkedin', 'website',
-                  'github', 'major', 'role')
+                  'github', 'major', 'role', 'user__registered_at', 'user__last_login')
 
-        export_order = ('user', 'user__first_name', 'user__last_name')
+        export_order = ('user', 'user__first_name', 'user__last_name', 'user__registered_at', 'user__last_login')
 
-    def dehydrate_position(self, profile):
-        if profile.position:
-            return POSITION[int(profile.position)][1]
+    def dehydrate_positions(self, profile):
+        if profile.positions:
+            return profile.get_positions_display()
         return ''
 
     def dehydrate_hours_week(self, profile):
-        return HOURS_AVAILABLE[int(profile.hours_week)][1]
+        return profile.get_hours_week_display()
 
     def dehydrate_year(self, profile):
-        year_dict = dict(YEAR_IN_SCHOOL_CHOICES)
-        return year_dict.get(profile.year,'')
+        return profile.get_year_display()
 
     def dehydrate_major(self, profile):
-        major_dict = dict(MAJORS)
-        return major_dict.get(profile.major,'')
+        return profile.get_major_display()
 
     def dehydrate_role(self, profile):
-        role_dict = dict(PRIMARY_ROLE)
-        return role_dict.get(profile.role,'')
+        return profile.get_role_display()
 
     def dehydrate_has_startup_exp(self, profile):
         if profile.has_startup_exp:
@@ -289,6 +317,10 @@ class ProfileResource(resources.ModelResource):
                 header = 'Last Name'
             elif field.column_name == 'user__first_name':
                 header = 'First Name'
+            elif field.column_name == 'user__last_login':
+                header = 'Last Login'
+            elif field.column_name == 'user__registered_at':
+                header = 'Registered At'
             else:
                 header = next((x.verbose_name for x in model_fields if x.name == field.column_name), field.column_name)
             headers.append(header)
@@ -297,13 +329,13 @@ class ProfileResource(resources.ModelResource):
 
 class ProfileAdmin(ImportExportModelAdmin):
     list_display = ('user', 'major', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'get_is_filled')
-    list_filter = ('major','year','has_startup_exp','has_funding_exp', 'is_filled')
+    list_filter = ('major', 'year', 'has_startup_exp', 'has_funding_exp', 'is_filled')
     fieldsets = (
-        (None,         {'fields': ['user','bio','interests', 'is_filled']}),
-        ('School',     {'fields': ['year', 'role', 'major', 'courses']}),
-        ('Work',       {'fields': ['hours_week','position', 'positions']}),
-        ('Experience', {'fields': ['has_startup_exp','has_funding_exp','skills']}),
-        ('Contact',    {'fields': ['linkedin','website','github']})
+        (None, {'fields': ['user', 'bio', 'interests', 'is_filled']}),
+        ('School', {'fields': ['year', 'role', 'major', 'courses']}),
+        ('Work', {'fields': ['hours_week', 'positions']}),
+        ('Experience', {'fields': ['has_startup_exp', 'has_funding_exp', 'skills']}),
+        ('Contact', {'fields': ['linkedin', 'website', 'github']})
     )
     ordering = ('user__email',)
     search_fields = ('user__email',)
@@ -313,6 +345,7 @@ class ProfileAdmin(ImportExportModelAdmin):
 
     def get_is_filled(self, obj):
         return obj.is_filled
+
     get_is_filled.short_description = _('is filled')
     get_is_filled.admin_order_field = 'is_filled'
     get_is_filled.boolean = True
