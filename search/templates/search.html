@@ -1,0 +1,644 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load search_tags %}
+{% load website_tags %}
+{% block title %}
+  {% trans "Home" %}
+{% endblock %}
+
+{% if is_mobile %}
+
+  {% block mobile_content %}
+    <div class='container' style="padding-top: 30px; padding-bottom:30px;">
+      <div class='row'>
+        {% for item in items %}
+
+          {% get item "_type" as item_type %}
+          {% get item "_source" as curr_item %}
+          {% get item "_id" as item_id %}
+
+          {% if item_type == 'job_document' %}
+
+            <div class="col col-md-4 item">
+
+              <a class="card-hover" href='/startups/{{ curr_item.founder.id }}'>
+                <div class="card job-card">
+                  <div class="header-bg" style="height:100px; background-color:#25283D;">
+                    <h2>{{ curr_item.founder.startup_name }}</h2>
+                    <div class="avatar"
+                         {% if curr_item.founder.logo %}style="background-image: url('{{ curr_item.founder.logo }}');"{% endif %}>
+                    </div>
+                  </div>
+                  <div class="offer-content">
+                    <div class="info">
+                      <h3>{{ curr_item.title }}</h3>
+                      <div class="pcomp">
+                        <div class="mdata">
+                              <span
+                                  class="font-weight-bold">Job position:&nbsp;</span><span>{{ curr_item.get_level_display }}</span>
+                        </div>
+                        <div class="mdata">
+                              <span
+                                  class="font-weight-bold">Compensation type:&nbsp;</span><span>{{ curr_item.get_pay_display }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <script type="text/javascript">
+                      $(function () {
+                        $('.description p').each(function (i) {
+                          var text = $(this).text().trim()
+                          len = text.length
+                          if (len > 200) {
+                            $(this).text(text.substr(0, 200) + '...')
+                          }
+                        })
+                      })
+                    </script>
+                    <div class="description">
+                      <p>{{ curr_item.description }}</p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+
+            </div>
+
+          {% elif item_type == 'people_document' %}
+
+            <div class="col col-md-4" style="height:400px;">
+
+              <a class="card-hover" href='/profiles/{{ item_id }}'>
+                <div class="card">
+                  <div class="header-bg"
+                       style="height:100px; background-color:#25283D;"></div>
+                  <div>
+                    <div class="avatar"
+                         {% if  curr_item.image %}style="background-image: url('{{ curr_item.image }}');"{% endif %}>
+                    </div>
+                  </div>
+                  <div class="content">
+                    <h2>{{ curr_item.user.first_name }} {{ curr_item.user.last_name }}</h2>
+                    <h3 style="margin-top:0">{{ curr_item.get_year_display }}</h3>
+                    {% if curr_item.has_startup_exp %}
+                      <span class="label label-default">Has startup experience</span>
+                    {% endif %}
+                    {% if curr_item.has_funding_exp %}
+                      <span class="label label-default">Has funding experience</span>
+                    {% endif %}
+                    <span class="label label-primary">{{ curr_item.get_year_display }}</span>
+                    {% if curr_item.major.strip != "" %}
+                      <span class="label label-primary">{{ curr_item.get_major_display }}</span>
+                    {% endif %}
+                    <span class="label label-info">{{ curr_item.get_role_display }}</span>
+                    {% with  curr_item.skills|split:"," as skills %}
+                      {% for skill in skills|slice:":5" %}
+                        {% if skill.strip != "" %}
+                          <span class="label label-info">{{ skill }}</span>
+                        {% endif %}
+                      {% endfor %}
+                    {% endwith %}
+                    <span class="label label-success">{{ curr_item.profile.get_hours_week_display }} hr/wk</span>
+                    {% for work in curr_item.experience_set %}
+                      <span class="label label-danger">Worked at {{ work.company }}</span>
+                    {% endfor %}
+                    {% for item in curr_item.get_positions_display %}
+                      <span class="label label-warning">{{ item }}</span>
+                    {% endfor %}
+                  </div>
+                </div>
+              </a>
+
+            </div>
+
+          {% elif item_type == 'startup_document' %}
+
+            <div class="col col-md-4" style="height:400px;">
+
+              <a class="card-hover" href='/startups/{{ item_id }}'>
+                <div class="card">
+                  <div class="header-bg"
+                       style="height:100px; background-color:#25283D;"></div>
+                  <div>
+                    <div class="avatar"
+                         {% if curr_item.logo %}style="background-image: url('{{ curr_item.logo }}');"{% endif %}>
+                    </div>
+                  </div>
+                  <div class="content">
+                    <h2>{{ curr_item.startup_name }}</h2>
+                    <h4>{{ curr_item.get_stage_display }}
+                      • {{ curr_item.employee_count }}
+                      Employee{{ curr_item.employee_count|pluralize }}</h4>
+                    <hr>
+                    <script type="text/javascript">
+                      $(function () {
+                        $('.founderdescription').each(function (i) {
+                          len = $(this).text().length
+                          if (len > 300) {
+                            $(this).text($(this).text().substr(0, 200) + '...')
+                          }
+                        })
+                      })
+                    </script>
+                    <div class="founderdescription">
+                      <p>{{ curr_item.description }}<p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+
+            </div>
+
+          {% endif %}
+
+        {% empty %}
+
+          <div class="col col-md-12 text-center">
+            <h1><i class="fa fa-exclamation-circle" aria-hidden="true"></i>There were no results that matched
+              your search
+              query! Try another search.</h1>
+          </div>
+
+        {% endfor %}
+
+      </div>
+    </div>
+  {% endblock %}
+
+{% else %}
+
+  {% block search_form %}
+
+    <nav class="cd-secondary-nav">
+      <form id="mainform" action="/search/" autocomplete="off" method="POST">
+        {% csrf_token %}
+
+        <div id="search" class="cd-main-search is-visible">
+          <div class="searchform">
+            <nav class="cd-secondary-nav cd-search-nav first">
+
+              <div class="selects people">
+                {% for item in p_context %}
+                  <div class="filter-container">
+                    <select class="filter small"
+                            form="mainform"
+                            name="{{ item.0 }}"
+                            multiple style="display: none;"
+                            data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                      <option class="text-capitalize" selected
+                              data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                          {% if item.0 in active_selects %}
+                              data-revert="Select All"
+                              data-text="Diselect All"
+                          {% else %}
+                              data-revert="Diselect All"
+                              data-text="Select All"
+                          {% endif %}
+                      >
+                      </option>
+                      {% for subitem in item.1 %}
+                        {% to_list item.0 subitem.0 subitem.1 item.2.class as tmp_list %}
+                        <option value="{{ subitem.0 }}"
+                                class="text-capitalize"
+                                {% if tmp_list in filter_people %}selected{% endif %}
+                        >{{ subitem.1 }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                {% endfor %}
+              </div>
+
+              <div class="selects jobs">
+                {% for item in job_context %}
+                  <div class="filter-container">
+                    <select class="filter small"
+                            form="mainform"
+                            name="{{ item.0 }}"
+                            multiple style="display: none;"
+                            data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                      <option class="text-capitalize" selected
+                              data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                          {% if item.0 in active_selects %}
+                              data-revert="Select All"
+                              data-text="Diselect All"
+                          {% else %}
+                              data-revert="Diselect All"
+                              data-text="Select All"
+                          {% endif %}
+                      >
+                      </option>
+                      {% for subitem in item.1 %}
+                        {% to_list item.0 subitem.0 subitem.1 item.2.class as tmp_list %}
+                        <option value="{{ subitem.0 }}"
+                                class="text-capitalize"
+                                {% if tmp_list in filter_jobs %}selected{% endif %}
+                        >{{ subitem.1 }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                {% endfor %}
+              </div>
+
+              <div class="selects startups">
+                {% for item in f_context %}
+                  <div class="filter-container">
+                    <select class="filter small" form="mainform" name="{{ item.0 }}"
+                            multiple style="display: none;"
+                            data-class="{% if item.2.class %}{{ item.2.class }}{% else %}label-info{% endif %}">
+                      <option class="text-capitalize" selected
+                              data-display="{% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}"
+                          {% if item.0 in active_selects %}
+                              data-revert="Select All"
+                              data-text="Diselect All"
+                          {% else %}
+                              data-revert="Diselect All"
+                              data-text="Select All"
+                          {% endif %}
+                      >
+                      </option>
+                      {% for subitem in item.1 %}
+                        {% to_list item.0 subitem.0 subitem.1 item.2.class as tmp_list %}
+                        <option value="{{ subitem.0 }}"
+                                class="text-capitalize"
+                                {% if tmp_list in filter_startups %}selected{% endif %}
+                        >{{ subitem.1 }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                {% endfor %}
+              </div>
+
+            </nav> <!-- .cd-secondary-nav -->
+
+            <input type="search" name="query" placeholder="Search by name or keywords...">
+
+            <div class="cd-select filter-container">
+              <select id="selector" name="select-category" class="filter small no-overflow">
+                <option value="people"
+                        {% if not founder and not search_category %}selected{% elif search_category == 'people' %}
+                        selected{% endif %}>
+                  People
+                </option>
+                <option value="startups"
+                        {% if founder and not search_category %}selected{% elif search_category == 'startups' %}
+                        selected{% endif %}>Startups
+                </option>
+                <option value="jobs" {% if search_category == 'jobs' %}selected{% endif %}>
+                  Jobs
+                </option>
+              </select>
+            </div>
+
+            <div class="cd-search-button">
+              {% if is_mobile %}
+                <button id="menubutton" type="button" class="btn btn-success toggle-id-1">
+                  <i class="fa fa-search"></i>
+                </button>
+              {% else %}
+                <button id="searchbutton" type="submit" class="btn btn-success">
+                  GO
+                </button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </form>
+    </nav> <!-- .cd-secondary-nav -->
+
+    <nav class="cd-secondary-nav cd-search-nav tags">
+      <div class="container">
+
+        <div class="tags startups {% if filter_startups %}selected{% endif %}">
+          <div id="tags_startups" class="filter-container">
+            {% if search_category == 'startups' %}
+              {% if filter_startups %}
+                <span class="tag label label-clear">Clear All</span>
+              {% endif %}
+              {% for item in filter_startups %}
+                <span class="tag label {{ item.3 }}" data-value="{{ item.1 }}"
+                      data-name="{{ item.0 }}">{{ item.2 }}<span
+                    data-role="remove"></span></span>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="tags people {% if filter_people %}selected{% endif %}">
+          <div id="tags_people" class="filter-container">
+            {% if search_category == 'people' %}
+              {% if filter_people %}
+                <span class="tag label label-clear">Clear All</span>
+              {% endif %}
+              {% for item in filter_people %}
+                <span class="tag label {{ item.3 }}" data-value="{{ item.1 }}"
+                      data-name="{{ item.0 }}">{{ item.2 }}<span
+                    data-role="remove"></span></span>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="tags jobs {% if filter_jobs %}selected{% endif %}">
+          <div id="tags_jobs" class="filter-container">
+            {% if search_category == 'jobs' %}
+              {% if filter_jobs %}
+                <span class="tag label label-clear">Clear All</span>
+              {% endif %}
+              {% for item in filter_jobs %}
+                <span class="tag label {{ item.3 }}" data-value="{{ item.1 }}"
+                      data-name="{{ item.0 }}">{{ item.2 }}<span
+                    data-role="remove"></span></span>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+
+      </div>
+    </nav> <!-- .cd-secondary-nav -->
+
+  {% endblock search_form %}
+
+  {% block content %}
+
+    <div class="messages"></div>
+
+    <div class='container' style="padding-top: 30px; padding-bottom:30px;">
+      <div class='row'>
+        {% for item in items %}
+
+          {% get item "_type" as item_type %}
+          {% get item "_source" as curr_item %}
+          {% get item "_id" as item_id %}
+
+          {% if item_type == 'job_document' %}
+
+            <div class="col col-md-4 item">
+
+              <a class="card-hover" href='/startups/{{ curr_item.founder.id }}'>
+                <div class="card job-card">
+                  <div class="header-bg" style="height:100px; background-color:#25283D;">
+                    <h2>{{ curr_item.founder.startup_name }}</h2>
+                    <div class="avatar"
+                         {% if curr_item.founder.logo %}style="background-image: url('{{ curr_item.founder.logo }}');"{% endif %}>
+                    </div>
+                  </div>
+                  <div class="offer-content">
+                    <div class="info">
+                      <h3>{{ curr_item.title }}</h3>
+                      <div class="pcomp">
+                        <div class="mdata">
+                            <span
+                                class="font-weight-bold">Job position:&nbsp;</span><span>{{ curr_item.get_level_display }}</span>
+                        </div>
+                        <div class="mdata">
+                            <span
+                                class="font-weight-bold">Compensation type:&nbsp;</span><span>{{ curr_item.get_pay_display }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <script type="text/javascript">
+                      $(function () {
+                        $('.description p').each(function (i) {
+                          var text = $(this).text().trim()
+                          len = text.length
+                          if (len > 200) {
+                            $(this).text(text.substr(0, 200) + '...')
+                          }
+                        })
+                      })
+                    </script>
+                    <div class="description">
+                      <p>{{ curr_item.description }}</p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+          {% elif item_type == 'people_document' %}
+
+            <div class="col col-md-4" style="height:400px;">
+              <a class="card-hover" href='/profiles/{{ item_id }}'>
+                <div class="card">
+                  <div class="header-bg"
+                       style="height:100px; background-color:#25283D;"></div>
+                  <div>
+                    <div class="avatar"
+                         {% if  curr_item.image %}style="background-image: url('{{ curr_item.image }}');"{% endif %}>
+                    </div>
+                  </div>
+                  <div class="content">
+                    <h2>{{ curr_item.user.first_name }} {{ curr_item.user.last_name }}</h2>
+                    <h3 style="margin-top:0">{{ curr_item.get_year_display }}</h3>
+                    {% if curr_item.has_startup_exp %}
+                      <span class="label label-default">Has startup experience</span>
+                    {% endif %}
+                    {% if curr_item.has_funding_exp %}
+                      <span class="label label-default">Has funding experience</span>
+                    {% endif %}
+                    <span class="label label-primary">{{ curr_item.get_year_display }}</span>
+                    {% if curr_item.major.strip != "" %}
+                      <span class="label label-primary">{{ curr_item.get_major_display }}</span>
+                    {% endif %}
+                    <span class="label label-info">{{ curr_item.get_role_display }}</span>
+                    {% with  curr_item.skills|split:"," as skills %}
+                      {% for skill in skills|slice:":5" %}
+                        {% if skill.strip != "" %}
+                          <span class="label label-info">{{ skill }}</span>
+                        {% endif %}
+                      {% endfor %}
+                    {% endwith %}
+                    <span class="label label-success">{{ curr_item.get_hours_week_display }} hr/wk</span>
+                    {% for work in curr_item.experience_set %}
+                      <span class="label label-danger">Worked at {{ work.company }}</span>
+                    {% endfor %}
+                    {% for item in curr_item.get_positions_display %}
+                      <span class="label label-warning">{{ item }}</span>
+                    {% endfor %}
+                  </div>
+                </div>
+              </a>
+
+            </div>
+
+          {% elif item_type == 'startup_document' %}
+
+            <div class="col col-md-4" style="height:400px;">
+              <a class="card-hover" href='/startups/{{ item_id }}'>
+                <div class="card">
+                  <div class="header-bg"
+                       style="height:100px; background-color:#25283D;"></div>
+                  <div>
+                    <div class="avatar"
+                         {% if curr_item.logo %}style="background-image: url('{{ curr_item.logo }}');"{% endif %}>
+                    </div>
+                  </div>
+                  <div class="content">
+                    <h2>{{ curr_item.startup_name }}</h2>
+                    <h4>{{ curr_item.get_stage_display }}
+                      • {{ curr_item.employee_count }}
+                      Employee{{ curr_item.employee_count|pluralize }}</h4>
+                    <hr>
+                    <script type="text/javascript">
+                      $(function () {
+                        $('.founderdescription').each(function (i) {
+                          len = $(this).text().length
+                          if (len > 300) {
+                            $(this).text($(this).text().substr(0, 200) + '...')
+                          }
+                        })
+                      })
+                    </script>
+                    <div class="founderdescription">
+                      <p>{{ curr_item.description }}<p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+
+            </div>
+          {% endif %}
+
+        {% empty %}
+          <div class="col col-md-12 text-center">
+            <h1><i class="fa fa-exclamation-circle" aria-hidden="true"></i> There were no results that matched
+              your search
+              query! Try another search.</h1>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endblock %}
+
+{% endif %}
+
+{% block search_templates %}
+
+  {% block search_person_template %}
+    <script type="text/html" id="search_person_template">
+      <div class="col col-md-4" style="height:400px;">
+        <% var item = data._source %>
+        <a class="card-hover" href='/profiles/<%= data._id %>'>
+          <div class="card">
+            <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
+            <div>
+              <div class="avatar" style="background-image: url('<%= item.image %>');"></div>
+            </div>
+            <div class="content">
+              <h2><%= item.user.first_name %> <%= item.user.last_name %></h2>
+
+              <h3 style="margin-top:0"> <%= item.get_year_display %> </h3>
+
+              <% if (item.has_startup_exp) { %>
+              <span class="label label-default">Has startup experience</span>
+              <% } %>
+
+              <% if (item.has_founding_exp) { %>
+              <span class="label label-default">Has funding experience</span>
+              <% } %>
+
+              <span class="label label-primary"> <%= item.get_year_display %> </span>
+
+              <% if (item.major.length > 0) { %>
+              <span class="label label-primary"><%= item.get_major_display %></span>
+              <% } %>
+
+              <span class="label label-info"><%= item.get_role_display %></span>
+
+              <% if (item.skills.length > 0) { _.each(item.skills.split(',').slice(0,4), function (skill) {
+                if (skill.trim().length > 0) {
+              %>
+              <span class="label label-info"><%= skill %></span>
+              <% }})} %>
+
+              <span class="label label-success"><%= item.get_hours_week_display %> hr/wk</span>
+
+              <% if (item.experience_set.length > 0) { _.each(item.experience_set, function (experience) { %>
+              <span class="label label-danger">Worked at <%= experience.company %></span>
+              <% })} %>
+
+              <% _.each(item.get_positions_display, function (item) { %>
+              <span class="label label-warning"><%= item %></span>
+              <% }) %>
+            </div>
+          </div>
+        </a>
+      </div>
+    </script>
+  {% endblock search_person_template %}
+
+  {% block search_startup_template %}
+    <script type="text/html" id="search_startup_template">
+      <div class="col col-md-4" style="height:400px;">
+        <% var item = data._source %>
+        <a class="card-hover" href='/startups/<%= data._id %>'>
+          <div class="card">
+            <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
+            <div>
+              <div class="avatar" style="background-image: url('<%= item.logo %>');"></div>
+            </div>
+            <div class="content">
+              <h2><%= item.startup_name %></h2>
+              <h4><%= item.get_stage_display %> • <%= item.employee_count %> Employee</h4>
+              <hr>
+              <div class="founderdescription cut-text" data-cut="200">
+                <p><%= item.description %>
+                <p>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </script>
+  {% endblock search_startup_template %}
+
+  {% block search_job_template %}
+    <script type="text/html" id="search_job_template">
+      <% var item = data._source %>
+      <div class="col col-md-4 item">
+        <a class="card-hover" href='/startups/<%= item.founder.id %>'>
+          <div class="card job-card">
+            <div class="header-bg" style="height:100px; background-color:#25283D;">
+              <h2><%= item.founder.startup_name %></h2>
+              <div class="avatar" style="background-image: url('<%= item.founder.logo %>');"></div>
+            </div>
+            <div class="offer-content">
+              <div class="info">
+                <h3><%= item.title %></h3>
+                <div class="pcomp">
+                  <div class="mdata">
+                    <span class="font-weight-bold">Job position:&nbsp;</span><span><%= item.get_level_display %></span>
+                  </div>
+                  <div class="mdata">
+                    <span
+                        class="font-weight-bold">Compensation type:&nbsp;</span><span><%= item.get_pay_display %></span>
+                  </div>
+                </div>
+              </div>
+              <div class="description cut-text" data-cut="200">
+                <p><%= item.description %></p>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </script>
+  {% endblock search_job_template %}
+
+  <!-- curr_item.founder.logo.url -->
+
+  {% block empty_search_template %}
+    <script type="text/html" id="empty_search_template">
+      <div class="col col-md-12 text-center">
+        <h1><i class="fa fa-exclamation-circle" aria-hidden="true"></i> There were no results that matched your search
+          query! Try another search.</h1>
+      </div>
+    </script>
+  {% endblock empty_search_template %}
+
+{% endblock search_templates %}
+
+{% block js %}
+  {{ block.super }}
+  <script src="{% static 'js/search.js' %}"></script>
+{% endblock js %}

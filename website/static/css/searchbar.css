@@ -937,3 +937,6 @@
   line-height: 100%;
   margin: 0 auto;
 }
+.card .content .label {
+  display: inline-block;
+}

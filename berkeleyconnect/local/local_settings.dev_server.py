@@ -73,3 +73,11 @@ EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = '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'
 
 EMAIL_PORT = 587
+
+ELASTICSEARCH_DSL={
+    'default': {
+        'hosts': 'search-bearfounders-hudt5zn5xt6o2pyr2zz3o2ebqu.us-west-1.es.amazonaws.com'
+    },
+}
+
+ELASTIC_PREFIX = 'dev'

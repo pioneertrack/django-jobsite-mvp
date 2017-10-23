@@ -14,6 +14,8 @@ import os
 from django.contrib.messages import constants as message
 from django.urls import reverse_lazy
 
+PRODUCTION = True
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -33,13 +35,13 @@ ALLOWED_HOSTS = ['.bearfounders.com', '54.215.142.223']
 # Application definition
 
 INSTALLED_APPS = [
-    'website',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'nocaptcha_recaptcha',
     'crispy_forms',
     'storages',
@@ -47,7 +49,11 @@ INSTALLED_APPS = [
     'django_extensions',
     'imagekit',
     'mailer',
+    'django_elasticsearch_dsl',
+
     'landing',
+    'website',
+    'search',
 ]
 
 MIDDLEWARE = [
@@ -197,6 +203,10 @@ CACHES = {
         }
     }
 }
+
+
+# IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = 'website.profile.FixJustInTime'
+
 
 try:
   from .local_settings import *

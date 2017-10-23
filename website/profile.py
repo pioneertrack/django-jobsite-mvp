@@ -1,7 +1,5 @@
 from django.db import models
 from website import models as user
-from django.db.models.signals import post_save, pre_save
-from django.dispatch import receiver
 from django.utils import timezone
 from django.contrib.postgres.fields import ArrayField
 from django import forms
@@ -117,6 +115,21 @@ POSITIONS = (
 )
 
 
+class FixJustInTime:
+
+    def on_content_required(self, file):
+        try:
+            file.generate()
+        except:
+            pass
+
+    def on_existence_required(self, file):
+        try:
+            file.generate()
+        except:
+            pass
+
+
 class ChoiceArrayField(ArrayField):
     """
     A field that allows us to store an array of choices.
@@ -172,7 +185,7 @@ def company_logo_path(instance, filename):
 
 class Profile(models.Model):
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
-    image = CustomImageField(upload_to=user_directory_path)
+    image = CustomImageField(upload_to=user_directory_path, default=None)
     image_thumbnail = ImageSpecField(source='image',
                                      processors=[ResizeToFit(100, 100, False)],
                                      format='PNG',
@@ -203,6 +216,13 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.email
 
+    def get_positions_display(self):
+        choices = self._meta.get_field('positions').base_field.choices
+        display = []
+        for item in self.positions:
+            display.append(choices.__getitem__(int(item))[1])
+        return display
+
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if '5' in self.positions:
             self.positions = ['5']
@@ -210,7 +230,7 @@ class Profile(models.Model):
 
     def check_is_filled(self, save=True):
         if len(self.bio) > 1 and (len(self.skills) > 0 or self.experience_set.count() > 0) and (
-                len(self.image.name) > 0) and (self.positions != []) and (
+                not self.image is None) and (self.positions != []) and (
                 not self.role is '') and (
                 not self.year is ''):
             self.is_filled = True
@@ -218,6 +238,10 @@ class Profile(models.Model):
             self.is_filled = False
         if save:
             self.save()
+
+    def image_to_string(self):
+        if self.image:
+            return self.image_thumbnail.url
 
 
 class Experience(models.Model):
@@ -232,7 +256,7 @@ class Experience(models.Model):
 
 class Founder(models.Model):
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
-    logo = CustomImageField(upload_to=company_logo_path)
+    logo = CustomImageField(upload_to=company_logo_path, default=None)
     logo_thumbnail = ImageSpecField(source='logo',
                                     processors=[ResizeToFit(100, 100, False)],
                                     format='PNG',
@@ -257,13 +281,18 @@ class Founder(models.Model):
         return self.user.email
 
     def check_is_filled(self, save=True):
-        if len(self.description) > 1 and (len(self.logo.name) > 0) and (len(self.startup_name) > 0) and (
-        not self.stage is '') and (not self.employee_count is None) and (len(self.description) > 0) and (not self.field is ''):
+        if len(self.description) > 1 and (not self.logo is None) and (len(self.startup_name) > 0) and (
+            not self.stage is '') and (not self.employee_count is None) and (len(self.description) > 0) and (
+            not self.field is ''):
             self.is_filled = True
         else:
             self.is_filled = False
         if save:
             self.save()
+
+    def logo_to_string(self):
+        if self.logo:
+            return self.logo_thumbnail.url
 
 
 class Funding(models.Model):
@@ -290,23 +319,3 @@ class Connection(models.Model):
     receiver = models.ForeignKey(user.MyUser, verbose_name='Receiver', null=True, related_name='receiver')
     to_startup = models.BooleanField(verbose_name='Receiver is startup', default=False)
     message = models.TextField(verbose_name='Message', null=True)
-
-
-# @receiver(post_save, sender=user.MyUser)
-# def create_user_profile(sender, instance, created, **kwargs):
-#     if created and instance.is_individual:
-#         Profile.objects.create(user=instance)
-#     if created and instance.is_founder:
-#         Founder.objects.create(user=instance)
-
-
-# @receiver(post_save, sender=Profile)
-# def profile_first_login(sender, instance, created, **kwargs):
-#     if instance.user.first_login:
-#         instance.user.set_first_login()
-#
-#
-# @receiver(post_save, sender=Founder)
-# def founder_first_login(sender, instance, created, **kwargs):
-#     if instance.user.first_login:
-#         instance.user.set_first_login()

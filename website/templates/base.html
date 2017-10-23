@@ -417,6 +417,8 @@
 
 {% endif %}
 
+{% block search_templates %}{% endblock search_templates %}
+
 {% block user_info %}
   {% if user.first_name %}
     <script type="text/javascript">
@@ -446,6 +448,7 @@
 
   </script>
 {% endif %}
+
 {% block js %}
   <script src="{% static 'jquery-modern/dist/jquery.min.js' %}"></script>
   <script src="{% static 'bootstrap-3/dist/js/bootstrap.min.js' %}"></script>
@@ -454,6 +457,7 @@
     <script src="{% static 'slidebars-fork/dist/slidebars.min.js' %}"></script>
     <script src="{% static 'detect_swipe/jquery.detect_swipe.js' %}"></script>
     <script src="{% static 'js/mobile.js' %}"></script>
+    <script src="{% static 'js/search.js' %}"></script>
   {% else %}
     <script src="{% static 'nice-select/js/jquery.nice-select.js' %}"></script>
     <script src="{% static 'js/responsive.js' %}"></script>
@@ -463,7 +467,7 @@
   <script src="https://cdn.jsdelivr.net/sweetalert2/6.4.4/sweetalert2.min.js"></script>
   <script src="{% static 'js/navbar.js' %}"></script>
   <script src="{% static 'js/script.js' %}"></script>
-  {#        <script src="{% static 'underscore/underscore.js' %}"></script>#}
+  <script src="{% static 'underscore/underscore.js' %}"></script>
 {% endblock js %}
 </body>
 </html>
