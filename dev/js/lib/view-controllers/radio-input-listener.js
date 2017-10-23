@@ -12,7 +12,7 @@ export default function (radiobuttonName) {
   var jqSelector = "input[name='"+radiobuttonName+"']";
   var jqSelectedSelector = "input[name='"+radiobuttonName+"']:checked";
   var callbacks = [];
-  console.log(jqSelector);
+
   /**
    * add hook for when input changes
    * @param  {Function} newCb the function , that takes argument new val, that will be triggered on a input change

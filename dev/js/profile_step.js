@@ -1,8 +1,8 @@
 var settings = require('./config');
 
 require("jquery");
+require("imports-loader?jQuery=jquery,$=jquery,this=>window!./jquery.nice-select.js");
 require("smartwizard/dist/js/jquery.smartWizard.js");
-
 
 var DDService = require("bootstrap-dropdown-selector");
 
@@ -20,9 +20,6 @@ ddStartup.listenForDropDown();
 ddCalAffil.listenForDropDown();
 
 import ComponentStateChanger from './lib/view-controllers/component-state-changer.js';
-import UrlLocationService from './services/urlLocationService.js';
-import LocalStorageService from './services/localStorageCacheService.js';
-import FormSavingService from './services/formSavingService.js';
 
 var cu = new ComponentStateChanger();
 var profileImageView = cu.addState(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER);
@@ -38,7 +35,6 @@ function validateFields (stepId, goToStep) {
       $(this).closest(".form-group").find("p").css("color", "red");
       if (goToStep) {
         // console.log($(this).closest('.step-section').attr("id") + " is this step");
-        UrlLocationService.jumptToAnchor($(this).closest('.step-section').attr("id"));
       }
     }
   });
@@ -93,10 +89,37 @@ function notLookingCheckBoxes () {
 $(document).ready(function(){
 
 
+  $('select.select-input').niceSelect();
+  $('select.select-input').bind('change', function(e) {
+      $(this).prev().text($(this).children('option[value="' + $(this).val() + '"]').text())
+  });
 
   $(settings.selectors.LOADING_IMAGE).css("display", "none");
+  var form_data = window.localStorage.getItem(settings.localStorageKeys.PROFILE_FORM_DATA) ?
+    JSON.parse(window.localStorage.getItem(settings.localStorageKeys.PROFILE_FORM_DATA)) : null
+  if (form_data !== null) {
+    $(form_data).each(function (key, item) {
+        if (item.name == 'csrfmiddlewaretoken') {
+          return;
+        }
+        var input = $('input[name="' + item.name + '"][value="' + item.value + '"]');
+        if (input.length > 0 ) {
+          switch (input.prop('type')) {
+            case 'text':
+            case 'select':
+              input.val(item.value); break;
+            case 'checkbox':
+              input.prop('checked', true)
+          }
+        } else if ($('textarea[name="' + item.name + '"]').length > 0 ) {
+          $('textarea[name="' + item.name + '"]').text(item.value)
+        }
+      }
+    )
+  }
+
   // Jump to first anchor
-  // FormSavingService.setFormFromSerialized(LocalStorageService.getObjectInLocalStorage(settings.localStorageKeys.PROFILE_FORM_DATA), "form");
+
   notLookingCheckBoxes();
   /* Since the forms have been updated, reset the dropdown labels */
   ddPrimaryService.resetDropDowns();
@@ -107,12 +130,13 @@ $(document).ready(function(){
 
 
 
-  UrlLocationService.jumptToAnchor(LocalStorageService.getStringWithDefault(settings.localStorageKeys.CURRENT_STEP, "step-1"));
   validateFields(".missing-data", true);
-  $('#smartwizard').smartWizard({"useURLhash" : true});
+  $('#smartwizard').smartWizard();
   $("#smartwizard").on("leaveStep", function(e, anchorObject, stepNumber, stepDirection) {
-      //todo remove
-      LocalStorageService.saveObjectInLocalStorage(settings.localStorageKeys.PROFILE_FORM_DATA, FormSavingService.getSerializedForm("form"));
+      var form_data = JSON.stringify($('#profile_form').serializeArray())
+
+      window.localStorage.setItem(settings.localStorageKeys.PROFILE_FORM_DATA, form_data);
+
       if (stepDirection === "forward") {
           if (! allinputsFilled("#step-" + (stepNumber + 1) + " " + ".required")) {
             validateFields("#step-" + (stepNumber+1));
@@ -123,7 +147,7 @@ $(document).ready(function(){
        var nextStep;
        if (stepDirection === "forward") nextStep = stepNumber + 1;
        else nextStep = stepNumber - 1;
-       LocalStorageService.setString(settings.localStorageKeys.CURRENT_STEP, "step-" + (nextStep + 1))
+       window.localStorage.setItem(settings.localStorageKeys.CURRENT_STEP, "step-" + (nextStep + 1))
        return true;
     });
 });
@@ -187,7 +211,7 @@ iu.addHook(iu.ON_IMAGE_LOADED,  function (str) {
   // set image
 
   $(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER + " img.image-holder").attr("src", str);
-  LocalStorageService.setImageDataString(settings.localStorageKeys.PROFILE_IMAGE_DATA, str);
+  window.localStorage.setItem(settings.localStorageKeys.PROFILE_IMAGE_DATA, str);
   cu.setState(profileImageView);
 
 
@@ -199,7 +223,7 @@ iu.addHook(iu.ON_IMAGE_LOADED,  function (str) {
 
 });
 
-var savedImageStr = LocalStorageService.getImageDataString(settings.localStorageKeys.PROFILE_IMAGE_DATA);
+var savedImageStr = window.localStorage.getItem(settings.localStorageKeys.PROFILE_IMAGE_DATA);
 if (savedImageStr != null) {
   $(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER + " img.image-holder").attr("src", savedImageStr);
   $(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_INPUT).removeClass("required");
@@ -207,16 +231,12 @@ if (savedImageStr != null) {
 
 }
 
-
-
 /* driver code */
 $(settings.selectors.DELETE_ICON).click(function () {
   iu.deleteFiles();
-  LocalStorageService.unsetImageKey(settings.localStorageKeys.PROFILE_IMAGE_DATA);
+  window.localStorage.removeItem(settings.localStorageKeys.PROFILE_IMAGE_DATA);
   cu.setState(uploadButton);
 });
-
-
 
 // On add  startup
 $(settings.selectors.ADD_STARTUP_BUTTON).click(function() {

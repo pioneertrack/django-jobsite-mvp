@@ -67,6 +67,35 @@ class NewRegistrationForm(RegistrationFormUniqueEmail):
         }
 
 
+class ProfileFormWizard(forms.ModelForm):
+    image = forms.ImageField(label='Profile image', error_messages={'invalid': "Image files only"},
+                             widget=forms.FileInput)
+
+    def __init__(self, *args, **kwargs):
+        super(ProfileFormWizard, self).__init__(*args, **kwargs)
+        self.initial['alt_email'] = None
+        if len(self.instance.image.name) > 0:
+            self.fields['image'].required = False
+
+    def is_valid(self):
+        log.info(force_text(self.errors))
+        return super(ProfileFormWizard, self).is_valid()
+
+    def clean_alt_email(self):
+        email = self.cleaned_data['alt_email']
+        if email != None and email != '':
+            result = profile.Profile.objects.filter(alt_email=email)
+            if result.count() > 1 or (result.count() == 1 and result[0].id != self.instance.id):
+                raise ValidationError(message='Alt email already used')
+        return email
+
+    class Meta:
+        model = profile.Profile
+        fields = ('image', 'bio', 'positions', 'role', 'skills', 'year', 'interests',
+                  'major', 'courses', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'linkedin', 'website',
+                  'github')
+
+
 class ProfileForm(forms.ModelForm):
     image = forms.ImageField(label='Profile image', required=True, error_messages={'invalid': "Image files only"},
                              widget=forms.FileInput)

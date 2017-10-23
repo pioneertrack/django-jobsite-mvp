@@ -10590,16 +10590,15 @@ module.exports = function (options) {
   var inputTargetName = defaultFor(options.inputTargetName, "input-dropdown");
   var dropdownDataSelector = defaultFor(options.dataselector, "dropdownval");
 
-  $(rootModuleSelector + " " +inputTargetSelector).attr('name', inputTargetName);
-  console.log(rootModuleSelector + " " +inputTargetSelector);  
-/**
+
+  /**
    * For resetting dropdown labels based on input values, for example, when the input values are changed externally and
    * the intention is to have the dropdown UI reflect this
    * @return {[type]} [description]
    */
   this.resetDropDowns = function () {
     // initialize value to the initial radio button amoutn
-    $( rootModuleSelector + " " + inputTargetSelector ).each(function() {
+    $( inputTargetSelector ).each(function() {
       if ($( this ).val() != null && $( this ).val() !== "") {
         // See if the vlaue that is already set is equal to a dropdown value
         var $this = $( this );
@@ -10634,7 +10633,7 @@ module.exports = function (options) {
       $( this ).parentsUntil( rootModuleSelector ).parent().find(inputTargetSelector).attr('name', inputTargetName)
       $( this ).parentsUntil( rootModuleSelector ).parent().find(inputTargetSelector).val( $( this ).data(dropdownDataSelector) );
       // $(labelTargetSelector).text(text);
-
+      // $(inputTargetSelector).attr('name', inputTargetName)
       // $(inputTargetSelector).val( $( this ).data(dropdownDataSelector) );
       // $(inputTargetSelector).val( $( this ).data( dropdownDataSelector) );
     });
@@ -10642,7 +10641,6 @@ module.exports = function (options) {
 };
 
 function defaultFor(arg, val) { return typeof arg !== 'undefined' ? arg : val; }
-
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
@@ -10654,15 +10652,12 @@ function defaultFor(arg, val) { return typeof arg !== 'undefined' ? arg : val; }
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_view_controllers_component_state_changer_js__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_urlLocationService_js__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_localStorageCacheService_js__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__services_formSavingService_js__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__lib_view_controllers_image_instant_upload__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lib_view_controllers_image_instant_upload__ = __webpack_require__(2);
 var settings = __webpack_require__(1);
 
 __webpack_require__(0);
 __webpack_require__(7);
-
+__webpack_require__(8);
 
 var DDService = __webpack_require__(4);
 
@@ -10681,9 +10676,6 @@ ddCalAffil.listenForDropDown();
 
 
 
-
-
-
 var cu = new __WEBPACK_IMPORTED_MODULE_0__lib_view_controllers_component_state_changer_js__["a" /* default */]();
 var profileImageView = cu.addState(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER);
 var cancelButton = cu.addState(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_CANCEL);
@@ -10698,7 +10690,6 @@ function validateFields (stepId, goToStep) {
       $(this).closest(".form-group").find("p").css("color", "red");
       if (goToStep) {
         // console.log($(this).closest('.step-section').attr("id") + " is this step");
-        __WEBPACK_IMPORTED_MODULE_1__services_urlLocationService_js__["a" /* default */].jumptToAnchor($(this).closest('.step-section').attr("id"));
       }
     }
   });
@@ -10753,10 +10744,37 @@ function notLookingCheckBoxes () {
 $(document).ready(function(){
 
 
+  $('select.select-input').niceSelect();
+  $('select.select-input').bind('change', function(e) {
+      $(this).prev().text($(this).children('option[value="' + $(this).val() + '"]').text())
+  });
 
   $(settings.selectors.LOADING_IMAGE).css("display", "none");
+  var form_data = window.localStorage.getItem(settings.localStorageKeys.PROFILE_FORM_DATA) ?
+    JSON.parse(window.localStorage.getItem(settings.localStorageKeys.PROFILE_FORM_DATA)) : null
+  if (form_data !== null) {
+    $(form_data).each(function (key, item) {
+        if (item.name == 'csrfmiddlewaretoken') {
+          return;
+        }
+        var input = $('input[name="' + item.name + '"][value="' + item.value + '"]');
+        if (input.length > 0 ) {
+          switch (input.prop('type')) {
+            case 'text':
+            case 'select':
+              input.val(item.value); break;
+            case 'checkbox':
+              input.prop('checked', true)
+          }
+        } else if ($('textarea[name="' + item.name + '"]').length > 0 ) {
+          $('textarea[name="' + item.name + '"]').text(item.value)
+        }
+      }
+    )
+  }
+
   // Jump to first anchor
-  // FormSavingService.setFormFromSerialized(LocalStorageService.getObjectInLocalStorage(settings.localStorageKeys.PROFILE_FORM_DATA), "form");
+
   notLookingCheckBoxes();
   /* Since the forms have been updated, reset the dropdown labels */
   ddPrimaryService.resetDropDowns();
@@ -10767,12 +10785,13 @@ $(document).ready(function(){
 
 
 
-  __WEBPACK_IMPORTED_MODULE_1__services_urlLocationService_js__["a" /* default */].jumptToAnchor(__WEBPACK_IMPORTED_MODULE_2__services_localStorageCacheService_js__["a" /* default */].getStringWithDefault(settings.localStorageKeys.CURRENT_STEP, "step-1"));
   validateFields(".missing-data", true);
-  $('#smartwizard').smartWizard({"useURLhash" : true});
+  $('#smartwizard').smartWizard();
   $("#smartwizard").on("leaveStep", function(e, anchorObject, stepNumber, stepDirection) {
-      //todo remove
-      __WEBPACK_IMPORTED_MODULE_2__services_localStorageCacheService_js__["a" /* default */].saveObjectInLocalStorage(settings.localStorageKeys.PROFILE_FORM_DATA, __WEBPACK_IMPORTED_MODULE_3__services_formSavingService_js__["a" /* default */].getSerializedForm("form"));
+      var form_data = JSON.stringify($('#profile_form').serializeArray())
+
+      window.localStorage.setItem(settings.localStorageKeys.PROFILE_FORM_DATA, form_data);
+
       if (stepDirection === "forward") {
           if (! allinputsFilled("#step-" + (stepNumber + 1) + " " + ".required")) {
             validateFields("#step-" + (stepNumber+1));
@@ -10783,7 +10802,7 @@ $(document).ready(function(){
        var nextStep;
        if (stepDirection === "forward") nextStep = stepNumber + 1;
        else nextStep = stepNumber - 1;
-       __WEBPACK_IMPORTED_MODULE_2__services_localStorageCacheService_js__["a" /* default */].setString(settings.localStorageKeys.CURRENT_STEP, "step-" + (nextStep + 1))
+       window.localStorage.setItem(settings.localStorageKeys.CURRENT_STEP, "step-" + (nextStep + 1))
        return true;
     });
 });
@@ -10822,7 +10841,7 @@ $( document ).ready(function () {
 
 // Profile image watcher
 
-var iu = new __WEBPACK_IMPORTED_MODULE_4__lib_view_controllers_image_instant_upload__["a" /* default */](settings.selectors.PROFILE_BREADCRUMBS_PROPIC_INPUT, false);
+var iu = new __WEBPACK_IMPORTED_MODULE_1__lib_view_controllers_image_instant_upload__["a" /* default */](settings.selectors.PROFILE_BREADCRUMBS_PROPIC_INPUT, false);
 
 
 iu.addHook(iu.ON_IMAGE_ADDED,  function (f) {
@@ -10847,7 +10866,7 @@ iu.addHook(iu.ON_IMAGE_LOADED,  function (str) {
   // set image
 
   $(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER + " img.image-holder").attr("src", str);
-  __WEBPACK_IMPORTED_MODULE_2__services_localStorageCacheService_js__["a" /* default */].setImageDataString(settings.localStorageKeys.PROFILE_IMAGE_DATA, str);
+  window.localStorage.setItem(settings.localStorageKeys.PROFILE_IMAGE_DATA, str);
   cu.setState(profileImageView);
 
 
@@ -10859,7 +10878,7 @@ iu.addHook(iu.ON_IMAGE_LOADED,  function (str) {
 
 });
 
-var savedImageStr = __WEBPACK_IMPORTED_MODULE_2__services_localStorageCacheService_js__["a" /* default */].getImageDataString(settings.localStorageKeys.PROFILE_IMAGE_DATA);
+var savedImageStr = window.localStorage.getItem(settings.localStorageKeys.PROFILE_IMAGE_DATA);
 if (savedImageStr != null) {
   $(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER + " img.image-holder").attr("src", savedImageStr);
   $(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_INPUT).removeClass("required");
@@ -10867,16 +10886,12 @@ if (savedImageStr != null) {
 
 }
 
-
-
 /* driver code */
 $(settings.selectors.DELETE_ICON).click(function () {
   iu.deleteFiles();
-  __WEBPACK_IMPORTED_MODULE_2__services_localStorageCacheService_js__["a" /* default */].unsetImageKey(settings.localStorageKeys.PROFILE_IMAGE_DATA);
+  window.localStorage.removeItem(settings.localStorageKeys.PROFILE_IMAGE_DATA);
   cu.setState(uploadButton);
 });
-
-
 
 // On add  startup
 $(settings.selectors.ADD_STARTUP_BUTTON).click(function() {
@@ -10888,6 +10903,207 @@ $(settings.selectors.ADD_STARTUP_BUTTON).click(function() {
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var jQuery = __webpack_require__(0);
+var $ = __webpack_require__(0);
+(function() {
+
+/*  jQuery Nice Select - v1.1.0
+    https://github.com/hernansartorio/jquery-nice-select
+    Made by Hernán Sartorio  */
+ 
+(function($) {
+
+  $.fn.niceSelect = function(method) {
+    
+    // Methods
+    if (typeof method == 'string') {      
+      if (method == 'update') {
+        this.each(function() {
+          var $select = $(this);
+          var $dropdown = $(this).next('.nice-select');
+          var open = $dropdown.hasClass('open');
+          
+          if ($dropdown.length) {
+            $dropdown.remove();
+            create_nice_select($select);
+            
+            if (open) {
+              $select.next().trigger('click');
+            }
+          }
+        });
+      } else if (method == 'destroy') {
+        this.each(function() {
+          var $select = $(this);
+          var $dropdown = $(this).next('.nice-select');
+          
+          if ($dropdown.length) {
+            $dropdown.remove();
+            $select.css('display', '');
+          }
+        });
+        if ($('.nice-select').length == 0) {
+          $(document).off('.nice_select');
+        }
+      } else {
+        console.log('Method "' + method + '" does not exist.')
+      }
+      return this;
+    }
+      
+    // Hide native select
+    this.hide();
+    
+    // Create custom markup
+    this.each(function() {
+      var $select = $(this);
+      
+      if (!$select.next().hasClass('nice-select')) {
+        create_nice_select($select);
+      }
+    });
+    
+    function create_nice_select($select) {
+      $select.after($('<div></div>')
+        .addClass('nice-select')
+        .addClass($select.attr('class') || '')
+        .addClass($select.attr('disabled') ? 'disabled' : '')
+        .attr('tabindex', $select.attr('disabled') ? null : '0')
+        .html('<span class="current"></span><ul class="list"></ul>')
+      );
+        
+      var $dropdown = $select.next();
+      var $options = $select.find('option');
+      var $selected = $select.find('option:selected');
+      
+      $dropdown.find('.current').html($selected.data('display') || $selected.text());
+      
+      $options.each(function(i) {
+        var $option = $(this);
+        var display = $option.data('display');
+
+        $dropdown.find('ul').append($('<li></li>')
+          .attr('data-value', $option.val())
+          .attr('data-display', (display || null))
+          .addClass('option' +
+            ($option.is(':selected') ? ' selected' : '') +
+            ($option.is(':disabled') ? ' disabled' : ''))
+          .html($option.text())
+        );
+      });
+    }
+    
+    /* Event listeners */
+    
+    // Unbind existing events in case that the plugin has been initialized before
+    $(document).off('.nice_select');
+    
+    // Open/close
+    $(document).on('click.nice_select', '.nice-select', function(event) {
+      var $dropdown = $(this);
+      
+      $('.nice-select').not($dropdown).removeClass('open');
+      $dropdown.toggleClass('open');
+      
+      if ($dropdown.hasClass('open')) {
+        $dropdown.find('.option');  
+        $dropdown.find('.focus').removeClass('focus');
+        $dropdown.find('.selected').addClass('focus');
+      } else {
+        $dropdown.focus();
+      }
+    });
+    
+    // Close when clicking outside
+    $(document).on('click.nice_select', function(event) {
+      if ($(event.target).closest('.nice-select').length === 0) {
+        $('.nice-select').removeClass('open').find('.option');  
+      }
+    });
+    
+    // Option click
+    $(document).on('click.nice_select', '.nice-select .option:not(.disabled)', function(event) {
+      var $option = $(this);
+      var $dropdown = $option.closest('.nice-select');
+      
+      $dropdown.find('.selected').removeClass('selected');
+      $option.addClass('selected');
+      
+      var text = $option.data('display') || $option.text();
+      $dropdown.find('.current').text(text);
+      
+      $dropdown.prev('select').val($option.data('value')).trigger('change');
+    });
+
+    // Keyboard events
+    $(document).on('keydown.nice_select', '.nice-select', function(event) {    
+      var $dropdown = $(this);
+      var $focused_option = $($dropdown.find('.focus') || $dropdown.find('.list .option.selected'));
+      
+      // Space or Enter
+      if (event.keyCode == 32 || event.keyCode == 13) {
+        if ($dropdown.hasClass('open')) {
+          $focused_option.trigger('click');
+        } else {
+          $dropdown.trigger('click');
+        }
+        return false;
+      // Down
+      } else if (event.keyCode == 40) {
+        if (!$dropdown.hasClass('open')) {
+          $dropdown.trigger('click');
+        } else {
+          var $next = $focused_option.nextAll('.option:not(.disabled)').first();
+          if ($next.length > 0) {
+            $dropdown.find('.focus').removeClass('focus');
+            $next.addClass('focus');
+          }
+        }
+        return false;
+      // Up
+      } else if (event.keyCode == 38) {
+        if (!$dropdown.hasClass('open')) {
+          $dropdown.trigger('click');
+        } else {
+          var $prev = $focused_option.prevAll('.option:not(.disabled)').first();
+          if ($prev.length > 0) {
+            $dropdown.find('.focus').removeClass('focus');
+            $prev.addClass('focus');
+          }
+        }
+        return false;
+      // Esc
+      } else if (event.keyCode == 27) {
+        if ($dropdown.hasClass('open')) {
+          $dropdown.trigger('click');
+        }
+      // Tab
+      } else if (event.keyCode == 9) {
+        if ($dropdown.hasClass('open')) {
+          return false;
+        }
+      }
+    });
+
+    // Detect CSS pointer-events support, for IE <= 10. From Modernizr.
+    var style = document.createElement('a').style;
+    style.cssText = 'pointer-events:auto';
+    if (style.pointerEvents !== 'auto') {
+      $('html').addClass('no-csspointerevents');
+    }
+    
+    return this;
+
+  };
+
+}(jQuery));
+}.call(window));
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/*! 
@@ -11512,146 +11728,6 @@ $(settings.selectors.ADD_STARTUP_BUTTON).click(function() {
     };
 })(jQuery, window, document);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony default export */ __webpack_exports__["a"] = ({
-
-    /**
-     * Directs the page to a specific ID anchor
-     * @see https://stackoverflow.com/questions/13735912/anchor-jumping-by-using-javascript
-     * @param  {string} anchorTag id on the page to jump to
-     * @return {void}
-     */
-    jumptToAnchor : function(anchorTag) {
-      // is history supported? then use it. otherwise jump manually
-      if (history) {
-        var url = location.href;               //Save down the URL without hash.
-        url = "#"+anchorTag;                 //Go to the target element.
-        console.log(url);
-        history.replaceState(null,null,url);   //Don't like hashes. Changing it back.
-      }
-      else {
-        var top = document.getElementById(h).offsetTop;
-        window.scrollTo(0, top);
-      }
-    }
-});
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-
-/**
- * Module for interfacing with the local storage
- */
-/* harmony default export */ __webpack_exports__["a"] = ({
-
-  /**
-   * Useful for saving JSON in ls
-   * @param  {string} key the localstorage key
-   * @param  {object} obj the object to save
-   * @return {void}
-   */
-  saveObjectInLocalStorage : function (key, obj) {
-    localStorage.setItem(key, JSON.stringify(obj));
-  },
-
-
-  /**
-   * Attempts to get something in localstorage throws error if not existent
-   * @param  {string} key the key of the object
-   * @return {void}
-   */
-  getObjectInLocalStorage : function (key) {
-    var obj =  localStorage.getItem(key);
-    if (obj == null) obj = JSON.stringify({});
-    return JSON.parse(obj);
-  },
-
-
-  setImageDataString : function (key, dataStr) {
-    localStorage.setItem(key, dataStr);
-  },
-
-  getImageDataString : function(key) {
-    return localStorage.getItem(key);
-  },
-
-  unsetImageKey : function (key) {
-    localStorage.removeItem(key);
-  },
-
-  setString : function (key, str) {
-    localStorage.setItem(key, str);
-  },
-
-  getStringWithDefault : function (key, defaultStep) {
-    var it = localStorage.getItem(key);
-    return (it==null) ? defaultStep : it;
-  }
-});
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function($) {
-__webpack_require__(0);
-/**
- * Service for saving the contents of a form, as well as filling out a form with existing contents
- */
-/* harmony default export */ __webpack_exports__["a"] = ({
-  getSerializedForm : function(formSelector) {
-    var saveFormItems = {text : {}, checkboxes : []};
-    $(formSelector + " input[type='text'], input[type='hidden'], textarea").each(function () {
-      if ($( this ).val() != null && $( this ).val()  !== "" && $( this ).attr('name') != null) {
-        if ($( this ).attr('name')  === "csrfmiddlewaretoken") return; // skip middleware
-        saveFormItems["text"][$( this ).attr('name')] = $( this ).val();
-      }
-    });
-
-    // Also save all the check boxes
-    $(formSelector + " input:checked").each(function() {
-      saveFormItems["checkboxes"].push({"name" : $( this ).attr('name'), "value" : $(this).val()});
-    });
-    console.log(saveFormItems);
-    return saveFormItems;
-  },
-
-  setFormFromSerialized : function (serialized, formSelector) {
-  
-    if (serialized["text"] == null) return;
-    for (var key in serialized["text"]) {
-      if (serialized["text"].hasOwnProperty(key)) {
-        $(formSelector + " input[name='"+key+"'], textarea[name='"+key+"']").val(serialized["text"][key]);
-      }
-    }
-    for (var i=0; i<serialized["checkboxes"].length; i++) {
-
-      $(formSelector + " input[type='checkbox'][name='"+ serialized["checkboxes"][i]["name"] +"']").each(function() {
-        if ($(this).val() === serialized["checkboxes"][i]["value"]) {
-          $(this).prop("checked", true);
-        }
-      });
-    }
-
-  }
-
-
-
-
-});
-
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ })
 /******/ ]);

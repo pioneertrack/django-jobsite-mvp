@@ -771,46 +771,75 @@ def profile_step(request):
         ("has_funding_exp", "I have experience funding a startup")
     )
     formDat["hasStartup"] = (("yes", 'Yes'), ("no" , 'No'))
-    if request.method == "POST":
-        user = request.user
-        profile = None if not hasattr(user, 'profile') else user.profile
 
-        if not profile:
-            errors.append({"Need Image" : "Please go to step 1 and re add your profile image"})
-        else:
+    user = request.user
+    profile = None if not hasattr(user, 'profile') else user.profile
+    profile_form = forms.ProfileFormWizard(instance=profile)
 
-            expected = {"primaryroles" : "role",
-                     "skills" : "skills",
-                       "major" : "major",
-                       "bio" : "bio",
-                       "numberhoursinput" : "hours_week",
-                       "linkedin" : "linkedin",
-                       "relcoursework" : "courses",
-                       "calaffiliation" : "year",
-                       "githuburl" : "github",
-                       "personalwebsite" : "website",
-                       "interests" : "interests",
+    if request.method == 'POST':
+        profile_form = forms.ProfileForm(request.POST, request.FILES, instance=profile)
 
-                        }
-            checkboxes = {"positions_check[]" : "positions"}
-            optional = {}
-            # print (expected)
-            try:
-                ValidatePostItems(expectedFields=expected, optionalFields=optional, request=request, checkboxes=checkboxes, saveObj = profile)
-                profile.is_filled=True
-                print (request.POST["startupProfile"])
-                profile.save()
-                if request.POST["startupProfile"] == "no":
-                    return HttpResponseRedirect('/')
-                else:
-                    return HttpResponseRedirect('/startup/update')
+        alt_email = profile_form["alt_email"]
+        if user.email == alt_email:
+            profile_form._errors["alt_email"] = ["Account for email address is not registered or already activated."]
+
+        if profile_form.is_valid():
+            profile = profile_form.save(commit=False)
+            if not hasattr(profile, 'user'):
+                profile.user = user
+            profile.save()
+            profile.check_is_filled()
+
+            if request.POST["startupProfile"] == "no":
+                return HttpResponseRedirect('/')
+            else:
+                return HttpResponseRedirect('/startup/update')
 
 
-            except Exception as e:
-                errors.append({"strong" : "missing fields!", "text" : "please fill out all required fields!"})
+    # if request.method == "POST":
+    #     user = request.user
+    #     profile = None if not hasattr(user, 'profile') else user.profile
+    #
+    #     if not profile:
+    #         errors.append({"Need Image" : "Please go to step 1 and re add your profile image"})
+    #     else:
+    #
+    #         expected = {"primaryroles" : "role",
+    #                  "skills" : "skills",
+    #                    "major" : "major",
+    #                    "bio" : "bio",
+    #                    "numberhoursinput" : "hours_week",
+    #                    "linkedin" : "linkedin",
+    #                    "relcoursework" : "courses",
+    #                    "calaffiliation" : "year",
+    #                    "githuburl" : "github",
+    #                    "personalwebsite" : "website",
+    #                    "interests" : "interests",
+    #
+    #                     }
+    #         checkboxes = {"positions_check[]" : "positions"}
+    #         optional = {}
+    #         # print (expected)
+    #         try:
+    #             ValidatePostItems(expectedFields=expected, optionalFields=optional, request=request, checkboxes=checkboxes, saveObj = profile)
+    #             profile.is_filled=True
+    #             print (request.POST["startupProfile"])
+    #             profile.save()
+    #             if request.POST["startupProfile"] == "no":
+    #                 return HttpResponseRedirect('/')
+    #             else:
+    #                 return HttpResponseRedirect('/startup/update')
 
 
-    return render(request, 'profile_steps.html', merge_dicts(JOB_CONTEXT, {"formDat" : formDat, "errors" : errors}))
+            # except Exception as e:
+            #     errors.append({"strong" : "missing fields!", "text" : "please fill out all required fields!"})
+
+
+    return render(request, 'profile_steps.html', merge_dicts(JOB_CONTEXT, {
+        'formDat' : formDat,
+        'errors' : errors,
+        'form': profile_form,
+    }))
 
 
 @login_required

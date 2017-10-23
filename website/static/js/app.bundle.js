@@ -10590,16 +10590,15 @@ module.exports = function (options) {
   var inputTargetName = defaultFor(options.inputTargetName, "input-dropdown");
   var dropdownDataSelector = defaultFor(options.dataselector, "dropdownval");
 
-  $(rootModuleSelector + " " +inputTargetSelector).attr('name', inputTargetName);
-  console.log(rootModuleSelector + " " +inputTargetSelector);  
-/**
+
+  /**
    * For resetting dropdown labels based on input values, for example, when the input values are changed externally and
    * the intention is to have the dropdown UI reflect this
    * @return {[type]} [description]
    */
   this.resetDropDowns = function () {
     // initialize value to the initial radio button amoutn
-    $( rootModuleSelector + " " + inputTargetSelector ).each(function() {
+    $( inputTargetSelector ).each(function() {
       if ($( this ).val() != null && $( this ).val() !== "") {
         // See if the vlaue that is already set is equal to a dropdown value
         var $this = $( this );
@@ -10634,7 +10633,7 @@ module.exports = function (options) {
       $( this ).parentsUntil( rootModuleSelector ).parent().find(inputTargetSelector).attr('name', inputTargetName)
       $( this ).parentsUntil( rootModuleSelector ).parent().find(inputTargetSelector).val( $( this ).data(dropdownDataSelector) );
       // $(labelTargetSelector).text(text);
-
+      // $(inputTargetSelector).attr('name', inputTargetName)
       // $(inputTargetSelector).val( $( this ).data(dropdownDataSelector) );
       // $(inputTargetSelector).val( $( this ).data( dropdownDataSelector) );
     });
@@ -10642,7 +10641,6 @@ module.exports = function (options) {
 };
 
 function defaultFor(arg, val) { return typeof arg !== 'undefined' ? arg : val; }
-
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 

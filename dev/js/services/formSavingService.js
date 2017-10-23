@@ -17,7 +17,6 @@ export default {
     $(formSelector + " input:checked").each(function() {
       saveFormItems["checkboxes"].push({"name" : $( this ).attr('name'), "value" : $(this).val()});
     });
-    console.log(saveFormItems);
     return saveFormItems;
   },
 
