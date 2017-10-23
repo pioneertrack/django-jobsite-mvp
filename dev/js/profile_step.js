@@ -188,39 +188,11 @@ $( document ).ready(function () {
 import ImageUploader from './lib/view-controllers/image-instant-upload';
 var iu = new ImageUploader(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_INPUT, false);
 
-
-iu.addHook(iu.ON_IMAGE_ADDED,  function (f) {
-  var fd = new FormData();
-  fd.append("profileimage", f[0]);
-
-  $.ajax ({
-    type: 'POST',
-     data: fd,
-     url : settings.routes.PROFILE_STEP_IMAGE_UPLOAD,
-     async: true,
-     processData : false,
-     contentType: false,
-          cache: false,
-     success: function (data) {
-
-      }
-    });
-});
-
 iu.addHook(iu.ON_IMAGE_LOADED,  function (str) {
   // set image
-
   $(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER + " img.image-holder").attr("src", str);
   window.localStorage.setItem(settings.localStorageKeys.PROFILE_IMAGE_DATA, str);
   cu.setState(profileImageView);
-
-
-
-// Save image
-  // var formData = new FormData($("form"));
-
-  // Save image to server
-
 });
 
 var savedImageStr = window.localStorage.getItem(settings.localStorageKeys.PROFILE_IMAGE_DATA);

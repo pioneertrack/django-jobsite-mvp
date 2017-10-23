@@ -75,12 +75,8 @@ class ProfileFormWizard(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProfileFormWizard, self).__init__(*args, **kwargs)
         self.initial['alt_email'] = None
-        if len(self.instance.image.name) > 0:
+        if self.instance.image and len(self.instance.image.name) > 0:
             self.fields['image'].required = False
-
-    def is_valid(self):
-        log.info(force_text(self.errors))
-        return super(ProfileFormWizard, self).is_valid()
 
     def clean_alt_email(self):
         email = self.cleaned_data['alt_email']

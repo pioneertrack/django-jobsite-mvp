@@ -6,16 +6,16 @@ def check_profiles(view_func):
     def _wrapped_view_func(request, *args, **kwargs):
         user = request.user
         redirect_url = None
+        p = lambda val: not val.profile.is_filled if hasattr(val, 'profile') else True
+        f = lambda val: not val.founder.is_filled if hasattr(val, 'founder') else True
         if user.first_login:
-            if user.is_individual and not hasattr(user, 'profile') or user.profile.is_filled == False:
+            if user.is_individual and p(user):
                 messages.success(request, "Welcome to BearFounders! Please tell us about yourself.")
-                redirect_url = 'website:profile_update'
-            elif user.is_founder and not hasattr(user, 'founder') or user.founder.is_filled == False:
+                redirect_url = 'website:profile_step'
+            elif user.is_founder and f(user):
                 messages.success(request, "Welcome to BearFounders! Please tell us about you startup.")
                 redirect_url ='website:startup_update'
         else:
-            p = lambda val: not val.profile.is_filled if hasattr(val, 'profile') else True
-            f = lambda val: not val.founder.is_filled if hasattr(val, 'founder') else True
             if p(user) and user.is_individual:
                 messages.success(request, "Please fill in the information about yourself.")
                 redirect_url = 'website:profile_update'

@@ -10844,23 +10844,23 @@ $( document ).ready(function () {
 var iu = new __WEBPACK_IMPORTED_MODULE_1__lib_view_controllers_image_instant_upload__["a" /* default */](settings.selectors.PROFILE_BREADCRUMBS_PROPIC_INPUT, false);
 
 
-iu.addHook(iu.ON_IMAGE_ADDED,  function (f) {
-  var fd = new FormData();
-  fd.append("profileimage", f[0]);
-
-  $.ajax ({
-    type: 'POST',
-     data: fd,
-     url : settings.routes.PROFILE_STEP_IMAGE_UPLOAD,
-     async: true,
-     processData : false,
-     contentType: false,
-          cache: false,
-     success: function (data) {
-
-      }
-    });
-});
+// iu.addHook(iu.ON_IMAGE_ADDED,  function (f) {
+//   var fd = new FormData();
+//   fd.append("profileimage", f[0]);
+//
+//   $.ajax ({
+//     type: 'POST',
+//      data: fd,
+//      url : settings.routes.PROFILE_STEP_IMAGE_UPLOAD,
+//      async: true,
+//      processData : false,
+//      contentType: false,
+//           cache: false,
+//      success: function (data) {
+//
+//       }
+//     });
+// });
 
 iu.addHook(iu.ON_IMAGE_LOADED,  function (str) {
   // set image

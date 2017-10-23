@@ -1,4 +1,5 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect, get_object_or_404, redirect
+from django.http import JsonResponse
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import update_session_auth_hash
@@ -253,27 +254,6 @@ def profile_breadcrumbs_update_step(request, updatedStep):
     request.session['userstep'] = str(updatedStep)
     return JsonResponse({'success': True})
 
-@login_required
-@csrf_exempt
-def profile_step_image(request):
-    user = request.user
-
-    if request.method == "POST":
-        if request.FILES and request.FILES.get('profileimage'):
-            profile = None if not hasattr(user, 'profile') else user.profile
-
-            if profile:
-                profile.image= request.FILES.get('profileimage')
-                profile.save()
-            else:
-                profile = prof.Profile.objects.create(user=user, positions=["5"], image=request.FILES["profileimage"])
-                profile.save()
-                user.profile = profile
-                user.save()
-
-
-
-    return JsonResponse({'success': True})
 
 @login_required
 def profile_step(request):
@@ -309,48 +289,11 @@ def profile_step(request):
             profile.check_is_filled()
 
             if request.POST["startupProfile"] == "no":
+                user.set_first_login()
                 return HttpResponseRedirect('/')
             else:
+                user.set_is_founder()
                 return HttpResponseRedirect('/startup/update')
-
-
-    # if request.method == "POST":
-    #     user = request.user
-    #     profile = None if not hasattr(user, 'profile') else user.profile
-    #
-    #     if not profile:
-    #         errors.append({"Need Image" : "Please go to step 1 and re add your profile image"})
-    #     else:
-    #
-    #         expected = {"primaryroles" : "role",
-    #                  "skills" : "skills",
-    #                    "major" : "major",
-    #                    "bio" : "bio",
-    #                    "numberhoursinput" : "hours_week",
-    #                    "linkedin" : "linkedin",
-    #                    "relcoursework" : "courses",
-    #                    "calaffiliation" : "year",
-    #                    "githuburl" : "github",
-    #                    "personalwebsite" : "website",
-    #                    "interests" : "interests",
-    #
-    #                     }
-    #         checkboxes = {"positions_check[]" : "positions"}
-    #         optional = {}
-    #         # print (expected)
-    #         try:
-    #             ValidatePostItems(expectedFields=expected, optionalFields=optional, request=request, checkboxes=checkboxes, saveObj = profile)
-    #             profile.is_filled=True
-    #             print (request.POST["startupProfile"])
-    #             profile.save()
-    #             if request.POST["startupProfile"] == "no":
-    #                 return HttpResponseRedirect('/')
-    #             else:
-    #                 return HttpResponseRedirect('/startup/update')
-
-
-            # except Exception as e:
-            #     errors.append({"strong" : "missing fields!", "text" : "please fill out all required fields!"})
 
 
     return render(request, 'profile_steps.html', merge_dicts(JOB_CONTEXT, {
