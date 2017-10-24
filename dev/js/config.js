@@ -27,8 +27,7 @@ var bearfoundersRandomString = "sadfjlksdfasdfklsadf";
 
 module.exports.localStorageKeys = {
   "PROFILE_FORM_DATA" : bearfoundersRandomString + "profileFormData",
+  "PROFILE_FILE_DATA" : bearfoundersRandomString + "profileFile",
   "PROFILE_IMAGE_DATA" : bearfoundersRandomString + "profileImage",
   "CURRENT_STEP" : bearfoundersRandomString + "currentStep",
-
-
 }

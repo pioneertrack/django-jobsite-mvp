@@ -34,6 +34,9 @@ from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
 from website.decorators import check_profiles
 
+import base64, uuid
+from django.core.files.base import ContentFile
+
 
 def merge_dicts(*args):
     dc = {}
@@ -240,22 +243,9 @@ def profile_update(request):
                       'next_url': reverse('website:startup_update') if user.is_founder else reverse('website:profile')
                   }))
 
-@login_required
-def profile_breadcrumbs_update_step(request, updatedStep):
-
-    profile = None if not hasattr(request.user, 'profile') else request.user.profile
-    # if profile == None or int(profile.profile_step) < int(updatedStep):
-    #     return JsonResponse({"success" : False, "error" : "No profile on this account"})
-
-    # profile.profile_step = int(updatedStep)
-    # print (updatedStep)
-    # profile.save()
-
-    request.session['userstep'] = str(updatedStep)
-    return JsonResponse({'success': True})
-
 
 @login_required
+@never_cache
 def profile_step(request):
     formDat = {}
     errors = []
@@ -275,11 +265,17 @@ def profile_step(request):
     profile_form = forms.ProfileFormWizard(instance=profile)
 
     if request.method == 'POST':
-        profile_form = forms.ProfileForm(request.POST, request.FILES, instance=profile)
+        # TODO: Implement Base64Encoded form field
+        if request.POST.get('image_decoded'):
+            image = request.POST.get('image_decoded')
+            if image.startswith('data:image'):
+                # base64 encoded image - decode
+                format, imgstr = image.split(';base64,') # format ~= data:image/X,
+                ext = format.split('/')[-1] # guess file extension
+                id = uuid.uuid4()
+                request.FILES[u'image'] = ContentFile(base64.b64decode(imgstr), name = id.urn[9:] + '.' + ext)
 
-        alt_email = profile_form["alt_email"]
-        if user.email == alt_email:
-            profile_form._errors["alt_email"] = ["Account for email address is not registered or already activated."]
+        profile_form = forms.ProfileFormWizard(request.POST, request.FILES, instance=profile)
 
         if profile_form.is_valid():
             profile = profile_form.save(commit=False)

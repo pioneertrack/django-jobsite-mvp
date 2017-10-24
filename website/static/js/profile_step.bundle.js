@@ -10356,10 +10356,9 @@ var bearfoundersRandomString = "sadfjlksdfasdfklsadf";
 
 module.exports.localStorageKeys = {
   "PROFILE_FORM_DATA" : bearfoundersRandomString + "profileFormData",
+  "PROFILE_FILE_DATA" : bearfoundersRandomString + "profileFile",
   "PROFILE_IMAGE_DATA" : bearfoundersRandomString + "profileImage",
   "CURRENT_STEP" : bearfoundersRandomString + "currentStep",
-
-
 }
 
 
@@ -10684,7 +10683,7 @@ var uploadButton = cu.addState(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_UPB
 
 
 function validateFields (stepId, goToStep) {
-  $(stepId + " .required").each(function() {
+  $(stepId + " input.required, " + stepId + " textarea.required, " + stepId + " select.required").each(function() {
     if ($(this).val() == null || $(this).val() === "") {
 
       $(this).closest(".form-group").find("p").css("color", "red");
@@ -10744,14 +10743,11 @@ function notLookingCheckBoxes () {
 $(document).ready(function(){
 
 
-  $('select.select-input').niceSelect();
-  $('select.select-input').bind('change', function(e) {
-      $(this).prev().text($(this).children('option[value="' + $(this).val() + '"]').text())
-  });
 
   $(settings.selectors.LOADING_IMAGE).css("display", "none");
   var form_data = window.localStorage.getItem(settings.localStorageKeys.PROFILE_FORM_DATA) ?
     JSON.parse(window.localStorage.getItem(settings.localStorageKeys.PROFILE_FORM_DATA)) : null
+
   if (form_data !== null) {
     $(form_data).each(function (key, item) {
         if (item.name == 'csrfmiddlewaretoken') {
@@ -10761,18 +10757,23 @@ $(document).ready(function(){
         if (input.length > 0 ) {
           switch (input.prop('type')) {
             case 'text':
-            case 'select':
               input.val(item.value); break;
             case 'checkbox':
-              input.prop('checked', true)
+              input.prop('checked', true);
           }
         } else if ($('textarea[name="' + item.name + '"]').length > 0 ) {
-          $('textarea[name="' + item.name + '"]').text(item.value)
+          $('textarea[name="' + item.name + '"]').text(item.value);
+        } else if ($('select[name="' + item.name + '"]').length > 0 ) {
+          $('select[name="' + item.name + '"]').val(item.value);
         }
       }
     )
   }
 
+  $('select.select-input').niceSelect();
+  $('select.select-input').bind('change', function(e) {
+      $(this).prev().text($(this).children('option[value="' + $(this).val() + '"]').text())
+  });
   // Jump to first anchor
 
   notLookingCheckBoxes();
@@ -10791,9 +10792,14 @@ $(document).ready(function(){
       var form_data = JSON.stringify($('#profile_form').serializeArray())
 
       window.localStorage.setItem(settings.localStorageKeys.PROFILE_FORM_DATA, form_data);
+      if ($('[name="image"]').val().length > 0 ) {
+        window.localStorage.setItem(settings.localStorageKeys.PROFILE_FILE_DATA, $('[name="image"]').val());
+      }
 
       if (stepDirection === "forward") {
-          if (! allinputsFilled("#step-" + (stepNumber + 1) + " " + ".required")) {
+        var stepId = "#step-" + (stepNumber + 1);
+        var selector = stepId + " input.required, " + stepId + " textarea.required, " + stepId + " select.required";
+        if (! allinputsFilled(selector) ) {
             validateFields("#step-" + (stepNumber+1));
             return false;
           }
@@ -10827,58 +10833,34 @@ function allinputsFilled (selector) {
 
 
 $( document ).ready(function () {
-  // console.log();
   $(settings.selectors.FINISH_PROFILE_BUTTON).click(function() {
-    if (! allinputsFilled(".required")) {
+    var selector = "input.required, textarea.required, select.required";
+    if (! allinputsFilled(selector)) {
       validateFields(".missing-data", true);
       event.preventDefault();
     }
+    if ($('[name="image"]').val().length > 0) {
+      $('[name="image"]').val('');
+    }
+    $('[name="image_decoded"]').val(localStorage.getItem(settings.localStorageKeys.PROFILE_IMAGE_DATA));
+    $("#profile_form").submit();
   });
 })
 
 // IMAGE UPLOAD
 
-
 // Profile image watcher
 
 var iu = new __WEBPACK_IMPORTED_MODULE_1__lib_view_controllers_image_instant_upload__["a" /* default */](settings.selectors.PROFILE_BREADCRUMBS_PROPIC_INPUT, false);
 
-
-// iu.addHook(iu.ON_IMAGE_ADDED,  function (f) {
-//   var fd = new FormData();
-//   fd.append("profileimage", f[0]);
-//
-//   $.ajax ({
-//     type: 'POST',
-//      data: fd,
-//      url : settings.routes.PROFILE_STEP_IMAGE_UPLOAD,
-//      async: true,
-//      processData : false,
-//      contentType: false,
-//           cache: false,
-//      success: function (data) {
-//
-//       }
-//     });
-// });
-
 iu.addHook(iu.ON_IMAGE_LOADED,  function (str) {
   // set image
-
   $(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER + " img.image-holder").attr("src", str);
   window.localStorage.setItem(settings.localStorageKeys.PROFILE_IMAGE_DATA, str);
   cu.setState(profileImageView);
-
-
-
-// Save image
-  // var formData = new FormData($("form"));
-
-  // Save image to server
-
 });
 
-var savedImageStr = window.localStorage.getItem(settings.localStorageKeys.PROFILE_IMAGE_DATA);
+var savedImageStr = localStorage.getItem(settings.localStorageKeys.PROFILE_IMAGE_DATA);
 if (savedImageStr != null) {
   $(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER + " img.image-holder").attr("src", savedImageStr);
   $(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_INPUT).removeClass("required");
@@ -10896,7 +10878,7 @@ $(settings.selectors.DELETE_ICON).click(function () {
 // On add  startup
 $(settings.selectors.ADD_STARTUP_BUTTON).click(function() {
   $(settings.selectors.STARTUP_PROFILE_FORM_VAL).val("yes");
-  $("form").submit();
+  $("#profile_form").submit();
 })
 
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))

@@ -70,6 +70,7 @@ class PeopleDocument(DocType):
 
     class Meta:
         model = Profile
+        ignore_signals = False
         fields = [
             'is_filled',
             'hours_week',
@@ -80,7 +81,6 @@ class PeopleDocument(DocType):
             'interests',
             'courses',
         ]
-
 
 @startup.doc_type
 class StartupDocument(DocType):

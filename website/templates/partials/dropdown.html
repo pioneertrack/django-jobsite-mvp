@@ -5,9 +5,9 @@
   <div class="dropdown-selection-wrapper">
     <p class="dropdown-selection">  <span class="red"> {{ ddselectionlabel }} </span> </p>
   </div>
-  <select  name="{{ ddclass }}" class="select-input middle" >
+  <select  name="{{ ddclass }}" class="select-input middle {% if formitemRequired %}required{% endif %}" {% if formitemRequired %}required="required"{% endif %} >
     <div>
-      <option data-display="Dropdown">Nothing</option>
+      <option value data-display="Dropdown">Nothing</option>
       {% for x in ddlist %}
        <option value="{{ x.0 }}">{{ x.1 }}</option>
       {% endfor %}

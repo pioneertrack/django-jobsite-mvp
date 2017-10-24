@@ -12,9 +12,23 @@ from crispy_forms.layout import Layout, Field, HTML
 import logging
 # convert the errors to text
 from django.utils.encoding import force_text
+import base64, uuid
+from django.core.files.base import ContentFile
+from rest_framework import serializers
 
 log = logging.getLogger(__name__)
 logging.basicConfig(filename='errorlog.txt')
+
+
+class Base64ImageField(serializers.ImageField):
+    def to_internal_value(self, data):
+        if isinstance(data, str) and data.startswith('data:image'):
+            # base64 encoded image - decode
+            format, imgstr = data.split(';base64,') # format ~= data:image/X,
+            ext = format.split('/')[-1] # guess file extension
+            id = uuid.uuid4()
+            data = ContentFile(base64.b64decode(imgstr), name = id.urn[9:] + '.' + ext)
+        return super(Base64ImageField, self).to_internal_value(data)
 
 
 class NewRegistrationForm(RegistrationFormUniqueEmail):
@@ -69,22 +83,14 @@ class NewRegistrationForm(RegistrationFormUniqueEmail):
 
 
 class ProfileFormWizard(forms.ModelForm):
-    image = forms.ImageField(label='Profile image', error_messages={'invalid': "Image files only"},
+    image = forms.ImageField(label='Profile image', required=True, error_messages={'invalid': "Image files only"},
                              widget=forms.FileInput)
+    image_decoded = forms.CharField(label='Profile image')
 
     def __init__(self, *args, **kwargs):
         super(ProfileFormWizard, self).__init__(*args, **kwargs)
-        self.initial['alt_email'] = None
         if self.instance.image and len(self.instance.image.name) > 0:
             self.fields['image'].required = False
-
-    def clean_alt_email(self):
-        email = self.cleaned_data['alt_email']
-        if email != None and email != '':
-            result = profile.Profile.objects.filter(alt_email=email)
-            if result.count() > 1 or (result.count() == 1 and result[0].id != self.instance.id):
-                raise ValidationError(message='Alt email already used')
-        return email
 
     class Meta:
         model = profile.Profile
@@ -105,9 +111,11 @@ class ProfileForm(forms.ModelForm):
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        self.helper.layout = Layout(Field('image', template='forms/image-input.html' ))
-        self.fields['bio'].widget.attrs.update({'placeholder': 'I am a senior who enjoys tech and education. I am looking forward to working with startups and would love to get mentored by Cal alums who have experience with operations.'})
-        self.fields['skills'].widget.attrs.update({'placeholder': 'Python, javascript, SQL, data analysis, financial modeling, photography, UX/UI, Microsoft office, social media…'})
+        self.helper.layout = Layout(Field('image', template='forms/image-input.html'))
+        self.fields['bio'].widget.attrs.update({
+                                                   'placeholder': 'I am a senior who enjoys tech and education. I am looking forward to working with startups and would love to get mentored by Cal alums who have experience with operations.'})
+        self.fields['skills'].widget.attrs.update({
+                                                      'placeholder': 'Python, javascript, SQL, data analysis, financial modeling, photography, UX/UI, Microsoft office, social media…'})
         self.fields['interests'].widget.attrs.update({'placeholder': 'Sports, writing, edtech, travel, health'})
         self.fields['courses'].widget.attrs.update({'placeholder': 'UGBA 104, CS70, Econ 100B'})
 
@@ -153,8 +161,7 @@ class FounderForm(forms.ModelForm):
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        self.helper.layout = Layout(Field('logo', template='forms/image-input.html' ))
-
+        self.helper.layout = Layout(Field('logo', template='forms/image-input.html'))
 
     def clean_alt_email(self):
         email = self.cleaned_data['alt_email']
@@ -186,7 +193,8 @@ class ExperienceForm(forms.ModelForm):
         super(ExperienceForm, self).__init__(*args, **kwargs)
         self.fields['company'].widget.attrs.update({'placeholder': 'Visa'})
         self.fields['position'].widget.attrs.update({'placeholder': 'Analyst'})
-        self.fields['description'].widget.attrs.update({'placeholder': 'Used SQL to create weekly reports to focus on core team metrics.'})
+        self.fields['description'].widget.attrs.update(
+            {'placeholder': 'Used SQL to create weekly reports to focus on core team metrics.'})
 
     def is_valid(self):
         log.info(force_text(self.errors))
