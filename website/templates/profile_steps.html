@@ -13,9 +13,9 @@
 {% endblock %}
 
 {% block content %}
-  <div class="preloader" style="background-image: url({% static 'images/loading_icon.gif' %})">
 
-  </div>
+  <div class="preloader" style="background-image: url({% static 'images/loading_icon.gif' %})"></div>
+
   <div class="container-wrapper">
     <div class="container profile-breadcrumbs-page">
 
@@ -167,14 +167,9 @@
     </div>
   </div>
 
-{% endblock %}
-
+{% endblock content %}
 
 {% block js %}
-  {#  <script src="{% static 'js/app.js' %}"></script>#}
-  {#  <script src="{% static 'js/profile_step.js' %}"></script>#}
-  {#  <script src="{% static 'js/vendor.js' %}"></script>#}
-
   <script src="{% static 'js/profile_step.bundle.js' %}"></script>
   <script src="{% static 'js/vendor.bundle.js' %}"></script>
 {% endblock %}

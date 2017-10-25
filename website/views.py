@@ -214,6 +214,7 @@ def profile_step(request):
                 user.set_first_login()
                 return HttpResponseRedirect('/')
             else:
+                user.set_first_login()
                 user.set_is_founder()
                 return HttpResponseRedirect('/startup/update')
 

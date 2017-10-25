@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import redirect
-
+from website.context_processors import is_mobile
 
 def check_profiles(view_func):
     def _wrapped_view_func(request, *args, **kwargs):
@@ -9,9 +9,10 @@ def check_profiles(view_func):
         p = lambda val: not val.profile.is_filled if hasattr(val, 'profile') else True
         f = lambda val: not val.founder.is_filled if hasattr(val, 'founder') else True
         if user.first_login:
+            mobile = is_mobile(request)['is_mobile']
             if user.is_individual and p(user):
                 messages.success(request, "Welcome to BearFounders! Please tell us about yourself.")
-                redirect_url = 'website:profile_step'
+                redirect_url = 'website:profile_update' if mobile else 'website:profile_step'
             elif user.is_founder and f(user):
                 messages.success(request, "Welcome to BearFounders! Please tell us about you startup.")
                 redirect_url ='website:startup_update'

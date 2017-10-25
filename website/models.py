@@ -70,7 +70,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     def set_is_founder(self):
         if not self.is_founder:
-            self.first_login = True
+            self.is_founder = True
             self.save()
 
     def get_username(self):
