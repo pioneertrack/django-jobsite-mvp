@@ -10,6 +10,8 @@ def check_profiles(view_func):
         f = lambda val: not val.founder.is_filled if hasattr(val, 'founder') else True
         if user.first_login:
             mobile = is_mobile(request)['is_mobile']
+            if not user.is_individual:
+                user.set_is_individual()
             if user.is_individual and p(user):
                 messages.success(request, "Welcome to BearFounders! Please tell us about yourself.")
                 redirect_url = 'website:profile_update' if mobile else 'website:profile_step'

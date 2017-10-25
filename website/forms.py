@@ -33,8 +33,6 @@ logging.basicConfig(filename='errorlog.txt')
 
 class NewRegistrationForm(RegistrationFormUniqueEmail):
     captcha = NoReCaptchaField()
-    create_both_profiles = forms.BooleanField(label='Both', required=False,
-                                              widget=forms.CheckboxInput(attrs={'id': 'select-both-profiles'}))
 
     def __init__(self, *args, **kwargs):
         super(RegistrationFormUniqueEmail, self).__init__(*args, **kwargs)
@@ -65,16 +63,9 @@ class NewRegistrationForm(RegistrationFormUniqueEmail):
             )
         return submitted_data
 
-    def clean(self):
-        cleaned_data = self.cleaned_data
-        if not cleaned_data.get('is_individual') and not cleaned_data.get('is_founder'):
-            self.add_error('create_both_profiles', 'You must be representing an individual profile or startup')
-        return cleaned_data
-
     class Meta:
         model = models.MyUser
-        fields = ['first_name', 'last_name', 'email', 'is_individual', 'is_founder', 'create_both_profiles',
-                  'password1', 'password2']
+        fields = ['first_name', 'last_name', 'email', 'password1', 'password2']
         labels = {
             'is_individual': 'Create individual profile',
             'is_founder': 'Create startup profile',
