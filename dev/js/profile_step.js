@@ -133,7 +133,9 @@ $(document).ready(function(){
 
 
   validateFields(".missing-data", true);
-  $('#smartwizard').smartWizard();
+  $('#smartwizard').smartWizard({
+    keyNavigation: false,
+  });
   $("#smartwizard").on("leaveStep", function(e, anchorObject, stepNumber, stepDirection) {
       var form_data = JSON.stringify($('#profile_form').serializeArray())
 

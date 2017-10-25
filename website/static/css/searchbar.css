@@ -531,6 +531,13 @@
 
 }
 
+.nice-select.middle .list {
+  color: #333;
+  max-height: 60vh;
+  overflow-y: auto;
+
+}
+
 .nice-select.middle::after {
   display: inline-block;
   content: '\f107';
