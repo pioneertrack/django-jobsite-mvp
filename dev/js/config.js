@@ -15,7 +15,7 @@ module.exports.selectors = {
   "ADD_STARTUP_BUTTON" : ".add-startup-then-finish",
   "STARTUP_PROFILE_FORM_VAL" : ".startupProfileInput",
   "LOADING_IMAGE" : ".preloader",
-  "POSITION_CHECK_SELECTOR" : "input[name='positions_check[]']"
+  "POSITION_CHECK_SELECTOR" : "input[name='positions']"
 }
 
 module.exports.routes = {
@@ -27,7 +27,6 @@ var bearfoundersRandomString = "sadfjlksdfasdfklsadf";
 
 module.exports.localStorageKeys = {
   "PROFILE_FORM_DATA" : bearfoundersRandomString + "profileFormData",
-  "PROFILE_FILE_DATA" : bearfoundersRandomString + "profileFile",
   "PROFILE_IMAGE_DATA" : bearfoundersRandomString + "profileImage",
   "CURRENT_STEP" : bearfoundersRandomString + "currentStep",
 }

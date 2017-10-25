@@ -92,10 +92,22 @@
     // Open/close
     $(document).on('click.nice_select', '.nice-select', function(event) {
       var $dropdown = $(this);
-      
+
+      $('.nice-select .list').removeAttr('style');
+
       $('.nice-select').not($dropdown).removeClass('open');
+
+      // Fix height if not in window
+      var $list = $dropdown.find('.list');
+      var $bottom = window.pageYOffset + window.innerHeight;
+      var $list_bottom = $list.offset().top + $list.position().top + $list.outerHeight();
+      if ($list_bottom > $bottom) {
+        var $diff = $list_bottom - $bottom + 20;
+        $list.outerHeight($list.outerHeight() - $diff);
+      }
+
       $dropdown.toggleClass('open');
-      
+
       if ($dropdown.hasClass('open')) {
         $dropdown.find('.option');  
         $dropdown.find('.focus').removeClass('focus');

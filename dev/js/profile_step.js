@@ -2,22 +2,9 @@ var settings = require('./config');
 
 require("jquery");
 require("imports-loader?jQuery=jquery,$=jquery,this=>window!./jquery.nice-select.js");
+require("jquery-mousewheel")($);
+require('malihu-custom-scrollbar-plugin')($);
 require("smartwizard/dist/js/jquery.smartWizard.js");
-
-var DDService = require("bootstrap-dropdown-selector");
-
-var ddPrimaryService = new DDService({'rootModuleSelector' : '.primaryroles', 'inputTargetName' : "primaryroles"});
-var ddMajors = new DDService({'inputTargetName' : 'major', 'rootModuleSelector' : '.primarymajorMod'});
-var ddHours = new DDService({'inputTargetName' : 'numberhoursinput', 'rootModuleSelector' : '.hoursavailableMod'});
-var ddStartup = new DDService({'inputTargetName' : 'hasstartup', 'rootModuleSelector' : '.hasstartupToRegister'});
-var ddCalAffil = new DDService({'inputTargetName' : 'calaffiliation', 'rootModuleSelector' : '.calaffiliation'});
-// Now set dropdowns
-var allDropdowns = [ddPrimaryService, ddMajors, ddHours, ddStartup];
-ddPrimaryService.listenForDropDown();
-ddMajors.listenForDropDown();
-ddHours.listenForDropDown();
-ddStartup.listenForDropDown();
-ddCalAffil.listenForDropDown();
 
 import ComponentStateChanger from './lib/view-controllers/component-state-changer.js';
 
@@ -31,11 +18,9 @@ var uploadButton = cu.addState(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_UPB
 function validateFields (stepId, goToStep) {
   $(stepId + " input.required, " + stepId + " textarea.required, " + stepId + " select.required").each(function() {
     if ($(this).val() == null || $(this).val() === "") {
-
       $(this).closest(".form-group").find("p").css("color", "red");
-      if (goToStep) {
-        // console.log($(this).closest('.step-section').attr("id") + " is this step");
-      }
+    } else {
+      $(this).closest(".form-group").find("p").removeAttr('style');
     }
   });
 }
@@ -75,12 +60,6 @@ function notLookingCheckBoxes () {
         }
       });
     }
-    // else {
-    //     $(this).closest(".form-group").find("label").css('color', "black");
-    //     $(settings.selectors.POSITION_CHECK_SELECTOR).each(function() {
-    //
-    //     });
-    // }
   })
 }
 
@@ -88,11 +67,9 @@ function notLookingCheckBoxes () {
 
 $(document).ready(function(){
 
-
-
   $(settings.selectors.LOADING_IMAGE).css("display", "none");
-  var form_data = window.localStorage.getItem(settings.localStorageKeys.PROFILE_FORM_DATA) ?
-    JSON.parse(window.localStorage.getItem(settings.localStorageKeys.PROFILE_FORM_DATA)) : null
+  var form_data = localStorage.getItem(settings.localStorageKeys.PROFILE_FORM_DATA) ?
+    JSON.parse(localStorage.getItem(settings.localStorageKeys.PROFILE_FORM_DATA)) : null
 
   if (form_data !== null) {
     $(form_data).each(function (key, item) {
@@ -120,43 +97,39 @@ $(document).ready(function(){
   $('select.select-input').bind('change', function(e) {
       $(this).prev().text($(this).children('option[value="' + $(this).val() + '"]').text())
   });
-  // Jump to first anchor
+  $(".nice-select ul.list").mCustomScrollbar({
+        theme: "3d-thick-dark",
+        scrollInertia: 100,
+  });
+
 
   notLookingCheckBoxes();
-  /* Since the forms have been updated, reset the dropdown labels */
-  ddPrimaryService.resetDropDowns();
-  ddMajors.resetDropDowns();
-  ddHours.resetDropDowns();
-  ddStartup.resetDropDowns();
-  ddCalAffil.resetDropDowns();
 
-
+  var current_step = localStorage.getItem(settings.localStorageKeys.CURRENT_STEP) ?
+    localStorage.getItem(settings.localStorageKeys.CURRENT_STEP) : '0';
+  current_step = parseInt(current_step.match(/\d+/));
 
   validateFields(".missing-data", true);
   $('#smartwizard').smartWizard({
-    keyNavigation: false,
+    showStepURLhash: false,
+    selected: current_step,
   });
   $("#smartwizard").on("leaveStep", function(e, anchorObject, stepNumber, stepDirection) {
       var form_data = JSON.stringify($('#profile_form').serializeArray())
-
-      window.localStorage.setItem(settings.localStorageKeys.PROFILE_FORM_DATA, form_data);
-      if ($('[name="image"]').val().length > 0 ) {
-        window.localStorage.setItem(settings.localStorageKeys.PROFILE_FILE_DATA, $('[name="image"]').val());
-      }
+      localStorage.setItem(settings.localStorageKeys.PROFILE_FORM_DATA, form_data);
 
       if (stepDirection === "forward") {
-        var stepId = "#step-" + (stepNumber + 1);
+        var stepId = "#step-" + stepNumber;
         var selector = stepId + " input.required, " + stepId + " textarea.required, " + stepId + " select.required";
-        if (! allinputsFilled(selector) ) {
-            validateFields("#step-" + (stepNumber+1));
+        validateFields("#step-" + stepNumber);
+        if (allinputsFilled(selector) === false) {
             return false;
           }
-
        }
        var nextStep;
        if (stepDirection === "forward") nextStep = stepNumber + 1;
        else nextStep = stepNumber - 1;
-       window.localStorage.setItem(settings.localStorageKeys.CURRENT_STEP, "step-" + (nextStep + 1))
+       localStorage.setItem(settings.localStorageKeys.CURRENT_STEP, "step-" + nextStep)
        return true;
     });
 });
@@ -172,7 +145,7 @@ function allinputsFilled (selector) {
         $("input[name='" + $(this).attr("name") + "']").closest(".form-group").find("label").css("color", "red");
         allFilled = false;
     }
-    if ($(this).val() == null || $(this).val() === "") {
+    if ($(this).val() === null || $(this).val() === "") {
       allFilled = false;
     }
   });
@@ -181,6 +154,19 @@ function allinputsFilled (selector) {
 
 
 $( document ).ready(function () {
+  $(settings.selectors.ADD_STARTUP_BUTTON).click(function() {
+      var selector = "input.required, textarea.required, select.required";
+      if (! allinputsFilled(selector)) {
+        validateFields(".missing-data", true);
+        event.preventDefault();
+      }
+      if ($('[name="image"]').val().length > 0) {
+        $('[name="image"]').val('');
+      }
+      $('[name="image_decoded"]').val(localStorage.getItem(settings.localStorageKeys.PROFILE_IMAGE_DATA));
+      $(settings.selectors.STARTUP_PROFILE_FORM_VAL).val("yes");
+      $("#profile_form").submit();
+  });
   $(settings.selectors.FINISH_PROFILE_BUTTON).click(function() {
     var selector = "input.required, textarea.required, select.required";
     if (! allinputsFilled(selector)) {
@@ -204,7 +190,7 @@ var iu = new ImageUploader(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_INPUT, 
 iu.addHook(iu.ON_IMAGE_LOADED,  function (str) {
   // set image
   $(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER + " img.image-holder").attr("src", str);
-  window.localStorage.setItem(settings.localStorageKeys.PROFILE_IMAGE_DATA, str);
+  localStorage.setItem(settings.localStorageKeys.PROFILE_IMAGE_DATA, str);
   cu.setState(profileImageView);
 });
 
@@ -219,12 +205,7 @@ if (savedImageStr != null) {
 /* driver code */
 $(settings.selectors.DELETE_ICON).click(function () {
   iu.deleteFiles();
-  window.localStorage.removeItem(settings.localStorageKeys.PROFILE_IMAGE_DATA);
+  localStorage.removeItem(settings.localStorageKeys.PROFILE_IMAGE_DATA);
   cu.setState(uploadButton);
+  $('input[name="image"]').addClass('required');
 });
-
-// On add  startup
-$(settings.selectors.ADD_STARTUP_BUTTON).click(function() {
-  $(settings.selectors.STARTUP_PROFILE_FORM_VAL).val("yes");
-  $("#profile_form").submit();
-})

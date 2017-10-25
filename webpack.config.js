@@ -15,6 +15,13 @@ module.exports = {
     filename: '[name].bundle.js',
   },
 
+	module: {
+		rules: [
+			{ test: /jquery-mousewheel/, loader: "imports-loader?define=>false&this=>window" },
+			{ test: /malihu-custom-scrollbar-plugin/, loader: "imports-loader?define=>false&this=>window" }
+		]
+	},
+
   plugins: [
     new webpack.ProvidePlugin({
       $: 'jquery',

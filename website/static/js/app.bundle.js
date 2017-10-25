@@ -10344,7 +10344,7 @@ module.exports.selectors = {
   "ADD_STARTUP_BUTTON" : ".add-startup-then-finish",
   "STARTUP_PROFILE_FORM_VAL" : ".startupProfileInput",
   "LOADING_IMAGE" : ".preloader",
-  "POSITION_CHECK_SELECTOR" : "input[name='positions_check[]']"
+  "POSITION_CHECK_SELECTOR" : "input[name='positions']"
 }
 
 module.exports.routes = {
@@ -10356,7 +10356,6 @@ var bearfoundersRandomString = "sadfjlksdfasdfklsadf";
 
 module.exports.localStorageKeys = {
   "PROFILE_FORM_DATA" : bearfoundersRandomString + "profileFormData",
-  "PROFILE_FILE_DATA" : bearfoundersRandomString + "profileFile",
   "PROFILE_IMAGE_DATA" : bearfoundersRandomString + "profileImage",
   "CURRENT_STEP" : bearfoundersRandomString + "currentStep",
 }
@@ -10563,7 +10562,80 @@ __webpack_require__ (0);
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ }),
-/* 4 */
+/* 4 */,
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_view_controllers_image_instant_upload__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lib_view_controllers_component_state_changer_js__ = __webpack_require__(3);
+var settings = __webpack_require__(1);
+
+
+var iu = new __WEBPACK_IMPORTED_MODULE_0__lib_view_controllers_image_instant_upload__["a" /* default */](settings.selectors.PROFILE_BREADCRUMBS_PROPIC_INPUT, null);
+
+
+var cu = new __WEBPACK_IMPORTED_MODULE_1__lib_view_controllers_component_state_changer_js__["a" /* default */]();
+var loadingState = new __WEBPACK_IMPORTED_MODULE_1__lib_view_controllers_component_state_changer_js__["a" /* default */]();
+
+var loadingIndicator = loadingState.addState(settings.selectors.PROFILE_RELOAD_PAGE_INDICATOR);
+loadingState.addState(settings.selectors.FORM_WRAPPER);
+
+
+
+var profileImageView = cu.addState(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER);
+var cancelButton = cu.addState(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_CANCEL);
+var uploadButton = cu.addState(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_UPBUTTON);
+
+var DDService = __webpack_require__(6);
+
+var ddPrimaryService = new DDService();
+var ddMajors = new DDService();
+var ddHours = new DDService();
+
+
+ddPrimaryService.listenForDropDown({'rootModuleSelector' : '.primaryroles', 'inputTargetName' : "primaryroles"});
+ddMajors.listenForDropDown({'inputTargetName' : 'major', 'rootModuleSelector' : '.primarymajorMod'});
+ddMajors.listenForDropDown({'inputTargetName' : 'numhours', 'rootModuleSelector' : '.hoursavailableMod'});
+// ddHours.listenForDropDown({'inputTargetName' : 'numhours'});
+
+iu.addHook(iu.ON_IMAGE_ADDED,  function () {
+
+});
+
+iu.addHook(iu.ON_IMAGE_LOADED,  function (str) {
+  // set image
+  $(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER + " img.image-holder").attr("src", str);
+  cu.setState(profileImageView);
+});
+
+
+/* driver code */
+$(settings.selectors.DELETE_ICON).click(function () {
+  cu.setState(uploadButton);
+  iu.deleteFiles();
+});
+
+
+
+// Listen for click on
+$(settings.selectors.PROFILE_BREADCRUMBS_MENU + " " + settings.selectors.PROFILE_BREADCRUMBS_ENABLED_MENU_ITEM).click(function() {
+  loadingState.setState(loadingIndicator);
+  $.get(settings.routes.PROFILE_STEP_UPDATE_ROUTE + ($( this ).index() + 1), function(resp) {
+    // Reload page
+    if (resp.success != true) return;
+
+    var loc = window.location;
+    window.location = loc.protocol + '//' + loc.host + loc.pathname + loc.search;
+
+  });
+})
+
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {/**
@@ -10642,78 +10714,6 @@ module.exports = function (options) {
 function defaultFor(arg, val) { return typeof arg !== 'undefined' ? arg : val; }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_view_controllers_image_instant_upload__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lib_view_controllers_component_state_changer_js__ = __webpack_require__(3);
-var settings = __webpack_require__(1);
-
-
-var iu = new __WEBPACK_IMPORTED_MODULE_0__lib_view_controllers_image_instant_upload__["a" /* default */](settings.selectors.PROFILE_BREADCRUMBS_PROPIC_INPUT, null);
-
-
-var cu = new __WEBPACK_IMPORTED_MODULE_1__lib_view_controllers_component_state_changer_js__["a" /* default */]();
-var loadingState = new __WEBPACK_IMPORTED_MODULE_1__lib_view_controllers_component_state_changer_js__["a" /* default */]();
-
-var loadingIndicator = loadingState.addState(settings.selectors.PROFILE_RELOAD_PAGE_INDICATOR);
-loadingState.addState(settings.selectors.FORM_WRAPPER);
-
-
-
-var profileImageView = cu.addState(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER);
-var cancelButton = cu.addState(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_CANCEL);
-var uploadButton = cu.addState(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_UPBUTTON);
-
-var DDService = __webpack_require__(4);
-
-var ddPrimaryService = new DDService();
-var ddMajors = new DDService();
-var ddHours = new DDService();
-
-
-ddPrimaryService.listenForDropDown({'rootModuleSelector' : '.primaryroles', 'inputTargetName' : "primaryroles"});
-ddMajors.listenForDropDown({'inputTargetName' : 'major', 'rootModuleSelector' : '.primarymajorMod'});
-ddMajors.listenForDropDown({'inputTargetName' : 'numhours', 'rootModuleSelector' : '.hoursavailableMod'});
-// ddHours.listenForDropDown({'inputTargetName' : 'numhours'});
-
-iu.addHook(iu.ON_IMAGE_ADDED,  function () {
-
-});
-
-iu.addHook(iu.ON_IMAGE_LOADED,  function (str) {
-  // set image
-  $(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER + " img.image-holder").attr("src", str);
-  cu.setState(profileImageView);
-});
-
-
-/* driver code */
-$(settings.selectors.DELETE_ICON).click(function () {
-  cu.setState(uploadButton);
-  iu.deleteFiles();
-});
-
-
-
-// Listen for click on
-$(settings.selectors.PROFILE_BREADCRUMBS_MENU + " " + settings.selectors.PROFILE_BREADCRUMBS_ENABLED_MENU_ITEM).click(function() {
-  loadingState.setState(loadingIndicator);
-  $.get(settings.routes.PROFILE_STEP_UPDATE_ROUTE + ($( this ).index() + 1), function(resp) {
-    // Reload page
-    if (resp.success != true) return;
-
-    var loc = window.location;
-    window.location = loc.protocol + '//' + loc.host + loc.pathname + loc.search;
-
-  });
-})
-
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ })
 /******/ ]);
