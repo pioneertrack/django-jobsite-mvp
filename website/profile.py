@@ -226,7 +226,7 @@ class Profile(models.Model):
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if '5' in self.positions:
             self.positions = ['5']
-        super(Profile, self).save(force_insert, force_update, using , update_fields)
+        super(Profile, self).save(force_insert, force_update, using, update_fields)
 
     def check_is_filled(self, save=True):
         if len(self.bio) > 1 and (len(self.skills) > 0 or self.experience_set.count() > 0) and (
@@ -282,8 +282,8 @@ class Founder(models.Model):
 
     def check_is_filled(self, save=True):
         if len(self.description) > 1 and (not self.logo is None) and (len(self.startup_name) > 0) and (
-            not self.stage is '') and (not self.employee_count is None) and (len(self.description) > 0) and (
-            not self.field is ''):
+                not self.stage is '') and (not self.employee_count is None) and (len(self.description) > 0) and (
+                not self.field is ''):
             self.is_filled = True
         else:
             self.is_filled = False

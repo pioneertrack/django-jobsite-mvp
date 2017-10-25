@@ -171,6 +171,61 @@ def startup_profile(request):
 
 @login_required
 @never_cache
+def profile_step(request):
+    user = request.user
+    formDat = {}
+    errors = []
+    formDat["hours_available"] = prof.HOURS_AVAILABLE
+    formDat["primary_majors"] = prof.MAJORS
+    formDat["position_types"] = prof.POSITIONS
+    formDat["primary_roles"] = prof.PRIMARY_ROLE
+    formDat["cal_affiliation"] = prof.YEAR_IN_SCHOOL_CHOICES
+    formDat["startup_history"] = (
+        ("has_startup_exp", "I have worked at a startup before"),
+        ("has_funding_exp", "I have experience funding a startup")
+    )
+    formDat["hasStartup"] = (("yes", 'Yes'), ("no", 'No'))
+
+    profile = None if not hasattr(user, 'profile') else user.profile
+    if profile is None:
+        user = MyUser.objects.get(pk=request.user.id)
+        profile = prof.Profile(user=user)
+
+    profile_form = forms.ProfileFormWizard(instance=profile)
+
+    if request.method == 'POST':
+        # TODO: Implement Base64EncodedImage form field
+        if request.POST.get('image_decoded'):
+            image = request.POST.get('image_decoded')
+            if image.startswith('data:image'):
+                # base64 encoded image - decode
+                format, imgstr = image.split(';base64,')  # format ~= data:image/X,
+                ext = format.split('/')[-1]  # guess file extension
+                id = uuid.uuid4()
+                request.FILES[u'image'] = ContentFile(base64.b64decode(imgstr), name=id.urn[9:] + '.' + ext)
+
+        profile_form = forms.ProfileFormWizard(request.POST, request.FILES, instance=profile)
+
+        if profile_form.is_valid():
+            profile = profile_form.save(commit=False)
+            profile.check_is_filled()
+
+            if request.POST["startupProfile"] == "no":
+                user.set_first_login()
+                return HttpResponseRedirect('/')
+            else:
+                user.set_is_founder()
+                return HttpResponseRedirect('/startup/update')
+
+    return render(request, 'profile_steps.html', merge_dicts(JOB_CONTEXT, {
+        'formDat': formDat,
+        'errors': errors,
+        'form': profile_form,
+    }))
+
+
+@login_required
+@never_cache
 def profile_update(request):
     user = request.user
     is_first_login = user.first_login
@@ -189,6 +244,10 @@ def profile_update(request):
                                               max_num=5, extra=1)
 
     profile = None if not hasattr(user, 'profile') else user.profile
+    if profile is None:
+        user = MyUser.objects.get(pk=request.user.id)
+        profile = prof.Profile(user=user)
+
     profile_form = forms.ProfileForm(instance=profile)
     experience_form = ExperienceFormSet(instance=profile)
 
@@ -202,9 +261,6 @@ def profile_update(request):
 
         if profile_form.is_valid() and experience_form.is_valid():
             profile = profile_form.save(commit=False)
-            if not hasattr(profile, 'user'):
-                profile.user = user
-            profile.save()
 
             for k in experience_form.deleted_forms:
                 s = k.save(commit=False)
@@ -246,61 +302,6 @@ def profile_update(request):
 
 @login_required
 @never_cache
-def profile_step(request):
-    formDat = {}
-    errors = []
-    formDat["hours_available"] = prof.HOURS_AVAILABLE
-    formDat["primary_majors"] = prof.MAJORS
-    formDat["position_types"] = prof.POSITIONS
-    formDat["primary_roles"] = prof.PRIMARY_ROLE
-    formDat["cal_affiliation"] = prof.YEAR_IN_SCHOOL_CHOICES
-    formDat["startup_history"] = (
-        ("has_startup_exp", "I have worked at a startup before"),
-        ("has_funding_exp", "I have experience funding a startup")
-    )
-    formDat["hasStartup"] = (("yes", 'Yes'), ("no" , 'No'))
-
-    user = request.user
-    profile = None if not hasattr(user, 'profile') else user.profile
-    profile_form = forms.ProfileFormWizard(instance=profile)
-
-    if request.method == 'POST':
-        # TODO: Implement Base64Encoded form field
-        if request.POST.get('image_decoded'):
-            image = request.POST.get('image_decoded')
-            if image.startswith('data:image'):
-                # base64 encoded image - decode
-                format, imgstr = image.split(';base64,') # format ~= data:image/X,
-                ext = format.split('/')[-1] # guess file extension
-                id = uuid.uuid4()
-                request.FILES[u'image'] = ContentFile(base64.b64decode(imgstr), name = id.urn[9:] + '.' + ext)
-
-        profile_form = forms.ProfileFormWizard(request.POST, request.FILES, instance=profile)
-
-        if profile_form.is_valid():
-            profile = profile_form.save(commit=False)
-            if not hasattr(profile, 'user'):
-                profile.user = user
-            profile.save()
-            profile.check_is_filled()
-
-            if request.POST["startupProfile"] == "no":
-                user.set_first_login()
-                return HttpResponseRedirect('/')
-            else:
-                user.set_is_founder()
-                return HttpResponseRedirect('/startup/update')
-
-
-    return render(request, 'profile_steps.html', merge_dicts(JOB_CONTEXT, {
-        'formDat' : formDat,
-        'errors' : errors,
-        'form': profile_form,
-    }))
-
-
-@login_required
-@never_cache
 def startup_update(request):
     user = request.user
     is_first_login = user.first_login
@@ -315,6 +316,10 @@ def startup_update(request):
                                                'description': 'Job description'}, max_num=5, extra=1)
 
     founder = None if not hasattr(user, 'founder') else user.founder
+    if founder is None:
+        user = MyUser.objects.get(pk=request.user.id)
+        founder = prof.Founder(user=user)
+
     startup_form = forms.FounderForm(instance=founder)
     funding_form = FundingFormSet(instance=founder)
     job_form = JobFormSet(instance=founder)
@@ -325,9 +330,6 @@ def startup_update(request):
         job_form = JobFormSet(request.POST, instance=founder)
         if profile_form.is_valid() and job_form.is_valid() and funding_form.is_valid():
             founder = profile_form.save(commit=False)
-            if not hasattr(founder, 'user'):
-                founder.user = user
-            founder.save()
             if not user.is_founder:
                 user.is_founder = True
                 user.save()
