@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.template import Context
 from django.urls import reverse_lazy
 from registration.backends.hmac.views import RegistrationView
@@ -134,13 +134,13 @@ def user_profile(request):
         positions.append(prof.POSITIONS.__getitem__(int(item))[1])
 
     return render(request, 'profile.html', merge_dicts(JOB_CONTEXT, {
-                      'profile': True,
-                      'experience': experience,
-                      'reset': True,
-                      'last_login': last_login,
-                      'positions_display': positions,
-                      'cd': cd,
-                  }))
+        'profile': True,
+        'experience': experience,
+        'reset': True,
+        'last_login': last_login,
+        'positions_display': positions,
+        'cd': cd,
+    }))
 
 
 @login_required
@@ -160,13 +160,13 @@ def startup_profile(request):
     #     request.user.set_first_login()
 
     return render(request, 'founder.html', merge_dicts(JOB_CONTEXT, {
-                      'profile': True,
-                      'jobs': jobs,
-                      'reset': True,
-                      'total_funding': total_funding.get('total'),
-                      'last_login': last_login,
-                      'cd': cd,
-                  }))
+        'profile': True,
+        'jobs': jobs,
+        'reset': True,
+        'total_funding': total_funding.get('total'),
+        'last_login': last_login,
+        'cd': cd,
+    }))
 
 
 @login_required
@@ -210,13 +210,14 @@ def profile_step(request):
             profile = profile_form.save(commit=False)
             profile.check_is_filled()
 
+            request.session['clear_client_profile'] = True
             if request.POST["startupProfile"] == "no":
                 user.set_first_login()
-                return HttpResponseRedirect('/')
+                response = HttpResponseRedirect('/')
             else:
-                user.set_first_login()
-                user.set_is_founder()
-                return HttpResponseRedirect('/startup/update')
+                response = HttpResponseRedirect('/startup/update')
+            response.set_cookie('clear_profile', '1')
+            return response
 
     return render(request, 'profile_steps.html', merge_dicts(JOB_CONTEXT, {
         'formDat': formDat,
@@ -290,21 +291,27 @@ def profile_update(request):
             messages.error(request, "There was an error processing your request")
 
     return render(request, 'profile_form.html', merge_dicts(JOB_CONTEXT, {
-                      'profile_form': profile_form,
-                      'experience': experience_form,
-                      'show_exp': True,
-                      'reset': True,
-                      'title': 'Update your profile',
-                      'is_first_login': is_first_login,
-                      'profile_edit': True,
-                      'next_url': reverse('website:startup_update') if user.is_founder else reverse('website:profile')
-                  }))
+        'profile_form': profile_form,
+        'experience': experience_form,
+        'show_exp': True,
+        'reset': True,
+        'title': 'Update your profile',
+        'is_first_login': is_first_login,
+        'profile_edit': True,
+        'next_url': reverse('website:startup_update') if user.is_founder else reverse('website:profile'),
+        'cancel_url': request.META.get('HTTP_REFERER'),
+    }))
 
 
 @login_required
 @never_cache
 def startup_update(request):
     user = request.user
+    cancel_url = request.META.get('HTTP_REFERER')
+    if user.first_login:
+        user.set_first_login()
+        cancel_url = reverse('landing:home')
+
     is_first_login = user.first_login
 
     FundingFormSet = inlineformset_factory(prof.Founder, prof.Funding, form=forms.FundingForm,
@@ -331,9 +338,7 @@ def startup_update(request):
         job_form = JobFormSet(request.POST, instance=founder)
         if profile_form.is_valid() and job_form.is_valid() and funding_form.is_valid():
             founder = profile_form.save(commit=False)
-            if not user.is_founder:
-                user.is_founder = True
-                user.save()
+            user.set_is_founder()
 
             for k in job_form.deleted_forms:
                 s = k.save(commit=False)
@@ -358,17 +363,18 @@ def startup_update(request):
         else:
             messages.error(request, 'There was an error processing your request')
 
-    return render(request, 'profile_form.html', merge_dicts(JOB_CONTEXT ,{
-                      'profile_form': startup_form,
-                      'funding': funding_form,
-                      'jobs': job_form,
-                      'show_exp': False,
-                      'reset': True,
-                      'is_first_login': is_first_login,
-                      'title': 'Update Startup',
-                      'profile_edit': True,
-                      'next_url': reverse('website:startup_profile')
-                  }))
+    return render(request, 'profile_form.html', merge_dicts(JOB_CONTEXT, {
+        'profile_form': startup_form,
+        'funding': funding_form,
+        'jobs': job_form,
+        'show_exp': False,
+        'reset': True,
+        'is_first_login': is_first_login,
+        'title': 'Update Startup',
+        'profile_edit': True,
+        'next_url': reverse('website:startup_profile'),
+        'cancel_url': cancel_url,
+    }))
 
 
 @login_required
@@ -385,13 +391,13 @@ def get_profile_view(request, id):
         positions.append(prof.POSITIONS.__getitem__(int(item))[1])
     exp = profile.experience_set.order_by('-end_date')
     return render(request, 'profile_info.html', merge_dicts(JOB_CONTEXT, {
-                      'profile': profile,
-                      'experience': exp,
-                      'reset': True,
-                      'last_login': last_login,
-                      'positions_display': positions,
-                      'cd': cd,
-                  }))
+        'profile': profile,
+        'experience': exp,
+        'reset': True,
+        'last_login': last_login,
+        'positions_display': positions,
+        'cd': cd,
+    }))
 
 
 @login_required
@@ -404,13 +410,13 @@ def get_startup_view(request, id):
     cd = cr.total_seconds() < 86400
     jobs = founder.job_set.order_by('title')
     return render(request, 'founder_info.html', merge_dicts(JOB_CONTEXT, {
-                      'founder': founder,
-                      'profile': False,
-                      'jobs': jobs,
-                      'reset': True,
-                      'last_login': last_login,
-                      'cd': cd,
-                  }))
+        'founder': founder,
+        'profile': False,
+        'jobs': jobs,
+        'reset': True,
+        'last_login': last_login,
+        'cd': cd,
+    }))
 
 
 @method_decorator(never_cache, name='dispatch')

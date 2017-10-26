@@ -10899,14 +10899,10 @@ $(document).ready(function(){
   }
 
   $('select.select-input').niceSelect();
-  $('select.select-input').bind('change', function(e) {
-      $(this).prev().text($(this).children('option[value="' + $(this).val() + '"]').text())
-  });
   $(".nice-select ul.list").mCustomScrollbar({
         theme: "3d-thick-dark",
         scrollInertia: 100,
   });
-
 
   notLookingCheckBoxes();
 
@@ -10915,11 +10911,14 @@ $(document).ready(function(){
   current_step = parseInt(current_step.match(/\d+/));
 
   validateFields(".missing-data", true);
+
   $('#smartwizard').smartWizard({
     showStepURLhash: false,
     selected: current_step,
   });
+
   $("#smartwizard").on("leaveStep", function(e, anchorObject, stepNumber, stepDirection) {
+      history.pushState({}, null, window.location.href.split('#')[0]);
       var form_data = JSON.stringify($('#profile_form').serializeArray())
       localStorage.setItem(settings.localStorageKeys.PROFILE_FORM_DATA, form_data);
 
@@ -10937,6 +10936,36 @@ $(document).ready(function(){
        localStorage.setItem(settings.localStorageKeys.CURRENT_STEP, "step-" + nextStep)
        return true;
     });
+
+  $(settings.selectors.ADD_STARTUP_BUTTON).click(function () {
+    var selector = 'input.required, textarea.required, select.required'
+    if (!allinputsFilled(selector)) {
+      validateFields('.missing-data', true)
+      event.preventDefault()
+    }
+    if ($('[name="image"]').val().length > 0) {
+      $('[name="image"]').val('')
+    }
+    $('[name="image_decoded"]').
+      val(localStorage.getItem(settings.localStorageKeys.PROFILE_IMAGE_DATA))
+    $(settings.selectors.STARTUP_PROFILE_FORM_VAL).val('yes')
+    $('#profile_form').submit()
+  });
+
+  $(settings.selectors.FINISH_PROFILE_BUTTON).click(function () {
+    var selector = 'input.required, textarea.required, select.required'
+    if (!allinputsFilled(selector)) {
+      validateFields('.missing-data', true)
+      event.preventDefault()
+    }
+    if ($('[name="image"]').val().length > 0) {
+      $('[name="image"]').val('')
+    }
+    $('[name="image_decoded"]').
+      val(localStorage.getItem(settings.localStorageKeys.PROFILE_IMAGE_DATA))
+    $('#profile_form').submit()
+  });
+
 });
 
 
@@ -10945,9 +10974,11 @@ function allinputsFilled (selector) {
   var allFilled = true;
 
   $(selector).each (function(index) {
-    if ($(this).attr("type") == "checkbox" && ! $("input[name='" + $(this).attr("name") + "']:checked").val())
+    if ($(this).attr("type") == "checkbox" && !
+        $("input[name='" + $(this).attr("name") + "']:checked").val())
     {
-        $("input[name='" + $(this).attr("name") + "']").closest(".form-group").find("label").css("color", "red");
+        $("input[name='" + $(this).attr("name") + "']")
+        .closest(".form-group").find("label").css("color", "red");
         allFilled = false;
     }
     if ($(this).val() === null || $(this).val() === "") {
@@ -10956,35 +10987,6 @@ function allinputsFilled (selector) {
   });
   return allFilled;
 }
-
-
-$( document ).ready(function () {
-  $(settings.selectors.ADD_STARTUP_BUTTON).click(function() {
-      var selector = "input.required, textarea.required, select.required";
-      if (! allinputsFilled(selector)) {
-        validateFields(".missing-data", true);
-        event.preventDefault();
-      }
-      if ($('[name="image"]').val().length > 0) {
-        $('[name="image"]').val('');
-      }
-      $('[name="image_decoded"]').val(localStorage.getItem(settings.localStorageKeys.PROFILE_IMAGE_DATA));
-      $(settings.selectors.STARTUP_PROFILE_FORM_VAL).val("yes");
-      $("#profile_form").submit();
-  });
-  $(settings.selectors.FINISH_PROFILE_BUTTON).click(function() {
-    var selector = "input.required, textarea.required, select.required";
-    if (! allinputsFilled(selector)) {
-      validateFields(".missing-data", true);
-      event.preventDefault();
-    }
-    if ($('[name="image"]').val().length > 0) {
-      $('[name="image"]').val('');
-    }
-    $('[name="image_decoded"]').val(localStorage.getItem(settings.localStorageKeys.PROFILE_IMAGE_DATA));
-    $("#profile_form").submit();
-  });
-})
 
 // IMAGE UPLOAD
 
@@ -11004,7 +11006,6 @@ if (savedImageStr != null) {
   $(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER + " img.image-holder").attr("src", savedImageStr);
   $(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_INPUT).removeClass("required");
   cu.setState(profileImageView);
-
 }
 
 /* driver code */

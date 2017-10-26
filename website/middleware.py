@@ -47,3 +47,5 @@ class RemoveVaryCookiesMiddleware:
         response['X-Session-Header'] = request.session.session_key
         remove_vary_headers(response, 'Cookie')
         return response
+
+
