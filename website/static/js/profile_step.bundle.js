@@ -10828,8 +10828,30 @@ function validateFields (stepId, goToStep) {
       $(this).closest(".form-group").find("p").removeAttr('style');
     }
   });
+  $('input[type="checkbox"].required').each( function () {
+    var input = $('input[name="' + $(this).attr("name") + '"][type="checkbox"]:first');
+    if ($('input[name="' + $(this).attr("name") + '"][type="checkbox"]:checked').length === 0) {
+      input.closest(".form-group").find("p").css("color", "red");
+    } else {
+      input.closest(".form-group").find("p").removeAttr('style');
+    }
+  })
 }
 
+//utility func, see if any empty inputs
+function allinputsFilled (selector) {
+  var allFilled = true;
+
+  $(selector).each (function(index) {
+    if ($(this).attr("type") == "checkbox" && ! $("input[name='" + $(this).attr("name") + "']:checked").val()) {
+        allFilled = false;
+    }
+    if ($(this).val() === null || $(this).val() === "") {
+      allFilled = false;
+    }
+  });
+  return allFilled;
+}
 
 function notLookingCheckBoxes () {
 
@@ -10966,27 +10988,21 @@ $(document).ready(function(){
     $('#profile_form').submit()
   });
 
+  // $('textarea.required, input.required').on('change', function() {
+  //   if ($(this).val() !== null || $(this).val().length > 0) {
+  //     $(this).closest(".form-group").find("p").removeAttr('style');
+  //   }
+  //   // $('input[type="checkbox"].required').each( function () {
+  //   //   var input = $('input[name="' + $(this).attr("name") + '"][type="checkbox"]:first');
+  //   //   if ($('input[name="' + $(this).attr("name") + '"][type="checkbox"]:checked').length === 0) {
+  //   //     input.closest(".form-group").find("p").css("color", "red");
+  //   //   } else {
+  //   //     input.closest(".form-group").find("p").removeAttr('style');
+  //   //   }
+  //   // })
+  //
+  // })
 });
-
-
-//utility func, see if any empty inputs
-function allinputsFilled (selector) {
-  var allFilled = true;
-
-  $(selector).each (function(index) {
-    if ($(this).attr("type") == "checkbox" && !
-        $("input[name='" + $(this).attr("name") + "']:checked").val())
-    {
-        $("input[name='" + $(this).attr("name") + "']")
-        .closest(".form-group").find("label").css("color", "red");
-        allFilled = false;
-    }
-    if ($(this).val() === null || $(this).val() === "") {
-      allFilled = false;
-    }
-  });
-  return allFilled;
-}
 
 // IMAGE UPLOAD
 

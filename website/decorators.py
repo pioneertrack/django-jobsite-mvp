@@ -13,10 +13,10 @@ def check_profiles(view_func):
             if not user.is_individual:
                 user.set_is_individual()
             if user.is_individual and p(user):
-                messages.success(request, "Welcome to BearFounders! Please tell us about yourself.")
+                # messages.success(request, "Welcome to BearFounders! Please tell us about yourself.")
                 redirect_url = 'website:profile_update' if mobile else 'website:profile_step'
             elif user.is_founder and f(user):
-                messages.success(request, "Welcome to BearFounders! Please tell us about you startup.")
+                # messages.success(request, "Welcome to BearFounders! Please tell us about you startup.")
                 redirect_url ='website:startup_update'
         else:
             if p(user) and user.is_individual:

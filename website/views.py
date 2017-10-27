@@ -124,10 +124,6 @@ def user_profile(request):
     cd = cr.total_seconds() < 86400
     experience = request.user.profile.experience_set.order_by('-end_date')
 
-    # in case user click on fill out later button in profile update
-    # if request.user.first_login:
-    #     request.user.set_first_login()
-
     # TODO: need to remember normal alg for that
     positions = []
     for item in request.user.profile.positions:
@@ -170,6 +166,7 @@ def startup_profile(request):
 
 
 @login_required
+@user_passes_test(lambda user: user.first_login, '/', redirect_field_name=None)
 @never_cache
 def profile_step(request):
     user = request.user
@@ -475,12 +472,6 @@ def resend_activation_email(request):
     return render(request, 'registration/resend_activation_email_form.html', context)
 
 
-def job_list(request, pk):
-    founder = get_object_or_404(Founder, pk=pk)
-    jobs = Job.objects.filter(founder=founder).values().order_by('created_date')
-    return render(request, 'job_list.html', {'founder': founder, 'jobs': jobs})
-
-
 @method_decorator(never_cache, name='dispatch')
 class Settings(LoginRequiredMixin, generic.FormView):
     success_url = reverse_lazy('website:settings')
@@ -495,10 +486,6 @@ class Settings(LoginRequiredMixin, generic.FormView):
 
     def get_context_data(self, **kwargs):
         context = super(Settings, self).get_context_data(**kwargs)
-        # if self.request.user.is_individual and hasattr(self.request.user, 'profile'):
-        #     context['alternate_email_form'] = self.alternate_email_form_class(
-        #         initial={'alt_email': self.request.user.profile.alt_email})
-        # context.update(**CONTEXT)
         context.update(**JOB_CONTEXT)
         return context
 
@@ -507,24 +494,6 @@ class Settings(LoginRequiredMixin, generic.FormView):
         update_session_auth_hash(self.request, form.user)
         messages.success(self.request, 'Password updated')
         return super(Settings, self).form_valid(form)
-
-
-# class ChangeAlternateEmail(Settings, UserPassesTestMixin):
-#     form_class = forms.ChangeAlternateEmailForm
-#     http_method_names = ['post']
-#
-#     def test_func(self):
-#         return self.request.user.is_individual
-#
-#     def get_form_kwargs(self):
-#         kwargs = super(Settings, self).get_form_kwargs()
-#         kwargs['instance'] = self.request.user.profile
-#         return kwargs
-#
-#     def form_valid(self, form):
-#         form.save()
-#         messages.success(self.request, 'Alternate email updated')
-#         return redirect(self.get_success_url())
 
 
 @method_decorator(never_cache, name='dispatch')
