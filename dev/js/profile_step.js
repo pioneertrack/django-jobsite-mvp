@@ -137,10 +137,10 @@ $(document).ready(function(){
       var form_data = JSON.stringify($('#profile_form').serializeArray())
       localStorage.setItem(settings.localStorageKeys.PROFILE_FORM_DATA, form_data);
 
+      validateFields("#step-" + stepNumber);
       if (stepDirection === "forward") {
         var stepId = "#step-" + stepNumber;
         var selector = stepId + " input.required, " + stepId + " textarea.required, " + stepId + " select.required";
-        validateFields("#step-" + stepNumber);
         if (allinputsFilled(selector) === false) {
             return false;
           }

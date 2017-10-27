@@ -227,6 +227,10 @@ def profile_step(request):
 @never_cache
 def profile_update(request):
     user = request.user
+    cancel_url = request.META.get('HTTP_REFERER')
+    if user.first_login:
+        cancel_url = reverse('landing:home')
+
     is_first_login = user.first_login
 
     ExperienceFormSet = inlineformset_factory(prof.Profile, prof.Experience, form=forms.ExperienceForm,
@@ -296,7 +300,7 @@ def profile_update(request):
         'is_first_login': is_first_login,
         'profile_edit': True,
         'next_url': reverse('website:startup_update') if user.is_founder else reverse('website:profile'),
-        'cancel_url': request.META.get('HTTP_REFERER'),
+        'cancel_url': cancel_url,
     }))
 
 
