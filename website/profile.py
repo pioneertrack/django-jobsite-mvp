@@ -241,7 +241,7 @@ class Profile(models.Model):
 
     def image_to_string(self):
         if self.image:
-            return self.image_thumbnail.url
+            return self.image.url
 
 
 class Experience(models.Model):
@@ -292,7 +292,7 @@ class Founder(models.Model):
 
     def logo_to_string(self):
         if self.logo:
-            return self.logo_thumbnail.url
+            return self.logo.url
 
 
 class Funding(models.Model):
