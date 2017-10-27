@@ -10932,8 +10932,6 @@ $(document).ready(function(){
     localStorage.getItem(settings.localStorageKeys.CURRENT_STEP) : '0';
   current_step = parseInt(current_step.match(/\d+/));
 
-  validateFields(".missing-data", true);
-
   $('#smartwizard').smartWizard({
     showStepURLhash: false,
     selected: current_step,
