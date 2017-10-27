@@ -3,14 +3,11 @@ import ImageUploader from './lib/view-controllers/image-instant-upload';
 import ComponentStateChanger from './lib/view-controllers/component-state-changer.js';
 var iu = new ImageUploader(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_INPUT, null);
 
-
 var cu = new ComponentStateChanger();
 var loadingState = new ComponentStateChanger();
 
 var loadingIndicator = loadingState.addState(settings.selectors.PROFILE_RELOAD_PAGE_INDICATOR);
 loadingState.addState(settings.selectors.FORM_WRAPPER);
-
-
 
 var profileImageView = cu.addState(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_WRAPPER);
 var cancelButton = cu.addState(settings.selectors.PROFILE_BREADCRUMBS_PROPIC_CANCEL);
