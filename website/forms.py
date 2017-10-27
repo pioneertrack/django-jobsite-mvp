@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from registration.forms import RegistrationFormUniqueEmail
 from nocaptcha_recaptcha.fields import NoReCaptchaField
 from website import models, profile
@@ -11,15 +12,27 @@ from crispy_forms.layout import Layout, Field, HTML
 import logging
 # convert the errors to text
 from django.utils.encoding import force_text
+import base64, uuid
+from django.core.files.base import ContentFile
+# from rest_framework import serializers
 
 log = logging.getLogger(__name__)
 logging.basicConfig(filename='errorlog.txt')
 
 
+# class Base64ImageField(serializers.ImageField):
+#     def to_internal_value(self, data):
+#         if isinstance(data, str) and data.startswith('data:image'):
+#             # base64 encoded image - decode
+#             format, imgstr = data.split(';base64,') # format ~= data:image/X,
+#             ext = format.split('/')[-1] # guess file extension
+#             id = uuid.uuid4()
+#             data = ContentFile(base64.b64decode(imgstr), name = id.urn[9:] + '.' + ext)
+#         return super(Base64ImageField, self).to_internal_value(data)
+
+
 class NewRegistrationForm(RegistrationFormUniqueEmail):
     captcha = NoReCaptchaField()
-    create_both_profiles = forms.BooleanField(label='Both', required=False,
-                                              widget=forms.CheckboxInput(attrs={'id': 'select-both-profiles'}))
 
     def __init__(self, *args, **kwargs):
         super(RegistrationFormUniqueEmail, self).__init__(*args, **kwargs)
@@ -50,21 +63,31 @@ class NewRegistrationForm(RegistrationFormUniqueEmail):
             )
         return submitted_data
 
-    def clean(self):
-        cleaned_data = self.cleaned_data
-        if not cleaned_data.get('is_individual') and not cleaned_data.get('is_founder'):
-            self.add_error('create_both_profiles', 'You must be representing an individual profile or startup')
-        return cleaned_data
-
     class Meta:
         model = models.MyUser
-        fields = ['first_name', 'last_name', 'email', 'is_individual', 'is_founder', 'create_both_profiles',
-                  'password1', 'password2']
+        fields = ['first_name', 'last_name', 'email', 'password1', 'password2']
         labels = {
             'is_individual': 'Create individual profile',
             'is_founder': 'Create startup profile',
             'captcha': '',
         }
+
+
+class ProfileFormWizard(forms.ModelForm):
+    image = forms.ImageField(label='Profile image', required=True, error_messages={'invalid': "Image files only"},
+                             widget=forms.FileInput)
+    image_decoded = forms.CharField(label='Profile image')
+
+    def __init__(self, *args, **kwargs):
+        super(ProfileFormWizard, self).__init__(*args, **kwargs)
+        if self.instance.image and len(self.instance.image.name) > 0:
+            self.fields['image'].required = False
+
+    class Meta:
+        model = profile.Profile
+        fields = ('image', 'bio', 'positions', 'role', 'skills', 'year', 'interests',
+                  'major', 'courses', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'linkedin', 'website',
+                  'github')
 
 
 class ProfileForm(forms.ModelForm):
@@ -74,14 +97,16 @@ class ProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProfileForm, self).__init__(*args, **kwargs)
         self.initial['alt_email'] = None
-        if len(self.instance.image.name) > 0:
+        if self.instance.image and len(self.instance.image.name) > 0:
             self.fields['image'].required = False
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        self.helper.layout = Layout(Field('image', template='forms/image-input.html' ))
-        self.fields['bio'].widget.attrs.update({'placeholder': 'I am a senior who enjoys tech and education. I am looking forward to working with startups and would love to get mentored by Cal alums who have experience with operations.'})
-        self.fields['skills'].widget.attrs.update({'placeholder': 'Python, javascript, SQL, data analysis, financial modeling, photography, UX/UI, Microsoft office, social media…'})
+        self.helper.layout = Layout(Field('image', template='forms/image-input.html'))
+        self.fields['bio'].widget.attrs.update({
+                                                   'placeholder': 'I am a senior who enjoys tech and education. I am looking forward to working with startups and would love to get mentored by Cal alums who have experience with operations.'})
+        self.fields['skills'].widget.attrs.update({
+                                                      'placeholder': 'Python, javascript, SQL, data analysis, financial modeling, photography, UX/UI, Microsoft office, social media…'})
         self.fields['interests'].widget.attrs.update({'placeholder': 'Sports, writing, edtech, travel, health'})
         self.fields['courses'].widget.attrs.update({'placeholder': 'UGBA 104, CS70, Econ 100B'})
 
@@ -122,13 +147,12 @@ class FounderForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(FounderForm, self).__init__(*args, **kwargs)
         self.initial['alt_email'] = None
-        if len(self.instance.logo.name) > 0:
+        if self.instance.logo and len(self.instance.logo.name) > 0:
             self.fields['logo'].required = False
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        self.helper.layout = Layout(Field('logo', template='forms/image-input.html' ))
-
+        self.helper.layout = Layout(Field('logo', template='forms/image-input.html'))
 
     def clean_alt_email(self):
         email = self.cleaned_data['alt_email']
@@ -160,7 +184,8 @@ class ExperienceForm(forms.ModelForm):
         super(ExperienceForm, self).__init__(*args, **kwargs)
         self.fields['company'].widget.attrs.update({'placeholder': 'Visa'})
         self.fields['position'].widget.attrs.update({'placeholder': 'Analyst'})
-        self.fields['description'].widget.attrs.update({'placeholder': 'Used SQL to create weekly reports to focus on core team metrics.'})
+        self.fields['description'].widget.attrs.update(
+            {'placeholder': 'Used SQL to create weekly reports to focus on core team metrics.'})
 
     def is_valid(self):
         log.info(force_text(self.errors))

@@ -14,7 +14,7 @@
           <div id="profile-hero" class="row well">
             <div class="col-md-4 centerfy">
               <div class="profile-image text-center img-responsive"
-                style="background-image: url('{{ user.founder.logo.url }}');">
+                {% if user.founder.logo %}style="background-image: url('{{ user.founder.logo_thumbnail_large.url }}');"{% endif %}>
               </div>
             </div>
             <div class="col-md-8 centerfy">
@@ -100,7 +100,7 @@
           <div id="profile-hero" class="row well">
             <div class="col-md-4 centerfy">
               <div class="profile-image text-center img-responsive"
-                style="background-image: url('{{ user.founder.logo.url }}');">
+                {% if user.founder.logo %}style="background-image: url('{{ user.founder.logo_thumbnail_large.url }}');"{% endif %}>
               </div>
             </div>
             <div class="col-md-8 centerfy">

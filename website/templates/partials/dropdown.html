@@ -1,0 +1,14 @@
+{% extends './form-item-base.html' %}
+
+{% block forminput %}
+<div class="dropdown-module inline-block {{ ddclass }}">
+  <select  name="{{ ddclass }}" class="select-input middle {% if formitemRequired %}required{% endif %}" {% if formitemRequired %}required="required"{% endif %} >
+    <div>
+      <option value data-display="No selection">No selection</option>
+      {% for x in ddlist %}
+       <option value="{{ x.0 }}">{{ x.1 }}</option>
+      {% endfor %}
+    </div>
+  </select>
+</div>
+{% endblock %}

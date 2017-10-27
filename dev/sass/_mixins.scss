@@ -1,0 +1,16 @@
+  @mixin set-font ($fontstyle) {
+    @for $i from 1 through 4 {
+      h#{$i} {
+        font-family: $fontstyle;
+      }
+    }
+    p {
+      font-family: $fontstyle;
+    }
+    input {
+      font-family: $fontstyle;
+    }
+    label {
+      font-family: $fontstyle;
+    }
+  }

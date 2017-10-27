@@ -1,7 +1,9 @@
 jQuery(document).ready(function($) {
 
-  $('#selector').niceSelect();
-  $('.cd-search-nav.first select.filter').niceSelect();
+  if (history.state === null || history.state.hasOwnProperty('search_state') === false) {
+    $('#selector').niceSelect();
+    $('.cd-search-nav.first select.filter').niceSelect();
+  }
   $('ul#cd-navigation select.filter').niceSelect();
   $('ul#cd-navigation ul.list li:first').hide();
 
@@ -39,7 +41,6 @@ jQuery(document).ready(function($) {
     var tags = $(`#tags_${selector}`);
     var select = $(`select[name="${data_name}"]`);
     var data_class = select.data('class');
-    var filter_input = $(`#filter_${selector}`);
 
     if (tags.children().length === 2) {
       tags.parent().removeClass('selected');
@@ -67,28 +68,12 @@ jQuery(document).ready(function($) {
         option_all.data('revert', inrevert);
       }
     }
-
-    //Remove data about tags from associated hidden field
-    var str = `["${data_name}","${data_value}","${$(this).
-        parent().
-        text()}","${data_class}"]`;
-    var value = filter_input.val();
-    value = value.replace(str, '');
-    value = value.replace(',,', ',');
-    if (value.length > 0 && value[0] == ',') {
-      value = value.substr(1);
-    }
-    if (value.length > 0 && value[value.length - 1] == ',') {
-      value = value.substr(0, value.length - 1);
-    }
-    filter_input.val(value);
   })
 
   $('.cd-search-nav.first select.filter option').
       bind('option_change.nice_select', function(e) {
         var selector = $("#selector").val();
         var tags = $(`#tags_${selector}`);
-        var filter_input = $(`#filter_${selector}`);
         var data_value = $(this).val();
         var data_name = $(this).parent().attr('name');
         var data_class = $(this).parent().data('class');
@@ -117,10 +102,6 @@ jQuery(document).ready(function($) {
               tag.addClass('outer');
             }
           })
-          //To store order of tags in filter
-          var punctuation = filter_input.val().length > 0 ? ',' : '';
-          filter_input.val(`["${data_name}","${data_value}","${$(this).
-              text()}","${data_class}"]${punctuation}` + filter_input.val());
         } else {
           if (tags.children().length === 2) {
             tags.parent().removeClass('selected');
@@ -136,18 +117,6 @@ jQuery(document).ready(function($) {
               tag.removeClass('outer');
             }
           });
-          var str = `["${data_name}","${data_value}","${$(this).
-              text()}","${data_class}"]`;
-          var value = filter_input.val();
-          value = value.replace(str, '');
-          value = value.replace(',,', ',');
-          if (value.length > 0 && value[0] == ',') {
-            value = value.substr(1);
-          }
-          if (value.length > 0 && value[value.length - 1] == ',') {
-            value = value.substr(0, value.length - 1);
-          }
-          filter_input.val(value);
         }
       })
 });

@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static from staticfiles %}
+{% block title %}
+  Profile Setup
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/custom-css.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'css/smart_wizard.min.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'css/smart_wizard_theme_arrows.css' %}" type="text/css">
+  {{ block.super }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="preloader" style="background-image: url({% static 'images/loading_icon.gif' %})"></div>
+
+  <div class="container-wrapper">
+    <div class="container profile-breadcrumbs-page">
+
+      <div class="page-header center-block">
+        {% for e in errors %}
+          <div class="alert-wrapper">
+            <div class="alert alert-danger alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+              </button>
+              <strong>{{ e.strong }}</strong> {{ e.text }}
+            </div>
+          </div>
+        {% endfor %}
+
+        <form id="profile_form" method="POST" enctype="multipart/form-data" class="profileForm">
+          {% csrf_token %}
+          <div id="smartwizard">
+            <ul>
+              <li><a href="#step-0">Step 1<br/>
+                <small>About you</small>
+              </a></li>
+              <li><a href="#step-1">Step 2<br/>
+                <small>Skills</small>
+              </a></li>
+              <li><a href="#step-2">Step 3<br/>
+                <small>School</small>
+              </a></li>
+              <li><a href="#step-3">Step 4<br/>
+                <small>Professional</small>
+              </a></li>
+              <li><a href="#step-4">Step 5<br/>
+                <small>Complete</small>
+              </a></li>
+            </ul>
+
+            <div {% if errors %} class="missing-data" {% endif %}>
+
+              <div id="step-0" class="">
+                <div class="form-group">
+                  <div class="align-left form-header">
+                    <p> 1.) Upload your Profile Image * </p>
+                  </div>
+                  <!-- <div class="center-block profile-image-cancel">
+                    <div class=""
+                  </div> -->
+                  <div class="center-block profile-image-wrapper">
+                    <img class="profile-image-change delete-icon" src="{% static 'images/trash-icon.png' %}"
+                         alt="chagne image">
+                    <br/>
+                    <img class="image-holder" src="" alt="Your Profile Image">
+                  </div>
+                  <div class="center-block profile-image-button-wrapper">
+                    <label class="custom-file-upload">
+                      <input type="hidden" id="image_decoded" name="image_decoded">
+                      <input id="propic-upload-input" name="image" accept="image/*" type="file"
+                             class="special-upload required" type="file">
+                      Upload Image
+
+                    </label>
+                    <!-- TO make sure the profile image is set, this field is required and is triggered by the setting of an image -->
+                    <!-- <input type="hidden" class="requiredImageFlag" class="required"> -->
+                    <p class="help-block">Please keep it under 10 MB</p>
+                  </div>
+
+
+                </div>
+                {% with formItemHeader=' 2.) Write a little bit about yourself' formitemRequired=True textareaName='bio' textareaPH='I am a senior who enjoys tech and education. I am looking forward to working with startups and would love to get mentored by Cal alums who have experience with operations.' %}
+                  {% include './partials/textarea.html' %}
+                {% endwith %}
+
+
+                {% with formItemHeader='3.) What type of position are you looking for?' formitemRequired=True checkboxname='typesOfWork' checkboxgroup='positions' cblist=formDat.position_types %}
+                  {% include './partials/checkbox.html' %}
+                {% endwith %}
+
+              </div>
+
+              <div id="step-1" class="step-section">
+
+                {% with formItemHeader='1.) Which role best describes you?' formitemRequired=True ddlist=formDat.primary_roles ddclass='role' ddselectionlabel='Please select your position!' %}
+                  {% include './partials/dropdown.html' %}
+                {% endwith %}
+
+                {% with formItemHeader=' 2.) What are some of your skills?' formitemRequired=True textareaName='skills' textareaPH='Python, javascript, SQL, data analysis, financial modeling, photography, UX/UI, Microsoft office, social media…' %}
+                  {% include './partials/textarea.html' %}
+                {% endwith %}
+
+                {% with formItemHeader='3.) What is your Cal Affiliation?' formitemRequired=True ddlist=formDat.cal_affiliation ddclass='year'  ddselectionlabel='Please select an affiliation' %}
+                  {% include './partials/dropdown.html' %}
+                {% endwith %}
+
+              </div>
+              <div id="step-2" class="step-section">
+                <div class="center-block">
+                  <a href="#step-3"> I'll do this later </a>
+                </div>
+                {% with formItemHeader='1.) What are some of your Interests?' formitemRequired=False textareaName='interests' textareaPH='Sports, writing, edtech, travel, health' %}
+                  {% include './partials/textarea.html' %}
+                {% endwith %}
+
+                {% with formItemHeader='2.) What is your primary major?' formitemRequired=False ddlist=formDat.primary_majors ddclass='major'  ddselectionlabel='Please select a major' %}
+                  {% include './partials/dropdown.html' %}
+                {% endwith %}
+
+                {% with formItemHeader='3.) What is some of your relevant coursework? ' formitemRequired=False textareaName='courses' textareaPH='UGBA 104, CS70, Econ 100B' %}
+                  {% include './partials/textarea.html' %}
+                {% endwith %}
+
+                {% with formItemHeader='4.) How many hours a week are you willing to work?' formitemRequired=False ddlist=formDat.hours_available ddclass='hours_week' ddselectionlabel='Select Hours' %}
+                  {% include './partials/dropdown.html' %}
+                {% endwith %}
+              </div>
+              <div id="step-3" class="step-section">
+                <div class="center-block">
+                  <a href="#step-4"> I'll do this later </a>
+                </div>
+                {% with formItemHeader=' 1.) If applicable, please list your linkedin profile URL ' formitemRequired=False inputName='linkedin' inputPH='https://www.linkedin.com/in/colin-o-neill-0117a2ba/' %}
+                  {% include './partials/input.html' %}
+                {% endwith %}
+
+                {% with formItemHeader=' 2.) If you have a personal website, drop the link!' formitemRequired=False inputName='website' inputPH='https://johnsmith.com' %}
+                  {% include './partials/input.html' %}
+                {% endwith %}
+                {% with formItemHeader=' 3.) Add your github handle, if you have one' formitemRequired=False inputName='github' inputPH='https://github.com/user' %}
+                  {% include './partials/input.html' %}
+                {% endwith %}
+
+                {% with formItemHeader='4.) Startup History' formitemRequired=False checkboxname='startuphistory' cblist=formDat.startup_history %}
+                  {% include './partials/checkbox.html' %}
+                {% endwith %}
+              </div>
+
+              <div id="step-4" class="step-section">
+
+                <div class="center-block">
+                  <h5> That's all! Please finish by clicking step inside, or, if you have a startup you would like to
+                    register, Add Startup Profile </h5>
+                </div>
+
+                <input type='hidden' class="startupProfileInput" name="startupProfile" value="no">
+                <div class="center-block">
+                  <button type="button" class="btn btn-secondary add-startup-then-finish"> Add Startup Profile</button>
+                  <button type="button" class="btn btn-primary finish-profile-button"> Step Inside</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+{% block js %}
+  <script src="{% static 'js/profile_step.bundle.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends './form-item-base.html' %}
+{% block forminput %}
+  <div class="align-left inline-block">
+    {% for position in cblist %}
+
+    <div class="checkbox checkbox-container inline form-check-inline">
+      <label>
+        {% with val=True %}
+        <input type="checkbox" {% if checkboxgroup %} name="{{ checkboxgroup }}" value="{{ position.0 }}" {% else %} value="{{ val }}" name="{{ position.0 }}" {% endif %} class="{% if formitemRequired %} required{% endif %}">
+        {% endwith %}
+        {{ position.1 }}
+      </label>
+    </div>
+
+
+    {% endfor %}
+  </div>
+{% endblock %}

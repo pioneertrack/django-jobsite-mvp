@@ -41,9 +41,8 @@ class MyUserAdmin(BaseUserAdmin):
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     list_display = ('email', 'first_name', 'last_name', 'is_individual', 'is_founder', 'is_active', 'is_admin',
-                    'is_account_disabled', 'get_year', 'registered_at', 'last_login', 'get_profile_is_filled',
-                    'get_founder_is_filled')
-    list_filter = ('is_admin', 'is_active', 'is_founder', 'registered_at')
+                    'is_account_disabled', 'get_year', 'registered_at', 'last_login', 'get_profile_is_filled', 'get_founder_is_filled')
+    list_filter = ('is_admin','is_active', 'is_founder', 'registered_at')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name')}),
@@ -189,7 +188,7 @@ class FounderAdmin(ImportExportModelAdmin):
         ('Basic Info', {'fields': ['description', 'stage', 'employee_count', 'field']}),
         ('Contact', {'fields': ['website', 'facebook']})
     )
-    ordering = ('user',)
+    ordering = ('user__email',)
     search_fields = ('user__email',)
     inlines = (FundingInline,)
     resource_class = FounderResource
@@ -338,7 +337,7 @@ class ProfileAdmin(ImportExportModelAdmin):
         ('Experience', {'fields': ['has_startup_exp', 'has_funding_exp', 'skills']}),
         ('Contact', {'fields': ['linkedin', 'website', 'github']})
     )
-    ordering = ('user',)
+    ordering = ('user__email',)
     search_fields = ('user__email',)
     inlines = (ExperienceInline,)
     resource_class = ProfileResource

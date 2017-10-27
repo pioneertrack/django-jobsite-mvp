@@ -25,3 +25,8 @@ venv/
 /static/
 /berkeleyconnect/local_settings.py
 /bower_components/
+
+JavaScripts Dev
+/node_modules/*
+/package-lock.json
+.sass-cache/*

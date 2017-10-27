@@ -16,9 +16,9 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from registration.backends.hmac.views import RegistrationView
 from django.conf.urls.static import static
 from django.conf import settings
+from django.contrib.auth import views as auth_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 
@@ -26,10 +26,8 @@ from website import forms
 from website import views
 
 urlpatterns = [
-    url(r'^register/$',
-        views.MyRegistrationView.as_view(
-            form_class=forms.NewRegistrationForm
-        ),
+    url(r'^login/', auth_views.login, name='login',kwargs={'redirect_authenticated_user': True}),
+    url(r'^register/$', views.MyRegistrationView.as_view(form_class=forms.NewRegistrationForm),
         name='registration_register',
     ),
     url(r'^logout/$',auth_views.logout_then_login, name = 'logout'),
@@ -39,6 +37,7 @@ urlpatterns = [
     url(r'^', include('registration.backends.hmac.urls')),
     url(r'^', include('landing.urls', namespace='landing')),
     url(r'^', include('website.urls', namespace='website')),
+    url(r'^', include('search.urls', namespace='search')),
 
     url(r'^admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

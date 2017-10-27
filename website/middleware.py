@@ -25,6 +25,7 @@ def remove_vary_headers(response, headers):
     elif response.has_header('Vary'):
         response.headers.remove('Vary')
 
+
 class SessionHeaderMiddleware:
 
     def __init__(self, get_response):
@@ -46,3 +47,5 @@ class RemoveVaryCookiesMiddleware:
         response['X-Session-Header'] = request.session.session_key
         remove_vary_headers(response, 'Cookie')
         return response
+
+

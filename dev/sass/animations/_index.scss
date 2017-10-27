@@ -1,0 +1,22 @@
+
+@mixin enlargment-animation ($animation_name, $startSize, $endSize) {
+    @-webkit-keyframes #{$animation_name} {
+        0%  { height : $startSize; }
+        100%  { height : $endSize; }
+    }
+
+    @-moz-keyframes #{$animation_name} {
+      0%  { height : $startSize; }
+      100%  { height : $endSize; }
+    }
+
+    @-o-keyframes #{$animation_name} {
+      0%  { height : $startSize; }
+      100%  { height : $endSize; }
+    }
+
+    @keyframes #{$animation_name} {
+      0%  { height : $startSize; }
+      100%  { height : $endSize; }
+    }
+}

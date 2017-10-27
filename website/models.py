@@ -68,6 +68,16 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
             self.first_login = False
             self.save()
 
+    def set_is_founder(self):
+        if not self.is_founder:
+            self.is_founder = True
+            self.save()
+
+    def set_is_individual(self):
+        if not self.is_individual:
+            self.is_individual = True
+            self.save()
+
     def get_username(self):
         return self.email
 

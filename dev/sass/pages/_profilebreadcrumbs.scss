@@ -1,0 +1,80 @@
+$profile-change-icon-animation : changeHeightAnimation;
+@include enlargment-animation ($profile-change-icon-animation , $profile-change-max-width, $profile-change-hover-max-width);
+
+
+@include set-font(Helvetica);
+.container-wrapper {
+  background-color: #eee;
+  min-height: 100%;
+}
+
+
+.preloader {
+  top: 0;
+  bottom : 0;
+  position: fixed;
+  background-color: white;
+  z-index: 99999;
+  left: 0;
+  right: 0;
+  background-position: center;
+  background-repeat: no-repeat;;
+
+}
+
+
+.dropdown-module {
+  .dropdown-selection {
+    font-weight: bold;
+  }
+}
+.profile-breadcrumbs-page {
+  
+
+  font-family: Helvetica;
+  max-width: 700px;
+  .page-header {
+    margin: $margin-sm;
+    .pills-wrapper {
+      border-radius : $sm-border-radius;
+      background-color: white;
+    }
+  }
+
+
+    .profile-image-wrapper {
+      img {
+        max-width: $profile-image-setup-max-width;
+      }
+    }
+    .form-group {
+      // margin: $margin-md;
+      // padding : $margin-md;
+      background-color: white;
+      border-radius: $sm-border-radius;
+
+      .checkbox-container {
+        padding-right: $margin-sm;
+      }
+    }
+
+    .form-control {
+      &.invalid-input {
+        border-color: $invalid-form;
+      }
+    }
+
+
+  .profile-image-change {
+    max-height: $profile-change-max-width;
+    margin: $profile-change-icon-margin;
+    &:hover {
+      text-decoration: underline;
+
+      max-height: $profile-change-hover-max-width;
+      animation-name: $profile-change-icon-animation;
+      animation-duration: $profile-change-hover-duration;
+    }
+    cursor: pointer;
+  }
+}
