@@ -106,7 +106,7 @@ def connect(request):
 def index(request):
     user = request.user
 
-    return render(request, 'home.html',
+    return render(request, 'new_home.html',
                   merge_dicts(JOB_CONTEXT, {
                       'posted': False,
                       'reset': True,
