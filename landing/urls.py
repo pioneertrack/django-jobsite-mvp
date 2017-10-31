@@ -3,5 +3,5 @@ from django.conf.urls import include, url
 from landing.views import landing
 
 urlpatterns = [
-    url(r'^$', landing, name="home"),
+    url(r'^$', landing, name="home", namespace="website"),
 ]
