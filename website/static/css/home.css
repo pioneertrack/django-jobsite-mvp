@@ -4,7 +4,7 @@ html, body, header {
 
 #intro {
     height: 100%;
-    background: url("../images/hero.jpg") no-repeat center center fixed;
+    background: url('../images/hero.jpg') no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -36,7 +36,16 @@ html, body, header {
     flex-flow: column nowrap;
     align-items: center;
     justify-content: center;
-}
+    opacity: 0.7;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    }
+.card:hover {
+    opacity: 0.9;
+    }
 
 hr {
     height: 1px;

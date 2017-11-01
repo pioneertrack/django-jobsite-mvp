@@ -26,7 +26,7 @@ from website import forms
 from website import views
 
 urlpatterns = [
-    url(r'^login/', auth_views.login, name='login',kwargs={'redirect_authenticated_user': True}),
+    url(r'^login/', auth_views.login, name='login', kwargs={'redirect_authenticated_user': True}),
     url(r'^register/$', views.MyRegistrationView.as_view(form_class=forms.NewRegistrationForm),
         name='registration_register',
     ),
