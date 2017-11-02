@@ -8,9 +8,9 @@
     </div>
 
     {% if form.image.value %}
-      <div class="img-responsive inline" style="background-image: url('{{ form.instance.image_thumbnail.url }}');"></div>
+      <div class="img-responsive inline" style="background-image: url('{{ form.instance.image.url }}');"></div>
     {% elif form.logo.value %}
-      <div class="img-responsive inline" style="background-image: url('{{ form.instance.logo_thumbnail.url }}');"></div>
+      <div class="img-responsive inline" style="background-image: url('{{ form.instance.logo.url }}');"></div>
     {% endif %}
   </div>
 </div>
