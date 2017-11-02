@@ -1,27 +1,13 @@
 {% load i18n %}
 {% url 'registration_activate' activation_key as activation_key_url%}
 {% blocktrans with sitename=site.name siteurl=site.domain %}
-Hi
-Step 1. Activate your account by clicking the link below within the next 24 hours:
-http://{{ siteurl }}{{ activation_key_url }}
-
-Step 2. Complete your profile once you log in.
-Remember only members with complete profiles can use Bear Founders. Don't miss out on all the amazing opportunities!
-
-Step 3. Begin exploring opportunities and connecting with members.
-Connect with startups, companies, and other members to work on amazing opportunities and projects]
-
-We are excited to help you find your next opportunity and grow with you on Bear Founders!
-
-Thanks,
-Jeremy & Raj
-
 You (or someone pretending to be you) have asked to register an account at
 {{ sitename }}.  If this wasn't you, please ignore this email
 and your address will be removed from our records.
 
 To activate this account, please click the following link within the next day:
 
+http://{{ siteurl }}{{ activation_key_url }}
 
 Sincerely,
 {{ sitename }} Management
