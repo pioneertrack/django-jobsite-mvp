@@ -360,7 +360,7 @@
                 {% else %}
                   <a href="{% url 'website:profile' %}">
                     {% if user.profile.image.url %}
-                      <div class="profile-thumb" style="background-image: url('{{ user.profile.image.url }}')">
+                      <div class="profile-thumb" style="background-image: url('{{ user.profile.image_thumbnail.url }}')">
                       </div>
                     {% endif %}
                     My Profile
@@ -422,7 +422,7 @@
 {% block user_info %}
   {% if user.first_name %}
     <script type="text/javascript">
-      name = {%if not user.is_founder%}'{{user.first_name|safe}}';
+      {%if not user.is_founder%}'{{user.first_name|safe}}';
         {%else%}'{{user.founder.startup_name|safe}}';{%endif%}
       user = '{{user.id|safe}}';
     </script>

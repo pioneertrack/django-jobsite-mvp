@@ -14,7 +14,7 @@
           <div id="profile-hero" class="row well">
             <div class="col-md-4 centerfy">
               <div class='profile-image text-center img-responsive'
-                {% if user.profile.image %}style="background-image: url('{{ user.profile.image.url }}');"{% endif %}>
+                {% if user.profile.image %}style="background-image: url('{{ user.profile.image_thumbnail_large.url }}');"{% endif %}>
               </div>
             </div>
             <div class="col-md-8 centerfy">
@@ -106,7 +106,8 @@
                   {% endif %}
                   {% if exp.start_date and exp.end_date %}
                     <p>{{ exp.start_date }} - {% if exp.currently_working %}Currently Working{% else %}
-                      {{ exp.end_date }}{% endif %}</p>
+                      {{ exp.end_date }}{% endif %}</p>Ok
+
                   {% endif %}
                   {% if exp.description %}
                     <p>{{ exp.description|linebreaks }}</p>
@@ -151,13 +152,14 @@
 {% else %}
 
   {% block content %}
+
     <div class="profile-page">
       <div class="jumbotron">
         <div class="container">
           <div id="profile-hero" class="row well">
             <div class="col-md-4 centerfy">
               <div class="profile-image text-center img-responsive"
-                {% if user.profile.image %}style="background-image: url('{{ user.profile.image.url }}');"{% endif %}>
+                {% if user.profile.image %}style="background-image: url('{{ user.profile.image_thumbnail_large.url }}');"{% endif %}>
               </div>
             </div>
             <div class="col-md-8 centerfy">

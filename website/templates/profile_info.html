@@ -14,7 +14,7 @@
           <div id="profile-hero" class="row well">
             <div class="col-md-4 centerfy">
               <div class="profile-image text-center img-responsive"
-                {% if profile.image %}style="background-image: url('{{ profile.image.url }}');"{% endif %}>
+                {% if profile.image %}style="background-image: url('{{ profile.image_thumbnail_large.url }}');"{% endif %}>
               </div>
             </div>
             <div class="col-md-8 centerfy">
@@ -151,7 +151,7 @@
           <div id="profile-hero" class="row well">
             <div class="col-md-4 centerfy">
               <div class="profile-image text-center img-responsive"
-                {% if profile.image %}style="background-image: url('{{ profile.image.url }}');"{% endif %}>
+                {% if profile.image %}style="background-image: url('{{ profile.image_thumbnail_large.url }}');"{% endif %}>
               </div>
             </div>
             <div class="col-md-8 centerfy">
