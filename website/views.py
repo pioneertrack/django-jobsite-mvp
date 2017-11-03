@@ -36,7 +36,7 @@ from website.decorators import check_profiles
 
 import base64, uuid
 from django.core.files.base import ContentFile
-
+from website.context_processors import is_mobile
 
 def merge_dicts(*args):
     dc = {}
@@ -106,7 +106,16 @@ def connect(request):
 def index(request):
     user = request.user
 
-    return render(request, 'new_home.html',
+    mobile = is_mobile(request)['is_mobile']
+    if mobile:
+        return render(request, 'home.html',
+                      merge_dicts(JOB_CONTEXT, {
+                          'posted': False,
+                          'reset': True,
+                          'without_padding': True,
+                      }))
+    else:
+        return render(request, 'new_home.html',
                   merge_dicts(JOB_CONTEXT, {
                       'posted': False,
                       'reset': True,
