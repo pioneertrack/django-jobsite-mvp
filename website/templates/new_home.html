@@ -25,7 +25,12 @@
                 <div class="dropdown navbar-nav ml-auto">
                     <button class="btn btn-outline-white dropdown-toggle member-name" type="button" href="{% url 'website:profile' %}" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Member</button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <a class="dropdown-item" href="{% url 'website:profile' %}">Profile</a>
+                        {% if user.is_founder %}
+                          <a class="dropdown-item" href="{% url 'website:startup_profile' %}">Startup</a>
+                        {% endif %}
+                        {% if user.is_individual %}
+                          <a class="dropdown-item" href="{% url 'website:profile' %}">Profile</a>
+                        {% endif %}
                         <a class="dropdown-item" href="{% url 'website:settings' %}">Settings</a>
                         <a class="dropdown-item" href="{% url 'logout' %}">Log Out</a>
                     </div>

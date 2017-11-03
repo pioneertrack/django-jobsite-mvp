@@ -8,9 +8,8 @@ $(function() {
         expires + ';path=/';
   });
 
-  $('.welcome-links').
-      waitForImages(function() {
-        $('.welcome-links').addClass('visible');
-      }, $.noop, true);
+  // $('.welcome-links').waitForImages(function() {
+  //       $('.welcome-links').addClass('visible');
+  //     }, $.noop, true);
 
 });
