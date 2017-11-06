@@ -173,6 +173,7 @@ html {
 
 .cd-auto-hide-header .logo {
   left: 5%;
+  display: inline-block;
 }
 .cd-auto-hide-header .logo a, .cd-auto-hide-header .logo img {
   font-size: 40px;
@@ -201,6 +202,7 @@ html {
   font-weight: bold;
   right: 0;
   border-left: 1px solid #f2f2f2;
+  background-color: white;
 }
 .cd-auto-hide-header .nav-trigger span {
   /* vertically align inside parent element */
@@ -442,4 +444,44 @@ html {
     height: 80px;
     border-bottom: 1px solid #25283D;
   }
+}
+.nav>li>a .nice-select.small{
+  height: auto;
+  display: block;
+  margin-top: 0px;
+}
+#cd-navigation a {
+  font-size: 1.8rem;
+  color: #25283D;
+}
+.navbar.navbar-default {
+  margin-bottom: 0;
+  background: white;
+  border: none;
+  height: 79px;
+}
+@media (min-width: 768px) {
+  .navbar.navbar-default {
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+}
+.navbar-nav>li>a {
+  line-height: 79px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.navbar-brand {
+  background-image: url('../favicon/logo.png');
+  background-position: right;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 70px;
+  width: 125px;
+}
+.navbar-default .navbar-collapse {
+  background-color: white;
+}
+.navbar-default .navbar-collapse.in li {
+  border-bottom: #e7e7e7 solid 1px;
 }

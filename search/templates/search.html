@@ -272,22 +272,7 @@
 
             <input type="search" name="query" placeholder="Search by name or keywords...">
 
-            <div class="cd-select filter-container">
-              <select id="selector" name="select-category" class="filter small no-overflow">
-                <option value="people"
-                        {% if not founder and not search_category %}selected{% elif search_category == 'people' %}
-                        selected{% endif %}>
-                  People
-                </option>
-                <option value="startups"
-                        {% if founder and not search_category %}selected{% elif search_category == 'startups' %}
-                        selected{% endif %}>Startups
-                </option>
-                <option value="jobs" {% if search_category == 'jobs' %}selected{% endif %}>
-                  Jobs
-                </option>
-              </select>
-            </div>
+            <input type=hidden" id="selector" name="select-category" class="filter small no-overflow" value="{{ search_category }}">
 
             <div class="cd-search-button">
               {% if is_mobile %}
