@@ -517,3 +517,11 @@ html {
 .navbar .container-fluid {
   border-bottom: 1px solid #25283D;
 }
+.not-logged .nav>li>a:focus, .not-logged .nav>li>a:hover {
+  text-decoration: none;
+  background-color: #eee;
+}
+.button-login {
+  height: 80px;
+  line-height: 80px;
+}
