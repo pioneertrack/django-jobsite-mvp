@@ -441,7 +441,7 @@ html {
     /*padding-top:80px;*/
   }
   .cd-auto-hide-header {
-    height: 80px;
+    height: 81px;
     border-bottom: 1px solid #25283D;
   }
 }
@@ -454,11 +454,14 @@ html {
   font-size: 1.8rem;
   color: #25283D;
 }
+.navbar-header {
+  height: 80px;
+}
 .navbar.navbar-default {
   margin-bottom: 0;
   background: white;
   border: none;
-  height: 79px;
+  height: 80px;
 }
 @media (min-width: 768px) {
   .navbar.navbar-default {
@@ -467,16 +470,17 @@ html {
   }
 }
 .navbar-nav>li>a {
-  line-height: 79px;
+  line-height: 80px;
   padding-top: 0;
   padding-bottom: 0;
+  height: 80px;
 }
 .navbar-brand {
   background-image: url('../favicon/logo.png');
   background-position: right;
   background-repeat: no-repeat;
   background-size: cover;
-  height: 70px;
+  height: 80px;
   width: 125px;
 }
 .navbar-default .navbar-collapse {
@@ -484,4 +488,32 @@ html {
 }
 .navbar-default .navbar-collapse.in li {
   border-bottom: #e7e7e7 solid 1px;
+}
+.navbar-nav > li > label {
+  line-height: 80px;
+  position: relative;
+  display: block;
+  padding: 0px 15px;
+  text-decoration: none;
+  cursor: pointer;
+  color: #777;
+  font-size: 14px;
+  font-weight: normal;
+  margin: 0;
+}
+.navbar-nav > li > input[type="radio"]:checked + label:after {
+  content: ' ';
+  width: 100%;
+  position: absolute;
+  border-bottom: navy 2px solid;
+  bottom: 25px;
+  left: 0;
+}
+.in .navbar-nav > li > input[type="radio"]:checked + label:after {
+  width: 75px;
+  bottom: 25px;
+  left: 5px;
+}
+.navbar .container-fluid {
+  border-bottom: 1px solid #25283D;
 }

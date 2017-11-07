@@ -63,9 +63,13 @@ p.help-block strong {
 ul#cd-navigation div.nice-select {
     background: none !important;
     color: #25283D;
-    line-height: 79px;
+    line-height: 80px;
     font-size: 1.8rem;
 }
+ul#cd-navigation div.nice-select .list{
+    top: 75%;
+}
+
 #profiles_holder {
     padding: 0;
 }

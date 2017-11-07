@@ -28,11 +28,6 @@ $(function () {
   var end_of_results = false
   var is_active_request = false
 
-  $('.nav.navbar-nav.category a').on('click', function(e) {
-    e.preventDefault();
-    $('#selector').val($(this).data('search'));
-    $('#selector').trigger('change');
-  })
   /**
    * Renders search results in main container
    * @param data Object
