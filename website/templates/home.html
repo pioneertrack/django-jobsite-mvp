@@ -7,12 +7,10 @@
 {% endblock %}
 
 {% block js %}
-  <script src="{% static 'js/jquery.waitforimages.js' %}"></script>
-  <script src="{% static 'js/home.js' %}"></script>
+  {{ block.super }}
 {% endblock %}
 
 {% if is_mobile %}
-
   {% block mobile_content %}
     <div class="container">
       <div class="home row">
@@ -46,6 +44,7 @@
   {% endblock %}
 
 {% else %}
+
 
   {% block content %}
       <div class="welcome-links">
