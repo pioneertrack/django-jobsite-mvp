@@ -25,12 +25,17 @@
                 <span class="label label-default">Has funding experience</span>{% endif %}
               <h3>{% if user.profile.year != "" %}{{ user.profile.get_year_display }}{% else %}Student{% endif %} at UC
                 Berkeley</h3>
-              {% if user.profile.positions != "" %} <p>Looking for a
+              {% if user.profile.positions != "" %}
+                {% if positions_display.0 == 'Not Looking' %}
+                 <p>{{ positions_display.0 }}</p>
+                {% else %}
+                <p>Looking for a
                 <strong>
                   {% for item in positions_display %}
                     {{ item }}{% if not forloop.last %},{% endif %}
                   {% endfor %}
                 </strong> position{{ positions_display|pluralize }}</p>
+                {% endif %}
               {% endif %}
               <hr>
              {% if cd %}
@@ -170,12 +175,17 @@
                 <span class="label label-default">Has funding experience</span>{% endif %}
               <h3>{% if user.profile.year != "" %}{{ user.profile.get_year_display }}{% else %}Student{% endif %} at UC
                 Berkeley</h3>
-              {% if user.profile.positions != "" %} <p>Looking for a
+              {% if user.profile.positions != "" %}
+                {% if positions_display.0 == 'Not Looking' %}
+                 <p>{{ positions_display.0 }}</p>
+                {% else %}
+                <p>Looking for a
                 <strong>
                   {% for item in positions_display %}
                     {{ item }}{% if not forloop.last %},{% endif %}
                   {% endfor %}
                 </strong> position{{ positions_display|pluralize }}</p>
+                {% endif %}
               {% endif %}
               <hr>
               {% if cd %}
