@@ -345,33 +345,35 @@
         </div>
           {% if not user.first_login %}
             <div class="navbar-collapse collapse " id="bs-navbar-collapse">
-
-              <ul class="nav navbar-nav category">
-                <li>
-                  <input form="mainform" type="radio" id="searchChoice1" name="select-category" value="people" class="hidden"
-                         {% if search_category == 'people' %}checked{% endif %}>
-                  <label for="searchChoice1">People</label>
-                </li>
-                <li>
-                  <input form="mainform" type="radio" id="searchChoice2" name="select-category" value="startups" class="hidden"
-                         {% if search_category == 'startups' %}checked{% endif %}>
-                  <label for="searchChoice2">Startups</label>
-                </li>
-                <li>
-                  <input form="mainform" type="radio" id="searchChoice3" name="select-category" value="jobs" class="hidden"
-                         {% if search_category == 'jobs' %}checked{% endif %}>
-                  <label for="searchChoice3">Jobs</label>
-                </li>
-
-              </ul>
               <ul id="cd-navigation" class="nav navbar-nav navbar-right">
-                {% if user.is_founder and user.is_individual %}
+                  <li>
+                    <input form="mainform" type="radio" id="searchChoice2" name="select-category" value="startups" class="hidden"
+                           {% if search_category == 'startups' %}checked{% endif %}>
+                    <label for="searchChoice2">Startups</label>
+                  </li>
+                  <li>
+                    <input form="mainform" type="radio" id="searchChoice3" name="select-category" value="jobs" class="hidden"
+                           {% if search_category == 'jobs' %}checked{% endif %}>
+                    <label for="searchChoice3">Jobs</label>
+                  </li>
+                  <li>
+                    <input form="mainform" type="radio" id="searchChoice1" name="select-category" value="people" class="hidden"
+                           {% if search_category == 'people' %}checked{% endif %}>
+                    <label for="searchChoice1">Members</label>
+                  </li>
                   <li>
                     <a href="" id="profiles_holder">
                       <select class="filter small" style="display: none;">
-                        <option data-display="My Profiles">Nothing</option>
-                        <option value="/profile/">My Profile</option>
-                        <option value="/startup_profile/">Startup Profile</option>
+                        <option data-display="My Profile">Nothing</option>
+                        {% if user.is_individual %}
+                          <option value="/profile/">My Profile</option>
+                        {% endif %}
+                        {% if user.is_founder %}
+                          <option value="/startup_profile/">Startup Profile</option>
+                        {% endif %}
+
+                        <option value="/settings/">Settings</option>
+                        <option value="/logout/">Logout</option>
 
                       </select>
                       <div class="nice-select filter small" tabindex="0">
@@ -379,31 +381,19 @@
                         <div class="filler"></div>
                         <ul class="list">
                           <li data-display="My Profiles" data-all="1" class="option" style="display: none;"></li>
-                          <li data-value="/profile/" class="option">My Profile</li>
-                          <li data-value="/startup_profile/" class="option">Startup Profile</li>
+                          {% if user.is_individual %}
+                            <li data-value="/profile/" class="option">My Profile</li>
+                          {% endif %}
+                          {% if user.is_founder %}
+                            <li data-value="/startup_profile/" class="option">Startup Profile</li>
+                          {% endif %}
+                          <li data-value="/settings/" class="option">Settings</li>
+                          <li data-value="/logout/" class="option">Logout</li>
                         </ul>
                       </div>
                     </a>
                   </li>
-                {% else %}
-                  {% if user.is_founder %}
-                    <li><a href="{% url 'website:startup_profile' %}">My Profile</a></li>
-                  {% else %}
-                    <li>
-                      <a href="{% url 'website:profile' %}">
-                        {% if user.profile.image.url %}
-                          <div class="profile-thumb" style="background-image: url('{{ user.profile.image.url }}')">
-                          </div>
-                        {% endif %}
-                        My Profile
-                      </a>
-                    </li>
-                  {% endif %}
-                {% endif %}
-
-                <li><a href="/settings/">Settings</a></li>
-                <li><a href="/logout/">Logout</a></li>
-              </ul>
+                </ul>
             </div>
           {% endif %}
         {% else %}

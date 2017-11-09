@@ -496,8 +496,8 @@ html {
   padding: 0px 15px;
   text-decoration: none;
   cursor: pointer;
-  color: #777;
-  font-size: 14px;
+  color: #333;
+  font-size: 1.8rem;
   font-weight: normal;
   margin: 0;
 }
