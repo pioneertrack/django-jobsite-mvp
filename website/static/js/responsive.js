@@ -1,7 +1,6 @@
 jQuery(document).ready(function($) {
 
   if (history.state === null || history.state.hasOwnProperty('search_state') === false) {
-    $('#selector').niceSelect();
     $('.cd-search-nav.first select.filter').niceSelect();
   }
   $('ul#cd-navigation select.filter').niceSelect();
@@ -32,12 +31,13 @@ jQuery(document).ready(function($) {
     tags.find('span[data-role="remove"]').each(function(e) {
       $(this).trigger('click');
     })
+    $(this).remove();
   })
 
   $(document).on('click', 'span.tag span[data-role="remove"]', function(e) {
     var data_value = $(this).parent().data('value');
     var data_name = $(this).parent().data('name');
-    var selector = $("#selector").val();
+    var selector = $('[name="select-category"]:checked').val();
     var tags = $(`#tags_${selector}`);
     var select = $(`select[name="${data_name}"]`);
     var data_class = select.data('class');
@@ -72,7 +72,7 @@ jQuery(document).ready(function($) {
 
   $('.cd-search-nav.first select.filter option').
       bind('option_change.nice_select', function(e) {
-        var selector = $("#selector").val();
+        var selector = $('[name="select-category"]:checked').val();
         var tags = $(`#tags_${selector}`);
         var data_value = $(this).val();
         var data_name = $(this).parent().attr('name');
@@ -119,4 +119,31 @@ jQuery(document).ready(function($) {
           });
         }
       })
+
+  if (window.location.pathname === '/search/') {
+    $('[name="select-category"]').on('change', function (e) {
+      var class_to_show = $(this).val()
+      var blocs_to_show = $('.cd-search-nav.tags .tags.' + class_to_show +
+        ', .cd-search-nav.first .selects.' + class_to_show)
+      var tags_to_show = $('.cd-search-nav.tags .tags.' + class_to_show)
+
+      $('.cd-search-nav.tags .tags').removeClass('is-visible')
+      $('.cd-search-nav.tags .tags').removeClass('selected')
+      $('.cd-search-nav.first .selects').removeClass('is-visible')
+
+      tags_to_show.addClass('selected')
+      blocs_to_show.addClass('is-visible')
+      $('#mainform').trigger('submit')
+    })
+  } else {
+    $('[name="select-category"]').on('change', function (e) {
+          var d = new Date();
+        d.setTime(d.getTime() + (24 * 60 * 60 * 1000));
+        var expires = 'expires=' + d.toUTCString();
+        document.cookie = 'select-category=' + $('[name="select-category"]:checked').val() + ';' +
+        expires + ';path=/';
+        window.location.pathname = '/search/';
+    })
+  }
+
 });

@@ -104,23 +104,12 @@ def connect(request):
 @check_profiles
 @vary_on_headers('User-Agent')
 def index(request):
-    user = request.user
-
-    mobile = is_mobile(request)['is_mobile']
-    if mobile:
-        return render(request, 'home.html',
-                      merge_dicts(JOB_CONTEXT, {
-                          'posted': False,
-                          'reset': True,
-                          'without_padding': True,
-                      }))
-    else:
-        return render(request, 'new_home.html',
-                  merge_dicts(JOB_CONTEXT, {
-                      'posted': False,
-                      'reset': True,
-                      'without_padding': True,
-                  }))
+    return render(request, 'new_home.html',
+              merge_dicts(JOB_CONTEXT, {
+                  'posted': False,
+                  'reset': True,
+                  'without_padding': True,
+              }))
 
 
 @login_required

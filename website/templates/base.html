@@ -329,59 +329,88 @@
 {% else %}
 
   <header class="cd-auto-hide-header">
-    <div class="logo"><a href="/"><img src="{% static 'favicon/logo.png' %}"/></a></div>
-    <nav class="cd-primary-nav">
-      {% if user.is_authenticated %}
-        <a href="#cd-navigation" class="nav-trigger">
-      			<span>
-      				<em aria-hidden="true"></em>
-      				Menu
-      			</span>
-        </a><!-- .nav-trigger -->
-        <ul id="cd-navigation">
-          {% if not user.first_login %}
-            <li>
-              {% if user.is_founder and user.is_individual %}
-                <a href="" id="profiles_holder">
-                  <select class="filter small" style="display: none;">
-                    <option data-display="My Profiles">Nothing</option>
-                    {% if user.is_individual %}
-                      <option value="{% url 'website:profile' %}">My Profile</option>
-                    {% endif %}
 
-                    {% if user.is_founder %}
-                      <option value="{% url 'website:startup_profile' %}">Startup Profile</option>
-                    {% endif %}
-                  </select>
-                </a>
-              {% else %}
-                {% if user.is_founder %}
-                  <a href="{% url 'website:startup_profile' %}">My Profile</a>
-                {% else %}
-                  <a href="{% url 'website:profile' %}">
-                    {% if user.profile.image.url %}
-                      <div class="profile-thumb" style="background-image: url('{{ user.profile.image.url }}')">
-                      </div>
-                    {% endif %}
-                    My Profile
-                  </a>
-                {% endif %}
-              {% endif %}
-            </li>
-            <li><a href="{% url 'website:settings' %}">Settings</a></li>
-          {% endif %}
-          <li><a href="/logout/">Logout</a></li>
-        </ul>
-      {% elif not user.is_authenticated %}
-        <div class="unauth-nav">
-          {% if request.path != '/register/' %}
-            <button type="button" class="btn btn-register">Register</button>
-          {% else %}
-            <button type="button" class="btn btn-login">Login</button>
-          {% endif %}
+    <nav class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container-fluid">
+
+        {% if user.is_authenticated %}
+        <div class="navbar-header">
+            <a class="nav-trigger" class="navbar-toggle" data-toggle="collapse" data-target="#bs-navbar-collapse">
+            <span>
+              <em aria-hidden="true"></em>
+              Menu
+            </span>
+            </a>
+          <a class="navbar-brand" href="/"></a>
         </div>
-      {% endif %}
-    </nav> <!-- .cd-primary-nav -->
+          {% if not user.first_login %}
+            <div class="navbar-collapse collapse " id="bs-navbar-collapse">
+              <ul id="cd-navigation" class="nav navbar-nav navbar-right">
+                  <li>
+                    <input form="mainform" type="radio" id="searchChoice2" name="select-category" value="startups" class="hidden"
+                           {% if search_category == 'startups' %}checked{% endif %}>
+                    <label for="searchChoice2">Startups</label>
+                  </li>
+                  <li>
+                    <input form="mainform" type="radio" id="searchChoice3" name="select-category" value="jobs" class="hidden"
+                           {% if search_category == 'jobs' %}checked{% endif %}>
+                    <label for="searchChoice3">Jobs</label>
+                  </li>
+                  <li>
+                    <input form="mainform" type="radio" id="searchChoice1" name="select-category" value="people" class="hidden"
+                           {% if search_category == 'people' %}checked{% endif %}>
+                    <label for="searchChoice1">Members</label>
+                  </li>
+                  <li>
+                    <a href="" id="profiles_holder">
+                      <select class="filter small" style="display: none;">
+                        <option data-display="My Profile">Nothing</option>
+                        {% if user.is_individual %}
+                          <option value="/profile/">My Profile</option>
+                        {% endif %}
+                        {% if user.is_founder %}
+                          <option value="/startup_profile/">Startup Profile</option>
+                        {% endif %}
+
+                        <option value="/settings/">Settings</option>
+                        <option value="/logout/">Logout</option>
+
+                      </select>
+                      <div class="nice-select filter small" tabindex="0">
+                        <span class="current">My Profile</span>
+                        <div class="filler"></div>
+                        <ul class="list">
+                          <li data-display="My Profile" data-all="1" class="option" style="display: none;"></li>
+                          {% if user.is_individual %}
+                            <li data-value="/profile/" class="option">My Profile</li>
+                          {% endif %}
+                          {% if user.is_founder %}
+                            <li data-value="/startup_profile/" class="option">Startup Profile</li>
+                          {% endif %}
+                          <li data-value="/settings/" class="option">Settings</li>
+                          <li data-value="/logout/" class="option">Logout</li>
+                        </ul>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+            </div>
+          {% endif %}
+        {% else %}
+          <a class="navbar-brand" href="/"></a>
+          <div class="pull-right button-login">
+
+            {% if request.path != '/register/' %}
+              <a href="{% url 'registration_register' %}" class="btn btn-register navbar-btn">Register</a>
+            {% else %}
+              <a href="{% url 'auth_login' %}" class="btn btn-login navbar-btn">Login</a>
+            {% endif %}
+
+          </div>
+        {% endif %}
+
+      </div>
+    </nav>
 
     {% if user.is_authenticated %}
       {% block search_form %}{% endblock search_form %}
