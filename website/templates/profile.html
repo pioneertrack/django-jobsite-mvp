@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
-
+{% load vowel_filter %}
 {% block title %}
 {{user.first_name}} {{user.last_name}}
 {% endblock %}
@@ -29,7 +29,7 @@
                 {% if positions_display.0 == 'Not Looking' %}
                  <p>{{ positions_display.0 }}</p>
                 {% else %}
-                <p>Looking for a
+                <p>Looking for {{ positions_display.0|vowel }}
                 <strong>
                   {% for item in positions_display %}
                     {{ item }}{% if not forloop.last %},{% endif %}
@@ -179,7 +179,7 @@
                 {% if positions_display.0 == 'Not Looking' %}
                  <p>{{ positions_display.0 }}</p>
                 {% else %}
-                <p>Looking for a
+                <p>Looking for {{ positions_display.0|vowel }}
                 <strong>
                   {% for item in positions_display %}
                     {{ item }}{% if not forloop.last %},{% endif %}
