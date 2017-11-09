@@ -441,7 +441,7 @@ html {
     /*padding-top:80px;*/
   }
   .cd-auto-hide-header {
-    height: 81px;
+    height: 82px;
     border-bottom: 1px solid #25283D;
   }
 }
@@ -514,8 +514,8 @@ html {
   bottom: 25px;
   left: 5px;
 }
-.navbar .container-fluid {
-  border-bottom: 1px solid #25283D;
+.in li.display-in {
+  display: none;
 }
 .not-logged .nav>li>a:focus, .not-logged .nav>li>a:hover {
   text-decoration: none;

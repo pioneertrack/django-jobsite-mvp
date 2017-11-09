@@ -10,7 +10,7 @@
 {% if is_mobile %}
 
   {% block mobile_content %}
-    <div class='container' style="padding-top: 30px; padding-bottom:30px;">
+    <div class='container' style="padding-top: 30px; padding-bottom:30px; height: 100%">
       <div class='row'>
         {% for item in items %}
 
@@ -289,7 +289,7 @@
     </nav> <!-- .cd-secondary-nav -->
 
     <nav class="cd-secondary-nav cd-search-nav tags">
-      <div class="container">
+      <div class="container" style="height: 100%">
 
         <div class="tags startups {% if filter_startups %}selected{% endif %}">
           <div id="tags_startups" class="filter-container">
