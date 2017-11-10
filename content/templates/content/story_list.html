@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="messages"></div>
+
+    <div class='container' style="padding-top: 30px; padding-bottom:30px;">
+      <div class='row'>
+
+        {% for story in object_list %}
+
+            <div class="col col-md-4 item">
+
+              <a class="card-hover" href='/story/{{ story.slug }}'>
+                <div class="card job-card">
+                  <div class="header-bg" style="height:100px; background-color:#25283D;">
+                    <h2>{{ curr_item.founder.startup_name }}</h2>
+                    <div class="avatar"
+                         {% if curr_item.founder.logo %}style="background-image: url('{{ curr_item.founder.logo }}');"{% endif %}>
+                    </div>
+                  </div>
+                  <div class="offer-content">
+                    <div class="info">
+                      <h3>{{ curr_item.title }}</h3>
+                      <div class="pcomp">
+                        <div class="mdata">
+                            <span
+                                class="font-weight-bold">Job position:&nbsp;</span><span>{{ curr_item.get_level_display }}</span>
+                        </div>
+                        <div class="mdata">
+                            <span
+                                class="font-weight-bold">Compensation type:&nbsp;</span><span>{{ curr_item.get_pay_display }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <script type="text/javascript">
+                      $(function () {
+                        $('.description p').each(function (i) {
+                          var text = $(this).text().trim()
+                          len = text.length
+                          if (len > 200) {
+                            $(this).text(text.substr(0, 200) + '...')
+                          }
+                        })
+                      })
+                    </script>
+                    <div class="description">
+                      <p>{{ curr_item.description }}</p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+        {% endfor %}
+
+      </div>
+    </div>
+
+{% endblock content %}
