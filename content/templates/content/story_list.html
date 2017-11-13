@@ -2,11 +2,10 @@
 {% load i18n %}
 
 {% block title %}
+  Bear Founders stories
 {% endblock %}
 
 {% block content %}
-
-    <div class="messages"></div>
 
     <div class='container' style="padding-top: 30px; padding-bottom:30px;">
       <div class='row'>
@@ -16,13 +15,30 @@
             <div class="col col-md-4 item">
 
               <a class="card-hover" href='{{ story.get_absolute_url }}'>
-                <div class="card job-card">
-                  <div class="header-bg" style="height:100px; background-color:#25283D;">
-                    <h2>{{ story.header_name }}</h2>
-                    <div class="avatar"
-                         {% if story.header_image %}style="background-image: url('{{ story.header_image.image.url }}');"{% endif %}>
+                <div class="card story-card">
+
+                  {% if story.youtube_id %}
+                    <div class="header-video">
+                      <div class="video">
+                          {% if story.header_image %}
+                            <img src="{{ story.header_image.image.url }}" alt="{{ story.header_image.image.title }}"/>
+                            <i class="fa fa-youtube-play" aria-hidden="true"></i>
+                          {% else  %}
+                            <img src="http://img.youtube.com/vi/{{ story.youtube_id }}/0.jpg">
+                            <i class="fa fa-youtube-play" aria-hidden="true"></i>
+                          {% endif %}
+                      </div>
                     </div>
-                  </div>
+                  {% else %}
+                    <div class="header-bg">
+                      <h2>{{ story.header_name }}</h2>
+                      <div class="avatar">
+                          {% if story.header_image %}
+                            <img src="{{ story.header_image.image.url }}"  alt="{{ story.header_image.image.title }}"/>
+                          {% endif %}
+                      </div>
+                    </div>
+                  {% endif %}
                   <div class="offer-content">
                     <div class="info">
                       <h3>{{ story.title }}</h3>
