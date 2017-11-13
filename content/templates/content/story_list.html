@@ -5,7 +5,9 @@
   Bear Founders stories
 {% endblock %}
 
-{% block content %}
+{% if is_mobile %}
+
+  {% block mobile_content %}
 
     <div class='container' style="padding-top: 30px; padding-bottom:30px;">
       <div class='row'>
@@ -22,10 +24,10 @@
                       <div class="video">
                           {% if story.header_image %}
                             <img src="{{ story.header_image.image.url }}" alt="{{ story.header_image.image.title }}"/>
-                            <i class="fa fa-youtube-play" aria-hidden="true"></i>
+{#                            <i class="fa fa-youtube-play" aria-hidden="true"></i>#}
                           {% else  %}
-                            <img src="http://img.youtube.com/vi/{{ story.youtube_id }}/0.jpg">
-                            <i class="fa fa-youtube-play" aria-hidden="true"></i>
+                            <img src="http://img.youtube.com/vi/{{ story.youtube_id }}/mqdefault.jpg">
+{#                            <i class="fa fa-youtube-play" aria-hidden="true"></i>#}
                           {% endif %}
                       </div>
                     </div>
@@ -68,4 +70,73 @@
       </div>
     </div>
 
-{% endblock content %}
+  {% endblock %}
+
+{% else %}
+
+  {% block content %}
+
+    <div class='container' style="padding-top: 30px; padding-bottom:30px;">
+        <div class='row'>
+
+          {% for story in object_list %}
+
+              <div class="col col-md-4 item">
+
+                <a class="card-hover" href='{{ story.get_absolute_url }}'>
+                  <div class="card story-card">
+
+                    {% if story.youtube_id %}
+                      <div class="header-video">
+                        <div class="video">
+                            {% if story.header_image %}
+                              <img src="{{ story.header_image.image.url }}" alt="{{ story.header_image.image.title }}"/>
+  {#                            <i class="fa fa-youtube-play" aria-hidden="true"></i>#}
+                            {% else  %}
+                              <img src="http://img.youtube.com/vi/{{ story.youtube_id }}/mqdefault.jpg">
+  {#                            <i class="fa fa-youtube-play" aria-hidden="true"></i>#}
+                            {% endif %}
+                        </div>
+                      </div>
+                    {% else %}
+                      <div class="header-bg">
+                        <h2>{{ story.header_name }}</h2>
+                        <div class="avatar">
+                            {% if story.header_image %}
+                              <img src="{{ story.header_image.image.url }}"  alt="{{ story.header_image.image.title }}"/>
+                            {% endif %}
+                        </div>
+                      </div>
+                    {% endif %}
+                    <div class="offer-content">
+                      <div class="info">
+                        <h3>{{ story.title }}</h3>
+                        <div class="pcomp"></div>
+                      </div>
+                      <script type="text/javascript">
+                        $(function () {
+                          $('.description p').each(function (i) {
+                            var text = $(this).text().trim()
+                            len = text.length
+                            if (len > 200) {
+                              $(this).text(text.substr(0, 200) + '...')
+                            }
+                          })
+                        })
+                      </script>
+                      <div class="description">
+                        <p>{{ story.content }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+
+          {% endfor %}
+
+        </div>
+      </div>
+
+  {% endblock content %}
+
+{% endif %}
