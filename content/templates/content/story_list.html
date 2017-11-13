@@ -18,24 +18,15 @@
               <a class="card-hover" href='/story/{{ story.slug }}'>
                 <div class="card job-card">
                   <div class="header-bg" style="height:100px; background-color:#25283D;">
-                    <h2>{{ curr_item.founder.startup_name }}</h2>
+                    <h2>{{ story.header_name }}</h2>
                     <div class="avatar"
-                         {% if curr_item.founder.logo %}style="background-image: url('{{ curr_item.founder.logo }}');"{% endif %}>
+                         {% if story.header_image.url %}style="background-image: url('{{ story.header_image.url }}');"{% endif %}>
                     </div>
                   </div>
                   <div class="offer-content">
                     <div class="info">
-                      <h3>{{ curr_item.title }}</h3>
-                      <div class="pcomp">
-                        <div class="mdata">
-                            <span
-                                class="font-weight-bold">Job position:&nbsp;</span><span>{{ curr_item.get_level_display }}</span>
-                        </div>
-                        <div class="mdata">
-                            <span
-                                class="font-weight-bold">Compensation type:&nbsp;</span><span>{{ curr_item.get_pay_display }}</span>
-                        </div>
-                      </div>
+                      <h3>{{ story.title }}</h3>
+                      <div class="pcomp"></div>
                     </div>
                     <script type="text/javascript">
                       $(function () {
@@ -49,7 +40,7 @@
                       })
                     </script>
                     <div class="description">
-                      <p>{{ curr_item.description }}</p>
+                      <p>{{ story.content }}</p>
                     </div>
                   </div>
                 </div>
