@@ -15,12 +15,12 @@
 
             <div class="col col-md-4 item">
 
-              <a class="card-hover" href='/story/{{ story.slug }}'>
+              <a class="card-hover" href='{{ story.get_absolute_url }}'>
                 <div class="card job-card">
                   <div class="header-bg" style="height:100px; background-color:#25283D;">
                     <h2>{{ story.header_name }}</h2>
                     <div class="avatar"
-                         {% if story.header_image.url %}style="background-image: url('{{ story.header_image.url }}');"{% endif %}>
+                         {% if story.header_image %}style="background-image: url('{{ story.header_image.image.url }}');"{% endif %}>
                     </div>
                   </div>
                   <div class="offer-content">

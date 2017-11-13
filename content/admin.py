@@ -10,7 +10,6 @@ class StoryAdmin(admin.ModelAdmin):
 
 class PictureAdmin(admin.ModelAdmin):
     model = models.Picture
-    prepopulated_fields = {"slug": ("title",)}
 
 
 admin.site.register(models.Story, StoryAdmin)
