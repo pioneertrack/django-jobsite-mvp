@@ -16,6 +16,7 @@ class StoryListView(ListView):
         context.update(JOB_CONTEXT)
         return context
 
+
 class StoryDetailView(DetailView):
     model = Story
 

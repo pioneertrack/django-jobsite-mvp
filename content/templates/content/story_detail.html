@@ -13,7 +13,7 @@
     <div class="jumbotron min-screen">
       <div class="container ">
         <div class="row well story">
-          <div class="col-md-6 centerfy text-center">
+          <div class="col-md-6 centerfy text-center" >
             <h1>
               {{ object.title }}
             </h1>
@@ -54,14 +54,9 @@
             <img src="{{ object.header_image.image.url }}" alt="{{ object.header_image.title }}"/>
           {% endif %}
         </div>
-        <div class="col-md-4 centerfy">
           <h1>
             {{ object.title }}
           </h1>
-        </div>
-      </div>
-      <div class="row well story">
-        <div class="col-md-12 centerfy">
           {{ object.content }}
         </div>
       </div>

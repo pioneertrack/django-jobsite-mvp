@@ -49,7 +49,6 @@
           </a><!-- .nav-trigger -->
           <ul id="cd-navigation">
             {% if not user.first_login %}
-              <li><a href="{% url 'content:stories' %}">Stories</a></li>
               {% if user.is_individual %}
                 <li>
                   <a href="{% url 'website:profile' %}">
@@ -182,6 +181,7 @@
           <i class="fa fa-circle-o"></i>
           <i class="fa fa-dot-circle-o"></i>
         </label>
+        <a href="{% url 'content:stories' %}">Stories</a>
       </div>
     </div>
 

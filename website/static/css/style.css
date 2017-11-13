@@ -233,10 +233,10 @@ height-100 {
 
 .card.story-card .header-video .video {
   position: absolute;
-  top: 3%;
-  left: 3%;
-  height: 94%;
-  width: 94%;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
   /*border: 3px solid rgba(63, 122, 183, 0.8);*/
   overflow: hidden;
 }
@@ -274,4 +274,13 @@ height-100 {
   margin: 0;
   display: inline-block;
   text-overflow: ellipsis;
+}
+
+.checkboxes .filter-container.search-category a {
+  position: relative;
+  padding: 5px 40px 5px 20px;
+  display: block;
+  transition: all 0.1s ease;
+  color: white;
+  font-weight: bold;
 }
