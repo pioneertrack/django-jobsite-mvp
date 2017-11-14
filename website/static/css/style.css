@@ -262,6 +262,8 @@ height-100 {
   font-size: 3.5rem;
   text-transform: capitalize;
   margin-top: 0;
+  margin-bottom: 30px;
+  text-align: center;
 }
 .jumbotron.min-screen {
   min-height: 100%;
