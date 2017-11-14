@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
+{% load markup_tags %}
 
 {% block title %}
     {{ object.title }}
@@ -28,7 +29,7 @@
         </div>
         <div class="row well story">
           <div class="col-md-12 centerfy">
-            {{ object.content }}
+            {{ object.content|apply_markup:'creole' }}
           </div>
         </div>
       </div>
@@ -57,7 +58,7 @@
               {{ object.title }}
             </h1>
 
-            {{ object.content }}
+            {{ object.content|apply_markup:'creole' }}
 
           </div>
 

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load markup_tags %}
 
 {% block title %}
   Bear Founders stories
@@ -16,53 +17,43 @@
 
             <div class="col col-md-4 item">
 
-              <a class="card-hover" href='{{ story.get_absolute_url }}'>
                 <div class="card story-card text-">
-
-                  {% if story.youtube_id %}
-                    <div class="header-video">
-                      <div class="video">
+                  <a class="card-hover" href='{{ story.get_absolute_url }}'>
+                    {% if story.youtube_id %}
+                      <div class="header-video">
+                        <div class="video">
                           {% if story.header_image %}
                             <img src="{{ story.header_image.image.url }}" alt="{{ story.header_image.image.title }}"/>
-{#                            <i class="fa fa-youtube-play" aria-hidden="true"></i>#}
-                          {% else  %}
+                            {#                            <i class="fa fa-youtube-play" aria-hidden="true"></i>#}
+                          {% else %}
                             <img src="http://img.youtube.com/vi/{{ story.youtube_id }}/mqdefault.jpg">
-{#                            <i class="fa fa-youtube-play" aria-hidden="true"></i>#}
+                            {#                            <i class="fa fa-youtube-play" aria-hidden="true"></i>#}
                           {% endif %}
+                        </div>
                       </div>
-                    </div>
-                  {% else %}
-                    <div class="header-bg">
-                      <h2>{{ story.header_name }}</h2>
-                      <div class="avatar">
+                    {% else %}
+                      <div class="header-bg">
+                        <h2>{{ story.header_name }}</h2>
+                        <div class="avatar">
                           {% if story.header_image %}
-                            <img src="{{ story.header_image.image.url }}"  alt="{{ story.header_image.image.title }}"/>
+                            <img src="{{ story.header_image.image.url }}" alt="{{ story.header_image.image.title }}"/>
                           {% endif %}
+                        </div>
                       </div>
-                    </div>
-                  {% endif %}
+                    {% endif %}
+                  </a>
                   <div class="offer-content">
                     <div class="info">
-                      <h3>{{ story.title }}</h3>
+                      <a class="card-hover" href='{{ story.get_absolute_url }}'>
+                        <h3>{{ story.title }}</h3>
+                      </a>
                       <div class="pcomp"></div>
                     </div>
-                    <script type="text/javascript">
-                      $(function () {
-                        $('.description p').each(function (i) {
-                          var text = $(this).text().trim()
-                          len = text.length
-                          if (len > 200) {
-                            $(this).text(text.substr(0, 200) + '...')
-                          }
-                        })
-                      })
-                    </script>
                     <div class="description">
-                      <p>{{ story.content }}</p>
+                      <p>{{ story.description|apply_markup:'creole' }}</p>
                     </div>
                   </div>
                 </div>
-              </a>
             </div>
 
         {% endfor %}
@@ -82,19 +73,15 @@
           {% for story in object_list %}
 
               <div class="col col-md-4 item">
-
-                <a class="card-hover" href='{{ story.get_absolute_url }}'>
                   <div class="card story-card">
-
+                    <a class="card-hover" href='{{ story.get_absolute_url }}'>
                     {% if story.youtube_id %}
                       <div class="header-video">
                         <div class="video">
                             {% if story.header_image %}
                               <img src="{{ story.header_image.image.url }}" alt="{{ story.header_image.image.title }}"/>
-  {#                            <i class="fa fa-youtube-play" aria-hidden="true"></i>#}
                             {% else  %}
                               <img src="http://img.youtube.com/vi/{{ story.youtube_id }}/mqdefault.jpg">
-  {#                            <i class="fa fa-youtube-play" aria-hidden="true"></i>#}
                             {% endif %}
                         </div>
                       </div>
@@ -108,28 +95,19 @@
                         </div>
                       </div>
                     {% endif %}
+                    </a>
                     <div class="offer-content">
                       <div class="info">
-                        <h3>{{ story.title }}</h3>
+                        <a class="card-hover" href='{{ story.get_absolute_url }}'>
+                          <h3>{{ story.title }}</h3>
+                        </a>
                         <div class="pcomp"></div>
                       </div>
-                      <script type="text/javascript">
-                        $(function () {
-                          $('.description p').each(function (i) {
-                            var text = $(this).text().trim()
-                            len = text.length
-                            if (len > 200) {
-                              $(this).text(text.substr(0, 200) + '...')
-                            }
-                          })
-                        })
-                      </script>
                       <div class="description">
-                        <p>{{ story.content }}</p>
+                        {{ story.description|apply_markup:'creole' }}
                       </div>
                     </div>
                   </div>
-                </a>
               </div>
 
           {% endfor %}
