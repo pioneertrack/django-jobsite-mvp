@@ -86,7 +86,7 @@ class ProfileFormWizard(forms.ModelForm):
     class Meta:
         model = profile.Profile
         fields = ('image', 'bio', 'positions', 'role', 'skills', 'year', 'interests',
-                  'major', 'courses', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'linkedin', 'website',
+                  'major', 'courses', 'hours_week', 'has_startup_exp', 'has_funding_exp','mentor', 'linkedin', 'website',
                   'github')
 
 

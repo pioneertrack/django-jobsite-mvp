@@ -91,6 +91,10 @@
                   {% include './partials/checkbox.html' %}
                 {% endwith %}
 
+                {% with formItemHeader='4.) Are you willing to mentor?' formitemRequired=True ddlist=formDat.is_mentor ddclass='mentor'  ddselectionlabel='Please select yes or no' %}
+                  {% include './partials/dropdown.html' %}
+                {% endwith %}
+
               </div>
 
               <div id="step-1" class="step-section">
