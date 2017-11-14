@@ -4,6 +4,10 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+from django.urls import reverse
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import EmailMultiAlternatives
+from django.conf import settings
 
 
 class UserManager(BaseUserManager):
@@ -111,11 +115,22 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         # Simplest possible answer: Yes, always
         return True
 
-    def email_user(self, subject, message, from_email=None, **kwargs):
-        '''
-        Sends an email to this User.
-        '''
-        send_mail(subject, message, from_email, [self.email], **kwargs)
+    def email_user(self, subject, message, from_email=None, html_content=None):
+        if hasattr(settings, 'TEST_EMAIL'):
+            to = [settings.TEST_EMAIL]
+        else:
+            to = [self.email]
+
+        msg = EmailMultiAlternatives(subject, message, from_email, to)
+        if not html_content is None:
+            msg.attach_alternative(html_content, 'text/html')
+        msg.send()
+
+    def get_profile_url(self):
+        try:
+            return reverse('website:get_profile_view', kwargs={'id': self.profile.pk})
+        except ObjectDoesNotExist as e:
+            return None
 
     @property
     def is_staff(self):
