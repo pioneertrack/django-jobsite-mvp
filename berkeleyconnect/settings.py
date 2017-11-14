@@ -50,10 +50,12 @@ INSTALLED_APPS = [
     'imagekit',
     'mailer',
     'django_elasticsearch_dsl',
+    'django_markup',
 
     'landing',
     'website',
     'search',
+    'content',
 ]
 
 MIDDLEWARE = [

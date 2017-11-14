@@ -38,6 +38,7 @@ urlpatterns = [
     url(r'^', include('landing.urls', namespace='landing')),
     url(r'^', include('website.urls', namespace='website')),
     url(r'^', include('search.urls', namespace='search')),
+    url(r'^', include('content.urls', namespace='content')),
 
     url(r'^admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

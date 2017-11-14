@@ -3,18 +3,40 @@ html, body, header {
 }
 
 #intro {
-    height: 100%;
-    background: url('../images/hero.jpg') no-repeat center center fixed;
+    min-height: 100%;
+    height: auto;
+    background: url("../images/hero.jpg") no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-}
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    }
+#intro h1 {
+    font-size: 2.4rem;
+    }
+
+.brand-overlay {
+    margin: -10px 0;
+    display: block;
+    align-self: stretch;
+    }
 
 .navbar-brand {
     color: #041E41;
     font-weight: bold;
-}
+    background: url("../images/bear.png") left center no-repeat;
+    background-size: auto 100%;
+    height: 100%;
+    min-width: 110px;
+    margin: 0;
+    /*padding: 0 0 0 42%;*/
+    padding: 0 0 0 110px;
+    display: flex;
+    align-items: center;
+    }
 
 .navbar-nav .member-name {
     background-color: #FFB819;
@@ -32,37 +54,47 @@ html, body, header {
 .card {
     width: 280px;
     height: 60vh;
+    max-height: 450px;
     display: flex;
     flex-flow: column nowrap;
-    align-items: center;
     justify-content: center;
-    opacity: 0.7;
+    align-items: stretch;
     -webkit-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
     -ms-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
     transition: all 0.3s ease;
     }
-.card:hover {
-    opacity: 0.9;
-    }
 
 hr {
     height: 1px;
+    width: 100%;
     background-color: #041E41;
+}
+.members hr {
+    background-color: #fff;
 }
 
 .startups {
-    background-color: #FFFFFF;
-}
+    background-color: rgba(255,255,255,0.7);
+    }
+.startups:hover {
+    background-color: rgba(255,255,255,0.9);
+    }
 
 .jobs {
-    background-color: #FFB819;
-}
+    background-color: rgba(255,184,25,0.7);
+    }
+.jobs:hover {
+    background-color: rgba(255,184,25,0.9);
+    }
 
 .members {
-    background-color: #46535E;
-}
+    background-color: rgba(70,83,94,0.7);
+    }
+.members:hover {
+    background-color: rgba(70,83,94,0.9);
+    }
 
 .card .card-title {
     color: #041E41; 
@@ -70,9 +102,11 @@ hr {
 }
 
 .card .card-text {
+    min-height: 60px;
+    display: block;
     color: #041E41; 
     font-size: 20px;
-}
+    }
 
 .members .card-title {
     color: #FFFFFF; 
@@ -84,19 +118,32 @@ hr {
     font-size: 18px;
 }
 
-@media (max-width: 575px) {
+@media (max-width: 575px) {    
     .card .card-text {
         font-size: 16px;
     }
 }
 
 @media (max-width: 767px) {
+    #intro {
+        padding-top: 80px;
+        }
     .card {
-        width: 175px;
-        height: 300px;
-    }
+        width: 100%;
+        height: 280px;
+        /*height: 27vh;*/
+        /*height: 300px;*/
+        }
     
     .card .card-title {
         font-size: 28px;
+        }
+    .card .card-text {
+        min-height: auto;
+        }
     }
-}
+@media (max-width: 449px) {
+    .navbar-brand {
+        font-size: 0;
+        }
+    }

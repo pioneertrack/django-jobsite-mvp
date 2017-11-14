@@ -272,23 +272,6 @@
 
             <input type="search" name="query" placeholder="Search by name or keywords...">
 
-            <div class="cd-select filter-container">
-              <select id="selector" name="select-category" class="filter small no-overflow">
-                <option value="people"
-                        {% if not founder and not search_category %}selected{% elif search_category == 'people' %}
-                        selected{% endif %}>
-                  People
-                </option>
-                <option value="startups"
-                        {% if founder and not search_category %}selected{% elif search_category == 'startups' %}
-                        selected{% endif %}>Startups
-                </option>
-                <option value="jobs" {% if search_category == 'jobs' %}selected{% endif %}>
-                  Jobs
-                </option>
-              </select>
-            </div>
-
             <div class="cd-search-button">
               {% if is_mobile %}
                 <button id="menubutton" type="button" class="btn btn-success toggle-id-1">
@@ -306,7 +289,7 @@
     </nav> <!-- .cd-secondary-nav -->
 
     <nav class="cd-secondary-nav cd-search-nav tags">
-      <div class="container">
+      <div class="container" style="height: 100%">
 
         <div class="tags startups {% if filter_startups %}selected{% endif %}">
           <div id="tags_startups" class="filter-container">

@@ -19,9 +19,11 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-light fixed-top">
             <div class="container">
-                <a class="navbar-brand" href="/" style="margin-top: 6px">
-                  <img src="{% static 'favicon/logo.png' %}" width="60" height="30" alt="">BEAR FOUNDERS
-                </a>
+                <div class="brand-overlay">
+                    <a class="navbar-brand" href="/">
+                        <span>BEAR FOUNDERS</span>
+                    </a>
+                </div>
                 <div class="dropdown navbar-nav ml-auto">
                     <button class="btn btn-outline-white dropdown-toggle member-name" type="button" href="{% url 'website:profile' %}" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Member</button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -37,32 +39,32 @@
                 </div>
             </div>
         </nav>
-        <div id="intro" class="view">
+        <div id="intro">
             <div class="container-fluid full-bg-img d-flex align-items-center justify-content-center">
                 <div class="row d-flex justify-content-center text-center">
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-4">
                         <a href="{% url 'search:search' %}" data-category="startups" class="welcome-links">
-                            <div class="card startups img-fluid">
+                            <div class="card startups img-fluid p-3 mt-3 mb-3">
                                 <h1 class="card-title">STARTUPS</h1>
-                                <hr class="m-3">
+                                <hr class="mt-3 mb-4">
                                 <p class="card-text">Discover Innovative Startups</p>
                             </div>
                         </a>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-4">
                         <a href="{% url 'search:search' %}" data-category="jobs" class="welcome-links">
-                            <div class="card jobs img-fluid">
+                            <div class="card jobs img-fluid p-3 mt-3 mb-3">
                                 <h1 class="card-title">JOBS</h1>
-                                <hr class="m-3">
+                                <hr class="mt-3 mb-4">
                                 <p class="card-text">Find Meaningful Opportunities</p>
                             </div>
                         </a>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-4">
                         <a href="{% url 'search:search' %}" data-category="people" class="welcome-links">
-                            <div class="card members img-fluid">
+                            <div class="card members img-fluid p-3 mt-3 mb-3">
                                 <h1 class="card-title">MEMBERS</h1>
-                                <hr class="m-3">
+                                <hr class="mt-3 mb-4">
                                 <p class="card-text">Connect With Teammates</p>
                             </div>
                         </a>
