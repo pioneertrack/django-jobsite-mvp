@@ -20,9 +20,7 @@
           </div>
           <div class="col-md-6 centerfy" id="player-col">
             {% if object.youtube_id %}
-              <div id="player">
-
-              </div>
+              <div id="player"></div>
             {% else %}
               <img src="{{ object.header_image.image.url }}" alt="{{ object.header_image.title }}"/>
             {% endif %}
@@ -43,22 +41,26 @@
   {% block content %}
 
   <div class="jumbotron min-screen">
-    <div class="container ">
+    <div class="container">
       <div class="row well story">
-        <div class="col-md-8 centerfy" id="player-col">
-          {% if object.youtube_id %}
-            <div id="player">
 
+          <div class="col-md-12 centerfy">
+            <div class="holder pull-left" id="player-col">
+              {% if object.youtube_id %}
+                <div id="player"></div>
+              {% else %}
+                <img src="{{ object.header_image.image.url }}" alt="{{ object.header_image.title }}"/>
+              {% endif %}
             </div>
-          {% else %}
-            <img src="{{ object.header_image.image.url }}" alt="{{ object.header_image.title }}"/>
-          {% endif %}
-        </div>
-          <h1>
-            {{ object.title }}
-          </h1>
-          {{ object.content }}
-        </div>
+
+            <h1>
+              {{ object.title }}
+            </h1>
+
+            {{ object.content }}
+
+          </div>
+
       </div>
     </div>
   </div>

@@ -258,6 +258,11 @@ height-100 {
 .container .story {
   background-color: white;
 }
+.container .story h1 {
+  font-size: 3.5rem;
+  text-transform: capitalize;
+  margin-top: 0;
+}
 .jumbotron.min-screen {
   min-height: 100%;
 }
@@ -283,4 +288,19 @@ height-100 {
   transition: all 0.1s ease;
   color: white;
   font-weight: bold;
+}
+@media (max-width: 768px) {
+  .container .holder {
+    width: 100%;
+    padding-right: 0px;
+  }
+}
+@media (min-width: 992px) {
+  .container .holder {
+    width: 66.66666667%;
+    padding-right: 15px;
+  }
+}
+#player {
+  width: 100%;
 }
