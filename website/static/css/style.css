@@ -314,3 +314,14 @@ height-100 {
 #player {
   width: 100%;
 }
+.jumbotron .story p {
+  margin-bottom: 0;
+   font-size: inherit;
+   font-weight: normal;
+}
+.card-hover h3 {
+  color: #25283D;
+}
+.card-hover:hover h3 {
+  color: #23527c;
+}
