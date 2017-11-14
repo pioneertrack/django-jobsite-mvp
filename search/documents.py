@@ -80,6 +80,7 @@ class PeopleDocument(DocType):
             'skills',
             'interests',
             'courses',
+            'mentor'
         ]
 
 @startup.doc_type

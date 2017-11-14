@@ -37,6 +37,9 @@
                 </strong> position{{ positions_display|pluralize }}</p>
                 {% endif %}
               {% endif %}
+              {% if user.profile.mentor %}
+                <p>Willing to mentor</p>
+              {% endif %}
               <hr>
              {% if cd %}
                <h5>Active: Today </h5>
@@ -186,6 +189,9 @@
                   {% endfor %}
                 </strong> position{{ positions_display|pluralize }}</p>
                 {% endif %}
+              {% endif %}
+              {% if user.profile.mentor %}
+                <p>Willing to mentor</p>
               {% endif %}
               <hr>
               {% if cd %}

@@ -436,6 +436,9 @@
                     {% if curr_item.has_funding_exp %}
                       <span class="label label-default">Has funding experience</span>
                     {% endif %}
+                    <% if (item.mentor) { %>
+                      <span class="label label-default">Mentor</span>
+                    <% } %>
                     <span class="label label-primary">{{ curr_item.get_year_display }}</span>
                     {% if curr_item.major.strip != "" %}
                       <span class="label label-primary">{{ curr_item.get_major_display }}</span>
@@ -535,6 +538,10 @@
 
               <% if (item.has_founding_exp) { %>
               <span class="label label-default">Has funding experience</span>
+              <% } %>
+
+              <% if (item.mentor) { %>
+              <span class="label label-default">Mentor</span>
               <% } %>
 
               <span class="label label-primary"> <%= item.get_year_display %> </span>

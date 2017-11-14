@@ -23,7 +23,8 @@ JOB_CONTEXT = {
             ('1', 'Intern'),
             ('2', 'Part-Time'),
             ('3', 'Full-Time'),
-            ('4', 'Freelance')
+            ('4', 'Freelance'),
+            ('5', 'Mentor')
         ], {'class': 'label-position'}),
         ('hours', list(profile.HOURS_AVAILABLE), {'class': 'label-hours', 'name': 'Available'})
     ],
