@@ -55,3 +55,4 @@ django-mailer==1.2.2
 django-haystack==2.6.1
 django-elasticsearch-dsl==0.2.0
 djangorestframework==3.7.1
+django-autocomplete-light==3.2.10
