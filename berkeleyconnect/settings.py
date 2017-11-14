@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'landing',
     'website',
     'search',
+    'content',
 ]
 
 MIDDLEWARE = [

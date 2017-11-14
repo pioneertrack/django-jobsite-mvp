@@ -181,6 +181,7 @@
           <i class="fa fa-circle-o"></i>
           <i class="fa fa-dot-circle-o"></i>
         </label>
+        <a href="{% url 'content:stories' %}">Stories</a>
       </div>
     </div>
 
@@ -360,6 +361,9 @@
                     <input form="mainform" type="radio" id="searchChoice1" name="select-category" value="people" class="hidden"
                            {% if search_category == 'people' %}checked{% endif %}>
                     <label for="searchChoice1">Members</label>
+                  </li>
+                  <li>
+                    <a href="{% url 'content:stories' %}">Stories</a>
                   </li>
                   <li>
                     <a href="" id="profiles_holder">
