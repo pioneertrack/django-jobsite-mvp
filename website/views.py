@@ -78,6 +78,7 @@ JOB_CONTEXT = {
 @login_required(login_url='login/')
 def connect(request):
     if request.is_ajax():
+        email_connect_template = 'email/connection.html'
         url = urlparse(request.META.get('HTTP_REFERER'))
         from_startup = re.match(r'.*/startups/.*', url.path) is not None;
         receiver = get_object_or_404(models.MyUser, pk=request.POST['user_page_id'])
@@ -85,11 +86,27 @@ def connect(request):
         text = request.POST['text']
         if receiver is not None:
             try:
+                profile_url = ''
+                if not sender.get_profile_url() is None:
+                    profile_url = '{fname} {lname}\'s Profile: {url}'.format(
+                        url=request.build_absolute_uri(sender.get_profile_url()),
+                        fname=sender.first_name,
+                        lname=sender.last_name) + "\r\n\r\n"
+                html_content = render_to_string(email_connect_template, {
+                    'sender': sender,
+                    'msg': request.POST['text'],
+                    'url': request.build_absolute_uri(sender.get_profile_url()) if not sender.get_profile_url() is None else None
+                })
                 receiver.email_user(
-                    sender.first_name + " " + sender.last_name + " wants to work with you on BearFounders!",
-                    request.POST['text'] + "\r\nREPLY TO: " + sender.email, 'noreply@bearfounders.com')
+                    sender.first_name + " " + sender.last_name + " wants to work with you on Bear Founders!",
+                    "You have a new connection:\r\n\r\n" +
+                    sender.first_name + " " + sender.last_name + " wants to work with you on Bear Founders!\r\n\r\n" +
+                    request.POST['text'] + "\r\n\r\n" + profile_url +
+                    "REPLY TO: " + sender.email, 'noreply@bearfounders.com', html_content)
+
                 prof.Connection.objects.create(sender=sender, receiver=receiver, to_startup=from_startup, message=text)
                 message = "success"
+
                 return HttpResponse(message)
             except SMTPException as err:
                 message = err

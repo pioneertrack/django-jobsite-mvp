@@ -1,0 +1,18 @@
+{% extends 'email/base.html' %}
+{% load i18n %}
+
+{% block content %}
+  <h3>You have a new connection:</h3>
+  <h4>{{ sender.first_name }} {{ sender.last_name }} wants to work with you on Bear Founders!</h4>
+  <p>
+    {{ msg }}
+  </p>
+  {% if url %}
+    <p>
+     View {{ sender.first_name }} {{ sender.last_name }}'s&nbsp;<a href="{{ url }}">Profile</a>
+    </p>
+  {% endif %}
+  <p>
+    <a href="mailto:{{ sender.email }}">REPLY TO: {{ sender.email }}</a>
+  </p>
+{% endblock content %}

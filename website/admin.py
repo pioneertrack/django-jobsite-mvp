@@ -46,7 +46,7 @@ class MyUserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name')}),
-        ('Permissions', {'fields': ('is_admin', 'is_active', 'is_individual', 'is_founder')}),
+        ('Permissions', {'fields': ('is_admin', 'is_active', 'is_individual', 'is_founder', 'test_mode')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -331,7 +331,7 @@ class ProfileAdmin(ImportExportModelAdmin):
     list_display = ('user', 'major', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'get_is_filled')
     list_filter = ('major', 'year', 'has_startup_exp', 'has_funding_exp', 'is_filled')
     fieldsets = (
-        (None, {'fields': ['user', 'bio', 'interests', 'is_filled']}),
+        (None, {'fields': ['user', 'image', 'bio', 'interests', 'is_filled']}),
         ('School', {'fields': ['year', 'role', 'major', 'courses']}),
         ('Work', {'fields': ['hours_week', 'positions']}),
         ('Experience', {'fields': ['has_startup_exp', 'has_funding_exp', 'skills']}),

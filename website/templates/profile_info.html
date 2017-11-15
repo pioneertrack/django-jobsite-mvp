@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static from staticfiles %}
 {% load i18n %}
 {% load vowel_filter %}
 
@@ -14,8 +15,14 @@
         <div class="container">
           <div id="profile-hero" class="row well">
             <div class="col-md-4 centerfy">
-              <div class="profile-image text-center img-responsive"
-                {% if profile.image %}style="background-image: url('{{ profile.image.url }}');"{% endif %}>
+              <div class="profile-image text-center img-responsive">
+              <div>
+                {% if profile.image %}
+                  <img src="{{ profile.image.url }}" alt="{{ profile.user.first_name }} {{ profile.user.last_name }}">
+                {% else %}
+                  <img src="{% static 'images/default/profile.jpg' %}" alt="{{ profile.user.first_name }} {{ profile.user.last_name }}">
+                {% endif %}
+              </div>
               </div>
             </div>
             <div class="col-md-8 centerfy">
@@ -159,8 +166,14 @@
         <div class="container">
           <div id="profile-hero" class="row well">
             <div class="col-md-4 centerfy">
-              <div class="profile-image text-center img-responsive"
-                {% if profile.image %}style="background-image: url('{{ profile.image.url }}');"{% endif %}>
+              <div class="profile-image text-center img-responsive">
+                <div>
+                {% if profile.image %}
+                  <img src="{{ profile.image.url }}" alt="{{ profile.user.first_name }} {{ profile.user.last_name }}">
+                {% else %}
+                  <img src="{% static 'images/default/profile.jpg' %}" alt="{{ profile.user.first_name }} {{ profile.user.last_name }}">
+                {% endif %}
+                </div>
               </div>
             </div>
             <div class="col-md-8 centerfy">
