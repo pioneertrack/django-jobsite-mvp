@@ -331,7 +331,7 @@ class ProfileAdmin(ImportExportModelAdmin):
     list_display = ('user', 'major', 'year', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'get_is_filled')
     list_filter = ('major', 'year', 'has_startup_exp', 'has_funding_exp', 'is_filled')
     fieldsets = (
-        (None, {'fields': ['user', 'bio', 'interests', 'is_filled']}),
+        (None, {'fields': ['user', 'image', 'bio', 'interests', 'is_filled']}),
         ('School', {'fields': ['year', 'role', 'major', 'courses']}),
         ('Work', {'fields': ['hours_week', 'positions']}),
         ('Experience', {'fields': ['has_startup_exp', 'has_funding_exp', 'skills']}),
