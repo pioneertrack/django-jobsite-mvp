@@ -24,7 +24,7 @@ JOB_CONTEXT = {
             ('2', 'Part-Time'),
             ('3', 'Full-Time'),
             ('4', 'Freelance'),
-            ('5', 'Mentor')
+            ('M', 'Mentor')
         ], {'class': 'label-position'}),
         ('hours', list(profile.HOURS_AVAILABLE), {'class': 'label-hours', 'name': 'Available'})
     ],
@@ -172,6 +172,10 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
 
         if '' in position:
             position.remove('')
+
+        if 'M' in position:
+            position.remove('M')
+            query['query']['bool']['filter'].append({'term': {'mentor': True}})
 
         if len(position) > 0:
             query['query']['bool']['filter'].append({'terms': {'positions': position}})
