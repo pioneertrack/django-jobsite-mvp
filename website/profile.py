@@ -185,7 +185,7 @@ def company_logo_path(instance, filename):
 
 class Profile(models.Model):
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
-    image = CustomImageField(upload_to=user_directory_path, default=None)
+    image = models.ImageField(upload_to=user_directory_path, blank=True, null=True)
     image_thumbnail = ImageSpecField(source='image',
                                      processors=[ResizeToFit(100, 100, False)],
                                      format='PNG',
@@ -230,7 +230,7 @@ class Profile(models.Model):
 
     def check_is_filled(self, save=True):
         if len(self.bio) > 0 and (len(self.skills) > 0 or self.experience_set.count() > 0) and (
-                not self.image is None) and (self.positions != []) and (
+                self.positions != []) and (
                 not self.role is '') and (
                 not self.year is ''):
             self.is_filled = True
@@ -256,7 +256,7 @@ class Experience(models.Model):
 
 class Founder(models.Model):
     user = models.OneToOneField(user.MyUser, on_delete=models.CASCADE)
-    logo = CustomImageField(upload_to=company_logo_path, default=None)
+    logo = CustomImageField(upload_to=company_logo_path, blank=True, null=True)
     logo_thumbnail = ImageSpecField(source='logo',
                                     processors=[ResizeToFit(100, 100, False)],
                                     format='PNG',
