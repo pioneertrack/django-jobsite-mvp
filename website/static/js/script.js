@@ -115,7 +115,6 @@ $(function () {
           'profile_type': profile_type,
         },
         success: function (data) {
-          console.log('email sent')
           swal({
             type: 'success',
             title: 'Your message is on its way!',
@@ -133,7 +132,6 @@ $(function () {
   }
 
   $('#connect').on('click', function () {
-    console.log('clicked')
     swal({
       title: 'Give a description of you or your project',
       text: 'It\'s best to include your name, email, and/or phone number so they can contact you back',
@@ -174,6 +172,53 @@ $(function () {
       } else {
         connectRequest(text)
       }
+    })
+  })
+
+  $(document).on('click', '.feedback', function (e) {
+    e.preventDefault()
+    $(this).
+    swal({
+      title: 'Send feedback to site administration',
+      text: 'It\'s best to include your name, email, and/or phone number so they can contact you back',
+      input: 'textarea',
+      showCancelButton: true,
+      confirmButtonText: 'Connect',
+      showLoaderOnConfirm: true,
+      preConfirm: function (text) {
+        return new Promise(function (resolve, reject) {
+          setTimeout(function () {
+            if (text.length == 0) {
+              reject('Please write a message')
+            } else {
+              resolve()
+            }
+          }, 500)
+        })
+      },
+      allowOutsideClick: false,
+    }).then(function (text) {
+      $.ajax({
+        type: 'POST',
+        url: '/feedback/',
+        data: {
+          'text': text,
+        },
+        success: function (data) {
+          swal({
+            type: 'success',
+            title: 'Your message is on its way!',
+            html: 'We send You feedback. We hope you hear back soon.',
+          })
+        },
+        error: function (xhr, textStatus, errorThrown) {
+          swal({
+            type: 'error',
+            title: 'Something went wrong on our end',
+            html: 'Please try again',
+          })
+        },
+      })
     })
   })
 

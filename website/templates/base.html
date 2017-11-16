@@ -68,6 +68,7 @@
                 </li>
               {% endif %}
               <li><a href="{% url 'website:settings' %}">Settings</a></li>
+              <li><a href="#" class="feedback">Send feedback</a></li>
             {% endif %}
             <li><a href="/logout/">Logout</a></li>
           </ul>
@@ -392,6 +393,7 @@
                             <li data-value="/startup_profile/" class="option">Startup Profile</li>
                           {% endif %}
                           <li data-value="/settings/" class="option">Settings</li>
+                          <li data-value="#" class="option feedback">Send feedback</li>
                           <li data-value="/logout/" class="option">Logout</li>
                         </ul>
                       </div>
