@@ -205,8 +205,22 @@ $(function () {
   }
 
   if (history.state !== null && history.state.hasOwnProperty('search_state')) {
-    $('#selector').niceSelect()
     $('.cd-search-nav.first select.filter').niceSelect()
   }
 
+  function fillControls () {
+    var class_to_show = $('[name="select-category"]:checked').val()
+    var blocs_to_show = $('.cd-search-nav.tags .tags.' + class_to_show +
+      ', .cd-search-nav.first .selects.' + class_to_show)
+    var tags_to_show = $('.cd-search-nav.tags .tags.' + class_to_show)
+
+    $('.cd-search-nav.tags .tags').removeClass('is-visible')
+    $('.cd-search-nav.tags .tags').removeClass('selected')
+    $('.cd-search-nav.first .selects').removeClass('is-visible')
+
+    tags_to_show.addClass('selected')
+    blocs_to_show.addClass('is-visible')
+  }
+
+  fillControls();
 })

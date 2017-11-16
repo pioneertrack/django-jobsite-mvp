@@ -154,22 +154,6 @@ $(function () {
     })
   })
 
-  $('#selector').on('change', function (e) {
-    var class_to_show = $(this).val()
-    var blocs_to_show = $('.cd-search-nav.tags .tags.' + class_to_show +
-      ', .cd-search-nav.first .selects.' + class_to_show)
-    var tags_to_show = $('.cd-search-nav.tags .tags.' + class_to_show)
-
-    $('.cd-search-nav.tags .tags').removeClass('is-visible')
-    $('.cd-search-nav.tags .tags').removeClass('selected')
-    $('.cd-search-nav.first .selects').removeClass('is-visible')
-
-    tags_to_show.addClass('selected')
-    blocs_to_show.addClass('is-visible')
-  })
-
-  $('#selector').trigger('change')
-
   $('#view_type').on('change', function (e) {
     if ($(this).prop('checked')) {
       $('.job-card:first').parents('.container').addClass('list')

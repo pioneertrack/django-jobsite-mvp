@@ -50,10 +50,12 @@ INSTALLED_APPS = [
     'imagekit',
     'mailer',
     'django_elasticsearch_dsl',
+    'django_markup',
 
     'landing',
     'website',
     'search',
+    'content',
 ]
 
 MIDDLEWARE = [
@@ -203,6 +205,9 @@ CACHES = {
         }
     }
 }
+
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
 
 
 # IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = 'website.profile.FixJustInTime'

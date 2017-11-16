@@ -74,14 +74,12 @@ class NewRegistrationForm(RegistrationFormUniqueEmail):
 
 
 class ProfileFormWizard(forms.ModelForm):
-    image = forms.ImageField(label='Profile image', required=True, error_messages={'invalid': "Image files only"},
-                             widget=forms.FileInput)
-    image_decoded = forms.CharField(label='Profile image')
+    image = forms.ImageField(label='Profile image', error_messages={'invalid': "Image files only"},
+                             widget=forms.FileInput, required=False)
+    image_decoded = forms.CharField(label='Profile image', required=False)
 
     def __init__(self, *args, **kwargs):
         super(ProfileFormWizard, self).__init__(*args, **kwargs)
-        if self.instance.image and len(self.instance.image.name) > 0:
-            self.fields['image'].required = False
 
     class Meta:
         model = profile.Profile
@@ -91,22 +89,19 @@ class ProfileFormWizard(forms.ModelForm):
 
 
 class ProfileForm(forms.ModelForm):
-    image = forms.ImageField(label='Profile image', required=True, error_messages={'invalid': "Image files only"},
-                             widget=forms.FileInput)
+    image = forms.ImageField(label='Profile image', error_messages={'invalid': "Image files only"}, widget=forms.FileInput, required=False)
 
     def __init__(self, *args, **kwargs):
         super(ProfileForm, self).__init__(*args, **kwargs)
         self.initial['alt_email'] = None
-        if self.instance.image and len(self.instance.image.name) > 0:
-            self.fields['image'].required = False
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout(Field('image', template='forms/image-input.html'))
         self.fields['bio'].widget.attrs.update({
-                                                   'placeholder': 'I am a senior who enjoys tech and education. I am looking forward to working with startups and would love to get mentored by Cal alums who have experience with operations.'})
+            'placeholder': 'I am a senior who enjoys tech and education. I am looking forward to working with startups and would love to get mentored by Cal alums who have experience with operations.'})
         self.fields['skills'].widget.attrs.update({
-                                                      'placeholder': 'Python, javascript, SQL, data analysis, financial modeling, photography, UX/UI, Microsoft office, social media…'})
+            'placeholder': 'Python, javascript, SQL, data analysis, financial modeling, photography, UX/UI, Microsoft office, social media…'})
         self.fields['interests'].widget.attrs.update({'placeholder': 'Sports, writing, edtech, travel, health'})
         self.fields['courses'].widget.attrs.update({'placeholder': 'UGBA 104, CS70, Econ 100B'})
 
@@ -141,14 +136,11 @@ class ProfileForm(forms.ModelForm):
 
 
 class FounderForm(forms.ModelForm):
-    logo = forms.ImageField(label='Logo', required=True, error_messages={'invalid': "Image files only"},
-                            widget=forms.FileInput)
+    logo = forms.ImageField(label='Logo', error_messages={'invalid': "Image files only"}, widget=forms.FileInput, required=False)
 
     def __init__(self, *args, **kwargs):
         super(FounderForm, self).__init__(*args, **kwargs)
         self.initial['alt_email'] = None
-        if self.instance.logo and len(self.instance.logo.name) > 0:
-            self.fields['logo'].required = False
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False

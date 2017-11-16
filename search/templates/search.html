@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static from staticfiles %}
 {% load i18n %}
 {% load search_tags %}
 {% load website_tags %}
@@ -26,8 +26,12 @@
                 <div class="card job-card">
                   <div class="header-bg" style="height:100px; background-color:#25283D;">
                     <h2>{{ curr_item.founder.startup_name }}</h2>
-                    <div class="avatar"
-                         {% if curr_item.founder.logo %}style="background-image: url('{{ curr_item.founder.logo }}');"{% endif %}>
+                    <div class="avatar">
+                      {% if curr_item.founder.logo %}
+                        <img src="{{ curr_item.founder.logo }}" alt="{{ curr_item.founder.startup_name }}">
+                      {% else %}
+                        <img src="{% static 'images/default/logo.jpg' %}" alt="{{ curr_item.founder.startup_name }}">
+                      {% endif %}
                     </div>
                   </div>
                   <div class="offer-content">
@@ -72,10 +76,12 @@
                 <div class="card">
                   <div class="header-bg"
                        style="height:100px; background-color:#25283D;"></div>
-                  <div>
-                    <div class="avatar"
-                         {% if  curr_item.image %}style="background-image: url('{{ curr_item.image }}');"{% endif %}>
-                    </div>
+                  <div class="avatar">
+                    {% if curr_item.image %}
+                      <img src="{{ curr_item.image }}" alt="{{ curr_item.user.first_name }} {{ curr_item.user.last_name }}">
+                    {% else %}
+                      <img src="{% static 'images/default/profile.jpg' %}" alt="{{ curr_item.user.first_name }} {{ curr_item.user.last_name }}">
+                    {% endif %}
                   </div>
                   <div class="content">
                     <h2>{{ curr_item.user.first_name }} {{ curr_item.user.last_name }}</h2>
@@ -119,10 +125,12 @@
                 <div class="card">
                   <div class="header-bg"
                        style="height:100px; background-color:#25283D;"></div>
-                  <div>
-                    <div class="avatar"
-                         {% if curr_item.logo %}style="background-image: url('{{ curr_item.logo }}');"{% endif %}>
-                    </div>
+                  <div class="avatar">
+                    {% if curr_item.logo %}
+                      <img src="{{ curr_item.logo }}" alt="{{ curr_item.startup_name }}">
+                    {% else %}
+                      <img src="{% static 'images/default/logo.jpg' %}" alt="{{ curr_item.startup_name }}">
+                    {% endif %}
                   </div>
                   <div class="content">
                     <h2>{{ curr_item.startup_name }}</h2>
@@ -272,23 +280,6 @@
 
             <input type="search" name="query" placeholder="Search by name or keywords...">
 
-            <div class="cd-select filter-container">
-              <select id="selector" name="select-category" class="filter small no-overflow">
-                <option value="people"
-                        {% if not founder and not search_category %}selected{% elif search_category == 'people' %}
-                        selected{% endif %}>
-                  People
-                </option>
-                <option value="startups"
-                        {% if founder and not search_category %}selected{% elif search_category == 'startups' %}
-                        selected{% endif %}>Startups
-                </option>
-                <option value="jobs" {% if search_category == 'jobs' %}selected{% endif %}>
-                  Jobs
-                </option>
-              </select>
-            </div>
-
             <div class="cd-search-button">
               {% if is_mobile %}
                 <button id="menubutton" type="button" class="btn btn-success toggle-id-1">
@@ -306,7 +297,7 @@
     </nav> <!-- .cd-secondary-nav -->
 
     <nav class="cd-secondary-nav cd-search-nav tags">
-      <div class="container">
+      <div class="container" style="height: 100%">
 
         <div class="tags startups {% if filter_startups %}selected{% endif %}">
           <div id="tags_startups" class="filter-container">
@@ -378,8 +369,12 @@
                 <div class="card job-card">
                   <div class="header-bg" style="height:100px; background-color:#25283D;">
                     <h2>{{ curr_item.founder.startup_name }}</h2>
-                    <div class="avatar"
-                         {% if curr_item.founder.logo %}style="background-image: url('{{ curr_item.founder.logo }}');"{% endif %}>
+                    <div class="avatar">
+                      {% if curr_item.founder.logo %}
+                        <img src="{{ curr_item.founder.logo }}" alt="{{ curr_item.founder.startup_name }}">
+                      {% else %}
+                        <img src="{% static 'images/default/logo.jpg' %}" alt="{{ curr_item.founder.startup_name }}">
+                      {% endif %}
                     </div>
                   </div>
                   <div class="offer-content">
@@ -420,42 +415,43 @@
             <div class="col col-md-4" style="height:400px;">
               <a class="card-hover" href='/profiles/{{ item_id }}'>
                 <div class="card">
-                  <div class="header-bg"
-                       style="height:100px; background-color:#25283D;"></div>
-                  <div>
-                    <div class="avatar"
-                         {% if  curr_item.image %}style="background-image: url('{{ curr_item.image }}');"{% endif %}>
-                    </div>
+                  <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
+                  <div class="avatar">
+                    {% if curr_item.image %}
+                      <img src="{{ curr_item.image }}" alt="{{ curr_item.user.first_name }} {{ curr_item.user.last_name }}">
+                    {% else %}
+                      <img src="{% static 'images/default/profile.jpg' %}" alt="{{ curr_item.user.first_name }} {{ curr_item.user.last_name }}">
+                    {% endif %}
                   </div>
                   <div class="content">
-                    <h2>{{ curr_item.user.first_name }} {{ curr_item.user.last_name }}</h2>
-                    <h3 style="margin-top:0">{{ curr_item.get_year_display }}</h3>
-                    {% if curr_item.has_startup_exp %}
-                      <span class="label label-default">Has startup experience</span>
-                    {% endif %}
-                    {% if curr_item.has_funding_exp %}
-                      <span class="label label-default">Has funding experience</span>
-                    {% endif %}
-                    <span class="label label-primary">{{ curr_item.get_year_display }}</span>
-                    {% if curr_item.major.strip != "" %}
-                      <span class="label label-primary">{{ curr_item.get_major_display }}</span>
-                    {% endif %}
-                    <span class="label label-info">{{ curr_item.get_role_display }}</span>
-                    {% with  curr_item.skills|split:"," as skills %}
-                      {% for skill in skills|slice:":5" %}
-                        {% if skill.strip != "" %}
-                          <span class="label label-info">{{ skill }}</span>
-                        {% endif %}
+                      <h2>{{ curr_item.user.first_name }} {{ curr_item.user.last_name }}</h2>
+                      <h3 style="margin-top:0">{{ curr_item.get_year_display }}</h3>
+                      {% if curr_item.has_startup_exp %}
+                        <span class="label label-default">Has startup experience</span>
+                      {% endif %}
+                      {% if curr_item.has_funding_exp %}
+                        <span class="label label-default">Has funding experience</span>
+                      {% endif %}
+                      <span class="label label-primary">{{ curr_item.get_year_display }}</span>
+                      {% if curr_item.major.strip != "" %}
+                        <span class="label label-primary">{{ curr_item.get_major_display }}</span>
+                      {% endif %}
+                      <span class="label label-info">{{ curr_item.get_role_display }}</span>
+                      {% with  curr_item.skills|split:"," as skills %}
+                        {% for skill in skills|slice:":5" %}
+                          {% if skill.strip != "" %}
+                            <span class="label label-info">{{ skill }}</span>
+                          {% endif %}
+                        {% endfor %}
+                      {% endwith %}
+                      <span class="label label-success">{{ curr_item.get_hours_week_display }} hr/wk</span>
+                      {% for work in curr_item.experience_set %}
+                        <span class="label label-danger">Worked at {{ work.company }}</span>
                       {% endfor %}
-                    {% endwith %}
-                    <span class="label label-success">{{ curr_item.get_hours_week_display }} hr/wk</span>
-                    {% for work in curr_item.experience_set %}
-                      <span class="label label-danger">Worked at {{ work.company }}</span>
-                    {% endfor %}
-                    {% for item in curr_item.get_positions_display %}
-                      <span class="label label-warning">{{ item }}</span>
-                    {% endfor %}
-                  </div>
+                      {% for item in curr_item.get_positions_display %}
+                        <span class="label label-warning">{{ item }}</span>
+                      {% endfor %}
+                    </div>
                 </div>
               </a>
 
@@ -466,12 +462,13 @@
             <div class="col col-md-4" style="height:400px;">
               <a class="card-hover" href='/startups/{{ item_id }}'>
                 <div class="card">
-                  <div class="header-bg"
-                       style="height:100px; background-color:#25283D;"></div>
-                  <div>
-                    <div class="avatar"
-                         {% if curr_item.logo %}style="background-image: url('{{ curr_item.logo }}');"{% endif %}>
-                    </div>
+                  <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
+                  <div class="avatar">
+                    {% if curr_item.logo %}
+                      <img src="{{ curr_item.logo }}" alt="{{ curr_item.startup_name }}">
+                    {% else %}
+                      <img src="{% static 'images/default/logo.jpg' %}" alt="{{ curr_item.startup_name }}">
+                    {% endif %}
                   </div>
                   <div class="content">
                     <h2>{{ curr_item.startup_name }}</h2>
@@ -521,11 +518,15 @@
         <a class="card-hover" href='/profiles/<%= data._id %>'>
           <div class="card">
             <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
-            <div>
-              <div class="avatar" style="background-image: url('<%= item.image %>');"></div>
+            <div class="avatar">
+              <% if (item.image && item.image.trim()) { %>
+                <img src="<%= item.image %>" alt="<%= item.user.first_name + ' ' + item.user.last_name %>">
+              <% } else { %>
+                <img src="{% static 'images/default/profile.jpg' %}" alt="<%= item.user.first_name + ' ' + item.user.last_name %>">
+              <% } %>
             </div>
             <div class="content">
-              <h2><%= item.user.first_name %> <%= item.user.last_name %></h2>
+              <h2><%= item.user.first_name + ' ' + item.user.last_name %></h2>
 
               <h3 style="margin-top:0"> <%= item.get_year_display %> </h3>
 
@@ -574,8 +575,12 @@
         <a class="card-hover" href='/startups/<%= data._id %>'>
           <div class="card">
             <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
-            <div>
-              <div class="avatar" style="background-image: url('<%= item.logo %>');"></div>
+            <div class="avatar">
+              <% if (item.logo && item.logo.trim()) { %>
+                <img src="<%= item.logo %>" alt="<%= item.startup_name %>">
+              <% } else { %>
+                <img src="{% static 'images/default/logo.jpg' %}" alt="<%= item.startup_name %>">
+              <% } %>
             </div>
             <div class="content">
               <h2><%= item.startup_name %></h2>
@@ -600,7 +605,13 @@
           <div class="card job-card">
             <div class="header-bg" style="height:100px; background-color:#25283D;">
               <h2><%= item.founder.startup_name %></h2>
-              <div class="avatar" style="background-image: url('<%= item.founder.logo %>');"></div>
+              <div class="avatar">
+                <% if (item.founder.logo && item.founder.logo.trim()) { %>
+                  <img src="<%= item.founder.logo %>" alt="<%= item.founder.startup_name %>">
+                <% } else { %>
+                  <img src="{% static 'images/default/logo.jpg' %}" alt="<%= item.founder.startup_name %>">
+                <% } %>
+              </div>
             </div>
             <div class="offer-content">
               <div class="info">

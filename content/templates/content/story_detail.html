@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load markup_tags %}
+
+{% block title %}
+    {{ object.title }}
+{% endblock %}
+
+{% if is_mobile %}
+
+  {% block mobile_content %}
+
+    <div class="jumbotron min-screen">
+      <div class="container ">
+        <div class="row well story">
+          <div class="col-md-6 centerfy text-center" >
+            <h1>
+              {{ object.title }}
+            </h1>
+          </div>
+          <div class="col-md-6 centerfy" id="player-col">
+            {% if object.youtube_id %}
+              <div id="player"></div>
+            {% else %}
+              <img src="{{ object.header_image.image.url }}" alt="{{ object.header_image.title }}"/>
+            {% endif %}
+          </div>
+        </div>
+        <div class="row well story">
+          <div class="col-md-12 centerfy">
+            {{ object.content|apply_markup:'creole' }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {% endblock mobile_content %}
+
+{% else %}
+
+  {% block content %}
+
+  <div class="jumbotron min-screen">
+    <div class="container">
+      <div class="row well story">
+
+          <div class="col-md-12 centerfy text-justify">
+            <div class="holder pull-left" id="player-col">
+              {% if object.youtube_id %}
+                <div id="player"></div>
+              {% else %}
+                <img src="{{ object.header_image.image.url }}" alt="{{ object.header_image.title }}"/>
+              {% endif %}
+            </div>
+
+            <h1>
+              {{ object.title }}
+            </h1>
+
+            {{ object.content|apply_markup:'creole' }}
+
+          </div>
+
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+{% endif %}
+
+{% block js %}
+  {{ block.super }}
+  {% if object.youtube_id %}
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script>
+    var player;
+    var player_width = $('#player-col').innerWidth()-30;
+    var player_height = Math.round(player_width / 16 * 9)
+
+    function updateTimerDisplay () {
+      // Update current time text display.
+      $('#current-time').text(formatTime(player.getCurrentTime()))
+      $('#duration').text(formatTime(player.getDuration()))
+    }
+
+    function formatTime (time) {
+      time = Math.round(time)
+
+      var minutes = Math.floor(time / 60),
+        seconds = time - minutes * 60
+
+      seconds = seconds < 10 ? '0' + seconds : seconds
+
+      return minutes + ':' + seconds
+    }
+
+    $('#progress-bar').on('mouseup touchend', function (e) {
+
+      // Calculate the new time for the video.
+      // new time in seconds = total duration in seconds * ( value of range input / 100 )
+      var newTime = player.getDuration() * (e.target.value / 100)
+
+      // Skip video to new time.
+      player.seekTo(newTime)
+
+    });
+
+    // This function is called by initialize()
+    function updateProgressBar () {
+      // Update the value of our progress bar accordingly.
+      $('#progress-bar').val((player.getCurrentTime() / player.getDuration()) * 100)
+    }
+
+    function initialize(){
+
+        // Update the controls on load
+        updateTimerDisplay();
+        updateProgressBar();
+
+        // Clear any old interval.
+        if (typeof(time_update_interval) !== 'undefined') {
+          clearInterval(time_update_interval);
+        }
+
+        // Start interval to update elapsed time display and
+        // the elapsed part of the progress bar every second.
+        time_update_interval = setInterval(function () {
+            updateTimerDisplay();
+            updateProgressBar();
+        }, 1000)
+
+    }
+
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            width: player_width,
+            height: player_height,
+            videoId: '{{ object.youtube_id }}',
+            playerVars: {
+                color: 'white',
+            },
+            events: {
+                onReady: initialize
+            }
+        });
+    }
+    </script>
+
+  {% endif %}
+{% endblock js %}

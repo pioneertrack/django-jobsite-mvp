@@ -63,9 +63,15 @@ p.help-block strong {
 ul#cd-navigation div.nice-select {
     background: none !important;
     color: #25283D;
-    margin-top: 12px;
+    line-height: 80px;
     font-size: 1.8rem;
-    padding-left: 0;
+}
+ul#cd-navigation div.nice-select .list{
+    top: 75%;
+}
+
+#profiles_holder {
+    padding: 0;
 }
 
 ul#cd-navigation div.nice-select ul.list li {
@@ -182,4 +188,160 @@ height-100 {
 
 .welcome-card .overlay .slogan {
     margin-top: 20px;
+}
+
+.avatar > img {
+  max-width: 90px;
+  max-height: 90px;
+  position:absolute;
+  top:50%;
+  transform: translate(-50%, -50%);
+  left: 50%;
+}
+.card.story-card .avatar {
+  width: 80px;
+  height: 80px;
+  top: 10px;
+  left: 10px;
+  border: 3px solid rgba(63, 122, 183, 0.8);
+  transform: translateY(0);
+  background-color: white;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.card.story-card .header-bg {
+  height:100px;
+  background-color:#25283D;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.card.story-card .header-video {
+  height: 50%;
+  background-color: #25283D;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.card.story-card .header-video .video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  /*border: 3px solid rgba(63, 122, 183, 0.8);*/
+  overflow: hidden;
+}
+.video > img {
+  width: 100%;
+  position:absolute;
+  top:50%;
+  transform: translate(-50%, -50%);
+  left: 50%;
+}
+.video .fa-youtube-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(255, 0, 0, 0.80);
+    font-size: 8rem;
+}
+.container .story {
+  background-color: white;
+}
+.container .story h1 {
+  font-size: 3.5rem;
+  text-transform: capitalize;
+  margin-top: 0;
+  margin-bottom: 30px;
+  text-align: center;
+}
+@media (max-width: 768px) {
+  .container .story h1 {
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+}
+.jumbotron.min-screen {
+  min-height: 100%;
+}
+
+#player-col > img {
+  width: 100%;
+  height: auto;
+}
+.card.story-card .header-bg h2 {
+  overflow: hidden;
+  white-space: nowrap;
+  padding-left: 100px;
+  color: rgb(233, 233, 233);
+  margin: 0;
+  display: inline-block;
+  text-overflow: ellipsis;
+}
+
+.checkboxes .filter-container.search-category a {
+  position: relative;
+  padding: 5px 40px 5px 20px;
+  display: block;
+  transition: all 0.1s ease;
+  color: white;
+  font-weight: bold;
+}
+@media (max-width: 768px) {
+  .container .holder {
+    width: 100%;
+    padding-right: 0px;
+    padding-bottom: 0px;
+  }
+}
+@media (min-width: 992px) {
+  .container .holder {
+    width: 66.66666667%;
+    padding-right: 30px;
+    padding-bottom: 15px;
+  }
+}
+#player {
+  width: 100%;
+}
+.jumbotron .story p {
+  margin-bottom: 0;
+   font-size: inherit;
+   font-weight: normal;
+}
+.card-hover h3 {
+  padding: 0 5px;
+  color: #25283D;
+}
+.card-hover:hover h3 {
+  color: #23527c;
+}
+.story-card .description {
+  padding: 0 5px;
+}
+.img-responsive > div {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.img-responsive > div > img {
+  max-width: 100%;
+  max-height: 100%;
+  position:absolute;
+  top:50%;
+  transform: translate(-50%, -50%);
+  left: 50%;
+}
+.card.job-card .avatar > img {
+  max-width: 74px;
+  max-height: 74px;
 }
