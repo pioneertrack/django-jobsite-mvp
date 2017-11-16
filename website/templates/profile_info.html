@@ -34,8 +34,8 @@
               <h3>{% if profile.year != "" %}{{ profile.get_year_display }}{% else %}Student{% endif %} at UC
                 Berkeley</h3>
               {% if user.profile.positions != "" %}
-                {% if positions_display.0 == 'Not looking for a position' %}
-                 <p>{{ positions_display.0 }}</p>
+                {% if positions_display.0 == 'Not Looking' %}
+                 <p>Not looking for a position</p>
                 {% else %}
                 <p>Looking for {{ positions_display.0|vowel }}
                 <strong>
@@ -184,8 +184,8 @@
               <h3>{% if profile.year != "" %}{{ profile.get_year_display }}{% else %}Student{% endif %} at UC
                 Berkeley</h3>
               {% if profile.positions != "" %}
-                {% if positions_display.0 == 'Not looking for a position' %}
-                  <p>{{ positions_display.0 }}</p>
+                {% if positions_display.0 == 'Not Looking' %}
+                  <p>Not looking for a position</p>
                 {% else %}
                   <p>Looking for {{ positions_display.0|vowel }}
                 <strong>

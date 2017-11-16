@@ -111,7 +111,7 @@ POSITIONS = (
     ('2', 'Part-Time'),
     ('3', 'Full-Time'),
     ('4', 'Contract'),
-    ('5', 'Not looking for a position'),
+    ('5', 'Not Looking'),
 )
 
 
