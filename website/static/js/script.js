@@ -105,6 +105,33 @@ $(function () {
     })
   }
 
+  function connectRequest(text, profile_type = null) {
+      $.ajax({
+        type: 'POST',
+        url: '/connect/',
+        data: {
+          'text': text,
+          'profile_id': $('#profile_id').val(),
+          'profile_type': profile_type,
+        },
+        success: function (data) {
+          console.log('email sent')
+          swal({
+            type: 'success',
+            title: 'Your message is on its way!',
+            html: 'We have contacted ' + $('#profile_name').val() + '. We hope you hear back soon.',
+          })
+        },
+        error: function (xhr, textStatus, errorThrown) {
+          swal({
+            type: 'error',
+            title: 'Something went wrong on our end',
+            html: 'Please try again',
+          })
+        },
+      })
+  }
+
   $('#connect').on('click', function () {
     console.log('clicked')
     swal({
@@ -122,35 +149,31 @@ $(function () {
             } else {
               resolve()
             }
-          }, 1000)
+          }, 500)
         })
       },
       allowOutsideClick: false,
     }).then(function (text) {
-      $.ajax({
-        type: 'POST',
-        url: '/connect/',
-        data: {
-          'text': text,
-          'user_page_id': user_page_id,
+      if ($('#select_profiles').val() == 1) {
+        swal({
+          text: 'Select a link to which profile to add to the message',
+          showCancelButton: true,
+          cancelButtonColor: '#3085d6',
+          cancelButtonText: 'Startup',
+          confirmButtonText: 'Individual',
+          allowOutsideClick: false,
+          showLoaderOnConfirm: true,
+        }).then(function (value) {
+          connectRequest(text, 'individual')
         },
-        success: function (data) {
-          console.log('email sent')
-          swal({
-            type: 'success',
-            title: 'Your message is on its way!',
-            html: 'We have contacted ' + name + '. We hope you hear back soon.',
+          function (dismiss) {
+            if (dismiss === 'cancel') {
+              connectRequest(text, 'startup')
+            }
           })
-        },
-        error: function (xhr, textStatus, errorThrown) {
-          swal({
-            type: 'error',
-            title: 'Something went wrong on our end',
-            html: 'Please try again',
-          })
-        },
-      })
-
+      } else {
+        connectRequest(text)
+      }
     })
   })
 

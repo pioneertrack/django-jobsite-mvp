@@ -80,22 +80,41 @@ def connect(request):
     if request.is_ajax():
         email_connect_template = 'email/connection.html'
         url = urlparse(request.META.get('HTTP_REFERER'))
-        from_startup = re.match(r'.*/startups/.*', url.path) is not None;
-        receiver = get_object_or_404(models.MyUser, pk=request.POST['user_page_id'])
+        from_startup = re.match(r'.*/startups/.*', url.path) is not None
+        if from_startup:
+            receiver = get_object_or_404(prof.Founder, pk=request.POST['profile_id'])
+        else:
+            receiver = get_object_or_404(prof.Profile, pk=request.POST['profile_id'])
+        receiver = receiver.user
         sender = request.user
         text = request.POST['text']
         if receiver is not None:
             try:
+                type = url = None
                 profile_url = ''
-                if not sender.get_profile_url() is None:
+                profile_type = request.POST['profile_type']
+                if not sender.get_profile_url() is None and (profile_type in ['', 'individual']):
+                    type = 'Profile'
+                    url = sender.get_profile_url()
                     profile_url = '{fname} {lname}\'s Profile: {url}'.format(
-                        url=request.build_absolute_uri(sender.get_profile_url()),
+                        url=request.build_absolute_uri(url),
                         fname=sender.first_name,
                         lname=sender.last_name) + "\r\n\r\n"
+
+                if not sender.get_startup_url() is None and (profile_type in ['', 'startup']):
+                    type = 'Startup Profile'
+                    url = sender.get_startup_url()
+                    profile_url = '{fname} {lname}\'s Startup Profile: {url}'.format(
+                        url=request.build_absolute_uri(url),
+                        fname=sender.first_name,
+                        lname=sender.last_name) + "\r\n\r\n"
+
+
                 html_content = render_to_string(email_connect_template, {
                     'sender': sender,
                     'msg': request.POST['text'],
-                    'url': request.build_absolute_uri(sender.get_profile_url()) if not sender.get_profile_url() is None else None
+                    'url': request.build_absolute_uri(url) if not url is None else None,
+                    'type': type,
                 })
                 receiver.email_user(
                     sender.first_name + " " + sender.last_name + " wants to work with you on Bear Founders!",

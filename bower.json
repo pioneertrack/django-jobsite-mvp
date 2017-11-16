@@ -33,7 +33,8 @@
     "roboto-fontface": "^0.8.0",
     "bootstrap-3": "bootstrap#3.3.7",
     "underscore": "^1.8.3",
-    "waitForImages": "^2.2.0"
+    "waitForImages": "^2.2.0",
+    "sweetalert2": "^6.11.5"
   },
   "resolutions": {
     "bootstrap": "v4.0.0-beta",
