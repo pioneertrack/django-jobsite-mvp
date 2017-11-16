@@ -3,8 +3,8 @@ jQuery(document).ready(function($) {
   if (history.state === null || history.state.hasOwnProperty('search_state') === false) {
     $('.cd-search-nav.first select.filter').niceSelect();
   }
-  $('ul#cd-navigation select.filter').niceSelect();
-  $('ul#cd-navigation ul.list li:first').hide();
+  // $('ul#cd-navigation select.filter').niceSelect();
+  // $('ul#cd-navigation ul.list li:first').hide();
 
   $('#profiles_holder').on('click', function(e) {
     e.preventDefault();

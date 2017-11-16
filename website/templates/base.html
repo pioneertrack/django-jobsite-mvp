@@ -22,6 +22,7 @@
     <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'sweetalert2/dist/sweetalert2.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/nav.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/login.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/custom-css.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/profile.css' %}" type="text/css">
@@ -368,24 +369,23 @@
                   </li>
                   <li>
                     <a href="" id="profiles_holder">
-                      <select class="filter small" style="display: none;">
-                        <option data-display="My Profile">Nothing</option>
-                        {% if user.is_individual %}
-                          <option value="/profile/">My Profile</option>
-                        {% endif %}
-                        {% if user.is_founder %}
-                          <option value="/startup_profile/">Startup Profile</option>
-                        {% endif %}
-
-                        <option value="/settings/">Settings</option>
-                        <option value="/logout/">Logout</option>
-
-                      </select>
-                      <div class="nice-select filter small" tabindex="0">
+{#                      <select class="filter small" style="display: none;">#}
+{#                        <option data-display="My Profile">Nothing</option>#}
+{#                        {% if user.is_individual %}#}
+{#                          <option value="/profile/">My Profile</option>#}
+{#                        {% endif %}#}
+{#                        {% if user.is_founder %}#}
+{#                          <option value="/startup_profile/">Startup Profile</option>#}
+{#                        {% endif %}#}
+{##}
+{#                        <option value="/settings/">Settings</option>#}
+{#                        <option value="/logout/">Logout</option>#}
+{##}
+{#                      </select>#}
+                      <div class="nice-select-li filter small" tabindex="0">
                         <span class="current">My Profile</span>
                         <div class="filler"></div>
                         <ul class="list">
-                          <li data-display="My Profile" data-all="1" class="option" style="display: none;"></li>
                           {% if user.is_individual %}
                             <li data-value="/profile/" class="option">My Profile</li>
                           {% endif %}

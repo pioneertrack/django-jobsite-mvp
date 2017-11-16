@@ -178,11 +178,12 @@ $(function () {
   $(document).on('click', '.feedback', function (e) {
     e.preventDefault()
     swal({
-      title: 'Send feedback to site administration',
-      text: 'It\'s best to include your name, email, and/or phone number so they can contact you back',
+      title: 'Think We Can Improve?',
+      text: 'Tell us anything! We\'ll do what we can to make Bear Founders a better platform.',
       input: 'textarea',
+      inputPlaceholder: 'I think you really need an events page',
       showCancelButton: true,
-      confirmButtonText: 'Connect',
+      confirmButtonText: 'Send',
       showLoaderOnConfirm: true,
       preConfirm: function (text) {
         return new Promise(function (resolve, reject) {
@@ -207,7 +208,7 @@ $(function () {
           swal({
             type: 'success',
             title: 'Your message is on its way!',
-            html: 'We send You feedback. We hope you hear back soon.',
+            html: 'Thank you! We appreciate your insights.',
           })
         },
         error: function (xhr, textStatus, errorThrown) {
@@ -218,6 +219,8 @@ $(function () {
           })
         },
       })
+    },
+    function (dismiss) {
     })
   })
 
