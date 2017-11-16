@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static from staticfiles %}
 {% load i18n %}
+{% load vowel_filter %}
 
 {% block title %}
 {{profile.user.first_name}} {{profile.last_name}}
@@ -32,12 +33,17 @@
                 <span class="label label-default">Has funding experience</span>{% endif %}
               <h3>{% if profile.year != "" %}{{ profile.get_year_display }}{% else %}Student{% endif %} at UC
                 Berkeley</h3>
-              {% if profile.positions != "" %} <p>Looking for a
+              {% if user.profile.positions != "" %}
+                {% if positions_display.0 == 'Not Looking' %}
+                 <p>{{ positions_display.0 }}</p>
+                {% else %}
+                <p>Looking for {{ positions_display.0|vowel }}
                 <strong>
                   {% for item in positions_display %}
                     {{ item }}{% if not forloop.last %},{% endif %}
                   {% endfor %}
                 </strong> position{{ positions_display|pluralize }}</p>
+                {% endif %}
               {% endif %}
               <hr>
               {% if cd %}
@@ -175,12 +181,17 @@
                 <span class="label label-default">Has funding experience</span>{% endif %}
               <h3>{% if profile.year != "" %}{{ profile.get_year_display }}{% else %}Student{% endif %} at UC
                 Berkeley</h3>
-              {% if profile.positions != "" %} <p>Looking for a
+              {% if profile.positions != "" %}
+                {% if positions_display.0 == 'Not Looking' %}
+                  <p>{{ positions_display.0 }}</p>
+                {% else %}
+                  <p>Looking for {{ positions_display.0|vowel }}
                 <strong>
                   {% for item in positions_display %}
                     {{ item }}{% if not forloop.last %},{% endif %}
                   {% endfor %}
                 </strong> position{{ positions_display|pluralize }}</p>
+                {% endif %}
               {% endif %}
               <hr>
               {% if cd %}
