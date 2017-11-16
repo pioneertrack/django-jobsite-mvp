@@ -83,7 +83,7 @@ class ProfileFormWizard(forms.ModelForm):
 
     class Meta:
         model = profile.Profile
-        fields = ('image', 'bio', 'positions', 'role', 'skills', 'year', 'interests',
+        fields = ('image', 'bio','positions', 'role', 'skills', 'year', 'interests',
                   'major', 'courses', 'hours_week', 'has_startup_exp', 'has_funding_exp','mentor', 'linkedin', 'website',
                   'github')
 
@@ -120,7 +120,7 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = profile.Profile
         fields = ('image', 'bio', 'positions', 'role', 'skills', 'year', 'alt_email', 'interests',
-                  'major', 'courses', 'hours_week', 'has_startup_exp', 'has_funding_exp', 'linkedin', 'website',
+                  'major', 'courses', 'hours_week', 'mentor','has_startup_exp', 'has_funding_exp', 'linkedin', 'website',
                   'github')
         labels = {
             'has_startup_exp': 'I have worked at a startup before',
@@ -132,6 +132,7 @@ class ProfileForm(forms.ModelForm):
             'major': 'Primary Major',
             'positions': 'Seeking what type of position?',
             'alt_email': 'Alternate Contact Email',
+            'mentor': "I am willing to mentor other members."
         }
 
 

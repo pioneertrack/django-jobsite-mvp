@@ -1,0 +1,18 @@
+{% extends './form-item-base.html' %}
+{% block forminput %}
+  <div class="align-left inline-block">
+    {% for position in rblist %}
+
+    <div class="radio radio-container inline form-radio-inline">
+      <label>
+        {% with val=True %}
+        <input type="radio" name="{{ radioname }}" value={{ position.0 }} class="{% if formitemRequired %} required{% endif %}">
+        {% endwith %}
+        {{ position.1 }}
+      </label>
+    </div>
+
+
+    {% endfor %}
+  </div>
+{% endblock %}
