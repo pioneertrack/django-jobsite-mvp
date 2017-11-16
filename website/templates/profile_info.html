@@ -33,7 +33,7 @@
                 <span class="label label-default">Has funding experience</span>{% endif %}
               <h3>{% if profile.year != "" %}{{ profile.get_year_display }}{% else %}Student{% endif %} at UC
                 Berkeley</h3>
-              {% if user.profile.positions != "" %}
+              {% if profile.positions != "" %}
                 {% if positions_display.0 == 'Not Looking' %}
                  <p>{{ positions_display.0 }}</p>
                 {% else %}
@@ -51,6 +51,11 @@
               {%else%}
                 <h5>Active: {{ last_login|timesince }} ago</h5>
               {% endif %}
+              {% if user.is_founder and user.is_individual %}
+              <input type="hidden" id="select_profiles" value="1">
+              {% endif %}
+              <input type="hidden" id="profile_id" value="{{ profile.pk }}">
+              <input type="hidden" id="profile_name" value="{{profile.user.first_name|safe}} {{profile.user.last_name|safe}}">
               <button id="connect" class="btn btn-lg btn-primary btn-outline">Connect</button>
             </div>
           </div>
@@ -199,6 +204,11 @@
               {%else%}
                 <h5>Active: {{ last_login|timesince }} ago</h5>
               {% endif %}
+              {% if user.is_founder and user.is_individual %}
+              <input type="hidden" id="select_profiles" value="1">
+              {% endif %}
+              <input type="hidden" id="profile_id" value="{{ profile.pk }}">
+              <input type="hidden" id="profile_name" value="{{profile.user.first_name|safe}} {{profile.user.last_name|safe}}">
               <button id="connect" class="btn btn-lg btn-primary btn-outline">Connect</button>
             </div>
           </div>
@@ -304,11 +314,3 @@
   {% endblock %}
 
 {% endif %}
-
-{% block user_info %}
-  {{ block.super }}
-  <script type="text/javascript">
-    user_page_id = {{ profile.user.id }};
-    name = '{{profile.user.first_name|safe}} {{profile.user.last_name|safe}}';
-  </script>
-{% endblock user_info %}

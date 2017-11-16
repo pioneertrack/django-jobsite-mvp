@@ -133,6 +133,12 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         except ObjectDoesNotExist as e:
             return None
 
+    def get_startup_url(self):
+        try:
+            return reverse('website:get_startup_view', kwargs={'id': self.founder.pk})
+        except ObjectDoesNotExist as e:
+            return None
+
     @property
     def is_staff(self):
         "Is the user a member of staff?"
