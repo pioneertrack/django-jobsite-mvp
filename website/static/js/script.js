@@ -177,7 +177,6 @@ $(function () {
 
   $(document).on('click', '.feedback', function (e) {
     e.preventDefault()
-    $(this).
     swal({
       title: 'Send feedback to site administration',
       text: 'It\'s best to include your name, email, and/or phone number so they can contact you back',
