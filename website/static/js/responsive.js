@@ -4,14 +4,6 @@ jQuery(document).ready(function($) {
     $('.cd-search-nav.first select.filter').niceSelect();
   }
 
-  $('#profiles_holder').on('click', function(e) {
-    e.preventDefault();
-  })
-
-  $('ul#cd-navigation ul.list li').on('click', function() {
-    window.location.href = $(this).attr('data-value');
-  });
-
   $(document).on('mouseleave', '.tags', function(e) {
     var tags = $(this).children('.filter-container');
     var children = $(tags.children(':not(.outer)').get().reverse());

@@ -20,6 +20,7 @@ from django.core import signing
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from smtplib import SMTPException
+from django.core.mail import EmailMultiAlternatives
 from urllib.parse import urlparse
 import re
 
@@ -28,7 +29,6 @@ from .forms import ResendActivationEmailForm
 from website import forms
 from website import models
 from website import profile as prof
-from .profile import Founder, Job
 from django.views.decorators.vary import vary_on_headers
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
@@ -36,7 +36,7 @@ from website.decorators import check_profiles
 
 import base64, uuid
 from django.core.files.base import ContentFile
-from website.context_processors import is_mobile
+
 
 def merge_dicts(*args):
     dc = {}
@@ -74,7 +74,6 @@ JOB_CONTEXT = {
 
 
 # Create your views here.
-@csrf_exempt
 @login_required(login_url='login/')
 def connect(request):
     if request.is_ajax():
@@ -136,48 +135,24 @@ def connect(request):
         raise Http404()
 
 
-@csrf_exempt
 @login_required(login_url='login/')
 def feedback(request):
-    if request.is_ajax():
-        email_connect_template = 'email/feedback.html'
+    if request.is_ajax() and hasattr(settings, 'DEFAULT_FEEDBACK_EMAIL'):
+        html_template = 'email/feedback.html'
+        text_template = 'email/feedback.txt'
         sender = request.user
-        text = request.POST['text']
+        message = request.POST['message']
         try:
-            type = url = None
-            profile_url = ''
-            profile_type = request.POST['profile_type']
-            if not sender.get_profile_url() is None and (profile_type in ['', 'individual']):
-                type = 'Profile'
-                url = sender.get_profile_url()
-                profile_url = '{fname} {lname}\'s Profile: {url}'.format(
-                    url=request.build_absolute_uri(url),
-                    fname=sender.first_name,
-                    lname=sender.last_name) + "\r\n\r\n"
-
-            if not sender.get_startup_url() is None and (profile_type in ['', 'startup']):
-                type = 'Startup Profile'
-                url = sender.get_startup_url()
-                profile_url = '{fname} {lname}\'s Startup Profile: {url}'.format(
-                    url=request.build_absolute_uri(url),
-                    fname=sender.first_name,
-                    lname=sender.last_name) + "\r\n\r\n"
-
-
-            html_content = render_to_string(email_connect_template, {
-                'sender': sender,
-                'msg': request.POST['text'],
-                'url': request.build_absolute_uri(url) if not url is None else None,
-                'type': type,
-            })
-            # receiver.email_user(
-            #     sender.first_name + " " + sender.last_name + " wants to work with you on Bear Founders!",
-            #     "You have a new connection:\r\n\r\n" +
-            #     sender.first_name + " " + sender.last_name + " wants to work with you on Bear Founders!\r\n\r\n" +
-            #     request.POST['text'] + "\r\n\r\n" + profile_url +
-            #     "REPLY TO: " + sender.email, 'noreply@bearfounders.com', html_content)
-            #
-            # prof.Connection.objects.create(sender=sender, receiver=receiver, to_startup=from_startup, message=text)
+            connection = prof.Connection.objects.create(sender=sender, message=message)
+            text_content = render_to_string(text_template, {'message' : message, 'connection': connection}, request)
+            html_content = render_to_string(html_template, {'message' : message, 'connection': connection}, request)
+            subject = 'Feedback from {} {}'.format(sender.first_name, sender.last_name)
+            to = settings.DEFAULT_FEEDBACK_EMAIL
+            from_email = sender.email
+            msg = EmailMultiAlternatives(subject, text_content, from_email, to)
+            if not html_content is None:
+                msg.attach_alternative(html_content, 'text/html')
+            msg.send()
             message = "success"
 
             return HttpResponse(message)
