@@ -143,7 +143,7 @@ def feedback(request):
         sender = request.user
         message = request.POST['message']
         try:
-            connection = prof.Connection.objects.create(sender=sender, message=message)
+            connection = prof.Connection.objects.create(sender=sender, message=message, feedback=True)
             text_content = render_to_string(text_template, {'message' : message, 'connection': connection}, request)
             html_content = render_to_string(html_template, {'message' : message, 'connection': connection}, request)
             subject = 'Feedback from {} {}'.format(sender.first_name, sender.last_name)

@@ -354,6 +354,7 @@ html {
 .cd-main-content {
   /*background-color: #d3d3d3;*/
   min-height: 100%;
+  height: 100%;
   /*padding-top:10vh;*/
 }
 .messages {
