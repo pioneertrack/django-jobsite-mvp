@@ -22,6 +22,7 @@
     <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'sweetalert2/dist/sweetalert2.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/nav.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/login.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/custom-css.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/profile.css' %}" type="text/css">
@@ -68,6 +69,7 @@
                 </li>
               {% endif %}
               <li><a href="{% url 'website:settings' %}">Settings</a></li>
+              <li><a href="#" class="feedback text-capitalize">Send feedback</a></li>
             {% endif %}
             <li><a href="/logout/">Logout</a></li>
           </ul>
@@ -344,7 +346,7 @@
             </a>
           <a class="navbar-brand" href="/"></a>
         </div>
-          {% if not user.first_login %}
+          {% if not user.first_login and search_enabled %}
             <div class="navbar-collapse collapse " id="bs-navbar-collapse">
               <ul id="cd-navigation" class="nav navbar-nav navbar-right">
                   <li>
@@ -366,36 +368,75 @@
                     <a href="{% url 'content:stories' %}">Stories</a>
                   </li>
                   <li>
-                    <a href="" id="profiles_holder">
-                      <select class="filter small" style="display: none;">
-                        <option data-display="My Profile">Nothing</option>
-                        {% if user.is_individual %}
-                          <option value="/profile/">My Profile</option>
-                        {% endif %}
-                        {% if user.is_founder %}
-                          <option value="/startup_profile/">Startup Profile</option>
-                        {% endif %}
-
-                        <option value="/settings/">Settings</option>
-                        <option value="/logout/">Logout</option>
-
-                      </select>
-                      <div class="nice-select filter small" tabindex="0">
-                        <span class="current">My Profile</span>
+                    <div id="profiles_holder">
+                      <div class="nice-select-li filter small" tabindex="0">
+                        <span class="current text-capitalize">My profile</span>
                         <div class="filler"></div>
-                        <ul class="list">
-                          <li data-display="My Profile" data-all="1" class="option" style="display: none;"></li>
+                        <ul class="list text-capitalize">
                           {% if user.is_individual %}
-                            <li data-value="/profile/" class="option">My Profile</li>
+                            <li class="option">
+                              <a href="{% url 'website:profile' %}">My profile</a>
+                            </li>
                           {% endif %}
                           {% if user.is_founder %}
-                            <li data-value="/startup_profile/" class="option">Startup Profile</li>
+                            <li class="option">
+                              <a href="{% url 'website:startup_profile' %}">Startup profile</a>
+                            </li>
                           {% endif %}
-                          <li data-value="/settings/" class="option">Settings</li>
-                          <li data-value="/logout/" class="option">Logout</li>
+                          <li class="option">
+                            <a href="{% url 'website:settings' %}">Settings</a>
+                          </li>
+                          <li class="option feedback">
+                            <a href="#" class="feedback">Give feedback</a>
+                          </li>
+                          <li class="option">
+                            <a href="{% url 'auth_logout' %}">Logout</a>
+                          </li>
                         </ul>
                       </div>
-                    </a>
+                    </div>
+                  </li>
+                </ul>
+            </div>
+          {% elif user.first_login %}
+            <div class="navbar-collapse collapse " id="bs-navbar-collapse">
+              <ul id="cd-navigation" class="nav navbar-nav navbar-right">
+                  <li>
+                    <a href="{% url 'auth_logout' %}">Logout</a>
+                  </li>
+                </ul>
+            </div>
+          {% elif not search_enabled %}
+            <div class="navbar-collapse collapse " id="bs-navbar-collapse">
+              <ul id="cd-navigation" class="nav navbar-nav navbar-right">
+                  <li>
+                    <div id="profiles_holder">
+                      <div class="nice-select-li filter small" tabindex="0">
+                        <span class="current text-capitalize">My profile</span>
+                        <div class="filler"></div>
+                        <ul class="list text-capitalize">
+                          {% if user.is_individual %}
+                            <li class="option">
+                              <a href="{% url 'website:profile' %}">My profile</a>
+                            </li>
+                          {% endif %}
+                          {% if user.is_founder %}
+                            <li class="option">
+                              <a href="{% url 'website:startup_profile' %}">Startup profile</a>
+                            </li>
+                          {% endif %}
+                          <li class="option">
+                            <a href="{% url 'website:settings' %}">Settings</a>
+                          </li>
+                          <li class="option feedback">
+                            <a href="#" class="feedback">Give feedback</a>
+                          </li>
+                          <li class="option">
+                            <a href="{% url 'auth_logout' %}">Logout</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
                   </li>
                 </ul>
             </div>

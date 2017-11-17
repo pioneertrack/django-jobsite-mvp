@@ -318,4 +318,5 @@ class Connection(models.Model):
     sender = models.ForeignKey(user.MyUser, verbose_name='Sender', null=True, related_name='sender')
     receiver = models.ForeignKey(user.MyUser, verbose_name='Receiver', null=True, related_name='receiver')
     to_startup = models.BooleanField(verbose_name='Receiver is startup', default=False)
+    feedback = models.BooleanField(verbose_name='Feedback', default=False)
     message = models.TextField(verbose_name='Message', null=True)

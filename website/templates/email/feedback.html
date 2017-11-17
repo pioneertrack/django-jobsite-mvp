@@ -1,0 +1,40 @@
+{% extends 'email/base.html' %}
+{% load i18n %}
+{% load website_tags %}
+
+{% block content %}
+
+  <h3>User {{ user.first_name }} {{ user.last_name }} send feedback.</h3>
+
+  {{ message }}
+
+  <p>
+    <a href="{% abs_url 'admin:website_connection_change' connection.pk %}">Message link</a>
+  </p>
+  <p>
+    <a href="{% abs_url 'admin:website_myuser_change' user.pk %}">Admin User link</a>
+  </p>
+
+  {% if user.profile %}
+    <p>
+      <a href="{% abs_url 'website:get_profile_view' user.profile.pk %}">User Profile link</a>
+    </p>
+    <p>
+      <a href="{% abs_url 'admin:website_profile_change' user.profile.pk %}">Admin User Profile link</a>
+    </p>
+  {% endif %}
+
+  {% if user.founder %}
+    <p>
+      <a href="{% abs_url 'website:get_startup_view' user.founder.pk %}">User Startup Profile link</a>
+    </p>
+    <p>
+      <a href="{% abs_url 'admin:website_founder_change' user.founder.pk %}">Admin User Startup link</a>
+    </p>
+  {% endif %}
+
+  <p>
+    <a href="mailto:{{ user.email }}">User email: {{ user.email }}</a>
+  </p>
+
+{% endblock content %}

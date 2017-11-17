@@ -4,10 +4,14 @@ from django.views.generic.detail import DetailView
 
 from search.views import JOB_CONTEXT
 from content.models import Story
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.decorators import method_decorator
+from website.decorators import check_profiles
 
 
 # Create your views here.
-class StoryListView(ListView):
+@method_decorator(check_profiles, 'get')
+class StoryListView(LoginRequiredMixin, ListView):
     model = Story
     queryset = Story.objects.filter(published=True).order_by('-created_at')
 
@@ -17,7 +21,8 @@ class StoryListView(ListView):
         return context
 
 
-class StoryDetailView(DetailView):
+@method_decorator(check_profiles, 'get')
+class StoryDetailView(LoginRequiredMixin, DetailView):
     model = Story
 
     def get_context_data(self, **kwargs):

@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from website.context_processors import is_mobile
 
+
 def check_profiles(view_func):
     def _wrapped_view_func(request, *args, **kwargs):
         user = request.user

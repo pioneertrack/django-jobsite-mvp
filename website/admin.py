@@ -250,15 +250,16 @@ class JobAdmin(ImportExportModelAdmin):
 class ConnectionResource(resources.ModelResource):
     class Meta:
         model = Connection
-        fields = ('created_at', 'receiver', 'sender', 'to_startup', 'message')
+        fields = ('created_at', 'receiver', 'sender', 'to_startup', 'feedback', 'message')
         export_order = ('receiver', 'sender')
 
 
 class ConnectionAdmin(ImportExportModelAdmin):
     resource_class = ConnectionResource
-    list_display = ('created_at', 'receiver', 'sender', 'to_startup')
-    readonly_fields = ('created_at', 'receiver', 'sender', 'to_startup', 'message')
+    list_display = ('created_at', 'receiver', 'sender', 'to_startup', 'feedback')
+    readonly_fields = ('created_at', 'receiver', 'sender', 'to_startup', 'feedback', 'message')
     ordering = ('created_at', 'sender', 'receiver')
+    list_filter = ('to_startup', 'feedback')
 
 
 # Classes for Users

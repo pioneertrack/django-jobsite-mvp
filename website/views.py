@@ -20,6 +20,7 @@ from django.core import signing
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from smtplib import SMTPException
+from django.core.mail import EmailMultiAlternatives
 from urllib.parse import urlparse
 import re
 
@@ -28,7 +29,6 @@ from .forms import ResendActivationEmailForm
 from website import forms
 from website import models
 from website import profile as prof
-from .profile import Founder, Job
 from django.views.decorators.vary import vary_on_headers
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
@@ -36,7 +36,7 @@ from website.decorators import check_profiles
 
 import base64, uuid
 from django.core.files.base import ContentFile
-from website.context_processors import is_mobile
+
 
 def merge_dicts(*args):
     dc = {}
@@ -74,7 +74,6 @@ JOB_CONTEXT = {
 
 
 # Create your views here.
-@csrf_exempt
 @login_required(login_url='login/')
 def connect(request):
     if request.is_ajax():
@@ -131,6 +130,35 @@ def connect(request):
                 message = err
         else:
             message = 'failure'
+        return HttpResponseServerError(message)
+    else:
+        raise Http404()
+
+
+@login_required(login_url='login/')
+def feedback(request):
+    if request.is_ajax() and hasattr(settings, 'DEFAULT_FEEDBACK_EMAIL'):
+        html_template = 'email/feedback.html'
+        text_template = 'email/feedback.txt'
+        sender = request.user
+        message = request.POST['message']
+        try:
+            connection = prof.Connection.objects.create(sender=sender, message=message, feedback=True)
+            text_content = render_to_string(text_template, {'message' : message, 'connection': connection}, request)
+            html_content = render_to_string(html_template, {'message' : message, 'connection': connection}, request)
+            subject = 'Feedback from {} {}'.format(sender.first_name, sender.last_name)
+            to = settings.DEFAULT_FEEDBACK_EMAIL
+            from_email = sender.email
+            msg = EmailMultiAlternatives(subject, text_content, from_email, to)
+            if not html_content is None:
+                msg.attach_alternative(html_content, 'text/html')
+            msg.send()
+            message = "success"
+
+            return HttpResponse(message)
+        except SMTPException as err:
+            message = err
+
         return HttpResponseServerError(message)
     else:
         raise Http404()
