@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import redirect
 from website.context_processors import is_mobile
+from django.urls import reverse
 
 
 def check_profiles(view_func):
@@ -25,7 +26,11 @@ def check_profiles(view_func):
                 redirect_url = 'website:profile_update'
             elif f(user) and user.is_founder:
                 messages.success(request, "Please fill in the information about you startup.")
-                redirect_url ='website:startup_update'
+                redirect_url = 'website:startup_update'
+            elif user.is_account_disabled and (not user.is_admin or user.test_mode):
+                if not request.resolver_match.url_name in ['profile', 'startup_profile']:
+                    redirect_url = 'website:settings'
+
         if redirect_url is not None:
             return redirect(redirect_url)
         else:
