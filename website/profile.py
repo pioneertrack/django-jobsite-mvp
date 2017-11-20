@@ -308,9 +308,9 @@ class Job(models.Model):
     founder = models.ForeignKey(Founder, on_delete=models.CASCADE, null=True)
     title = models.CharField(verbose_name='Job Title', max_length=40, blank=True, null=False)
     pay = models.CharField(verbose_name='Pay', max_length=5, choices=POSITION, default='1')
-    description = models.TextField(verbose_name='Description', max_length=500, blank=True, null=False)
+    description = models.TextField(verbose_name='Description', blank=True, null=False)
     level = models.CharField(verbose_name='Level', max_length=2, choices=LEVELS, default="FT")
-    created_date = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Connection(models.Model):

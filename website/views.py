@@ -210,7 +210,7 @@ def startup_profile(request):
     current_time = timezone.now()
     cr = current_time - last_login
     cd = cr.total_seconds() < 86400
-    jobs = request.user.founder.job_set.order_by('created_date')
+    jobs = request.user.founder.job_set.order_by('created_at')
     total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
 
     # in case user click on fill out later button in profile update

@@ -94,6 +94,12 @@ class FundingInline(admin.TabularInline):
     extra = 1
 
 
+class JobInline(admin.TabularInline):
+    model = Job
+    extra = 0
+    readonly_fields = ('created_at',)
+
+
 class FounderResource(resources.ModelResource):
     seed = fields.Field(widget=widgets.ForeignKeyWidget(Funding), column_name='Seed')
     series_a = fields.Field(widget=widgets.ForeignKeyWidget(Funding), column_name='Series A')
@@ -189,8 +195,8 @@ class FounderAdmin(ImportExportModelAdmin):
         ('Contact', {'fields': ['website', 'facebook']})
     )
     ordering = ('user__email',)
-    search_fields = ('user__email',)
-    inlines = (FundingInline,)
+    search_fields = ('user__email', 'startup_name')
+    inlines = (FundingInline, JobInline)
     resource_class = FounderResource
     pass
 
