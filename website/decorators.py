@@ -1,7 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import redirect
 from website.context_processors import is_mobile
-from django.urls import reverse
 
 
 def check_profiles(view_func):
