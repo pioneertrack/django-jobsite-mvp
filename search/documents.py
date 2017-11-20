@@ -86,7 +86,8 @@ class PeopleDocument(DocType):
 
     def get_instances_from_related(self, related_instance):
         if isinstance(related_instance, MyUser):
-            return related_instance.profile
+            if hasattr(related_instance, 'profile'):
+                return related_instance.profile
         if isinstance(related_instance, Experience):
             return related_instance.profile
 
@@ -124,7 +125,8 @@ class StartupDocument(DocType):
 
     def get_instances_from_related(self, related_instance):
         if isinstance(related_instance, MyUser):
-            return related_instance.founder
+            if hasattr(related_instance, 'founder'):
+                return related_instance.founder
         if isinstance(related_instance, Job):
             return related_instance.founder
 
@@ -159,6 +161,7 @@ class JobDocument(DocType):
 
     def get_instances_from_related(self, related_instance):
         if isinstance(related_instance, MyUser):
-            return related_instance.founder.job_set.all()
+            if hasattr(related_instance, 'founder'):
+                return related_instance.founder.job_set.all()
         if isinstance(related_instance, Founder):
             return related_instance.job_set.all()
