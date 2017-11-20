@@ -1,5 +1,6 @@
 from django_elasticsearch_dsl import DocType, Index, fields
-from website.profile import Profile, Founder, Job
+from website.profile import Profile, Founder, Job, Experience
+from website.models import MyUser
 from django.conf import settings
 from elasticsearch_dsl import analyzer, tokenizer
 
@@ -71,6 +72,7 @@ class PeopleDocument(DocType):
     class Meta:
         model = Profile
         ignore_signals = False
+        related_models = [MyUser, Experience]
         fields = [
             'is_filled',
             'hours_week',
@@ -81,6 +83,13 @@ class PeopleDocument(DocType):
             'interests',
             'courses',
         ]
+
+    def get_instances_from_related(self, related_instance):
+        if isinstance(related_instance, MyUser):
+            return related_instance.profile
+        if isinstance(related_instance, Experience):
+            return related_instance.profile
+
 
 @startup.doc_type
 class StartupDocument(DocType):
@@ -105,12 +114,19 @@ class StartupDocument(DocType):
 
     class Meta:
         model = Founder
+        related_models = [MyUser, Job]
         fields = [
             'startup_name',
             'description',
             'is_filled',
             'employee_count'
         ]
+
+    def get_instances_from_related(self, related_instance):
+        if isinstance(related_instance, MyUser):
+            return related_instance.founder
+        if isinstance(related_instance, Job):
+            return related_instance.founder
 
 
 @job.doc_type
@@ -135,7 +151,14 @@ class JobDocument(DocType):
 
     class Meta:
         model = Job
+        related_models = [Founder, MyUser]
         fields = [
             'title',
             'description'
         ]
+
+    def get_instances_from_related(self, related_instance):
+        if isinstance(related_instance, MyUser):
+            return related_instance.founder.job_set.all()
+        if isinstance(related_instance, Founder):
+            return related_instance.job_set.all()
