@@ -91,7 +91,7 @@
                   {% include './partials/checkbox.html' %}
                 {% endwith %}
 
-                {% with formItemHeader='4.) Are you willing to mentor other members?' formitemRequired=True radioname='mentor' rblist=formDat.is_mentor%}
+                {% with formItemHeader='4.) Are you willing to mentor other members?' formitemRequired=False radioname='mentor' rblist=formDat.is_mentor default=False %}
                   {% include './partials/radiobutton.html' %}
                 {% endwith %}
 

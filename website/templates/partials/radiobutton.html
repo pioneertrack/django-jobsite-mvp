@@ -6,7 +6,7 @@
     <div class="radio radio-container inline form-radio-inline">
       <label>
         {% with val=True %}
-        <input type="radio" name="{{ radioname }}" value={{ position.0 }} class="{% if formitemRequired %} required{% endif %}">
+        <input type="radio" name="{{ radioname }}" value={{ position.0 }} class="{% if formitemRequired %} required{% endif %}" checked="{% if position.0 == default %} checked{% endif %}">
         {% endwith %}
         {{ position.1 }}
       </label>
