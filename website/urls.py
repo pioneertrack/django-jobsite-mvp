@@ -22,5 +22,8 @@ urlpatterns = [
   url(r'^resend/$', views.resend_activation_email, name='resend'),
   url(r'^settings/delete_profile/$', views.DeleteProfile.as_view(), name='delete_profile'),
 
+  # Test views to fix image thumbnailing issue
+  url(r'^profiles/test/(?P<id>\d+)/$', views.get_test_profile_view, name='get_test_profile_view'),
+
   # url(r'^test/mail', views.test_mail, name='test_mail'),
 ]

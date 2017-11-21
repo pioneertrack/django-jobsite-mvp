@@ -22,15 +22,13 @@
 
             <div class="col col-md-4 item">
 
-              <a class="card-hover" href='/startups/{{ curr_item.founder.id }}'>
+              <a class="card-hover" href="{% url 'website:get_startup_view' curr_item.founder.id %}">
                 <div class="card job-card">
                   <div class="header-bg" style="height:100px; background-color:#25283D;">
                     <h2>{{ curr_item.founder.startup_name }}</h2>
                     <div class="avatar">
-                      {% if curr_item.founder.logo %}
-                        <img src="{{ curr_item.founder.logo }}" alt="{{ curr_item.founder.startup_name }}">
-                      {% else %}
-                        <img src="{% static 'images/default/logo.jpg' %}" alt="{{ curr_item.founder.startup_name }}">
+                      {% if curr_item.founder.logo_thumbnail %}
+                        <img src="{{ curr_item.founder.logo_thumbnail }}" alt="{{ curr_item.founder.startup_name }}">
                       {% endif %}
                     </div>
                   </div>
@@ -72,15 +70,13 @@
 
             <div class="col col-md-4" style="height:400px;">
 
-              <a class="card-hover" href='/profiles/{{ item_id }}'>
+              <a class="card-hover" href="{% url 'website:get_profile_view' item_id %}">
                 <div class="card">
                   <div class="header-bg"
                        style="height:100px; background-color:#25283D;"></div>
                   <div class="avatar">
-                    {% if curr_item.image %}
-                      <img src="{{ curr_item.image }}" alt="{{ curr_item.user.first_name }} {{ curr_item.user.last_name }}">
-                    {% else %}
-                      <img src="{% static 'images/default/profile.jpg' %}" alt="{{ curr_item.user.first_name }} {{ curr_item.user.last_name }}">
+                    {% if curr_item.image_thumbnail %}
+                      <img src="{{ curr_item.image_thumbnail }}" alt="{{ curr_item.user.first_name }} {{ curr_item.user.last_name }}">
                     {% endif %}
                   </div>
                   <div class="content">
@@ -121,15 +117,13 @@
 
             <div class="col col-md-4" style="height:400px;">
 
-              <a class="card-hover" href='/startups/{{ item_id }}'>
+              <a class="card-hover" href="{% url 'website:get_startup_view' item_id %}">
                 <div class="card">
                   <div class="header-bg"
                        style="height:100px; background-color:#25283D;"></div>
                   <div class="avatar">
-                    {% if curr_item.logo %}
-                      <img src="{{ curr_item.logo }}" alt="{{ curr_item.startup_name }}">
-                    {% else %}
-                      <img src="{% static 'images/default/logo.jpg' %}" alt="{{ curr_item.startup_name }}">
+                    {% if curr_item.logo_thumbnail %}
+                      <img src="{{ curr_item.logo_thumbnail }}" alt="{{ curr_item.startup_name }}">
                     {% endif %}
                   </div>
                   <div class="content">
@@ -365,15 +359,13 @@
 
             <div class="col col-md-4 item">
 
-              <a class="card-hover" href='/startups/{{ curr_item.founder.id }}'>
+              <a class="card-hover" href="{% url 'website:get_startup_view' curr_item.founder.id %}">
                 <div class="card job-card">
                   <div class="header-bg" style="height:100px; background-color:#25283D;">
                     <h2>{{ curr_item.founder.startup_name }}</h2>
                     <div class="avatar">
-                      {% if curr_item.founder.logo %}
-                        <img src="{{ curr_item.founder.logo }}" alt="{{ curr_item.founder.startup_name }}">
-                      {% else %}
-                        <img src="{% static 'images/default/logo.jpg' %}" alt="{{ curr_item.founder.startup_name }}">
+                      {% if curr_item.founder.logo_thumbnail %}
+                        <img src="{{ curr_item.founder.logo_thumbnail }}" alt="{{ curr_item.founder.startup_name }}">
                       {% endif %}
                     </div>
                   </div>
@@ -413,14 +405,12 @@
           {% elif item_type == 'people_document' %}
 
             <div class="col col-md-4" style="height:400px;">
-              <a class="card-hover" href='/profiles/{{ item_id }}'>
+              <a class="card-hover" href="{% url 'website:get_profile_view'  item_id %}">
                 <div class="card">
                   <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
                   <div class="avatar">
-                    {% if curr_item.image %}
-                      <img src="{{ curr_item.image }}" alt="{{ curr_item.user.first_name }} {{ curr_item.user.last_name }}">
-                    {% else %}
-                      <img src="{% static 'images/default/profile.jpg' %}" alt="{{ curr_item.user.first_name }} {{ curr_item.user.last_name }}">
+                    {% if curr_item.image_thumbnail %}
+                      <img src="{{ curr_item.image_thumbnail }}" alt="{{ curr_item.user.first_name }} {{ curr_item.user.last_name }}">
                     {% endif %}
                   </div>
                   <div class="content">
@@ -460,14 +450,12 @@
           {% elif item_type == 'startup_document' %}
 
             <div class="col col-md-4" style="height:400px;">
-              <a class="card-hover" href='/startups/{{ item_id }}'>
+              <a class="card-hover" href="{% url 'website:get_startup_view' item_id %}">
                 <div class="card">
                   <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
                   <div class="avatar">
-                    {% if curr_item.logo %}
-                      <img src="{{ curr_item.logo }}" alt="{{ curr_item.startup_name }}">
-                    {% else %}
-                      <img src="{% static 'images/default/logo.jpg' %}" alt="{{ curr_item.startup_name }}">
+                    {% if curr_item.logo_thumbnail %}
+                      <img src="{{ curr_item.logo_thumbnail }}" alt="{{ curr_item.startup_name }}">
                     {% endif %}
                   </div>
                   <div class="content">
@@ -522,10 +510,8 @@
           <div class="card">
             <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
             <div class="avatar">
-              <% if (item.image && item.image.trim()) { %>
-                <img src="<%= item.image %>" alt="<%= item.user.first_name + ' ' + item.user.last_name %>">
-              <% } else { %>
-                <img src="{% static 'images/default/profile.jpg' %}" alt="<%= item.user.first_name + ' ' + item.user.last_name %>">
+              <% if (item.image_thumbnail && item.image.trim()) { %>
+                <img src="<%= item.image_thumbnail %>" alt="<%= item.user.first_name + ' ' + item.user.last_name %>">
               <% } %>
             </div>
             <div class="content">
@@ -579,10 +565,8 @@
           <div class="card">
             <div class="header-bg" style="height:100px; background-color:#25283D;"></div>
             <div class="avatar">
-              <% if (item.logo && item.logo.trim()) { %>
-                <img src="<%= item.logo %>" alt="<%= item.startup_name %>">
-              <% } else { %>
-                <img src="{% static 'images/default/logo.jpg' %}" alt="<%= item.startup_name %>">
+              <% if (item.logo_thumbnail && item.logo.trim()) { %>
+                <img src="<%= item.logo_thumbnail %>" alt="<%= item.startup_name %>">
               <% } %>
             </div>
             <div class="content">
@@ -613,10 +597,8 @@
             <div class="header-bg" style="height:100px; background-color:#25283D;">
               <h2><%= item.founder.startup_name %></h2>
               <div class="avatar">
-                <% if (item.founder.logo && item.founder.logo.trim()) { %>
-                  <img src="<%= item.founder.logo %>" alt="<%= item.founder.startup_name %>">
-                <% } else { %>
-                  <img src="{% static 'images/default/logo.jpg' %}" alt="<%= item.founder.startup_name %>">
+                <% if (item.founder.logo_thumbnail && item.founder.logo.trim()) { %>
+                  <img src="<%= item.founder.logo_thumbnail %>" alt="<%= item.founder.startup_name %>">
                 <% } %>
               </div>
             </div>

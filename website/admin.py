@@ -30,8 +30,6 @@ class FounderInline(admin.StackedInline):
     fk_name = 'user'
 
 
-# class UserResource(resources.ModelResource):
-
 class MyUserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
     # add_form = NewRegistrationForm
@@ -345,7 +343,7 @@ class ProfileAdmin(ImportExportModelAdmin):
         ('Contact', {'fields': ['linkedin', 'website', 'github']})
     )
     ordering = ('user__email',)
-    search_fields = ('user__email',)
+    search_fields = ('user__email', 'user__first_name', 'user__last_name')
     inlines = (ExperienceInline,)
     resource_class = ProfileResource
     pass

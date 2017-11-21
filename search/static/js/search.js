@@ -17,7 +17,7 @@ $(function () {
 
   // underscore templates
   var person = startup = job = null
-  if (window.location.pathname === '/search/') {
+  if (window.location.pathname === '/search/' || window.location.pathname === '/search/test/') {
     var person = _.template($('#search_person_template').html())
     var startup = _.template($('#search_startup_template').html())
     var job = _.template($('#search_job_template').html())
@@ -64,8 +64,8 @@ $(function () {
   function getSearchResults () {
     if (!end_of_results && !is_active_request) {
       is_active_request = true
-
-      $.ajax('/search/' + currentPage + '/', {
+      var uri = window.location.pathname
+      $.ajax(uri + currentPage + '/', {
         method: 'GET',
         // data: $('#mainform').serializeArray(),
         success: function (response) {
@@ -90,7 +90,8 @@ $(function () {
   function postSearchResults () {
     if (!end_of_results && !is_active_request) {
       is_active_request = true
-      $.ajax('/search/', {
+      var uri = window.location.pathname
+      $.ajax(uri, {
         method: 'POST',
         data: $('#mainform').serializeArray(),
         success: function (response) {
@@ -147,7 +148,7 @@ $(function () {
     }
   })
 
-  if (window.location.pathname === '/search/') {
+  if (window.location.pathname === '/search/' || window.location.pathname === '/search/test/') {
     $('#mainform').on('submit', function (e) {
       // clear previous data
       currentPage = 0

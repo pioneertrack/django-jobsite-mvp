@@ -7,6 +7,7 @@ from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFit
 from django.core.files.storage import FileSystemStorage
 from custom_storages import MediaStorage
+from django.contrib.staticfiles.templatetags.staticfiles import static
 
 HOURS_AVAILABLE = (
     ('0', '1 - 5'),
@@ -239,9 +240,25 @@ class Profile(models.Model):
         if save:
             self.save()
 
-    def image_to_string(self):
-        if self.image:
+    def image_url(self):
+        if self.image and hasattr(self.image, 'url'):
             return self.image.url
+        else:
+            return static('images/default/profile.jpg')
+
+    def image_thumbnail_url(self):
+        if self.image_thumbnail and hasattr(self.image_thumbnail, 'url'):
+            return self.image_thumbnail.url
+        else:
+            return static('images/default/profile.jpg')
+
+    def image_thumbnail_large_url(self):
+        if self.image_thumbnail_large and hasattr(self.image_thumbnail_large, 'url'):
+            # and os.path.isfile(self.image_thumbnail_large.):
+
+            return self.image_thumbnail_large.url
+        else:
+            return static('images/default/profile.jpg')
 
 
 class Experience(models.Model):
@@ -260,11 +277,13 @@ class Founder(models.Model):
     logo_thumbnail = ImageSpecField(source='logo',
                                     processors=[ResizeToFit(100, 100, False)],
                                     format='PNG',
-                                    options={'quality': 100})
+                                    options={'quality': 100},
+                                    )
     logo_thumbnail_large = ImageSpecField(source='logo',
                                           processors=[ResizeToFit(300, 300, False)],
                                           format='PNG',
-                                          options={'quality': 100})
+                                          options={'quality': 100},
+                                          )
     startup_name = models.CharField(verbose_name='Startup Name', max_length=99)
     stage = models.CharField(verbose_name='Stage', max_length=1, choices=STAGE)
     employee_count = models.IntegerField(verbose_name='Employees')
@@ -290,9 +309,23 @@ class Founder(models.Model):
         if save:
             self.save()
 
-    def logo_to_string(self):
-        if self.logo:
+    def logo_url(self):
+        if self.logo and hasattr(self.logo, 'url'):
             return self.logo.url
+        else:
+            return static('images/default/logo.jpg')
+
+    def logo_thumbnail_url(self):
+        if self.logo_thumbnail and hasattr(self.logo_thumbnail, 'url'):
+            return self.logo_thumbnail.url
+        else:
+            return static('images/default/logo.jpg')
+
+    def logo_thumbnail_large_url(self):
+        if self.logo_thumbnail_large and hasattr(self.logo_thumbnail_large, 'url'):
+            return self.logo_thumbnail_large.url
+        else:
+            return static('images/default/logo.jpg')
 
 
 class Funding(models.Model):
