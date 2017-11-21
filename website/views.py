@@ -181,7 +181,7 @@ def startup_profile(request):
 
 
 @login_required
-#@user_passes_test(lambda user: user.first_login, '/', redirect_field_name=None)
+@user_passes_test(lambda user: user.first_login, '/', redirect_field_name=None)
 @never_cache
 def profile_step(request):
     user = request.user
