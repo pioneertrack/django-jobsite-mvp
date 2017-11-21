@@ -23,7 +23,6 @@ from smtplib import SMTPException
 from django.core.mail import EmailMultiAlternatives
 from urllib.parse import urlparse
 import re
-
 from .models import MyUser
 from .forms import ResendActivationEmailForm
 from website import forms
@@ -32,7 +31,7 @@ from website import profile as prof
 from django.views.decorators.vary import vary_on_headers
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
-from website.decorators import check_profiles
+from website.decorators import check_profiles, test_mode
 
 import base64, uuid
 from django.core.files.base import ContentFile
@@ -454,6 +453,29 @@ def get_profile_view(request, id):
         positions.append(prof.POSITIONS.__getitem__(int(item))[1])
     exp = profile.experience_set.order_by('-end_date')
     return render(request, 'profile_info.html', merge_dicts(JOB_CONTEXT, {
+        'profile': profile,
+        'experience': exp,
+        'reset': True,
+        'last_login': last_login,
+        'positions_display': positions,
+        'cd': cd,
+    }))
+
+
+@login_required
+@test_mode
+def get_test_profile_view(request, id):
+    profile = get_object_or_404(prof.Profile, pk=id)
+    last_login = profile.user.last_login
+    current_time = timezone.now()
+    cr = current_time - last_login
+    cd = cr.total_seconds() < 86400
+    # TODO: need to remember normal alg for that
+    positions = []
+    for item in profile.positions:
+        positions.append(prof.POSITIONS.__getitem__(int(item))[1])
+    exp = profile.experience_set.order_by('-end_date')
+    return render(request, 'profile_test.html', merge_dicts(JOB_CONTEXT, {
         'profile': profile,
         'experience': exp,
         'reset': True,
