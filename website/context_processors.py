@@ -21,6 +21,8 @@ def search_enabled(request):
             result = False
         elif f(user) and user.is_founder:
             result = False
+        elif user.is_account_disabled and (not user.is_admin or user.test_mode):
+            result = False
     return {'search_enabled': result}
 
 
