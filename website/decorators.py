@@ -41,7 +41,7 @@ def check_profiles(view_func):
 def test_mode(view_func):
     def _wrapped_view_func(request, *args, **kwargs):
         user = request.user
-        if user.is_admin and user.test_mode :
+        if user.is_admin:
             return view_func(request, *args, **kwargs)
         elif not request.resolver_match.url_name in ['get_test_profile_view', 'search_test']:
             return view_func(request, *args, **kwargs)
