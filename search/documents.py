@@ -59,7 +59,7 @@ class PeopleDocument(DocType):
     })
     positions = fields.StringField()
     image = fields.StringField(attr='image_url')
-    image_thumbnail = fields.StringField(attr='image_thumbnail_url')
+    # image_thumbnail = fields.StringField(attr='image_thumbnail_url')
     get_positions_display = fields.StringField(attr='get_positions_display')
     get_major_display = fields.StringField(attr='get_major_display')
     get_year_display = fields.StringField(attr='get_year_display')
@@ -110,7 +110,7 @@ class StartupDocument(DocType):
         'pay': fields.StringField(attr='get_pay_display')
     })
     logo = fields.StringField(attr='logo_url')
-    logo_thumbnail = fields.StringField(attr='logo_thumbnail_url')
+    # logo_thumbnail = fields.StringField(attr='logo_thumbnail_url')
     get_stage_display = fields.StringField(attr='get_stage_display')
     get_field_display = fields.StringField(attr='get_field_display')
     stage = fields.StringField(attr='stage', analyzer=leave_default)
@@ -141,7 +141,7 @@ class JobDocument(DocType):
         'startup_name': fields.StringField(),
         'description': fields.StringField(),
         'logo': fields.StringField(attr='logo_url'),
-        'logo_thumbnail': fields.StringField(attr='logo_thumbnail_url'),
+        # 'logo_thumbnail': fields.StringField(attr='logo_thumbnail_url'),
         'is_filled': fields.BooleanField(),
         'field': fields.StringField(attr='field', analyzer=leave_default),
         'user': fields.ObjectField(properties={
