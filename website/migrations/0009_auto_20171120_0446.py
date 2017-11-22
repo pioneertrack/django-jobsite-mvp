@@ -13,6 +13,10 @@ def forwards_func(apps, schema_editor):
     job.objects.using(db_alias).all().update(created_at=F('created_date'))
 
 
+def reverse_func(apps, schema_editor):
+    pass
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -33,7 +37,7 @@ class Migration(migrations.Migration):
             name='description',
             field=models.TextField(blank=True, verbose_name='Description'),
         ),
-        migrations.RunPython(forwards_func, atomic=True),
+        migrations.RunPython(forwards_func, reverse_func, atomic=True),
         migrations.RunSQL(migrations.RunSQL.noop,
                           reverse_sql='SET CONSTRAINTS ALL IMMEDIATE'),
     ]
