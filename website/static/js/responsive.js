@@ -3,16 +3,6 @@ jQuery(document).ready(function($) {
   if (history.state === null || history.state.hasOwnProperty('search_state') === false) {
     $('.cd-search-nav.first select.filter').niceSelect();
   }
-  $('ul#cd-navigation select.filter').niceSelect();
-  $('ul#cd-navigation ul.list li:first').hide();
-
-  $('#profiles_holder').on('click', function(e) {
-    e.preventDefault();
-  })
-
-  $('ul#cd-navigation ul.list li').on('click', function() {
-    window.location.href = $(this).attr('data-value');
-  });
 
   $(document).on('mouseleave', '.tags', function(e) {
     var tags = $(this).children('.filter-container');

@@ -1,5 +1,6 @@
 from django_elasticsearch_dsl import DocType, Index, fields
-from website.profile import Profile, Founder, Job
+from website.profile import Profile, Founder, Job, Experience
+from website.models import MyUser
 from django.conf import settings
 from elasticsearch_dsl import analyzer, tokenizer
 
@@ -57,20 +58,22 @@ class PeopleDocument(DocType):
         'description': fields.TextField(),
     })
     positions = fields.StringField()
-    image = fields.StringField(attr="image_to_string")
-    get_positions_display = fields.StringField(attr="get_positions_display")
-    get_major_display = fields.StringField(attr="get_major_display")
-    get_year_display = fields.StringField(attr="get_year_display")
-    get_role_display = fields.StringField(attr="get_role_display")
-    get_hours_week_display = fields.StringField(attr="get_hours_week_display")
+    image = fields.StringField(attr='image_url')
+    image_thumbnail = fields.StringField(attr='image_thumbnail_url')
+    get_positions_display = fields.StringField(attr='get_positions_display')
+    get_major_display = fields.StringField(attr='get_major_display')
+    get_year_display = fields.StringField(attr='get_year_display')
+    get_role_display = fields.StringField(attr='get_role_display')
+    get_hours_week_display = fields.StringField(attr='get_hours_week_display')
 
-    major = fields.StringField(attr="major", analyzer=leave_default)
-    year = fields.StringField(attr="year", analyzer=leave_default)
-    role = fields.StringField(attr="role", analyzer=leave_default)
+    major = fields.StringField(attr='major', analyzer=leave_default)
+    year = fields.StringField(attr='year', analyzer=leave_default)
+    role = fields.StringField(attr='role', analyzer=leave_default)
 
     class Meta:
         model = Profile
         ignore_signals = False
+        related_models = [MyUser, Experience]
         fields = [
             'is_filled',
             'hours_week',
@@ -82,6 +85,14 @@ class PeopleDocument(DocType):
             'courses',
             'mentor'
         ]
+
+    def get_instances_from_related(self, related_instance):
+        if isinstance(related_instance, MyUser):
+            if hasattr(related_instance, 'profile'):
+                return related_instance.profile
+        if isinstance(related_instance, Experience):
+            return related_instance.profile
+
 
 @startup.doc_type
 class StartupDocument(DocType):
@@ -95,23 +106,32 @@ class StartupDocument(DocType):
     job_set = fields.NestedField(properties={
         'title': fields.StringField(),
         'description': fields.StringField(),
-        'level': fields.StringField(attr="get_level_display"),
-        'pay': fields.StringField(attr="get_pay_display")
+        'level': fields.StringField(attr='get_level_display'),
+        'pay': fields.StringField(attr='get_pay_display')
     })
-    logo = fields.StringField(attr="logo_to_string")
-    get_stage_display = fields.StringField(attr="get_stage_display")
-    get_field_display = fields.StringField(attr="get_field_display")
+    logo = fields.StringField(attr='logo_url')
+    logo_thumbnail = fields.StringField(attr='logo_thumbnail_url')
+    get_stage_display = fields.StringField(attr='get_stage_display')
+    get_field_display = fields.StringField(attr='get_field_display')
     stage = fields.StringField(attr='stage', analyzer=leave_default)
     field = fields.StringField(attr='field', analyzer=leave_default)
 
     class Meta:
         model = Founder
+        related_models = [MyUser, Job]
         fields = [
             'startup_name',
             'description',
             'is_filled',
             'employee_count'
         ]
+
+    def get_instances_from_related(self, related_instance):
+        if isinstance(related_instance, MyUser):
+            if hasattr(related_instance, 'founder'):
+                return related_instance.founder
+        if isinstance(related_instance, Job):
+            return related_instance.founder
 
 
 @job.doc_type
@@ -120,23 +140,32 @@ class JobDocument(DocType):
         'id': fields.IntegerField(),
         'startup_name': fields.StringField(),
         'description': fields.StringField(),
-        'logo': fields.StringField(attr="logo_to_string"),
+        'logo': fields.StringField(attr='logo_url'),
+        'logo_thumbnail': fields.StringField(attr='logo_thumbnail_url'),
         'is_filled': fields.BooleanField(),
-        'field': fields.StringField(attr="field", analyzer=leave_default),
+        'field': fields.StringField(attr='field', analyzer=leave_default),
         'user': fields.ObjectField(properties={
             'is_active': fields.BooleanField(),
             'is_account_disabled': fields.BooleanField(),
         })
     })
-    get_pay_display = fields.StringField(attr="get_pay_display")
-    get_level_display = fields.StringField(attr="get_level_display")
+    get_pay_display = fields.StringField(attr='get_pay_display')
+    get_level_display = fields.StringField(attr='get_level_display')
 
-    pay = fields.StringField(attr="pay", analyzer=leave_default)
-    level = fields.StringField(attr="level", analyzer=leave_default)
+    pay = fields.StringField(attr='pay', analyzer=leave_default)
+    level = fields.StringField(attr='level', analyzer=leave_default)
 
     class Meta:
         model = Job
+        related_models = [Founder, MyUser]
         fields = [
             'title',
             'description'
         ]
+
+    def get_instances_from_related(self, related_instance):
+        if isinstance(related_instance, MyUser):
+            if hasattr(related_instance, 'founder'):
+                return related_instance.founder.job_set.all()
+        if isinstance(related_instance, Founder):
+            return related_instance.job_set.all()

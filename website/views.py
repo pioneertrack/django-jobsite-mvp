@@ -20,23 +20,22 @@ from django.core import signing
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from smtplib import SMTPException
+from django.core.mail import EmailMultiAlternatives
 from urllib.parse import urlparse
 import re
-
 from .models import MyUser
 from .forms import ResendActivationEmailForm
 from website import forms
 from website import models
 from website import profile as prof
-from .profile import Founder, Job
 from django.views.decorators.vary import vary_on_headers
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
-from website.decorators import check_profiles
+from website.decorators import check_profiles, test_mode
 
 import base64, uuid
 from django.core.files.base import ContentFile
-from website.context_processors import is_mobile
+
 
 def merge_dicts(*args):
     dc = {}
@@ -74,28 +73,46 @@ JOB_CONTEXT = {
 
 
 # Create your views here.
-@csrf_exempt
 @login_required(login_url='login/')
 def connect(request):
     if request.is_ajax():
         email_connect_template = 'email/connection.html'
         url = urlparse(request.META.get('HTTP_REFERER'))
-        from_startup = re.match(r'.*/startups/.*', url.path) is not None;
-        receiver = get_object_or_404(models.MyUser, pk=request.POST['user_page_id'])
+        from_startup = re.match(r'.*/startups/.*', url.path) is not None
+        if from_startup:
+            receiver = get_object_or_404(prof.Founder, pk=request.POST['profile_id'])
+        else:
+            receiver = get_object_or_404(prof.Profile, pk=request.POST['profile_id'])
+        receiver = receiver.user
         sender = request.user
         text = request.POST['text']
         if receiver is not None:
             try:
+                type = url = None
                 profile_url = ''
-                if not sender.get_profile_url() is None:
+                profile_type = request.POST['profile_type']
+                if not sender.get_profile_url() is None and (profile_type in ['', 'individual']):
+                    type = 'Profile'
+                    url = sender.get_profile_url()
                     profile_url = '{fname} {lname}\'s Profile: {url}'.format(
-                        url=request.build_absolute_uri(sender.get_profile_url()),
+                        url=request.build_absolute_uri(url),
                         fname=sender.first_name,
                         lname=sender.last_name) + "\r\n\r\n"
+
+                if not sender.get_startup_url() is None and (profile_type in ['', 'startup']):
+                    type = 'Startup Profile'
+                    url = sender.get_startup_url()
+                    profile_url = '{fname} {lname}\'s Startup Profile: {url}'.format(
+                        url=request.build_absolute_uri(url),
+                        fname=sender.first_name,
+                        lname=sender.last_name) + "\r\n\r\n"
+
+
                 html_content = render_to_string(email_connect_template, {
                     'sender': sender,
                     'msg': request.POST['text'],
-                    'url': request.build_absolute_uri(sender.get_profile_url()) if not sender.get_profile_url() is None else None
+                    'url': request.build_absolute_uri(url) if not url is None else None,
+                    'type': type,
                 })
                 receiver.email_user(
                     sender.first_name + " " + sender.last_name + " wants to work with you on Bear Founders!",
@@ -112,6 +129,35 @@ def connect(request):
                 message = err
         else:
             message = 'failure'
+        return HttpResponseServerError(message)
+    else:
+        raise Http404()
+
+
+@login_required(login_url='login/')
+def feedback(request):
+    if request.is_ajax() and hasattr(settings, 'DEFAULT_FEEDBACK_EMAIL'):
+        html_template = 'email/feedback.html'
+        text_template = 'email/feedback.txt'
+        sender = request.user
+        message = request.POST['message']
+        try:
+            connection = prof.Connection.objects.create(sender=sender, message=message, feedback=True)
+            text_content = render_to_string(text_template, {'message' : message, 'connection': connection}, request)
+            html_content = render_to_string(html_template, {'message' : message, 'connection': connection}, request)
+            subject = 'Feedback from {} {}'.format(sender.first_name, sender.last_name)
+            to = settings.DEFAULT_FEEDBACK_EMAIL
+            from_email = sender.email
+            msg = EmailMultiAlternatives(subject, text_content, from_email, to)
+            if not html_content is None:
+                msg.attach_alternative(html_content, 'text/html')
+            msg.send()
+            message = "success"
+
+            return HttpResponse(message)
+        except SMTPException as err:
+            message = err
+
         return HttpResponseServerError(message)
     else:
         raise Http404()
@@ -163,7 +209,7 @@ def startup_profile(request):
     current_time = timezone.now()
     cr = current_time - last_login
     cd = cr.total_seconds() < 86400
-    jobs = request.user.founder.job_set.order_by('created_date')
+    jobs = request.user.founder.job_set.order_by('created_at')
     total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
 
     # in case user click on fill out later button in profile update
@@ -410,6 +456,29 @@ def get_profile_view(request, id):
         positions.append(prof.POSITIONS.__getitem__(int(item))[1])
     exp = profile.experience_set.order_by('-end_date')
     return render(request, 'profile_info.html', merge_dicts(JOB_CONTEXT, {
+        'profile': profile,
+        'experience': exp,
+        'reset': True,
+        'last_login': last_login,
+        'positions_display': positions,
+        'cd': cd,
+    }))
+
+
+@login_required
+@test_mode
+def get_test_profile_view(request, id):
+    profile = get_object_or_404(prof.Profile, pk=id)
+    last_login = profile.user.last_login
+    current_time = timezone.now()
+    cr = current_time - last_login
+    cd = cr.total_seconds() < 86400
+    # TODO: need to remember normal alg for that
+    positions = []
+    for item in profile.positions:
+        positions.append(prof.POSITIONS.__getitem__(int(item))[1])
+    exp = profile.experience_set.order_by('-end_date')
+    return render(request, 'profile_test.html', merge_dicts(JOB_CONTEXT, {
         'profile': profile,
         'experience': exp,
         'reset': True,

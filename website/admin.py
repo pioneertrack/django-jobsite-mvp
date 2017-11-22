@@ -30,8 +30,6 @@ class FounderInline(admin.StackedInline):
     fk_name = 'user'
 
 
-# class UserResource(resources.ModelResource):
-
 class MyUserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
     # add_form = NewRegistrationForm
@@ -46,7 +44,7 @@ class MyUserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name')}),
-        ('Permissions', {'fields': ('is_admin', 'is_active', 'is_individual', 'is_founder', 'test_mode')}),
+        ('Permissions', {'fields': ('is_admin', 'is_active', 'is_individual', 'is_founder', 'test_mode', 'is_account_disabled')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -92,6 +90,12 @@ class MyUserAdmin(BaseUserAdmin):
 class FundingInline(admin.TabularInline):
     model = Funding
     extra = 1
+
+
+class JobInline(admin.TabularInline):
+    model = Job
+    extra = 0
+    readonly_fields = ('created_at',)
 
 
 class FounderResource(resources.ModelResource):
@@ -189,8 +193,8 @@ class FounderAdmin(ImportExportModelAdmin):
         ('Contact', {'fields': ['website', 'facebook']})
     )
     ordering = ('user__email',)
-    search_fields = ('user__email',)
-    inlines = (FundingInline,)
+    search_fields = ('user__email', 'startup_name')
+    inlines = (FundingInline, JobInline)
     resource_class = FounderResource
     pass
 
@@ -250,15 +254,16 @@ class JobAdmin(ImportExportModelAdmin):
 class ConnectionResource(resources.ModelResource):
     class Meta:
         model = Connection
-        fields = ('created_at', 'receiver', 'sender', 'to_startup', 'message')
+        fields = ('created_at', 'receiver', 'sender', 'to_startup', 'feedback', 'message')
         export_order = ('receiver', 'sender')
 
 
 class ConnectionAdmin(ImportExportModelAdmin):
     resource_class = ConnectionResource
-    list_display = ('created_at', 'receiver', 'sender', 'to_startup')
-    readonly_fields = ('created_at', 'receiver', 'sender', 'to_startup', 'message')
+    list_display = ('created_at', 'receiver', 'sender', 'to_startup', 'feedback')
+    readonly_fields = ('created_at', 'receiver', 'sender', 'to_startup', 'feedback', 'message')
     ordering = ('created_at', 'sender', 'receiver')
+    list_filter = ('to_startup', 'feedback')
 
 
 # Classes for Users
@@ -338,7 +343,7 @@ class ProfileAdmin(ImportExportModelAdmin):
         ('Contact', {'fields': ['linkedin', 'website', 'github']})
     )
     ordering = ('user__email',)
-    search_fields = ('user__email',)
+    search_fields = ('user__email', 'user__first_name', 'user__last_name')
     inlines = (ExperienceInline,)
     resource_class = ProfileResource
     pass

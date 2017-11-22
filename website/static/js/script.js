@@ -40,10 +40,6 @@ $(function () {
       prop('checked', $(this).is(':checked'))
   })
 
-  $('ul#cd-navigation ul.list li').on('click', function () {
-    window.location.href = $(this).attr('data-value')
-  })
-
   $('button#disable-account').on('click', function () {
     if (confirm('Are you sure you want to disable your account?')) {
       $(this).parent().find('form').submit()
@@ -105,8 +101,57 @@ $(function () {
     })
   }
 
+  $.ajaxSetup({
+       beforeSend: function(xhr, settings) {
+           function getCookie(name) {
+               var cookieValue = null;
+               if (document.cookie && document.cookie != '') {
+                   var cookies = document.cookie.split(';');
+                   for (var i = 0; i < cookies.length; i++) {
+                       var cookie = jQuery.trim(cookies[i]);
+                       // Does this cookie string begin with the name we want?
+                       if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                           cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                           break;
+                       }
+                   }
+               }
+               return cookieValue;
+           }
+           if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+               // Only send the token to relative URLs i.e. locally.
+               xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+           }
+       }
+  });
+
+  function connectRequest(text, profile_type = null) {
+      $.ajax({
+        type: 'POST',
+        url: '/connect/',
+        data: {
+          'text': text,
+          'profile_id': $('#profile_id').val(),
+          'profile_type': profile_type,
+        },
+        success: function (data) {
+          swal({
+            type: 'success',
+            title: 'Your message is on its way!',
+            html: 'We have contacted ' + $('#profile_name').val() + '. We hope you hear back soon.',
+          })
+        },
+        error: function (xhr, textStatus, errorThrown) {
+          swal({
+            type: 'error',
+            title: 'Something went wrong on our end',
+            html: 'Please try again',
+          })
+        },
+      })
+  }
+
   $('#connect').on('click', function () {
-    console.log('clicked')
     swal({
       title: 'Give a description of you or your project',
       text: 'It\'s best to include your name, email, and/or phone number so they can contact you back',
@@ -122,24 +167,68 @@ $(function () {
             } else {
               resolve()
             }
-          }, 1000)
+          }, 500)
         })
       },
       allowOutsideClick: false,
     }).then(function (text) {
+      if ($('#select_profiles').val() == 1) {
+        swal({
+          text: 'Select a link to which profile to add to the message',
+          showCancelButton: true,
+          cancelButtonColor: '#3085d6',
+          cancelButtonText: 'Startup',
+          confirmButtonText: 'Individual',
+          allowOutsideClick: false,
+          showLoaderOnConfirm: true,
+        }).then(function (value) {
+          connectRequest(text, 'individual')
+        },
+          function (dismiss) {
+            if (dismiss === 'cancel') {
+              connectRequest(text, 'startup')
+            }
+          })
+      } else {
+        connectRequest(text)
+      }
+    })
+  })
+
+  $(document).on('click', '.feedback', function (e) {
+    e.preventDefault()
+    swal({
+      title: 'Think We Can Improve?',
+      text: 'Tell us anything! We\'ll do what we can to make Bear Founders a better platform.',
+      input: 'textarea',
+      inputPlaceholder: 'I think you really need an events page',
+      showCancelButton: true,
+      confirmButtonText: 'Send',
+      showLoaderOnConfirm: true,
+      preConfirm: function (text) {
+        return new Promise(function (resolve, reject) {
+          setTimeout(function () {
+            if (text.length == 0) {
+              reject('Please write a message')
+            } else {
+              resolve()
+            }
+          }, 500)
+        })
+      },
+      allowOutsideClick: false,
+    }).then(function (data) {
       $.ajax({
         type: 'POST',
-        url: '/connect/',
+        url: '/feedback/',
         data: {
-          'text': text,
-          'user_page_id': user_page_id,
+          'message': data,
         },
         success: function (data) {
-          console.log('email sent')
           swal({
             type: 'success',
             title: 'Your message is on its way!',
-            html: 'We have contacted ' + name + '. We hope you hear back soon.',
+            html: 'Thank you! We appreciate your insights.',
           })
         },
         error: function (xhr, textStatus, errorThrown) {
@@ -150,7 +239,8 @@ $(function () {
           })
         },
       })
-
+    },
+    function (dismiss) {
     })
   })
 

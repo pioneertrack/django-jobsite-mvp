@@ -6,7 +6,7 @@ from search.documents import PeopleDocument, StartupDocument, JobDocument
 import search.documents as s_docs
 from django.utils.decorators import method_decorator
 from django.views.decorators.vary import vary_on_headers
-from website.decorators import check_profiles
+from website.decorators import check_profiles, test_mode
 from django.utils import timezone
 import website.profile as profile
 import json
@@ -63,7 +63,6 @@ class JSONResponseMixin(object):
 
 # Create your views here.
 class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
-    template_name = 'search.html'
     form_class = forms.Form
     post_data = None
     category = None
@@ -91,6 +90,7 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
 
         return context
 
+    @method_decorator(test_mode)
     @method_decorator(check_profiles)
     @method_decorator(vary_on_headers('User-Agent', 'X-Session-Header'))
     def get(self, request, *args, **kwargs):
@@ -109,6 +109,8 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
 
         return self.render_to_response(self.get_context_data())
 
+    @method_decorator(test_mode)
+    @method_decorator(check_profiles)
     def post(self, request, *args, **kwargs):
         self.page = int(kwargs.get('page', 0))
         post_data = json.dumps(dict(request.POST))

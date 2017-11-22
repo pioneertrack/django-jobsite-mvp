@@ -17,10 +17,8 @@
             <div class="col-md-4 centerfy">
               <div class="profile-image text-center img-responsive">
               <div>
-                {% if profile.image %}
-                  <img src="{{ profile.image.url }}" alt="{{ profile.user.first_name }} {{ profile.user.last_name }}">
-                {% else %}
-                  <img src="{% static 'images/default/profile.jpg' %}" alt="{{ profile.user.first_name }} {{ profile.user.last_name }}">
+                {% if profile.image_thumbnail_large %}
+                  <img src="{{ profile.image_thumbnail_large.url }}" alt="{{ profile.user.first_name }} {{ profile.user.last_name }}">
                 {% endif %}
               </div>
               </div>
@@ -46,9 +44,6 @@
                   {% endfor %}
                 </strong> position</p>
                 {% endif %}
-              {% endif %}
-              {% if profile.mentor %}
-                <p>Willing to mentor</p>
               {% endif %}
               <hr>
               {% if cd %}
@@ -175,10 +170,8 @@
             <div class="col-md-4 centerfy">
               <div class="profile-image text-center img-responsive">
                 <div>
-                {% if profile.image %}
-                  <img src="{{ profile.image.url }}" alt="{{ profile.user.first_name }} {{ profile.user.last_name }}">
-                {% else %}
-                  <img src="{% static 'images/default/profile.jpg' %}" alt="{{ profile.user.first_name }} {{ profile.user.last_name }}">
+                {% if profile.image_thumbnail_large %}
+                  <img src="{{ profile.image_thumbnail_large_url }}" alt="{{ profile.user.first_name }} {{ profile.user.last_name }}">
                 {% endif %}
                 </div>
               </div>
@@ -204,9 +197,6 @@
                   {% endfor %}
                 </strong> position</p>
                 {% endif %}
-              {% endif %}
-              {% if profile.mentor %}
-                <p>Willing to mentor</p>
               {% endif %}
               <hr>
               {% if cd %}

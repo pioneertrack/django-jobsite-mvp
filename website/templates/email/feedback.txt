@@ -1,0 +1,22 @@
+{% load i18n %}
+{% load website_tags %}
+User {{ user.first_name }} {{ user.last_name }} send feedback.
+
+{{ message }}
+
+
+Message link: {% abs_url 'admin:website_connection_change' connection.pk %}
+
+Admin User link: {% abs_url 'admin:website_myuser_change' user.pk %}
+
+{% if user.profile %}
+User Profile link: {% abs_url 'website:get_profile_view' user.profile.pk %}
+Admin User Profile: link {% abs_url 'admin:website_profile_change' user.profile.pk %}
+{% endif %}
+
+{% if user.founder %}
+User Startup Profile link: {% abs_url 'website:get_startup_view' user.founder.pk %}
+Admin User Startup Profile link: {% abs_url 'admin:website_founder_change' user.founder.pk %}
+{% endif %}
+
+User email: {{ user.email }}

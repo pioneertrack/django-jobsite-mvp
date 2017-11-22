@@ -35,6 +35,11 @@
               {%else%}
                 <h5>Active: {{ last_login|timesince }} ago</h5>
               {% endif %}
+              {% if user.is_founder and user.is_individual %}
+              <input type="hidden" id="select_profiles" value="1">
+              {% endif %}
+              <input type="hidden" id="profile_id" value="{{ founder.pk }}">
+              <input type="hidden" id="profile_name" value="{{founder.startup_name|safe}}">
               <button id="connect" class="btn btn-lg btn-primary btn-outline">Contact</button>
             </div>
           </div>
@@ -119,6 +124,11 @@
               {%else%}
                 <h5>Active: {{ last_login|timesince }} ago</h5>
               {% endif %}
+              {% if user.is_founder and user.is_individual %}
+              <input type="hidden" id="select_profiles" value="1">
+              {% endif %}
+              <input type="hidden" id="profile_id" value="{{ founder.pk }}">
+              <input type="hidden" id="profile_name" value="{{founder.startup_name|safe}}">
               <button id="connect" class="btn btn-lg btn-primary btn-outline">Contact</button>
             </div>
           </div>
@@ -175,11 +185,3 @@
   {% endblock %}
 
 {% endif %}
-
-{% block user_info %}
-  {{ block.super }}
-  <script type="text/javascript">
-    user_page_id = {{ founder.user.id }};
-    name = '{{founder.startup_name|safe}}';
-</script>
-{% endblock user_info %}

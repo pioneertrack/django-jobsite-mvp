@@ -34,14 +34,16 @@
                 Berkeley</h3>
               {% if user.profile.positions != "" %}
                 {% if positions_display.0 == 'Not Looking' %}
-                 <p>{{ positions_display.0 }}</p>
+                 <p>Not looking for a position</p>
                 {% else %}
                 <p>Looking for {{ positions_display.0|vowel }}
                 <strong>
                   {% for item in positions_display %}
-                    {{ item }}{% if not forloop.last %},{% endif %}
+                    {% if forloop.last and not forloop.first %}or{% endif %}
+                    {% if not forloop.last and not forloop.first%},{% endif %}
+                    {{ item }}
                   {% endfor %}
-                </strong> position{{ positions_display|pluralize }}</p>
+                </strong> position</p>
                 {% endif %}
               {% endif %}
               {% if user.profile.mentor %}
@@ -193,14 +195,16 @@
                 Berkeley</h3>
               {% if user.profile.positions != "" %}
                 {% if positions_display.0 == 'Not Looking' %}
-                 <p>{{ positions_display.0 }}</p>
+                 <p>Not looking for a position</p>
                 {% else %}
                 <p>Looking for {{ positions_display.0|vowel }}
                 <strong>
                   {% for item in positions_display %}
-                    {{ item }}{% if not forloop.last %},{% endif %}
+                    {% if forloop.last and not forloop.first %}or{% endif %}
+                    {% if not forloop.last and not forloop.first%},{% endif %}
+                    {{ item }}
                   {% endfor %}
-                </strong> position{{ positions_display|pluralize }}</p>
+                </strong> position</p>
                 {% endif %}
               {% endif %}
               {% if user.profile.mentor %}

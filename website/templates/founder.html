@@ -16,8 +16,8 @@
             <div class="col-md-4 centerfy">
               <div class="profile-image text-center img-responsive">
               <div>
-                {% if user.founder.image %}
-                  <img src="{{ user.founder.image.url }}">
+                {% if user.founder.logo %}
+                  <img src="{{ user.founder.logo.url }}">
                 {% else %}
                   <img src="{% static 'images/default/logo.jpg' %}">
                 {% endif %}
@@ -108,8 +108,8 @@
             <div class="col-md-4 centerfy">
               <div class="profile-image text-center img-responsive">
               <div>
-                {% if user.founder.image %}
-                  <img src="{{ user.founder.image.url }}">
+                {% if user.founder.logo %}
+                  <img src="{{ user.founder.logo.url }}">
                 {% else %}
                   <img src="{% static 'images/default/logo.jpg' %}">
                 {% endif %}
