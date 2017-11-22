@@ -10897,7 +10897,7 @@ $(document).ready(function(){
   $(settings.selectors.LOADING_IMAGE).css("display", "none");
   var form_data = localStorage.getItem(settings.localStorageKeys.PROFILE_FORM_DATA) ?
     JSON.parse(localStorage.getItem(settings.localStorageKeys.PROFILE_FORM_DATA)) : null
-
+       
   if (form_data !== null) {
     $(form_data).each(function (key, item) {
         if (item.name == 'csrfmiddlewaretoken') {
@@ -10909,6 +10909,8 @@ $(document).ready(function(){
             case 'text':
               input.val(item.value); break;
             case 'checkbox':
+              input.prop('checked', true); break;
+            case 'radio':
               input.prop('checked', true);
           }
         } else if ($('textarea[name="' + item.name + '"]').length > 0 ) {

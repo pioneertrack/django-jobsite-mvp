@@ -92,6 +92,9 @@
                     {% if curr_item.has_funding_exp %}
                       <span class="label label-default">Has funding experience</span>
                     {% endif %}
+                    {% if curr_item.mentor %}
+                      <span class="label label-default">Mentor</span>
+                    {% endif %}
                     <span class="label label-primary">{{ curr_item.get_year_display }}</span>
                     {% if curr_item.major.strip != "" %}
                       <span class="label label-primary">{{ curr_item.get_major_display }}</span>
@@ -104,7 +107,9 @@
                         {% endif %}
                       {% endfor %}
                     {% endwith %}
-                    <span class="label label-success">{{ curr_item.profile.get_hours_week_display }} hr/wk</span>
+                    {% if curr_item.get_hours_week_display.strip != ""  %}
+                      <span class="label label-success">{{ curr_item.get_hours_week_display }} hr/wk</span>
+                    {% endif %}
                     {% for work in curr_item.experience_set %}
                       <span class="label label-danger">Worked at {{ work.company }}</span>
                     {% endfor %}
@@ -432,6 +437,9 @@
                       {% if curr_item.has_funding_exp %}
                         <span class="label label-default">Has funding experience</span>
                       {% endif %}
+                      {% if curr_item.mentor %}
+                        <span class="label label-default">Mentor</span>
+                      {% endif %}
                       <span class="label label-primary">{{ curr_item.get_year_display }}</span>
                       {% if curr_item.major.strip != "" %}
                         <span class="label label-primary">{{ curr_item.get_major_display }}</span>
@@ -444,7 +452,9 @@
                           {% endif %}
                         {% endfor %}
                       {% endwith %}
-                      <span class="label label-success">{{ curr_item.get_hours_week_display }} hr/wk</span>
+                      {% if curr_item.get_hours_week_display.strip != ""  %}
+                        <span class="label label-success">{{ curr_item.get_hours_week_display }} hr/wk</span>
+                      {% endif %}
                       {% for work in curr_item.experience_set %}
                         <span class="label label-danger">Worked at {{ work.company }}</span>
                       {% endfor %}
@@ -541,6 +551,10 @@
               <span class="label label-default">Has funding experience</span>
               <% } %>
 
+              <% if (item.mentor) { %>
+              <span class="label label-default">Mentor</span>
+              <% } %>
+
               <span class="label label-primary"> <%= item.get_year_display %> </span>
 
               <% if (item.major.length > 0) { %>
@@ -555,7 +569,9 @@
               <span class="label label-info"><%= skill %></span>
               <% }})} %>
 
+              <% if (item.get_hours_week_display.length > 0) { %>
               <span class="label label-success"><%= item.get_hours_week_display %> hr/wk</span>
+              <% } %}
 
               <% if (item.experience_set.length > 0) { _.each(item.experience_set, function (experience) { %>
               <span class="label label-danger">Worked at <%= experience.company %></span>

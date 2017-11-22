@@ -243,6 +243,9 @@ def profile_step(request):
         ("has_funding_exp", "I have experience funding a startup")
     )
     formDat["hasStartup"] = (("yes", 'Yes'), ("no", 'No'))
+    formDat["is_mentor"] = (
+        ((True, 'Yes'), (False, 'No'))
+    )
 
     profile = None if not hasattr(user, 'profile') else user.profile
     if profile is None:

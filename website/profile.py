@@ -207,6 +207,7 @@ class Profile(models.Model):
     hours_week = models.CharField(verbose_name='Hours per Week', max_length=1, choices=HOURS_AVAILABLE, blank=True)
     has_startup_exp = models.BooleanField(verbose_name='Startup Experience', blank=True, default=False)
     has_funding_exp = models.BooleanField(verbose_name='Funding Experience', blank=True, default=False)
+    mentor = models.BooleanField(verbose_name='Willing to mentor', default=False)
     linkedin = models.URLField(verbose_name='Linkedin', null=False, blank=True)
     website = models.URLField(verbose_name='Website', null=False, blank=True)
     github = models.URLField(verbose_name='Github', null=False, blank=True)
