@@ -101,6 +101,12 @@ jQuery(document).ready(function($){
 
 	$('input[name="select-category"]').trigger('change');
 
-  // $('ul#cd-navigation select.filter').niceSelect();
+	$('#searchbutton').on('click', function(e){
+	  if ($('[name="select-category"]:checked').val() == undefined) {
+      e.stopPropagation()
+      e.preventDefault()
+      controller.toggle('id-1')
+    }
+  })
 
 });

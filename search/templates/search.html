@@ -183,7 +183,7 @@
   {% block search_form %}
 
     <nav class="cd-secondary-nav">
-      <form id="mainform" autocomplete="off" method="POST">
+      <form id="mainform" action="/search/" autocomplete="off" method="POST">
         {% csrf_token %}
 
         <div id="search" class="cd-main-search is-visible">
