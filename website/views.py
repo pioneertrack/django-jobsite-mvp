@@ -12,7 +12,6 @@ from django.utils import timezone
 from django.forms.models import inlineformset_factory
 from django.urls import reverse
 from django import forms as f
-from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Sum
 from django.conf import settings
 from django.http import Http404, HttpResponseServerError
@@ -25,12 +24,14 @@ from urllib.parse import urlparse
 import re
 from .models import MyUser
 from .forms import ResendActivationEmailForm
-from website import forms
-from website import models
-from website import profile as prof
 from django.views.decorators.vary import vary_on_headers
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
+from statsy import watch
+
+from website import forms
+from website import models
+from website import profile as prof
 from website.decorators import check_profiles, test_mode
 
 import base64, uuid
@@ -165,6 +166,7 @@ def feedback(request):
 
 @login_required(login_url='login/')
 @check_profiles
+@watch(group='index', event='page_view')
 @vary_on_headers('User-Agent')
 def index(request):
     return render(request, 'new_home.html',
@@ -177,6 +179,7 @@ def index(request):
 
 @login_required
 @check_profiles
+@watch(group='index', event='page_view')
 @never_cache
 def user_profile(request):
     last_login = request.user.last_login
@@ -202,6 +205,7 @@ def user_profile(request):
 
 @login_required
 @check_profiles
+@watch(group='index', event='page_view')
 @never_cache
 def startup_profile(request):
     user = get_object_or_404(models.MyUser, pk=request.user.id)
@@ -288,6 +292,7 @@ def profile_step(request):
 
 
 @login_required
+@watch(group='index', event='page_view')
 @never_cache
 def profile_update(request):
     user = request.user
@@ -369,6 +374,7 @@ def profile_update(request):
 
 
 @login_required
+@watch(group='index', event='page_view')
 @never_cache
 def startup_update(request):
     user = request.user
@@ -443,6 +449,7 @@ def startup_update(request):
 
 
 @login_required
+@watch(group='index', event='page_view')
 @check_profiles
 def get_profile_view(request, id):
     profile = get_object_or_404(prof.Profile, pk=id)
@@ -489,6 +496,7 @@ def get_test_profile_view(request, id):
 
 
 @login_required
+@watch(group='index', event='page_view')
 @check_profiles
 def get_startup_view(request, id):
     founder = get_object_or_404(prof.Founder, pk=id)

@@ -9,7 +9,9 @@ from django.views.decorators.vary import vary_on_headers
 from website.decorators import check_profiles, test_mode
 from django.utils import timezone
 import website.profile as profile
+from django.urls import reverse
 import json
+import statsy
 
 JOB_CONTEXT = {
     'p_context': [
@@ -70,6 +72,9 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
     page = 0
     offset = 0
 
+    def get_request(request):
+        statsy.send()
+
     def render_to_response(self, context):
         if self.request.is_ajax():
             return self.render_to_json_response(context.get('items'))
@@ -94,6 +99,8 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
     @method_decorator(check_profiles)
     @method_decorator(vary_on_headers('User-Agent', 'X-Session-Header'))
     def get(self, request, *args, **kwargs):
+        if not request.is_ajax():
+            statsy.send(group='index', event='page_view', value=1, user=request.user, url=reverse('search:search'))
         self.page = int(kwargs.get('page', 0))
         self.category = None
         # Check for cookie from get request get category from it if exists
@@ -112,6 +119,7 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
     @method_decorator(test_mode)
     @method_decorator(check_profiles)
     def post(self, request, *args, **kwargs):
+        statsy.send(group='index', event='page_view', value=1, user=request.user, url=reverse('search:search'))
         self.page = int(kwargs.get('page', 0))
         post_data = json.dumps(dict(request.POST))
         request.session['post_search_data'] = post_data
