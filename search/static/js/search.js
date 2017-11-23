@@ -90,6 +90,9 @@ $(function () {
   function postSearchResults () {
     if (!end_of_results && !is_active_request) {
       is_active_request = true
+      if (currentPage > 0) {
+        return
+      }
       var uri = window.location.pathname
       $.ajax(uri, {
         method: 'POST',
@@ -133,24 +136,23 @@ $(function () {
   /**
    * Apply logic to form
    */
-  $('#mainform').on('submit', function (e) {
-    var search_state = {
-      filter: $('#mainform').serializeArray(),
-      tags_people: $('#tags_people').html(),
-      tags_startups: $('#tags_startups').html(),
-      tags_jobs: $('#tags_jobs').html(),
-    }
-    if (window.location.pathname === '/search/') {
-      history.pushState({search_state: search_state}, 'search')
-    } else {
-      window.sessionStorage.setItem('search_state',
-        JSON.stringify(search_state))
-    }
-  })
-
   if (window.location.pathname === '/search/' || window.location.pathname === '/search/test/') {
     $('#mainform').on('submit', function (e) {
       // clear previous data
+      e.preventDefault()
+      e.stopImmediatePropagation();
+      var search_state = {
+        filter: $('#mainform').serializeArray(),
+        tags_people: $('#tags_people').html(),
+        tags_startups: $('#tags_startups').html(),
+        tags_jobs: $('#tags_jobs').html(),
+      }
+      if (window.location.pathname === '/search/') {
+        history.pushState({search_state: search_state}, 'search')
+      } else {
+        window.sessionStorage.setItem('search_state',
+          JSON.stringify(search_state))
+      }
       currentPage = 0
       currentSearchData = []
       end_of_results = false
@@ -171,10 +173,10 @@ $(function () {
       // prevent actual submit
       return false
     })
+    $(window).scroll(searchLazyLoad)
+    $(document).on('touchmove', searchLazyLoadMobile)
   }
 
-  $(window).scroll(searchLazyLoad)
-  $(document).on('touchmove', searchLazyLoadMobile)
 
   if ((history.state !== null && history.state.hasOwnProperty('search_state')) ||
     window.sessionStorage.getItem('search_state') !== null) {
