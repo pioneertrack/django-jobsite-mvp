@@ -1,13 +1,13 @@
 from django.db import models
-from django.core.mail import send_mail
 from django.contrib.auth.base_user import BaseUserManager
-from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+from django.utils import timezone
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
+from datetime import datetime
 
 
 class UserManager(BaseUserManager):
@@ -67,6 +67,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_founder = models.BooleanField(verbose_name='Is Founder', default=False)
     is_account_disabled = models.BooleanField(default=False)
     test_mode = models.BooleanField(default=False)
+    last_activity = models.DateTimeField(default=datetime.now, null=True)
 
     def set_first_login(self):
         if self.first_login:
@@ -138,6 +139,11 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
             return reverse('website:get_startup_view', kwargs={'id': self.founder.pk})
         except ObjectDoesNotExist as e:
             return None
+
+    def set_activity(self):
+        if self.last_activity.date() != timezone.now().date():
+            self.last_activity = timezone.now()
+            self.save()
 
     @property
     def is_staff(self):

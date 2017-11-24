@@ -53,7 +53,7 @@
              {% if cd %}
                <h5>Active: Today </h5>
              {%else%}
-               <h5>Active: {{ last_login|timesince }} ago</h5>
+               <h5>Active: {{ user.last_activity|timesince }} ago</h5>
 		          {% endif %}
               {% if profile %}
                 <button id="update" data-href="{% url 'website:profile_update' %}"
@@ -214,7 +214,7 @@
               {% if cd %}
        				  <h5>Active: Today </h5>
               {%else%}
-                <h5>Active: {{ last_login|timesince }} ago</h5>
+                <h5>Active: {{ user.last_activity|timesince }} ago</h5>
               {% endif %}
               {% if profile %}
                 <button id="update" data-href="{% url 'website:profile_update' %}"

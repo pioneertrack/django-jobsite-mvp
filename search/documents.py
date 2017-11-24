@@ -51,6 +51,7 @@ class PeopleDocument(DocType):
         'is_account_disabled': fields.BooleanField(),
         'first_name': fields.StringField(),
         'last_name': fields.StringField(),
+        'last_activity': fields.DateField(attr='last_activity.date')
     })
     experience_set = fields.NestedField(properties={
         'company': fields.StringField(),
@@ -102,6 +103,7 @@ class StartupDocument(DocType):
         'is_account_disabled': fields.BooleanField(),
         'first_name': fields.StringField(),
         'last_name': fields.StringField(),
+        'last_activity': fields.DateField(attr='last_activity.date')
     })
     job_set = fields.NestedField(properties={
         'title': fields.StringField(),
@@ -147,6 +149,7 @@ class JobDocument(DocType):
         'user': fields.ObjectField(properties={
             'is_active': fields.BooleanField(),
             'is_account_disabled': fields.BooleanField(),
+            'last_activity': fields.DateField(attr='last_activity.date')
         })
     })
     get_pay_display = fields.StringField(attr='get_pay_display')

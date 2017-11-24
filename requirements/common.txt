@@ -58,3 +58,4 @@ djangorestframework==3.7.1
 django-autocomplete-light==3.2.10
 django-markup==1.2
 python-creole==1.3.1
+django-statsy==0.2.3

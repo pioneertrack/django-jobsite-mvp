@@ -54,7 +54,7 @@
               {% if cd %}
        				  <h5>Active: Today </h5>
               {%else%}
-                <h5>Active: {{ last_login|timesince }} ago</h5>
+                <h5>Active: {{ profile.user.last_activity|timesince }} ago</h5>
               {% endif %}
               {% if user.is_founder and user.is_individual %}
               <input type="hidden" id="select_profiles" value="1">
@@ -212,7 +212,7 @@
               {% if cd %}
        				  <h5>Active: Today </h5>
               {%else%}
-                <h5>Active: {{ last_login|timesince }} ago</h5>
+                <h5>Active: {{ profile.user.last_activity|timesince }} ago</h5>
               {% endif %}
               {% if user.is_founder and user.is_individual %}
               <input type="hidden" id="select_profiles" value="1">
