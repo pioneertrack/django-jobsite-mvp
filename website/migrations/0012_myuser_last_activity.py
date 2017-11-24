@@ -7,16 +7,6 @@ from django.utils import timezone
 from django.db.models import F
 
 
-def forwards_func(apps, schema_editor):
-    user = apps.get_model("website", "MyUser")
-    db_alias = schema_editor.connection.alias
-    user.objects.using(db_alias).all().update(last_activity=F('last_login'))
-
-
-def reverse_func(apps, schema_editor):
-    pass
-
-
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -24,14 +14,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL('SET CONSTRAINTS ALL IMMEDIATE',
-                          reverse_sql=migrations.RunSQL.noop),
         migrations.AddField(
             model_name='myuser',
             name='last_activity',
             field=models.DateTimeField(default=timezone.now(), null=True),
         ),
-        migrations.RunPython(forwards_func, reverse_func, atomic=True),
-        migrations.RunSQL(migrations.RunSQL.noop,
-                          reverse_sql='SET CONSTRAINTS ALL IMMEDIATE'),
     ]
