@@ -11,7 +11,6 @@ from django.utils import timezone
 import website.profile as profile
 from django.urls import reverse
 import json
-import statsy
 
 JOB_CONTEXT = {
     'p_context': [
@@ -99,8 +98,6 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
     @method_decorator(check_profiles)
     @method_decorator(vary_on_headers('User-Agent', 'X-Session-Header'))
     def get(self, request, *args, **kwargs):
-        if not request.is_ajax():
-            statsy.send(group='index', event='page_view', value=1, user=request.user, url=reverse('search:search'))
         self.page = int(kwargs.get('page', 0))
         self.category = None
         # Check for cookie from get request get category from it if exists
@@ -119,7 +116,6 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
     @method_decorator(test_mode)
     @method_decorator(check_profiles)
     def post(self, request, *args, **kwargs):
-        statsy.send(group='index', event='page_view', value=1, user=request.user, url=reverse('search:search'))
         self.page = int(kwargs.get('page', 0))
         post_data = json.dumps(dict(request.POST))
         request.session['post_search_data'] = post_data

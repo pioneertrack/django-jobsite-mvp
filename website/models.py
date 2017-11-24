@@ -67,6 +67,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_founder = models.BooleanField(verbose_name='Is Founder', default=False)
     is_account_disabled = models.BooleanField(default=False)
     test_mode = models.BooleanField(default=False)
+    last_activity = models.DateTimeField(default=timezone.now())
 
     def set_first_login(self):
         if self.first_login:

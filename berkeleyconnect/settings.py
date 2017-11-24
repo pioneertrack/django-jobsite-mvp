@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     'mailer',
     'django_elasticsearch_dsl',
     'django_markup',
-    'statsy',
 
     'landing',
     'website',
