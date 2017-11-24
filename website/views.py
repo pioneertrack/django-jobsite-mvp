@@ -31,7 +31,7 @@ from django.utils.decorators import method_decorator
 from website import forms
 from website import models
 from website import profile as prof
-from website.decorators import check_profiles, test_mode
+from website.decorators import check_profiles, test_mode, set_activity
 
 import base64, uuid
 from django.core.files.base import ContentFile
@@ -165,6 +165,7 @@ def feedback(request):
 
 @login_required(login_url='login/')
 @check_profiles
+@set_activity
 @vary_on_headers('User-Agent')
 def index(request):
     return render(request, 'new_home.html',
@@ -177,12 +178,12 @@ def index(request):
 
 @login_required
 @check_profiles
+@set_activity
 @never_cache
 def user_profile(request):
-    last_login = request.user.last_login
+    last_activity = request.user.last_activity
     current_time = timezone.now()
-    cr = current_time - last_login
-    cd = cr.total_seconds() < 86400
+    cd = current_time.date() == last_activity.date()
     experience = request.user.profile.experience_set.order_by('-end_date')
 
     # TODO: need to remember normal alg for that
@@ -194,7 +195,6 @@ def user_profile(request):
         'profile': True,
         'experience': experience,
         'reset': True,
-        'last_login': last_login,
         'positions_display': positions,
         'cd': cd,
     }))
@@ -202,13 +202,12 @@ def user_profile(request):
 
 @login_required
 @check_profiles
+@set_activity
 @never_cache
 def startup_profile(request):
-    user = get_object_or_404(models.MyUser, pk=request.user.id)
-    last_login = user.last_login
+    last_activity = request.user.last_activity
     current_time = timezone.now()
-    cr = current_time - last_login
-    cd = cr.total_seconds() < 86400
+    cd = current_time.date() == last_activity.date()
     jobs = request.user.founder.job_set.order_by('created_at')
     total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
 
@@ -221,13 +220,13 @@ def startup_profile(request):
         'jobs': jobs,
         'reset': True,
         'total_funding': total_funding.get('total'),
-        'last_login': last_login,
         'cd': cd,
     }))
 
 
 @login_required
 @user_passes_test(lambda user: user.first_login, '/', redirect_field_name=None)
+@set_activity
 @never_cache
 def profile_step(request):
     user = request.user
@@ -288,6 +287,7 @@ def profile_step(request):
 
 
 @login_required
+@set_activity
 @never_cache
 def profile_update(request):
     user = request.user
@@ -369,6 +369,7 @@ def profile_update(request):
 
 
 @login_required
+@set_activity
 @never_cache
 def startup_update(request):
     user = request.user
@@ -443,13 +444,13 @@ def startup_update(request):
 
 
 @login_required
+@set_activity
 @check_profiles
 def get_profile_view(request, id):
     profile = get_object_or_404(prof.Profile, pk=id)
-    last_login = profile.user.last_login
+    last_activity = profile.user.last_activity
     current_time = timezone.now()
-    cr = current_time - last_login
-    cd = cr.total_seconds() < 86400
+    cd = current_time.date() == last_activity.date()
     # TODO: need to remember normal alg for that
     positions = []
     for item in profile.positions:
@@ -459,20 +460,19 @@ def get_profile_view(request, id):
         'profile': profile,
         'experience': exp,
         'reset': True,
-        'last_login': last_login,
         'positions_display': positions,
         'cd': cd,
     }))
 
 
 @login_required
+@set_activity
 @test_mode
 def get_test_profile_view(request, id):
     profile = get_object_or_404(prof.Profile, pk=id)
-    last_login = profile.user.last_login
+    last_activity = profile.user.last_activity
     current_time = timezone.now()
-    cr = current_time - last_login
-    cd = cr.total_seconds() < 86400
+    cd = current_time.date() == last_activity.date()
     # TODO: need to remember normal alg for that
     positions = []
     for item in profile.positions:
@@ -482,7 +482,6 @@ def get_test_profile_view(request, id):
         'profile': profile,
         'experience': exp,
         'reset': True,
-        'last_login': last_login,
         'positions_display': positions,
         'cd': cd,
     }))
@@ -490,19 +489,18 @@ def get_test_profile_view(request, id):
 
 @login_required
 @check_profiles
+@set_activity
 def get_startup_view(request, id):
     founder = get_object_or_404(prof.Founder, pk=id)
-    last_login = founder.user.last_login
+    last_activity = founder.user.last_activity
     current_time = timezone.now()
-    cr = current_time - last_login
-    cd = cr.total_seconds() < 86400
+    cd = current_time.date() == last_activity.date()
     jobs = founder.job_set.order_by('title')
     return render(request, 'founder_info.html', merge_dicts(JOB_CONTEXT, {
         'founder': founder,
         'profile': False,
         'jobs': jobs,
         'reset': True,
-        'last_login': last_login,
         'cd': cd,
     }))
 

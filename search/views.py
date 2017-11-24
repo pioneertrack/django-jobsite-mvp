@@ -6,7 +6,7 @@ from search.documents import PeopleDocument, StartupDocument, JobDocument
 import search.documents as s_docs
 from django.utils.decorators import method_decorator
 from django.views.decorators.vary import vary_on_headers
-from website.decorators import check_profiles, test_mode
+from website.decorators import check_profiles, test_mode, set_activity
 from django.utils import timezone
 import website.profile as profile
 from django.urls import reverse
@@ -71,9 +71,6 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
     page = 0
     offset = 0
 
-    def get_request(request):
-        statsy.send()
-
     def render_to_response(self, context):
         if self.request.is_ajax():
             return self.render_to_json_response(context.get('items'))
@@ -96,6 +93,7 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
 
     @method_decorator(test_mode)
     @method_decorator(check_profiles)
+    @method_decorator(set_activity)
     @method_decorator(vary_on_headers('User-Agent', 'X-Session-Header'))
     def get(self, request, *args, **kwargs):
         self.page = int(kwargs.get('page', 0))
@@ -114,6 +112,7 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
         return self.render_to_response(self.get_context_data())
 
     @method_decorator(test_mode)
+    @method_decorator(set_activity)
     @method_decorator(check_profiles)
     def post(self, request, *args, **kwargs):
         self.page = int(kwargs.get('page', 0))
@@ -143,6 +142,10 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
         query = {
             'from': self.offset,
             'size': self.per_page,
+            'sort': [
+                {'user.last_activity': {'order': 'desc', 'missing': '_last'}},
+                '_score',
+            ],
             'query': {
                 'bool': {
                     'filter': [
@@ -227,6 +230,10 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
         query = {
             'from': self.offset,
             'size': self.per_page,
+            'sort': [
+                {'user.last_activity': {'order': 'desc', 'missing': '_last'}},
+                '_score',
+            ],
             'query': {
                 'bool': {
                     'filter': [
@@ -286,6 +293,10 @@ class SearchView(LoginRequiredMixin, JSONResponseMixin, FormView):
         query = {
             'from': self.offset,
             'size': self.per_page,
+            'sort': [
+                {'founder.user.last_activity': {'order': 'desc', 'missing': '_last'}},
+                '_score',
+            ],
             'query': {
                 'bool': {
                     'filter': [

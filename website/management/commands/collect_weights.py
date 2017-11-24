@@ -1,8 +1,8 @@
 from django.core.management.base import BaseCommand
 from django.db.models import Sum
 from django.utils import timezone
-from datetime import timedelta
-from statsy.models import *
+from datetime import timedelta, datetime
+# from statsy.models import *
 
 
 class Command(BaseCommand):
@@ -16,11 +16,11 @@ class Command(BaseCommand):
             'created_at__gte': start,
             'created_at__lt': end
         }
-        query = StatsyObject \
-            .objects \
-            .values('user') \
-            .filter(**filter_args) \
-            .annotate(value=Sum('float_value')) \
-            .order_by('user')
+        # query = StatsyObject \
+        #     .objects \
+        #     .values('user') \
+        #     .filter(**filter_args) \
+        #     .annotate(value=Sum('float_value')) \
+        #     .order_by('user')
 
         self.stdout.write(self.style.SUCCESS('Weights collected'))
