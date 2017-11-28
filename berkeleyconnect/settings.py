@@ -145,8 +145,12 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+# Connect static by this way (thanks to some fans of js)
 STATICFILES_DIRS = (
     os.path.join(os.path.dirname(__file__), '..', 'bower_components'),
+    os.path.join(os.path.dirname(__file__), '..', 'node_modules/bootstrap'),
+    os.path.join(os.path.dirname(__file__), '..', 'node_modules/popper.js'),
+    os.path.join(os.path.dirname(__file__), '..', 'node_modules/mdbootstrap'),
 )
 
 
