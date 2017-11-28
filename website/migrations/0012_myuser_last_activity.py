@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from django.db import migrations, models
 from django.utils import timezone
 from django.db.models import F
+import django.utils.timezone
 
 
 class Migration(migrations.Migration):
@@ -17,6 +18,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='myuser',
             name='last_activity',
-            field=models.DateTimeField(default=timezone.now(), null=True),
+            field=models.DateTimeField(default=django.utils.timezone.now, null=True),
         ),
     ]

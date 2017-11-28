@@ -43,7 +43,7 @@ YEAR_IN_SCHOOL_CHOICES = (
     ('SO', 'Sophomore'),
     ('JR', 'Junior'),
     ('SR', 'Senior'),
-    ('GR', 'Graduate'),
+    ('GR', 'Master\'s'),
     ('PH', 'PhD'),
     ('PD', 'Post-Doc'),
     ('AL', 'Alumni'),
