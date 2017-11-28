@@ -183,7 +183,9 @@ def index(request):
 def user_profile(request):
     last_activity = request.user.last_activity
     current_time = timezone.now()
-    cd = current_time.date() == last_activity.date()
+    cd  = False
+    if last_activity is not None:
+        cd = current_time.date() == last_activity.date()
     experience = request.user.profile.experience_set.order_by('-end_date')
 
     # TODO: need to remember normal alg for that
@@ -207,7 +209,9 @@ def user_profile(request):
 def startup_profile(request):
     last_activity = request.user.last_activity
     current_time = timezone.now()
-    cd = current_time.date() == last_activity.date()
+    cd  = False
+    if last_activity is not None:
+        cd = current_time.date() == last_activity.date()
     jobs = request.user.founder.job_set.order_by('created_at')
     total_funding = request.user.founder.funding_set.aggregate(total=Sum('raised'))
 
@@ -451,7 +455,9 @@ def get_profile_view(request, id):
     profile = get_object_or_404(prof.Profile, pk=id)
     last_activity = profile.user.last_activity
     current_time = timezone.now()
-    cd = current_time.date() == last_activity.date()
+    cd  = False
+    if last_activity is not None:
+        cd = current_time.date() == last_activity.date()
     # TODO: need to remember normal alg for that
     positions = []
     for item in profile.positions:
@@ -495,7 +501,9 @@ def get_startup_view(request, id):
     founder = get_object_or_404(prof.Founder, pk=id)
     last_activity = founder.user.last_activity
     current_time = timezone.now()
-    cd = current_time.date() == last_activity.date()
+    cd  = False
+    if last_activity is not None:
+        cd = current_time.date() == last_activity.date()
     jobs = founder.job_set.order_by('title')
     return render(request, 'founder_info.html', merge_dicts(JOB_CONTEXT, {
         'founder': founder,
