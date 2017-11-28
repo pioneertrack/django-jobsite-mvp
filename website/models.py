@@ -140,7 +140,10 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
             return None
 
     def set_activity(self):
-        if self.last_activity.date() != timezone.now().date():
+        if self.last_activity is None:
+            self.last_activity = timezone.now()
+            self.save()
+        elif self.last_activity.date() != timezone.now().date():
             self.last_activity = timezone.now()
             self.save()
 

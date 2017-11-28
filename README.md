@@ -63,3 +63,14 @@ After that apply migrations for database from you local settings
 `bower install`
 
 In the root folder for the project
+
+6. 2017/11/28 Bower support for bootstrap 4 was ended so I start to fully move assets management under npm. 
+Therefore now for normal functioning it is necessary to execute the command 
+
+`npm install`
+
+in common with
+
+`bower install`
+
+to fully setup assets environment

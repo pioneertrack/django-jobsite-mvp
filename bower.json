@@ -28,16 +28,10 @@
     "detect_swipe": "https://github.com/marcandre/detect_swipe.git#^2.1.4",
     "slidebars-fork": "https://github.com/hazarin/Slidebars.git#master",
     "jquery-old": "jquery#~1.11.3",
-    "bootstrap": "v4.0.0-beta",
-    "MDBootstrap": "^4.4.1",
     "roboto-fontface": "^0.8.0",
     "bootstrap-3": "bootstrap#3.3.7",
     "underscore": "^1.8.3",
     "waitForImages": "^2.2.0",
     "sweetalert2": "^6.11.5"
-  },
-  "resolutions": {
-    "bootstrap": "v4.0.0-beta",
-    "jquery": "~3.2.1"
   }
 }
