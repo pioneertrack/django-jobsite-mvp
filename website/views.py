@@ -283,6 +283,7 @@ def profile_step(request):
         'formDat': formDat,
         'errors': errors,
         'form': profile_form,
+        'its_step': True,
     }))
 
 
