@@ -139,7 +139,7 @@ html {
   top: 0;
   left: 0;
   width: 100%;
-  height: 70px;
+  height: 80px;
   background-color: #ffffff;
   /* Force Hardware Acceleration */
   -webkit-transform: translateZ(0);
@@ -352,10 +352,7 @@ html {
 }
 
 .cd-main-content {
-  /*background-color: #d3d3d3;*/
   min-height: 100%;
-  height: 100%;
-  /*padding-top:10vh;*/
 }
 .messages {
   padding-top: 95px;

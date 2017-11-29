@@ -7,7 +7,6 @@ from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
-from datetime import datetime
 
 
 class UserManager(BaseUserManager):
@@ -67,7 +66,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_founder = models.BooleanField(verbose_name='Is Founder', default=False)
     is_account_disabled = models.BooleanField(default=False)
     test_mode = models.BooleanField(default=False)
-    last_activity = models.DateTimeField(default=datetime.now, null=True)
+    last_activity = models.DateTimeField(default=timezone.now, null=True)
 
     def set_first_login(self):
         if self.first_login:
@@ -141,7 +140,10 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
             return None
 
     def set_activity(self):
-        if self.last_activity.date() != timezone.now().date():
+        if self.last_activity is None:
+            self.last_activity = timezone.now()
+            self.save()
+        elif self.last_activity.date() != timezone.now().date():
             self.last_activity = timezone.now()
             self.save()
 

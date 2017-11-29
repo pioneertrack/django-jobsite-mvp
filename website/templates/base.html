@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="{% static 'css/custom-css.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/profile.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/searchbar.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/base_style.css' %}" type="text/css">
     <script src="{% static 'jquery-modern/dist/jquery.min.js' %}"></script>
   {% endblock css %}
 
@@ -117,7 +117,7 @@
 
     </header> <!-- .cd-auto-hide-header -->
 
-    <main class="cd-main-content mc-padding"
+    <main class="cd-main-content mc-padding {% if its_step %}height-100{% endif %}"
         {#    {% if profile_edit %}profile-edit{% endif %} {% if not user.first_login and profile_edit %}not-first-login{% endif %}"#}
           style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}">
       {% if messages and user.is_authenticated %}
@@ -463,7 +463,7 @@
     {% endif %}
 
   </header> <!-- .cd-auto-hide-header -->
-  <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %}"
+  <main class="cd-main-content {% if not without_padding %}mc-padding{% endif %} {% if its_step %}height-100{% endif %}"
       {#    {% if profile_edit %}profile-edit{% endif %} {% if not user.first_login and profile_edit %}not-first-login{% endif %}"#}
         style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}">
 
