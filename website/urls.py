@@ -11,6 +11,7 @@ urlpatterns = [
   url(r'^startup_profile/$', views.startup_profile, name='startup_profile'),
   url(r'^profiles/(?P<id>\d+)/$', views.get_profile_view, name='get_profile_view'),
   url(r'^startups/(?P<id>\d+)/$', views.get_startup_view, name='get_startup_view'),
+  url(r'^resources', views.resources, name='resources'),
 
   url(r'^register/profile/$', views.profile_step, name="profile_step"),
 

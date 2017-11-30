@@ -1,0 +1,165 @@
+/*Common styles*/
+
+body {
+    font-family: Helvetica,sans-serif;
+    background: #000000;
+    }
+
+label {
+    margin: 0;
+    }
+a {
+    outline: none;
+    }
+
+.wrapper {
+
+    }
+
+/*Header*/
+
+.header {
+
+    }
+
+
+/*Bootstrap adjust and fixtures*/
+
+header > .navbar {
+    padding: 0 5% !important;
+    height: 80px;
+    border-bottom: 1px solid #f2f2f2;
+    /*background: #ffffff;*/
+    }
+.navbar .navbar-brand {
+    padding: 0 0 0 110px;
+    min-width: 110px;
+    width: auto;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    align-self: stretch;
+    text-transform: uppercase;
+    font-weight: bold;
+    background: url("../images/bear.png") center left no-repeat;
+    -webkit-background-size: 100% auto;
+    background-size: auto 100%;
+    }
+
+.header .navbar .nav-item {
+    font-size: 1.125rem;
+    color: #333333;
+    }
+    .header .navbar .nav-item .nav-link {
+        position: relative;
+        padding: 15px;
+        text-transform: capitalize;
+        cursor: pointer;
+        }
+    .nav-item > label:before {
+        position: absolute;
+        bottom: 15px;
+        left: 0;
+        right: 0;
+        border-bottom: 2px solid transparent;
+        content: '';
+        }
+    .nav-item > input {
+        display: none;
+        }
+    .nav-item > input:checked ~ label:before {
+        border-color: navy;
+        }
+
+.navbar-collapse {
+    /*margin: 0 -10%;*/
+    /*padding: 0 10%;*/
+    justify-content: flex-end;
+    }
+.navbar-collapse.collapsing .nav-item,
+.navbar-collapse.show .nav-item {
+    border-bottom: 1px solid #f2f2f2;
+    }
+.navbar-collapse.collapsing .nav-item > input:checked ~ label:before,
+.navbar-collapse.show .nav-item > input:checked ~ label:before {
+    border-color: transparent;
+    }
+.navbar-toggler {
+    display: flex;
+    flex-flow: column nowrap;
+    align-self: stretch;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    }
+.navbar .navbar-toggler {
+    border-left: 1px solid #f2f2f2;
+    }
+    .navbar.navbar-light .navbar-toggler-icon {
+        position: relative;
+        margin: 6px auto 14px;
+        height: 2px;
+        width: 22px;
+        background: #333;
+        background-image: none;
+        -webkit-transition: all 0.3s ease;
+        -moz-transition: all 0.3s ease;
+        -ms-transition: all 0.3s ease;
+        -o-transition: all 0.3s ease;
+        transition: all 0.3s ease;
+        }
+    .navbar.navbar-light .navbar-toggler-icon:before,
+    .navbar.navbar-light .navbar-toggler-icon:after {
+        position: absolute;
+        margin: 0;
+        left: 0;
+        height: 2px;
+        width: 22px;
+        background: #333;
+        content: '';
+        -webkit-transition: all 0.3s ease;
+        -moz-transition: all 0.3s ease;
+        -ms-transition: all 0.3s ease;
+        -o-transition: all 0.3s ease;
+        transition: all 0.3s ease;
+        }
+    .navbar.navbar-light .navbar-toggler-icon:before {
+        top: -6px;
+        }
+    .navbar.navbar-light .navbar-toggler-icon:after {
+        bottom: -6px;
+        }
+
+    .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+        background: transparent;
+        }
+    .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon:before {
+        margin: 6px 0 0;
+        -webkit-transform: rotateZ(-45deg);
+        -moz-transform: rotateZ(-45deg);
+        -ms-transform: rotateZ(-45deg);
+        -o-transform: rotateZ(-45deg);
+        transform: rotateZ(-45deg);
+        }
+    .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon:after {
+        margin: 0 0 6px;
+        -webkit-transform: rotateZ(45deg);
+        -moz-transform: rotateZ(45deg);
+        -ms-transform: rotateZ(45deg);
+        -o-transform: rotateZ(45deg);
+        transform: rotateZ(45deg);
+        }
+    
+@media (max-width: 767px) {
+    header > .navbar {
+        padding: 0 !important;
+        }
+    }
+@media (max-width: 390px) {
+    .navbar-brand {
+        font-size: 0;
+        }
+    }
+
+
