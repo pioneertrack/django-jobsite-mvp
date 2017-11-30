@@ -1,0 +1,27 @@
+{% extends 'new/base.html' %}
+{% load static from staticfiles %}
+{% load i18n %}
+
+{% block title %}
+Resource page
+{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Student Loans Guy</h3>
+                    <h5 class="card-subtitle">Idea • 1 Employee</h5>
+                </div>
+                <img src="{% static 'img/hero.jpg' %}" alt="" class="card-img">
+                <div class="card-body">
+                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad atque deserunt distinctio incidunt nemo nisi obcaecati porro quo, repudiandae sapiente!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock content %}

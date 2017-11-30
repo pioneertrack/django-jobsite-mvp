@@ -30,7 +30,8 @@
 
     <div class="wrapper">
 
-        <header class="header fixed-top">
+        <header class="header">
+{#        <header class="header fixed-top">#}
             <nav class="navbar navbar-expand-lg navbar-light bg-white">
                 <a class="navbar-brand" href="#">
                     <span>Bearfounders</span>
@@ -54,22 +55,37 @@
                             <label class="nav-link" for="searchChoice1">Members</label>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Stories</a>
+                            <a class="nav-link" href="{% url 'content:stories' %}">Stories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'content:resources' %}">Resources</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 My profile
                             </a>
                             <div class="dropdown-menu" aria-labelledby="dropdown">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <a class="dropdown-item" href="#">Something else here</a>
+                                {% if user.is_individual %}
+                                    <a class="dropdown-item" href="{% url 'website:profile' %}">My profile</a>
+                                {% endif %}
+                                {% if user.is_founder %}
+                                    <a class="dropdown-item" href="{% url 'website:startup_profile' %}">Startup
+                                        profile</a>
+                                {% endif %}
+                                <a href="{% url 'website:settings' %}">Settings</a>
+                                <a class="dropdown-item feedback" href="#">Give feedback</a>
+                                <a class="dropdown-item" href="{% url 'auth_logout' %}">Logout</a>
                             </div>
                         </li>
                     </ul>
                 </div>
             </nav>
         </header>
+        <div class="second-nav">ololo</div>
+
+    {% block content %}
+
+    {% endblock content %}
 
     </div>
 

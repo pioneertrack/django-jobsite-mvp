@@ -35,6 +35,8 @@ ALLOWED_HOSTS = ['.bearfounders.com', '54.215.142.223']
 # Application definition
 
 INSTALLED_APPS = [
+    'dal',
+    'dal_select2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

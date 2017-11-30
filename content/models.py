@@ -21,6 +21,20 @@ class Story(models.Model):
         return reverse('content:story_detail', kwargs={'slug': self.slug})
 
 
+class Resource(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    updated_at = models.DateTimeField(auto_now=True, editable=False)
+    published = models.BooleanField(default=False)
+    slug = models.SlugField(unique=True)
+    image = models.ForeignKey('Picture', null=True, blank=True)
+    title = models.CharField(max_length=256)
+    url = models.URLField(max_length=2048)
+    description = models.TextField()
+
+    def get_absolute_url(self):
+        return reverse('content:story_detail', kwargs={'slug': self.slug})
+
+
 class Picture(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)

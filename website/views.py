@@ -74,16 +74,6 @@ JOB_CONTEXT = {
 
 # Create your views here.
 @login_required(login_url='login/')
-def resources(request):
-    return render(request, 'new/resources.html',
-              merge_dicts(JOB_CONTEXT, {
-                  'posted': False,
-                  'reset': True,
-                  'without_padding': True,
-              }))
-
-
-@login_required(login_url='login/')
 def connect(request):
     if request.is_ajax():
         email_connect_template = 'email/connection.html'
