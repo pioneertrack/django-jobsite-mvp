@@ -209,4 +209,6 @@ header > * > .navbar {
         }
     }
 
-
+.navbar-nav > li input[type="checkbox"]:checked + label {
+    font-weight: bold;
+}
