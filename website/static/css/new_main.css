@@ -2,7 +2,7 @@
 
 body {
     font-family: Helvetica,sans-serif;
-    background: #000000;
+    /*background: #000000;*/
     }
 
 label {
@@ -30,11 +30,11 @@ a {
     position: -webkit-sticky;
     position: sticky;
     top: -1px;
-    z-index: 2060;
+    z-index: 21;
     margin: 0 0 40px;
     width: 100%;
     height: 80px;
-    background: green;
+    background: #25283D;
     }
 
 
@@ -87,14 +87,28 @@ header > * > .navbar {
         border-color: navy;
         }
 
+    .navbar .dropdown-menu {
+        z-index: 23;
+        }
+    .navbar .dropdown-menu a:hover {
+        /*color: #000000 !important;*/
+        background: #8F3985 !important;
+        }
+
 .navbar-collapse {
     /*margin: 0 -10%;*/
     /*padding: 0 10%;*/
     justify-content: flex-end;
+    z-index: 23;
     }
 .navbar-collapse.collapsing .nav-item,
 .navbar-collapse.show .nav-item {
     border-bottom: 1px solid #f2f2f2;
+    }
+.navbar-collapse.collapsing .navbar-nav .nav-item .nav-link:hover,
+.navbar-collapse.show .navbar-nav .nav-item .nav-link:hover {
+    background: #8F3985;
+    color: #ffffff;
     }
 .navbar-collapse.collapsing .nav-item > input:checked ~ label:before,
 .navbar-collapse.show .nav-item > input:checked ~ label:before {
@@ -104,6 +118,7 @@ header > * > .navbar {
     display: flex;
     flex-flow: column nowrap;
     align-self: stretch;
+    justify-content: center;
     text-transform: uppercase;
     font-size: 12px;
     font-weight: bold;

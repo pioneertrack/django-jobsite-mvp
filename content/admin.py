@@ -50,7 +50,7 @@ class ResourceAdmin(admin.ModelAdmin):
     list_display = ['created_at', 'updated_at', 'published', 'page_url']
     list_filter = ['created_at', 'updated_at', 'published']
     search_fields = ['title']
-    fields = ['slug', 'published', 'image', 'preview', 'title', 'description']
+    fields = ['slug', 'published', 'image', 'preview', 'title', 'url', 'description']
     readonly_fields = ['preview']
     prepopulated_fields = {"slug": ("title",)}
 
