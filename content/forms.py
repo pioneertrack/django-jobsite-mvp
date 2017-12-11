@@ -16,6 +16,7 @@ class CustomChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.title
 
+
 class ResourceForm(forms.ModelForm):
     category = CustomChoiceField(queryset=ResourceCategory.objects.all())
     image = CustomChoiceField(queryset=Picture.objects.all())

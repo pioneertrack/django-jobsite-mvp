@@ -36,8 +36,9 @@ class StoryDetailView(LoginRequiredMixin, DetailView):
 
 @method_decorator(check_profiles, 'get')
 class ResourceListView(LoginRequiredMixin, ListView):
-    model = Resource
-    queryset = Resource.objects.filter(published=True).order_by('-created_at')
+    template_name = 'content/resource_list.html'
+    def get_queryset(self):
+        return ResourceCategory.objects.filter(published=True).order_by('-created_at').all()
 
     def get_context_data(self, **kwargs):
         context = super(ResourceListView, self).get_context_data(**kwargs)

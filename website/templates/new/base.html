@@ -6,137 +6,385 @@
 <html lang="en">
 
 {% block head %}
-    <head>
-        <meta charset="UTF-8">
-        <meta charset="UTF-8">
-        <meta name="viewport"
-              content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <meta name="google-site-verification" content="nPkjkzj2J7V1MRk-0QBYC7GQnfKtWPBdCvvL0Y_qGbM"/>
-        <link rel='shortcut icon' type='image/x-icon' href='{% static 'img/favicon.ico' %}?r=1'/>
+  <head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="google-site-verification" content="nPkjkzj2J7V1MRk-0QBYC7GQnfKtWPBdCvvL0Y_qGbM"/>
+    <link rel='shortcut icon' type='image/x-icon' href='{% static 'img/favicon.ico' %}?r=1'/>
 
-        <title>{% block title %}{% endblock title %}</title>
+    <title>{% block title %}{% endblock title %}</title>
 
-        {% block css %}
-            <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
-            <link href="{% static 'dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
-            <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet"/>
-            <link href="{% static 'css/new_main.css' %}" rel="stylesheet"/>
-        {% endblock css %}
+    {% block css %}
+      <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+      <link href="{% static 'dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
+      <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet"/>
+{#      <link href="{% static 'css/perfect-scrollbar.css' %}" rel="stylesheet"/>#}
+      <link href="{% static 'css/new_main.css' %}" rel="stylesheet"/>
+      {% if is_mobile %}
+        <link rel="stylesheet" href="{% static 'slidebars-fork/dist/slidebars.min.css' %}" type="text/css">
+        <link rel="stylesheet" href="{% static 'css/base_style.css' %}" type="text/css">
+        <link rel="stylesheet" href="{% static 'css/searchbar.css' %}" type="text/css">
+        <link rel="stylesheet" href="{% static 'css/searchbar_bs4.css' %}" type="text/css">
+      {% endif %}
+    {% endblock css %}
 
-    </head>
+  </head>
 {% endblock head %}
 
 <body>
 
-<div class="wrapper">
+{% if is_mobile %}
 
-    <header class="header">
-        {#        <header class="header fixed-top">#}
-        <nav class="navbar navbar-expand-lg navbar-light bg-white">
-            <a class="navbar-brand" href="#">
-                <span>Bearfounders</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarItems"
-                    aria-controls="navbarItems" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-                Menu
-            </button>
-            <div class="collapse navbar-collapse bg-white" id="navbarItems">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <input id="searchChoice2" form="mainform" name="select-category" value="startups" type="radio">
-                        <label class="nav-link" for="searchChoice2">Startups</label>
-                    </li>
-                    <li class="nav-item">
-                        <input id="searchChoice3" form="mainform" name="select-category" value="jobs" type="radio">
-                        <label class="nav-link" for="searchChoice3">Jobs</label>
-                    </li>
-                    <li class="nav-item">
-                        <input id="searchChoice1" form="mainform" name="select-category" value="members" type="radio">
-                        <label class="nav-link" for="searchChoice1">Members</label>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'content:stories' %}">Stories</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'content:resources' %}">Resources</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="dropdown" data-toggle="dropdown"
-                           aria-haspopup="true"
-                           aria-expanded="false">
-                            My profile
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="dropdown">
-                            {% if user.is_individual %}
-                                <a class="dropdown-item" href="{% url 'website:profile' %}">My profile</a>
-                            {% endif %}
-                            {% if user.is_founder %}
-                                <a class="dropdown-item" href="{% url 'website:startup_profile' %}">Startup
-                                    profile</a>
-                            {% endif %}
-                            <a class="dropdown-item" href="{% url 'website:settings' %}">Settings</a>
-                            <a class="dropdown-item feedback" href="#">Give feedback</a>
-                            <a class="dropdown-item" href="{% url 'auth_logout' %}">Logout</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
+  <div off-canvas="id-1 left reveal" class="mobile-filters search-select">
+    <div class="mobile-filter-header">
+      <div class="filter-header">
+        <a class="toggle-id-1">Back</a>
+      </div>
+    </div>
 
-    <div class="second-nav">
+    <div class="checkboxes">
+      <div class="filter-container search-category">
+        <div class="top">
+          <div class="filter-header text-capitalize link-blue">
+            Search for
+          </div>
+          <div class="filter-header text-right current text-capitalize">
+            {% if search_category %}
+              {{ search_category }}
+            {% elif not founder %}
+              People
+            {% endif %}
+          </div>
+        </div>
 
-        <form action="">
+        <input id="people" form="mainform" type="radio" name="select-category" value="people"
+               {% if search_category == 'people' %}checked{% endif %}/>
+        <label for="people">
+          People
+          <i class="fa fa-circle-o"></i>
+          <i class="fa fa-dot-circle-o"></i>
+        </label>
+        <input id="startups" form="mainform" type="radio" name="select-category" value="startups"
+               {% if search_category == 'startups' %}checked{% endif %}/>
+        <label for="startups">
+          Startups
+          <i class="fa fa-circle-o"></i>
+          <i class="fa fa-dot-circle-o"></i>
+        </label>
+        <input id="jobs" form="mainform" type="radio" name="select-category" value="jobs"
+               {% if search_category == 'jobs' %}checked{% endif %}/>
+        <label for="jobs">
+          Jobs
+          <i class="fa fa-circle-o"></i>
+          <i class="fa fa-dot-circle-o"></i>
+        </label>
+        <a href="{% url 'content:stories' %}">Stories</a>
+        <a href="{% url 'content:resources' %}">Resources</a>
+      </div>
+    </div>
 
-            <div class="navbar navbar-expand-lg navbar-dark">
-                <div class="">
-                    <button class="navbar-toggler" type="button">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
 
-                    <div class="collapse navbar-collapse">
-                        <ul class="navbar-nav">
-                            {% for item in p_context %}
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="{{ item.0 }}" data-toggle="dropdown"
-                                       aria-haspopup="true"
-                                       aria-expanded="false">
-                                        {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
-                                    </a>
-                                    <div class="dropdown-menu" aria-labelledby="{{ item.0 }}">
-                                        {% for subitem in item.1 %}
-                                            <input type="checkbox" name="{{ item.0 }}" id="{{ subitem.0 }}"
-                                                   value="{{ subitem.0 }}">
-                                            <label class="dropdown-item" for="{{ subitem.0 }}">{{ subitem.1 }}</label>
-                                        {% endfor %}
-                                    </div>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
+  </div>
 
-                <div class="search">
-                    <input type="search" placeholder="Some text here...">
-                    <button class="search-btn">Go</button>
-                </div>
-            </div>
-
-        </form>
+  <div off-canvas="id-2 left overlay" class="mobile-filters filter-select">
+    <div class="mobile-filter-header">
+      <div class="filter-header">
+        <a class="toggle-id-2">Back</a>
+      </div>
+      <div class="filter-header">
+        Filters
+      </div>
+      <div class="filter-header">
+        <a id="reset">Reset</a>
+      </div>
 
     </div>
 
-    {% block content %}
+    <div class="checkboxes people">
+      <div class="top">
+        <div class="filter-header text-capitalize link-blue">
+          Search for
+        </div>
+        <div class="filter-header text-right current text-capitalize">
+          People
+        </div>
+      </div>
+      {% for item in p_context %}
+        <div class="filter-container">
+          <div class="filter-title-block">
+            {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
+          </div>
+          {% for subitem in item.1 %}
+            <input id="{{ subitem.0 }}_{{ item.0 }}" form="mainform" type="checkbox"
+                   value="{{ subitem.0 }}"
+                   name="{{ item.0 }}"
+                   class="text-capitalize"
+                {% if mobile_filter %}
+                  {% in_list mobile_filter item.0 as b_val %}
+                   {% if subitem.0 in b_val %}checked{% endif %}
+                {% endif %}/>
+            <label for="{{ subitem.0 }}_{{ item.0 }}"
+                {% if forloop.counter > 3 %} class="_hidden" {% endif %}
+            >
+              {{ subitem.1 }}
+              <i class="fa fa-square"></i>
+              <i class="fa fa-check-square"></i>
+            </label>
+          {% endfor %}
+          {% if item.1|length > 3 %}
+            <button class="btn btn-primary filter-show">Show all</button>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
 
-    {% endblock content %}
+    <div class="checkboxes jobs">
+      <div class="top">
+        <div class="filter-header text-capitalize link-blue">
+          Search for
+        </div>
+        <div class="filter-header text-right current text-capitalize">
+          Jobs
+        </div>
+      </div>
+      {% for item in job_context %}
+        <div class="filter-container">
+          <div class="filter-title-block">
+            {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
+          </div>
+          {% for subitem in item.1 %}
+            <input id="{{ subitem.0 }}_{{ item.0 }}_jobs" form="mainform" type="checkbox"
+                   value="{{ subitem.0 }}"
+                   name="{{ item.0 }}"
+                   class="text-capitalize"
+                {% if mobile_filter %}
+                  {% in_list mobile_filter item.0 as b_val %}
+                   {% if subitem.0 in b_val %}checked{% endif %}
+                {% endif %}/>
+            <label for="{{ subitem.0 }}_{{ item.0 }}_jobs"
+                {% if forloop.counter > 3 %} class="_hidden" {% endif %}
+            >
+              {{ subitem.1 }}
+              <i class="fa fa-square"></i>
+              <i class="fa fa-check-square"></i>
+            </label>
+          {% endfor %}
+          {% if item.1|length > 3 %}
+            <button class="btn btn-primary filter-show">Show all</button>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="checkboxes startups">
+      <div class="top">
+        <div class="filter-header text-capitalize link-blue">
+          Search for
+        </div>
+        <div class="filter-header text-right current text-capitalize">
+          Startups
+        </div>
+      </div>
+      {% for item in f_context %}
+        <div class="filter-container">
+          <div class="filter-title-block">
+            {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
+          </div>
+          {% for subitem in item.1 %}
+            <input id="{{ subitem.0 }}_{{ item.0 }}_startups" form="mainform" type="checkbox"
+                   value="{{ subitem.0 }}"
+                   name="{{ item.0 }}"
+                   class="text-capitalize"
+                {% if mobile_filter %}
+                  {% in_list mobile_filter item.0 as b_val %}
+                   {% if subitem.0 in b_val %}checked{% endif %}
+                {% endif %}/>
+            <label for="{{ subitem.0 }}_{{ item.0 }}_startups"
+                {% if forloop.counter > 3 %} class="_hidden" {% endif %}
+            >
+              {{ subitem.1 }}
+              <i class="fa fa-square"></i>
+              <i class="fa fa-check-square"></i>
+            </label>
+          {% endfor %}
+          {% if item.1|length > 3 %}
+            <button class="btn btn-primary filter-show">Show all</button>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="checkboxes bottom">
+      <div class="filter-header">
+        <button class="btn btn-primary toggle-id-1-find">Done</button>
+      </div>
+      <div class="filter-header">
+        <button form="mainform" type="submit" class="btn btn-primary toggle-id-1-find">Find</button>
+      </div>
+    </div>
+
+  </div>
+
+{% endif %}
+
+{% if is_mobile %}
+  <div canvas="container">
+{% endif %}
+
+<div class="wrapper">
+
+  <header class="header">
+    {#        <header class="header fixed-top">#}
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+      <a class="navbar-brand" href="{% url 'landing:home' %}">
+        <span>Bear founders</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarItems"
+              aria-controls="navbarItems" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        Menu
+      </button>
+      <div class="collapse navbar-collapse bg-white" id="navbarItems">
+        <ul class="navbar-nav">
+          {% if is_mobile %}
+
+            {% if user.is_individual %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'website:profile' %}">My profile</a>
+            </li>
+            {% endif %}
+            {% if user.is_founder %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'website:startup_profile' %}">Startup
+                profile</a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'website:settings' %}">Settings</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link feedback" href="#">Give feedback</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'auth_logout' %}">Logout</a>
+            </li>
+
+          {% else %}
+
+            <li class="nav-item">
+              <input id="searchChoice2" form="mainform" name="select-category" value="startups" type="radio">
+              <label class="nav-link" for="searchChoice2">Startups</label>
+            </li>
+            <li class="nav-item">
+              <input id="searchChoice3" form="mainform" name="select-category" value="jobs" type="radio">
+              <label class="nav-link" for="searchChoice3">Jobs</label>
+            </li>
+            <li class="nav-item">
+              <input id="searchChoice1" form="mainform" name="select-category" value="members" type="radio">
+              <label class="nav-link" for="searchChoice1">Members</label>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'content:stories' %}">Stories</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'content:resources' %}">Resources</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="dropdown" data-toggle="dropdown"
+                 aria-haspopup="true"
+                 aria-expanded="false">
+                My profile
+              </a>
+              <div class="dropdown-menu" aria-labelledby="dropdown">
+                {% if user.is_individual %}
+                  <a class="dropdown-item" href="{% url 'website:profile' %}">My profile</a>
+                {% endif %}
+                {% if user.is_founder %}
+                  <a class="dropdown-item" href="{% url 'website:startup_profile' %}">Startup
+                    profile</a>
+                {% endif %}
+                <a class="dropdown-item" href="{% url 'website:settings' %}">Settings</a>
+                <a class="dropdown-item feedback" href="#">Give feedback</a>
+                <a class="dropdown-item" href="{% url 'auth_logout' %}">Logout</a>
+              </div>
+            </li>
+
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <div class="second-nav">
+
+    <form action="">
+
+      <div class="navbar navbar-expand-lg navbar-dark">
+        <div class="">
+          <button class="navbar-toggler" type="button">
+            <span class="navbar-toggler-icon toggle-id-1"></span>
+          </button>
+
+          {% if not is_mobile %}
+            <div class="collapse navbar-collapse">
+              <ul class="navbar-nav">
+                {% for item in p_context %}
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="{{ item.0 }}" data-toggle="dropdown"
+                       aria-haspopup="true"
+                       aria-expanded="false">
+                      {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
+                    </a>
+                    <div class="dropdown-menu perfect-scrollbar" aria-labelledby="{{ item.0 }}">
+                      {% for subitem in item.1 %}
+                        <input type="checkbox" name="{{ item.0 }}" id="{{ subitem.0 }}"
+                               value="{{ subitem.0 }}">
+                        <label class="dropdown-item" for="{{ subitem.0 }}">{{ subitem.1 }}</label>
+                      {% endfor %}
+                    </div>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="search">
+          <input type="search" placeholder="Search by name or keywords...">
+          <button class="search-btn">Go</button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+
+  {% block content %}
+
+  {% endblock content %}
 
 </div>
 
+{% if is_mobile %}
+  </div>
+{% endif %}
+
 {% block js %}
-    <script type="text/javascript" src="{% static 'jquery/dist/jquery.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'dist/umd/popper.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'dist/js/bootstrap.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'dist/umd/popper.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'dist/js/bootstrap.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
+{#  <script type="text/javascript" src="{% static 'dist/perfect-scrollbar.min.js' %}"></script>#}
+  {% if is_mobile %}
+    <script src="{% static 'slidebars-fork/dist/slidebars.min.js' %}"></script>
+    <script src="{% static 'detect_swipe/jquery.detect_swipe.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/mobile.js' %}"></script>
+  {% else %}
+{#    <script type="text/javascript" src="{% static 'js/responsive.js' %}"></script>#}
+  {% endif %}
+
 {% endblock js %}
 
 </body>

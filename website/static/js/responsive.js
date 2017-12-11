@@ -136,4 +136,10 @@ jQuery(document).ready(function($) {
     })
   }
 
+  // const ps = new PerfectScrollbar('.perfect-scrollbar', {
+  //   wheelSpeed: 2,
+  //   wheelPropagation: true,
+  //   minScrollbarLength: 20,
+  // })
+
 });

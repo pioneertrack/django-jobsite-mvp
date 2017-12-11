@@ -26,6 +26,40 @@ Resources page
                 </div>
         </div>
     </div>
+
+  <div class="container-fluid categories">
+    {% for category in object_list %}
+      <div class="row">
+        <div class="col-12 c-title pt-4 pb-3 mb-4">
+            <div class="container c-title-inner">
+                <h2 class="text-center text-white">{{ category.title }}</h2>
+            </div>
+        </div>
+         <div class="container">
+            <div class="row">
+              {% for item in category.resource_set.all %}
+                <div class="col-sm-12 col-md-6">
+                  <div class="card mb-4">
+                    <div class="card-header">
+                      <h4 class="card-title text-center mb-0">
+                        <a class="text-white" href="{{ item.url }}">{{ item.title }}</a>
+                      </h4>
+                    </div>
+                    <img src="{{ item.image.image.url }}" alt="" class="card-img">
+                    <div class="card-body">
+                      <p class="card-text">
+                        {{ item.description }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+         </div>
+      </div>
+    {% endfor %}
+  </div>
+
     <div class="container-fluid categories">
         <div class="row">
             <div class="col-12 c-title pt-4 pb-3 mb-4">
