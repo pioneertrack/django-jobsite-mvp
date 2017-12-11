@@ -18,9 +18,12 @@ class CustomChoiceField(forms.ModelChoiceField):
 
 class ResourceForm(forms.ModelForm):
     category = CustomChoiceField(queryset=ResourceCategory.objects.all())
+    image = CustomChoiceField(queryset=Picture.objects.all())
+
     class Meta:
         model = Resource
         fields = '__all__'
-        widgets = {
-            'image': autocomplete.ModelSelect2(url='content:picture-autocomplete', attrs={'data-html': True})
-        }
+
+        # widgets = {
+        #     'image': autocomplete.ModelSelect2(url='content:picture-autocomplete', attrs={'data-html': True})
+        # }

@@ -30,6 +30,7 @@ class ResourceCategory(models.Model):
     def __unicode__(self):
         return self.title
 
+
 class Resource(models.Model):
     category = models.ForeignKey(ResourceCategory, null=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
@@ -51,3 +52,5 @@ class Picture(models.Model):
     text_id = models.CharField(max_length=256, null=True, blank=True)
     title = models.CharField(max_length=256)
     image = models.ImageField(upload_to='images/content/')
+    def __unicode__(self):
+        return self.title
