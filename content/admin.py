@@ -44,13 +44,19 @@ class PictureAdmin(admin.ModelAdmin):
         return format_html('<div class="admin preview"><img src="{url}" /></div>', url=format(obj.image.url))
 
 
+class CategoryAdmin(admin.ModelAdmin):
+    model = ResourceCategory
+    list_display = ['created_at', 'title', 'published',]
+    prepopulated_fields = {"slug": ("title",)}
+
+
 class ResourceAdmin(admin.ModelAdmin):
     model = Resource
     form = ResourceForm
     list_display = ['created_at', 'updated_at', 'published', 'page_url']
     list_filter = ['created_at', 'updated_at', 'published']
     search_fields = ['title']
-    fields = ['slug', 'published', 'image', 'preview', 'title', 'url', 'description']
+    fields = ['slug', 'published', 'category', 'image', 'preview', 'title', 'url', 'description']
     readonly_fields = ['preview']
     prepopulated_fields = {"slug": ("title",)}
 
@@ -68,6 +74,7 @@ class ResourceAdmin(admin.ModelAdmin):
     page_url.short_description = 'Resource'
 
 
-admin.site.register(Story, StoryAdmin)
 admin.site.register(Picture, PictureAdmin)
+admin.site.register(ResourceCategory, CategoryAdmin)
+admin.site.register(Story, StoryAdmin)
 admin.site.register(Resource, ResourceAdmin)

@@ -21,7 +21,17 @@ class Story(models.Model):
         return reverse('content:story_detail', kwargs={'slug': self.slug})
 
 
+class ResourceCategory(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    updated_at = models.DateTimeField(auto_now=True, editable=False)
+    published = models.BooleanField(default=False)
+    slug = models.SlugField(unique=True)
+    title = models.CharField(max_length=256)
+    def __unicode__(self):
+        return self.title
+
 class Resource(models.Model):
+    category = models.ForeignKey(ResourceCategory, null=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)
     published = models.BooleanField(default=False)

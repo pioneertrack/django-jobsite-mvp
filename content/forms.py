@@ -12,7 +12,12 @@ class StoryForm(forms.ModelForm):
         }
 
 
+class CustomChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.title
+
 class ResourceForm(forms.ModelForm):
+    category = CustomChoiceField(queryset=ResourceCategory.objects.all())
     class Meta:
         model = Resource
         fields = '__all__'
