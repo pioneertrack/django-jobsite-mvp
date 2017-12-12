@@ -20,13 +20,14 @@
       <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
       <link href="{% static 'dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
       <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet"/>
-{#      <link href="{% static 'css/perfect-scrollbar.css' %}" rel="stylesheet"/>#}
       <link href="{% static 'css/new_main.css' %}" rel="stylesheet"/>
+      <link rel="stylesheet" href="{% static 'css/searchbar.css' %}" type="text/css">
       {% if is_mobile %}
         <link rel="stylesheet" href="{% static 'slidebars-fork/dist/slidebars.min.css' %}" type="text/css">
         <link rel="stylesheet" href="{% static 'css/base_style.css' %}" type="text/css">
-        <link rel="stylesheet" href="{% static 'css/searchbar.css' %}" type="text/css">
         <link rel="stylesheet" href="{% static 'css/searchbar_bs4.css' %}" type="text/css">
+      {% else %}
+        <link href="{% static 'jquery.mCustomScrollbar.css' %}" rel="stylesheet"/>
       {% endif %}
     {% endblock css %}
 
@@ -337,7 +338,7 @@
                        aria-expanded="false">
                       {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
                     </a>
-                    <div class="dropdown-menu perfect-scrollbar" aria-labelledby="{{ item.0 }}">
+                    <div class="dropdown-menu custom-scrollbar" aria-labelledby="{{ item.0 }}">
                       {% for subitem in item.1 %}
                         <input type="checkbox" name="{{ item.0 }}" id="{{ subitem.0 }}"
                                value="{{ subitem.0 }}">
@@ -365,6 +366,8 @@
 
   {% endblock content %}
 
+  <a href="#0" class="cd-top"></a>
+
 </div>
 
 {% if is_mobile %}
@@ -376,13 +379,14 @@
   <script type="text/javascript" src="{% static 'dist/umd/popper.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'dist/js/bootstrap.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
-{#  <script type="text/javascript" src="{% static 'dist/perfect-scrollbar.min.js' %}"></script>#}
+  <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
   {% if is_mobile %}
     <script src="{% static 'slidebars-fork/dist/slidebars.min.js' %}"></script>
     <script src="{% static 'detect_swipe/jquery.detect_swipe.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/mobile.js' %}"></script>
   {% else %}
-{#    <script type="text/javascript" src="{% static 'js/responsive.js' %}"></script>#}
+    <script type="text/javascript" src="{% static 'jquery.mCustomScrollbar.concat.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/responsive4.js' %}"></script>
   {% endif %}
 
 {% endblock js %}

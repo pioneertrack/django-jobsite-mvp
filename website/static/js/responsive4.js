@@ -1,9 +1,5 @@
 jQuery(document).ready(function($) {
 
-  if (history.state === null || history.state.hasOwnProperty('search_state') === false) {
-    $('.cd-search-nav.first select.filter').niceSelect();
-  }
-
   $(document).on('mouseleave', '.tags', function(e) {
     var tags = $(this).children('.filter-container');
     var children = $(tags.children(':not(.outer)').get().reverse());
@@ -135,5 +131,10 @@ jQuery(document).ready(function($) {
         window.location.pathname = '/search/';
     })
   }
+
+  $('.second-nav .navbar-dark .dropdown-menu').mCustomScrollbar({
+    theme: 'dark-3',
+    scrollInertia: 300,
+  })
 
 });

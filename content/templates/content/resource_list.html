@@ -1,5 +1,6 @@
 {% extends 'new/base.html' %}
 {% load static from staticfiles %}
+{% load website_tags %}
 {% load i18n %}
 
 {% block title %}
@@ -48,7 +49,7 @@ Resources page
                     <img src="{{ item.image.image.url }}" alt="" class="card-img">
                     <div class="card-body">
                       <p class="card-text">
-                        {{ item.description }}
+                        {{ item.description|truncatecharsbyword:100 }}
                       </p>
                     </div>
                   </div>

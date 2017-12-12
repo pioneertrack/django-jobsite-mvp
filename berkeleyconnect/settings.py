@@ -153,6 +153,8 @@ STATICFILES_DIRS = (
     os.path.join(os.path.dirname(__file__), '..', 'node_modules/bootstrap'),
     os.path.join(os.path.dirname(__file__), '..', 'node_modules/popper.js'),
     os.path.join(os.path.dirname(__file__), '..', 'node_modules/mdbootstrap'),
+    os.path.join(os.path.dirname(__file__), '..', 'node_modules/jquery.waitforimages'),
+    os.path.join(os.path.dirname(__file__), '..', 'node_modules/malihu-custom-scrollbar-plugin'),
 )
 
 

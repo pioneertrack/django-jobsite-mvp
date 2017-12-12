@@ -1,10 +1,32 @@
 from django import template
 from django.template.base import TemplateSyntaxError, kwarg_re
-from django.template.defaulttags import URLNode
+from django.template.defaultfilters import stringfilter
 from django.utils.encoding import smart_text
 from django.utils.html import conditional_escape
+from django.utils.text import Truncator
 
 register = template.Library()
+
+
+@register.filter(is_safe=True)
+@stringfilter
+def truncatecharsbyword(value, max_length):
+    """
+    Truncates a string after a certain number of characters.
+    In case if divide word at the end of truncation removes characters till first space character from end
+
+    Argument: Number of characters to truncate after.
+    """
+    try:
+        length = int(max_length)
+    except ValueError:  # Invalid literal for int().
+        return value  # Fail silently.
+
+    if length < len(value):
+        value = value[:length+1]
+        value = value[:value.rfind(' ')] + '...'
+    return value
+
 
 
 @register.assignment_tag
