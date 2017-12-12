@@ -354,8 +354,18 @@ header > * > .navbar {
     .card img {
         border-radius: 0;
         }
-    .card-body {
-        /*white-space: pre-line;*/
+    .card-body p.card-text.full-text{
+        position: absolute;
+        display: none;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+        width: 100%;
+        min-height: 100%;
+        background-color: white;
+    }
+    .card-body:hover p.card-text.full-text {
+        display: block;
     }
 @media (max-width: 767px) {
     header > .navbar {
