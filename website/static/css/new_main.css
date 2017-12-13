@@ -352,16 +352,25 @@ header > * > .navbar {
             white-space: nowrap;
             text-overflow: ellipsis;
         }
+    .card .view.overlay.hm-white-slight {
+      height: 20rem;
+      overflow: hidden;
+    }
+    .card .view.overlay.hm-white-slight img {
+      min-width: 100%;
+      min-height: 100%;
+    }
     .card-img,
     .card img {
         border-radius: 0;
-        }
+    }
     .card-body {
         height: 3rem;
-        box-sizing: content-box;
-        overflow: hidden;
-        margin: 1rem;
+        /*box-sizing: content-box;*/
+        /*overflow: hidden;*/
+        /*margin: 1rem;*/
     }
+
     /*.card-body .card-text {*/
         /*position: absolute;*/
         /*left: 0;*/
