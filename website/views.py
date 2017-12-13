@@ -408,7 +408,7 @@ def startup_update(request):
         funding_form = FundingFormSet(request.POST, instance=founder)
         job_form = JobFormSet(request.POST, instance=founder)
         if profile_form.is_valid() and job_form.is_valid() and funding_form.is_valid():
-            founder = profile_form.save(commit=False)
+            founder = profile_form.save()
             user.set_is_founder()
 
             for k in job_form.deleted_forms:
