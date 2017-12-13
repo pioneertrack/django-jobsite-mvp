@@ -335,6 +335,8 @@ header > * > .navbar {
 
 .card {
     border-radius: 0;
+    height: 29rem;
+    overflow: hidden;
     }
     .card-header {
         background: #25283D;
@@ -354,19 +356,23 @@ header > * > .navbar {
     .card img {
         border-radius: 0;
         }
-    .card-body p.card-text.full-text{
-        position: absolute;
-        display: none;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%,-50%);
-        width: 100%;
-        min-height: 100%;
-        background-color: white;
+    .card-body {
+        height: 3rem;
+        box-sizing: content-box;
+        overflow: hidden;
+        margin: 1rem;
     }
-    .card-body:hover p.card-text.full-text {
-        display: block;
-    }
+    /*.card-body .card-text {*/
+        /*position: absolute;*/
+        /*left: 0;*/
+        /*top: 0;*/
+        /*width: 100%;*/
+        /*min-height: 100%;*/
+        /*background-color: white;*/
+    /*}*/
+    /*.card-body:hover .card-text {*/
+      /*bottom: 0;*/
+    /*}*/
 @media (max-width: 767px) {
     header > .navbar {
         padding: 0 !important;

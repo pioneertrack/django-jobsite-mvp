@@ -318,6 +318,8 @@
     </nav>
   </header>
 
+  {% block search_panel %}
+
   <div class="second-nav">
 
     <form action="">
@@ -362,9 +364,9 @@
 
   </div>
 
-  {% block content %}
+  {% endblock search_panel %}
 
-  {% endblock content %}
+  {% block content %}{% endblock content %}
 
   <a href="#0" class="cd-top"></a>
 
