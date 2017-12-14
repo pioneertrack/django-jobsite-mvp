@@ -21,14 +21,14 @@
       <link href="{% static 'dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
       <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet"/>
       <link href="{% static 'css/new_main.css' %}" rel="stylesheet"/>
-      <link rel="stylesheet" href="{% static 'css/searchbar.css' %}" type="text/css">
       {% if is_mobile %}
         <link rel="stylesheet" href="{% static 'slidebars-fork/dist/slidebars.min.css' %}" type="text/css">
         <link rel="stylesheet" href="{% static 'css/base_style.css' %}" type="text/css">
-        <link rel="stylesheet" href="{% static 'css/searchbar_bs4.css' %}" type="text/css">
       {% else %}
         <link href="{% static 'jquery.mCustomScrollbar.css' %}" rel="stylesheet"/>
       {% endif %}
+      <link rel="stylesheet" href="{% static 'css/searchbar.css' %}" type="text/css">
+        <link rel="stylesheet" href="{% static 'css/searchbar_bs4.css' %}" type="text/css">
     {% endblock css %}
 
   </head>
@@ -324,8 +324,8 @@
 
   <div class="second-nav">
 
-    <form action="">
-
+   <form  id="mainform" action="/search/" autocomplete="off" method="POST">
+      {% csrf_token %}
       <div class="navbar navbar-expand-lg navbar-dark">
         <div class="">
           <button class="navbar-toggler" type="button">
@@ -357,8 +357,8 @@
         </div>
 
         <div class="search">
-          <input type="search" placeholder="Search by name or keywords...">
-          <button class="search-btn">Go</button>
+          <input type="search" placeholder="Search by name or keywords..." name="query" placeholder="Search... ">
+          <button class="search-btn" id="searchbutton" type="submit">Go</button>
         </div>
       </div>
 
@@ -392,7 +392,7 @@
     <script type="text/javascript" src="{% static 'jquery.mCustomScrollbar.concat.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/responsive4.js' %}"></script>
   {% endif %}
-
+  <script type="text/javascript" src="{% static 'js/search.js' %}"></script>
 {% endblock js %}
 
 </body>

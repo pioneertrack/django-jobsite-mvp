@@ -236,16 +236,23 @@ $(function () {
     $('.message').fadeOut('slow')
   }, 3500)
 
-  $('.smooth-scroll a[href*="#"]:not([href="#"])').click(function () {
+  $('.smooth-scroll a[href*="#"]:not([href="#"])').click(function (e) {
     if (location.pathname.replace(/^\//, '') ==
       this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
       var target = $(this.hash)
       target = target.length ? target : $('[name=' + this.hash.slice(1) + ']')
       if (target.length) {
-        $('html,body').animate({
-          scrollTop: target.offset().top,
-        }, 1000)
-        return false
+        if (navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
+          var to = target.offset().top - $('.second-nav').height()
+          $('html, body').stop().animate({
+            scrollTop: target.offset().top,
+          }, 1000)
+        } else {
+          $('html,body').stop().animate({
+            scrollTop: target.offset().top,
+          }, 1000)
+          return false
+        }
       }
     }
   })
