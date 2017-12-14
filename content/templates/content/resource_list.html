@@ -20,9 +20,9 @@
 {#  {% endfor %}#}
 {#{% endblock body_start %}#}
 
-{% if not is_mobile %}
-  {% block search_panel %}{% endblock search_panel %}
-{% endif %}
+{% block search_panel %}
+  {% if is_mobile %}{{ block.super }}{% endif %}
+{% endblock search_panel %}
 
 {% block content %}
   <div class="container-fluid page-header">
