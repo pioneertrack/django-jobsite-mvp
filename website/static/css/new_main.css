@@ -117,9 +117,44 @@ a {
 
 .f-moto {
     position: relative;
+    padding-top: 0!important;
     z-index: 5;
     width: 100%;
     overflow: hidden;
+    }
+    .f-moto .navbar {
+      /*position: absolute;*/
+      /*top: 0;*/
+      box-shadow: none;
+      z-index: 7;
+      /*left: 50%;*/
+      /*transform: translateX(-50%);*/
+    }
+    .f-moto .navbar-nav .nav-item {
+      font-weight: 300;
+      text-transform: capitalize;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      transition: border 300ms ease-in-out;
+      font-size: 1.125rem;
+    }
+    .f-moto .navbar-nav .nav-item .nav-link {
+      color: #cd7172;
+    }
+    .f-moto .navbar-nav .nav-item:nth-child(3n) .nav-link {
+      color: #71cd9e;
+    }
+    .f-moto .navbar-nav .nav-item:nth-child(3n+1) .nav-link {
+      color: #002a4e;
+    }
+    .f-moto .navbar-nav .nav-item:hover {
+      border-color: #cd7172;
+    }
+    .f-moto .navbar-nav .nav-item:nth-child(3n):hover {
+      border-color: #71cd9e;
+    }
+    .f-moto .navbar-nav .nav-item:nth-child(3n+1):hover {
+      border-color: #002a4e;
     }
     /*.f-moto img {*/
         /*position: absolute;*/
@@ -335,7 +370,7 @@ header > * > .navbar {
 
 .card {
     border-radius: 0;
-    height: 29rem;
+    height: 35rem;
     overflow: hidden;
     }
     .card-header {
@@ -357,47 +392,36 @@ header > * > .navbar {
       overflow: hidden;
     }
     .card .view.overlay.hm-white-slight img {
-      min-width: 100%;
       min-height: 100%;
+      min-width: 100%;
+      object-fit: cover;
     }
     .card-img,
     .card img {
         border-radius: 0;
     }
     .card-body {
-        height: 3rem;
-        /*box-sizing: content-box;*/
-        /*overflow: hidden;*/
-        /*margin: 1rem;*/
+        height: 9rem;
     }
-
-    /*.card-body .card-text {*/
-        /*position: absolute;*/
-        /*left: 0;*/
-        /*top: 0;*/
-        /*width: 100%;*/
-        /*min-height: 100%;*/
-        /*background-color: white;*/
-    /*}*/
-    /*.card-body:hover .card-text {*/
-      /*bottom: 0;*/
-    /*}*/
 @media (max-width: 767px) {
-    header > .navbar {
-        padding: 0 !important;
-        }
-    .second-nav .navbar {
-        padding: 0 !important;
-        }
-    .search input[type="search"] {
-        padding-left: 1rem;
-        }
-    }
+  header > .navbar {
+      padding: 0 !important;
+      }
+  .second-nav .navbar {
+      padding: 0 !important;
+      }
+  .search input[type="search"] {
+      padding-left: 1rem;
+      }
+}
 @media (max-width: 390px) {
-    .navbar-brand {
-        font-size: 0;
-        }
-    }
+  .navbar-brand {
+      font-size: 0;
+      }
+  .card-body {
+      height: auto;
+  }
+}
 .dropdown-menu .mCSB_inside > .mCSB_container {
   margin-right: 16px;
 }

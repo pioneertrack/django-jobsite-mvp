@@ -27,6 +27,7 @@ class ResourceCategory(models.Model):
     published = models.BooleanField(default=False)
     slug = models.SlugField(unique=True)
     title = models.CharField(max_length=256)
+
     def __unicode__(self):
         return self.title
 
@@ -40,7 +41,7 @@ class Resource(models.Model):
     image = models.ForeignKey('Picture', null=True, blank=True)
     title = models.CharField(max_length=256)
     url = models.URLField(max_length=2048)
-    description = models.TextField()
+    description = models.TextField(max_length=400)
 
     def get_absolute_url(self):
         return reverse('content:story_detail', kwargs={'slug': self.slug})
@@ -52,5 +53,6 @@ class Picture(models.Model):
     text_id = models.CharField(max_length=256, null=True, blank=True)
     title = models.CharField(max_length=256)
     image = models.ImageField(upload_to='images/content/')
+
     def __unicode__(self):
         return self.title

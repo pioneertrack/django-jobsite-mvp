@@ -52,10 +52,12 @@ $(function () {
     }
   })
 
-  $('.first div.nice-select ul.list').mCustomScrollbar({
-    theme: '3d-thick-dark',
-    scrollInertia: 300,
-  })
+  if (typeof $().mCustomScrollbar !== 'undefined') {
+    $('.first div.nice-select ul.list').mCustomScrollbar({
+      theme: '3d-thick-dark',
+      scrollInertia: 300,
+    })
+  }
 
   // browser window scroll (in pixels) after which the "back to top" link is shown
   var offset = 300,
@@ -233,5 +235,19 @@ $(function () {
   setTimeout(function () {
     $('.message').fadeOut('slow')
   }, 3500)
+
+  $('.smooth-scroll a[href*="#"]:not([href="#"])').click(function () {
+    if (location.pathname.replace(/^\//, '') ==
+      this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+      var target = $(this.hash)
+      target = target.length ? target : $('[name=' + this.hash.slice(1) + ']')
+      if (target.length) {
+        $('html, body').animate({
+          scrollTop: target.offset().top,
+        }, 1000)
+        return false
+      }
+    }
+  })
 
 })
