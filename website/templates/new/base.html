@@ -27,8 +27,9 @@
       {% else %}
         <link href="{% static 'jquery.mCustomScrollbar.css' %}" rel="stylesheet"/>
       {% endif %}
+      <link rel="stylesheet" href="{% static 'sweetalert2/dist/sweetalert2.min.css' %}" type="text/css">
       <link rel="stylesheet" href="{% static 'css/searchbar.css' %}" type="text/css">
-        <link rel="stylesheet" href="{% static 'css/searchbar_bs4.css' %}" type="text/css">
+      <link rel="stylesheet" href="{% static 'css/searchbar_bs4.css' %}" type="text/css">
     {% endblock css %}
 
   </head>
@@ -285,7 +286,7 @@
               <label class="nav-link" for="searchChoice3">Jobs</label>
             </li>
             <li class="nav-item">
-              <input id="searchChoice1" form="mainform" name="select-category" value="members" type="radio">
+              <input id="searchChoice1" form="mainform" name="select-category" value="people" type="radio">
               <label class="nav-link" for="searchChoice1">Members</label>
             </li>
             <li class="nav-item">
@@ -384,6 +385,7 @@
   <script type="text/javascript" src="{% static 'dist/js/bootstrap.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+  <script src="{% static 'sweetalert2/dist/sweetalert2.min.js' %}"></script>
   {% if is_mobile %}
     <script src="{% static 'slidebars-fork/dist/slidebars.min.js' %}"></script>
     <script src="{% static 'detect_swipe/jquery.detect_swipe.js' %}"></script>
