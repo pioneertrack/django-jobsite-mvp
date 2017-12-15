@@ -758,12 +758,18 @@
     padding: 5px 40px 5px 20px;
     display: block;
     transition: all 0.3s ease;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: 700;
   }
   .checkboxes .filter-container.search-category label {
     position: relative;
     padding: 5px 40px 5px 20px;
     display: block;
     transition: all 0.1s ease;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: 700;
   }
   .checkboxes .filter-container label._hidden {
     overflow: hidden;

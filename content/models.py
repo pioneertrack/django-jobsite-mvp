@@ -21,9 +21,38 @@ class Story(models.Model):
         return reverse('content:story_detail', kwargs={'slug': self.slug})
 
 
+class ResourceCategory(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    updated_at = models.DateTimeField(auto_now=True, editable=False)
+    published = models.BooleanField(default=False)
+    slug = models.SlugField(unique=True)
+    title = models.CharField(max_length=256)
+
+    def __unicode__(self):
+        return self.title
+
+
+class Resource(models.Model):
+    category = models.ForeignKey(ResourceCategory, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    updated_at = models.DateTimeField(auto_now=True, editable=False)
+    published = models.BooleanField(default=False)
+    slug = models.SlugField(unique=True)
+    image = models.ForeignKey('Picture', null=True, blank=True)
+    title = models.CharField(max_length=256)
+    url = models.URLField(max_length=2048)
+    description = models.TextField(max_length=400)
+
+    def get_absolute_url(self):
+        return reverse('content:story_detail', kwargs={'slug': self.slug})
+
+
 class Picture(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)
     text_id = models.CharField(max_length=256, null=True, blank=True)
     title = models.CharField(max_length=256)
     image = models.ImageField(upload_to='images/content/')
+
+    def __unicode__(self):
+        return self.title

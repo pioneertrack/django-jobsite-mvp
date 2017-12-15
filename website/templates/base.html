@@ -34,6 +34,7 @@
   <title>{% block title %}{% endblock %}</title>
 
 </head>
+
 <body {% if not user.is_authenticated or not profile_edit %}style="height: 100%"{% endif %}>
 
 {% if is_mobile %}
@@ -184,6 +185,7 @@
           <i class="fa fa-dot-circle-o"></i>
         </label>
         <a href="{% url 'content:stories' %}">Stories</a>
+        <a href="{% url 'content:templates' %}">Templates</a>
       </div>
     </div>
 
@@ -366,6 +368,9 @@
                   </li>
                   <li>
                     <a href="{% url 'content:stories' %}">Stories</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'content:templates' %}">Templates</a>
                   </li>
                   <li>
                     <div id="profiles_holder">

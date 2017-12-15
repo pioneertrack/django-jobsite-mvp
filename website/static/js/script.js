@@ -52,10 +52,12 @@ $(function () {
     }
   })
 
-  $('.first div.nice-select ul.list').mCustomScrollbar({
-    theme: '3d-thick-dark',
-    scrollInertia: 300,
-  })
+  if (typeof $().mCustomScrollbar !== 'undefined') {
+    $('.first div.nice-select ul.list').mCustomScrollbar({
+      theme: '3d-thick-dark',
+      scrollInertia: 300,
+    })
+  }
 
   // browser window scroll (in pixels) after which the "back to top" link is shown
   var offset = 300,
@@ -78,28 +80,6 @@ $(function () {
       }, scroll_top_duration,
     )
   })
-
-  if (!Modernizr.input.placeholder) {
-    $('[placeholder]').focus(function () {
-      var input = $(this)
-      if (input.val() == input.attr('placeholder')) {
-        input.val('')
-      }
-    }).blur(function () {
-      var input = $(this)
-      if (input.val() == '' || input.val() == input.attr('placeholder')) {
-        input.val(input.attr('placeholder'))
-      }
-    }).blur()
-    $('[placeholder]').parents('form').submit(function () {
-      $(this).find('[placeholder]').each(function () {
-        var input = $(this)
-        if (input.val() == input.attr('placeholder')) {
-          input.val('')
-        }
-      })
-    })
-  }
 
   $.ajaxSetup({
        beforeSend: function(xhr, settings) {
@@ -255,5 +235,26 @@ $(function () {
   setTimeout(function () {
     $('.message').fadeOut('slow')
   }, 3500)
+
+  $('.smooth-scroll a[href*="#"]:not([href="#"])').click(function (e) {
+    if (location.pathname.replace(/^\//, '') ==
+      this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+      var target = $(this.hash)
+      target = target.length ? target : $('[name=' + this.hash.slice(1) + ']')
+      if (target.length) {
+        if (navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
+          var to = target.offset().top - $('.second-nav').height()
+          $('html, body').stop().animate({
+            scrollTop: target.offset().top,
+          }, 1000)
+        } else {
+          $('html,body').stop().animate({
+            scrollTop: target.offset().top,
+          }, 1000)
+          return false
+        }
+      }
+    }
+  })
 
 })

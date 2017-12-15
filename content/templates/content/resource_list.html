@@ -1,0 +1,91 @@
+{% extends 'new/base.html' %}
+{% load static from staticfiles %}
+{% load website_tags %}
+{% load i18n %}
+
+{% block title %}
+  Resources page
+{% endblock %}
+
+{#{% block body_start %}#}
+{#  <style type="text/css">#}
+{#  {% for category in object_list %}#}
+{#    a[id="category-{{ category.id }}"]:target#}
+{##}
+{#  {% endfor %}#}
+{#  </style>#}
+{##}
+{#  {% for category in object_list %}#}
+{#    <a id="category-{{ category.id }}"></a>#}
+{#  {% endfor %}#}
+{#{% endblock body_start %}#}
+
+{% block search_panel %}
+  {% if is_mobile %}{{ block.super }}{% endif %}
+{% endblock search_panel %}
+
+{% block content %}
+  <div class="container-fluid page-header">
+    <div class="row">
+      <div class="f-moto pb-5 pt-5">
+        <div class="f-moto-shader"></div>
+        <nav class="navbar navbar-expand-sm">
+          <ul class="navbar-nav mx-auto smooth-scroll">
+            {% for category in object_list %}
+              <li class="nav-item text-center">
+                <a class="nav-link" href="#category-{{ category.id }}">{{ category.title }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </nav>
+        <div class="f-moto-layout pb-5 pt-5">
+          <div class="container">
+            <div class="row">
+              <div class="col-12">
+                <h1 class="f-moto-title mb-4 text-center">Startup Templates</h1>
+                <h3 class="f-moto-subtitle text-center">Pitch Deck, Contract, NDA templates & more for your startup needs!</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid categories">
+    {% for category in object_list %}
+      <div class="row">
+{#        <a name="category-{{ category.id }}" class="hidden-sm"></a>#}
+        <div id="category-{{ category.id }}" class="col-12 c-title pt-4 pb-3 mb-4">
+          <div class="container c-title-inner">
+            <h2 class="text-center text-white">{{ category.title }}</h2>
+          </div>
+        </div>
+        <div class="container">
+          <div class="row">
+            {% for item in category.resource_set.all %}
+              <div class="col-sm-12 col-md-6">
+                <div class="card mb-4">
+                  <div class="card-header">
+                    <h4 class="card-title text-center mb-0">
+                      <a class="text-white" href="{{ item.url }}">{{ item.title }}</a>
+                    </h4>
+                  </div>
+                  <div class="view overlay hm-white-slight">
+                    <img src="{{ item.image.image.url }}" alt="{{ item.image.title }}" class="card-img">
+                  </div>
+                  <div class="card-body">
+                    <p class="card-text">
+                      {{ item.description }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+{% endblock content %}

@@ -1,0 +1,28 @@
+.checkboxes .top {
+  font-size: 1.2rem;
+}
+.mobile-filter-header {
+  font-size: 1.2rem;
+}
+.filter-title-block {
+  font-size: 1.2rem;
+}
+.checkboxes .filter-container.search-category label {
+  font-size: 0.9rem;
+}
+.checkboxes .filter-container.search-category a {
+  font-size: 0.9rem;
+}
+.checkboxes .filter-container label {
+  font-size: 0.9rem;
+}
+.mobile-filter-header a:not([href]):not([tabindex]){
+  color: #337ab7;
+}
+.checkboxes .filter-container .btn, .checkboxes .filter-header .btn {
+  padding: 6px 12px;
+  font-weight: 400;
+  border-radius: 4px;
+  text-transform: none;
+  font-size: 0.9rem;
+}
