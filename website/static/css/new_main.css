@@ -370,7 +370,7 @@ header > * > .navbar {
 
 .card {
     border-radius: 0;
-    height: 35rem;
+    height: 32rem;
     overflow: hidden;
     }
     .card-header {
@@ -418,6 +418,13 @@ header > * > .navbar {
   .navbar-brand {
       font-size: 0;
       }
+  .card {
+    height: auto;
+  }
+  .card .view.overlay.hm-white-slight {
+    height: 12rem;
+    overflow: hidden;
+  }
   .card-body {
       height: auto;
   }
