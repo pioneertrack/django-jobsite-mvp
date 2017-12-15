@@ -373,6 +373,9 @@ header > * > .navbar {
     height: 32rem;
     overflow: hidden;
     }
+.card:hover {
+    box-shadow: 0 6px 15px 0 rgba(0,0,0,.30), 0 6px 30px 0 rgba(0,0,0,.30);
+    }
     .card-header {
         background: #25283D;
         }
@@ -381,7 +384,7 @@ header > * > .navbar {
     .card-header:nth-child(n) {
         border-radius: 0;
         }
-        .card-title > a {
+        .card-title {
             display: block;
             overflow: hidden;
             white-space: nowrap;
@@ -390,6 +393,7 @@ header > * > .navbar {
     .card .view.overlay.hm-white-slight {
       height: 20rem;
       overflow: hidden;
+      cursor: pointer;
     }
     .card .view.overlay.hm-white-slight img {
       min-height: 100%;
