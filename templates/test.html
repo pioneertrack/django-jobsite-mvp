@@ -1,0 +1,14 @@
+{% extends 'new/base.html' %}
+{% load static from staticfiles %}
+{% load i18n %}
+
+{% block title %}
+{% trans "Page not found" %}
+{% endblock %}
+
+{% block content %}
+  <div class="content">
+    404 not found
+    <a href="{% static 'landig:home' %}">Go home</a>
+  </div>
+{% endblock content %}

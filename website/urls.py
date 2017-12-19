@@ -25,5 +25,5 @@ urlpatterns = [
   # Test views to fix image thumbnailing issue
   url(r'^profiles/test/(?P<id>\d+)/$', views.get_test_profile_view, name='get_test_profile_view'),
 
-  # url(r'^test/mail', views.test_mail, name='test_mail'),
+  url(r'^test', views.test, name='test'),
 ]

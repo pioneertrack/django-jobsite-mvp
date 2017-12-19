@@ -436,3 +436,20 @@ header > * > .navbar {
 .dropdown-menu .mCSB_inside > .mCSB_container {
   margin-right: 16px;
 }
+
+.wrapper {
+    -webkit-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+    min-height: 100vh;
+    position: relative;
+    padding-bottom: 7rem;
+}
+
+.footer {
+    /*border-top: navy 1px outset;*/
+    position: absolute;
+    width: 100%;
+    min-height: 7rem;
+    bottom: 0;
+}
