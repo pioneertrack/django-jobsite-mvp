@@ -565,3 +565,6 @@ footer .copyright {
   font-size: 3rem;
   text-transform: capitalize;
 }
+.error-rise .link:hover {
+  text-shadow: 0px 0px 13px black;
+}
