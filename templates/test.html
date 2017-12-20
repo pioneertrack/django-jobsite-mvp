@@ -6,9 +6,22 @@
 {% trans "Page not found" %}
 {% endblock %}
 
+{% block search_panel %}
+  {% if is_mobile %}{{ block.super }}{% endif %}
+{% endblock search_panel %}
+
 {% block content %}
-  <div class="content">
-    404 not found
-    <a href="{% static 'landig:home' %}">Go home</a>
+  <div class="jumbotron jumbotron-fluid error-rise">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12  text-center" >
+          <h1 class="error-code">404</h1>
+          <div class="col-lg error-message">
+            Page not found
+          </div>
+          <a class="link" href="{% url 'landing:home' %}">home</a>
+        </div>
+      </div>
+    </div>
   </div>
 {% endblock content %}

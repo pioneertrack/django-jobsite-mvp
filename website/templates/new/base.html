@@ -240,7 +240,6 @@
 <div class="wrapper">
 
   <header class="header">
-    {#        <header class="header fixed-top">#}
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
       <a class="navbar-brand" href="{% url 'landing:home' %}">
         <span>Bear founders</span>
@@ -371,17 +370,31 @@
 
   {% block content %}{% endblock content %}
 
+  <a href="#0" class="cd-top"></a>
+
   {% block footer %}
-    <footer class="footer">
-      <div class="container">
-        Copyright Bear Founders &copy;
+    <footer class="footer align-items-center">
+      <div class="container align-items-center h-100">
+        <nav class="navbar navbar-expand navbar-light bg-white h-100 align-middle">
+          <a class="navbar-brand" href="{% url 'landing:home' %}">
+            <span>Bear founders&nbsp;</span>
+            <span class="copyright">
+          <i class="fa fa-copyright" aria-hidden="true"></i>&nbsp;2017
+          </span>
+          </a>
+          <ul class="navbar-nav ml-auto align-middle">
+            <span class="navbar-text align-middle">Our socials:</span>
+            <li class="nav-item">
+              <a class="nav-link" href="https://www.facebook.com/Bearfounders/"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </footer>
   {% endblock footer %}
 
-  <a href="#0" class="cd-top"></a>
-
 </div>
+
 
 {% if is_mobile %}
   </div>
