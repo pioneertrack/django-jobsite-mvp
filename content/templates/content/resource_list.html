@@ -25,6 +25,7 @@
 {% endblock search_panel %}
 
 {% block content %}
+
   <div class="container-fluid page-header">
     <div class="row">
       <div class="f-moto pb-5 pt-5">
@@ -55,7 +56,6 @@
   <div class="container-fluid categories">
     {% for category in object_list %}
       <div class="row">
-{#        <a name="category-{{ category.id }}" class="hidden-sm"></a>#}
         <div id="category-{{ category.id }}" class="col-12 c-title pt-4 pb-3 mb-4">
           <div class="container c-title-inner">
             <h2 class="text-center text-white">{{ category.title }}</h2>
