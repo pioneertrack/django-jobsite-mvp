@@ -515,25 +515,6 @@ footer .copyright {
   }
 }
 
-@media (max-width: 390px) {
-  .navbar-brand {
-    font-size: 0;
-  }
-  
-  .card {
-    height: auto;
-  }
-  
-  .card .view.overlay.hm-white-slight {
-    height: 12rem;
-    overflow: hidden;
-  }
-  
-  .card-body {
-    height: auto;
-  }
-}
-
 .dropdown-menu .mCSB_inside > .mCSB_container {
   margin-right: 16px;
 }
@@ -547,24 +528,81 @@ footer .copyright {
   box-shadow: none;
   padding: 1rem;
 }
+.error-rise .first {
+  padding-top: 5rem;
+  min-height: 50%;
+}
 .error-rise .error-code {
-  font-size: 20rem;
-  line-height: 20rem;
+  font-size: 10rem;
+  line-height: 10rem;
   background: -webkit-linear-gradient(#333, #eee);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 .error-rise .error-message {
-  font-size: 5rem;
+  font-size: 3rem;
   background: -webkit-linear-gradient(#eee, #333);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 .error-rise .link {
-  color: #8F3985;
+  background: -webkit-linear-gradient(#eee, #8F3985);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   font-size: 3rem;
   text-transform: capitalize;
 }
 .error-rise .link:hover {
-  text-shadow: 0px 0px 13px black;
+  color: #8F3985;
+  background: none;
+  text-shadow: 0px 0px 10px black;
+  -webkit-text-fill-color: #8F3985;
+}
+@media (max-width: 768px) {
+  .navbar-brand {
+    font-size: 0;
+  }
+  .navbar-brand .copyright{
+    font-size: 1.25rem;
+  }
+  .error-rise .error-code {
+    font-size: 7rem;
+    line-height: 7rem;
+  }
+  .error-rise .link, .error-rise .error-message {
+    font-size: 2rem;
+  }
+}
+@media (max-width: 540px) {
+  .navbar-brand {
+    font-size: 0;
+  }
+  .navbar-brand .copyright{
+    font-size: 1.25rem;
+  }
+}
+@media (max-width: 390px) {
+  .navbar-brand {
+    font-size: 0;
+  }
+  .navbar-brand .copyright{
+    font-size: 0;
+  }
+  .card {
+    height: auto;
+  }
+  
+  .card .view.overlay.hm-white-slight {
+    height: 12rem;
+    overflow: hidden;
+  }
+  
+  .card-body {
+    height: auto;
+  }
+}
+@media (max-width: 320px) {
+  footer .navbar-light .navbar-text {
+    font-size: 0;
+  }
 }

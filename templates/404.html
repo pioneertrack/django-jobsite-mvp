@@ -13,12 +13,14 @@
 {% block content %}
   <div class="jumbotron jumbotron-fluid error-rise">
     <div class="container">
-      <div class="row">
-        <div class="col-md-12  text-center" >
+      <div class="row text-center">
+        <div class="col-md-12">
           <h1 class="error-code">404</h1>
-          <div class="col-lg error-message">
-            Page not found
-          </div>
+        </div>
+        <div class="col-md-12 error-message">
+          Page not found
+        </div>
+        <div class="col-md-12">
           <a class="link" href="{% url 'landing:home' %}">home</a>
         </div>
       </div>

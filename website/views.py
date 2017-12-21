@@ -634,5 +634,17 @@ def test_mail(request):
     return HttpResponseRedirect('/')
 
 
+def handler404(request):
+    return render(request, '404.html', JOB_CONTEXT)
+
+
+def handler500(request):
+    return render(request, '500.html', JOB_CONTEXT)
+
+
+def handler400(request):
+    return render(request, '400.html', JOB_CONTEXT)
+
+
 def test(request):
-    return render(request, 'test.html')
+    return render(request, 'test.html', JOB_CONTEXT)
