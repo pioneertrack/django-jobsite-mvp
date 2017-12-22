@@ -35,7 +35,8 @@
 
 </head>
 
-<body {% if not user.is_authenticated or not profile_edit %}style="height: 100%"{% endif %}>
+<body>
+{#<body {% if not user.is_authenticated or not profile_edit %}style="height: 100%"{% endif %}>#}
 
 {% if is_mobile %}
   <div canvas="container">
@@ -138,6 +139,31 @@
     </main> <!-- .cd-main-content -->
 
     <a href="#0" class="cd-top"></a>
+
+    {% block mobile_footer %}
+      <footer class="footer align-items-center">
+        <div class="container align-items-center h-100">
+          <nav class="navbar navbar-expand navbar-light bg-white h-100 align-middle">
+            <a class="navbar-brand" href="{% url 'landing:home' %}">
+              <span>Bear founders&nbsp;</span>
+              <span class="copyright">
+            <i class="fa fa-copyright" aria-hidden="true"></i>&nbsp;2017
+            </span>
+            </a>
+            <ul class="navbar-nav navbar-right">
+              <li class="nav-item">
+                <span class="navbar-text align-middle">Social media:</span>
+              </li>
+              <li class="nav-item">
+                <span class="navbar-text">
+                  <a class="nav-link" href="https://www.facebook.com/Bearfounders/"  target="_blank"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+                </span>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </footer>
+    {% endblock mobile_footer %}
 
   </div>
 
@@ -502,9 +528,13 @@
             </span>
             </a>
             <ul class="navbar-nav navbar-right">
-              <span class="navbar-text align-middle">Social media:</span>
               <li class="nav-item">
-                <a class="nav-link" href="https://www.facebook.com/Bearfounders/"  target="_blank"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+                <span class="navbar-text align-middle">Social media:</span>
+              </li>
+              <li class="nav-item">
+                <span class="navbar-text">
+                  <a class="nav-link" href="https://www.facebook.com/Bearfounders/"  target="_blank"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+                </span>
               </li>
             </ul>
           </nav>

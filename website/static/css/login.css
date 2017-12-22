@@ -352,7 +352,7 @@ html {
 }
 
 .cd-main-content {
-  min-height: 100%;
+  /*min-height: 100%;*/
 }
 .messages {
   padding-top: 95px;
@@ -472,6 +472,9 @@ html {
   padding-top: 0;
   padding-bottom: 0;
   height: 80px;
+}
+.navbar-nav>li>span {
+  line-height: 78px;
 }
 .navbar-brand {
   background-image: url('../favicon/logo.png');
