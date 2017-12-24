@@ -40,130 +40,134 @@
 
 {% if is_mobile %}
   <div canvas="container">
-    <header class="cd-auto-hide-header">
-      <div class="logo"><a href="/"><img src="{% static 'favicon/logo.png' %}"/></a></div>
-      <nav class="cd-primary-nav">
-        {% if user.is_authenticated %}
-          <a href="#cd-navigation" class="nav-trigger">
+    <div class="wrapper">
+
+      <header class="cd-auto-hide-header">
+        <div class="logo"><a href="/"><img src="{% static 'favicon/logo.png' %}"/></a></div>
+        <nav class="cd-primary-nav">
+          {% if user.is_authenticated %}
+            <a href="#cd-navigation" class="nav-trigger">
                       <span>
                         <em aria-hidden="true"></em>
                         Menu
                       </span>
-          </a><!-- .nav-trigger -->
-          <ul id="cd-navigation">
-            {% if not user.first_login %}
-              {% if user.is_individual %}
-                <li>
-                  <a href="{% url 'website:profile' %}">
-                    My Profile
-                  </a>
-                </li>
+            </a><!-- .nav-trigger -->
+            <ul id="cd-navigation">
+              {% if not user.first_login %}
+                {% if user.is_individual %}
+                  <li>
+                    <a href="{% url 'website:profile' %}">
+                      My Profile
+                    </a>
+                  </li>
+                {% endif %}
+                {% if user.is_founder %}
+                  <li>
+                    <a href="{% url 'website:startup_profile' %}">
+                      {% if user.is_individual %}
+                        Startup Profile
+                      {% else %}
+                        My profile
+                      {% endif %}
+                    </a>
+                  </li>
+                {% endif %}
+                <li><a href="{% url 'website:settings' %}">Settings</a></li>
+                <li><a href="#" class="feedback text-capitalize">Send feedback</a></li>
               {% endif %}
-              {% if user.is_founder %}
-                <li>
-                  <a href="{% url 'website:startup_profile' %}">
-                    {% if user.is_individual %}
-                      Startup Profile
-                    {% else %}
-                      My profile
-                    {% endif %}
-                  </a>
-                </li>
+              <li><a href="/logout/">Logout</a></li>
+            </ul>
+          {% elif not user.is_authenticated %}
+            <div class="unauth-nav">
+              {% if request.path != '/register/' %}
+                <button type="button" class="btn btn-register">Register</button>
+              {% else %}
+                <button type="button" class="btn btn-login">Login</button>
               {% endif %}
-              <li><a href="{% url 'website:settings' %}">Settings</a></li>
-              <li><a href="#" class="feedback text-capitalize">Send feedback</a></li>
-            {% endif %}
-            <li><a href="/logout/">Logout</a></li>
-          </ul>
-        {% elif not user.is_authenticated %}
-          <div class="unauth-nav">
-            {% if request.path != '/register/' %}
-              <button type="button" class="btn btn-register">Register</button>
-            {% else %}
-              <button type="button" class="btn btn-login">Login</button>
-            {% endif %}
-          </div>
-        {% endif %}
-      </nav> <!-- .cd-primary-nav -->
+            </div>
+          {% endif %}
+        </nav> <!-- .cd-primary-nav -->
 
-      {% if user.is_authenticated and not user.first_login and search_enabled %}
-        <nav class="cd-secondary-nav">
+        {% if user.is_authenticated and not user.first_login and search_enabled %}
+          <nav class="cd-secondary-nav">
 
-          <form id="mainform" action="/search/" autocomplete="off" method="POST">
-            {% csrf_token %}
+            <form id="mainform" action="/search/" autocomplete="off" method="POST">
+              {% csrf_token %}
 
-            <div id="search" class="cd-main-search is-visible">
+              <div id="search" class="cd-main-search is-visible">
 
-              <div class="searchform">
+                <div class="searchform">
 
-                <div class="cd-show-filter toggle-id-1">
-                  <i class="fa fa-bars" aria-hidden="true"></i>
+                  <div class="cd-show-filter toggle-id-1">
+                    <i class="fa fa-bars" aria-hidden="true"></i>
+                  </div>
+
+                  <input class="for-mobile" type="search" name="query" placeholder="Search... ">
+
+                  <div class="cd-search-button for-mobile">
+                    <button id="searchbutton" type="submit" class="btn btn-success">
+                      <i class="fa fa-search"></i>
+                    </button>
+                  </div>
+
                 </div>
-
-                <input class="for-mobile" type="search" name="query" placeholder="Search... ">
-
-                <div class="cd-search-button for-mobile">
-                  <button id="searchbutton" type="submit" class="btn btn-success">
-                    <i class="fa fa-search"></i>
-                  </button>
-                </div>
-
               </div>
-            </div>
 
-          </form>
+            </form>
 
-        </nav> <!-- .cd-secondary-nav -->
-      {% endif %}
+          </nav> <!-- .cd-secondary-nav -->
+        {% endif %}
 
-    </header> <!-- .cd-auto-hide-header -->
+      </header> <!-- .cd-auto-hide-header -->
 
-    <main class="cd-main-content mc-padding {% if its_step %}height-100{% endif %}"
-        {#    {% if profile_edit %}profile-edit{% endif %} {% if not user.first_login and profile_edit %}not-first-login{% endif %}"#}
-          style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}">
-      {% if messages and user.is_authenticated %}
-        <div class="messages"></div>
-        <div style="position:fixed;width:30%;z-index:1000;bottom:1.5%;right:1%;">
-          {% for message in messages %}
-            <div class="message alert {% if message.tags %} alert-{{ message.tags }} {% endif %} fade in"
-                 style="position:relative; z-index:1000; width:100%;">
-              <a href="#" class="close" data-dismiss="alert">&times;</a>
-              {% if message.tags %}<strong>{{ message.tags|capfirst }}!</strong>{% endif %} {{ message }}.
-            </div>
-          {% endfor %}
-        </div>
-      {% elif user.is_authenticated %}
-        <div class="messages"></div>
-      {% endif %}
-      {% block mobile_content %}{% endblock %}
-    </main> <!-- .cd-main-content -->
+      <main class="cd-main-content mc-padding {% if its_step %}height-100{% endif %}"
+          {#    {% if profile_edit %}profile-edit{% endif %} {% if not user.first_login and profile_edit %}not-first-login{% endif %}"#}
+            style="background-color:{% if not user.is_authenticated %} #25283D; min-height: 100% {% else %} white {% endif %}">
+        {% if messages and user.is_authenticated %}
+          <div class="messages"></div>
+          <div style="position:fixed;width:30%;z-index:1000;bottom:1.5%;right:1%;">
+            {% for message in messages %}
+              <div class="message alert {% if message.tags %} alert-{{ message.tags }} {% endif %} fade in"
+                   style="position:relative; z-index:1000; width:100%;">
+                <a href="#" class="close" data-dismiss="alert">&times;</a>
+                {% if message.tags %}<strong>{{ message.tags|capfirst }}!</strong>{% endif %} {{ message }}.
+              </div>
+            {% endfor %}
+          </div>
+        {% elif user.is_authenticated %}
+          <div class="messages"></div>
+        {% endif %}
+        {% block mobile_content %}{% endblock %}
+      </main> <!-- .cd-main-content -->
 
-    <a href="#0" class="cd-top"></a>
+      <a href="#0" class="cd-top"></a>
 
-    {% block mobile_footer %}
-      <footer class="footer align-items-center">
-        <div class="container align-items-center h-100">
-          <nav class="navbar navbar-expand navbar-light bg-white h-100 align-middle">
-            <a class="navbar-brand" href="{% url 'landing:home' %}">
-              <span>Bear founders&nbsp;</span>
-              <span class="copyright">
+      {% block mobile_footer %}
+        <footer class="footer align-items-center">
+          <div class="container align-items-center h-100">
+            <nav class="navbar navbar-expand navbar-light bg-white h-100 align-middle">
+              <a class="navbar-brand" href="{% url 'landing:home' %}">
+                <span>Bear founders&nbsp;</span>
+                <span class="copyright">
             <i class="fa fa-copyright" aria-hidden="true"></i>&nbsp;2017
             </span>
-            </a>
-            <ul class="navbar-nav navbar-right">
-              <li class="nav-item">
-                <span class="navbar-text align-middle">Social media:</span>
-              </li>
-              <li class="nav-item">
+              </a>
+              <ul class="navbar-nav navbar-right">
+                <li class="nav-item">
+                  <span class="navbar-text align-middle">Social media:</span>
+                </li>
+                <li class="nav-item">
                 <span class="navbar-text">
                   <a class="nav-link" href="https://www.facebook.com/Bearfounders/"  target="_blank"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
                 </span>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </footer>
-    {% endblock mobile_footer %}
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </footer>
+      {% endblock mobile_footer %}
+
+    </div>
 
   </div>
 
