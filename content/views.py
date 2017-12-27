@@ -17,6 +17,7 @@ from dal import autocomplete
 class StoryListView(LoginRequiredMixin, ListView):
     model = Story
     queryset = Story.objects.filter(published=True).order_by('-created_at')
+    template_name = 'content/story_list.html'
 
     def get_context_data(self, **kwargs):
         context = super(StoryListView, self).get_context_data(**kwargs)

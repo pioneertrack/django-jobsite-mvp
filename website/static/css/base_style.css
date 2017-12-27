@@ -347,7 +347,7 @@ main {
   align-items: center;
   display: flex;
 }
-main footer .navbar .navbar-brand {
+main footer .navbar-brand {
   padding: 0 0 0 110px;
   min-width: 110px;
   color: black;
@@ -363,11 +363,13 @@ main footer .navbar .navbar-brand {
   background-size: auto 100%;
 }
 
-main footer .navbar .copyright {
+main footer .copyright {
   color: #747373;
 }
 footer .navbar {
   margin-bottom: 0;
+  display: flex;
+  flex-flow: row nowrap;
 }
 footer .navbar-text {
   margin-top: 0;
@@ -384,12 +386,39 @@ footer .fa-facebook-square {
   display: inline-block;
   vertical-align: middle;
 }
+
+.footer {
+  
+  }
+  .footer .container.f-inner {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    }
+  .footer .container.f-inner:before,
+  .footer .container.f-inner:after {
+    display: none;
+    }
+    .footer .social {
+      margin-left: 10px;
+      font-size: 18px;
+      }
+    .footer .social a {
+      margin-left: 5px;
+      }
+
 @media (max-width: 540px) {
   .navbar-brand {
     font-size: 0;
   }
   .navbar-brand .copyright{
-    font-size: 1.25rem;
+    font-size: 18px;
+    /*font-size: 1.25rem;*/
+  }
+  .footer > .container {
+    margin: 0;
+    width: 100%;
   }
 }
 @media (max-width: 390px) {
@@ -397,7 +426,7 @@ footer .fa-facebook-square {
     font-size: 0;
   }
   .navbar-brand .copyright{
-    font-size: 0;
+    /*font-size: 0;*/
   }
   .card {
     height: auto;
@@ -410,6 +439,9 @@ footer .fa-facebook-square {
   
   .card-body {
     height: auto;
+  }
+  .footer .social {
+    font-size: 0;
   }
 }
 @media (max-width: 320px) {

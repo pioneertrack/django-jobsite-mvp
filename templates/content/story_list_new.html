@@ -18,15 +18,15 @@
     <div class="row">
       <div class="f-moto pb-5 pt-5">
         <div class="f-moto-shader"></div>
-        <nav class="navbar navbar-expand-sm">
-          <ul class="navbar-nav mx-auto smooth-scroll">
-            {% for category in object_list %}
-              <li class="nav-item text-center">
-                <a class="nav-link" href="#category-{{ category.id }}">{{ category.title }}</a>
-              </li>
-            {% endfor %}
-          </ul>
-        </nav>
+        {#        <nav class="navbar navbar-expand-sm">#}
+        {#          <ul class="navbar-nav mx-auto smooth-scroll">#}
+        {#            {% for category in object_list %}#}
+        {#              <li class="nav-item text-center">#}
+        {#                <a class="nav-link" href="#category-{{ category.id }}">{{ category.title }}</a>#}
+        {#              </li>#}
+        {#            {% endfor %}#}
+        {#          </ul>#}
+        {#        </nav>#}
         <div class="f-moto-layout pb-5 pt-5">
           <div class="container">
             <div class="row">
@@ -41,19 +41,41 @@
     </div>
   </div>
 
-  <div class="container-fluid categories">
+  <div class="container-fluid categories with-top-padding">
     <div class="container">
       <div class="row">
-        {% for item in object_list %}
+        {% for story in object_list %}
           <div class="col-sm-12 col-md-6">
-            <a class="card mb-4" href="{{ item.url }}" target="_blank">
               <div class="card-header">
                 <h4 class="card-title text-center mb-0 text-white">
-                  {{ item.title }}
+                  {{ story.title }}
                 </h4>
               </div>
               <div class="view overlay hm-white-slight">
-                <img src="{{ item.image.image.url }}" alt="{{ item.image.title }}" class="card-img">
+                <a class="card-hover" href='{{ story.get_absolute_url }}'>
+                  {% if story.youtube_id %}
+                    <div class="header-video">
+                      <div class="video">
+                        {% if story.header_image %}
+                          <img src="{{ story.header_image.image.url }}" alt="{{ story.header_image.image.title }}"/>
+                          {#                            <i class="fa fa-youtube-play" aria-hidden="true"></i>#}
+                        {% else %}
+                          <img src="http://img.youtube.com/vi/{{ story.youtube_id }}/mqdefault.jpg">
+                          {#                            <i class="fa fa-youtube-play" aria-hidden="true"></i>#}
+                        {% endif %}
+                      </div>
+                    </div>
+                  {% else %}
+                    <div class="header-bg">
+                      <div class="avatar">
+                        {% if story.header_image %}
+                          <img src="{{ story.header_image.image.url }}" alt="{{ story.header_image.image.title }}"/>
+                        {% endif %}
+                      </div>
+                      <h2>{{ story.header_name }}</h2>
+                    </div>
+                  {% endif %}
+{#                <img src="{{ item.image.image.url }}" alt="{{ item.image.title }}" class="card-img">#}
               </div>
               <div class="card-body">
                 <p class="card-text">
@@ -87,10 +109,10 @@
 {#                        <div class="video">#}
 {#                          {% if story.header_image %}#}
 {#                            <img src="{{ story.header_image.image.url }}" alt="{{ story.header_image.image.title }}"/>#}
-                            {#                            <i class="fa fa-youtube-play" aria-hidden="true"></i>#}
+{#                            <i class="fa fa-youtube-play" aria-hidden="true"></i>#}
 {#                          {% else %}#}
 {#                            <img src="http://img.youtube.com/vi/{{ story.youtube_id }}/mqdefault.jpg">#}
-                            {#                            <i class="fa fa-youtube-play" aria-hidden="true"></i>#}
+{#                            <i class="fa fa-youtube-play" aria-hidden="true"></i>#}
 {#                          {% endif %}#}
 {#                        </div>#}
 {#                      </div>#}
