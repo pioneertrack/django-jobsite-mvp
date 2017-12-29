@@ -10,159 +10,100 @@
   {% if is_mobile %}{{ block.super }}{% endif %}
 {% endblock search_panel %}
 
-{% if is_mobile %}
+{% block content %}
 
-  {% block mobile_content %}
-
-    <div class='container'
-{#         style="padding-top: 30px; padding-bottom:30px;"#}
-    >
-      <div class='row'>
-
-        {% for story in object_list %}
-
-            <div class="col col-md-4 item">
-
-                <div class="card story-card text-">
-                  <a class="card-hover" href='{{ story.get_absolute_url }}'>
-                    {% if story.youtube_id %}
-                    <div class="header-video">
-                        <div class="video">
-                          {% if story.header_image %}
-                            <img src="{{ story.header_image.image.url }}" alt="{{ story.header_image.image.title }}"/>
-                            {#                            <i class="fa fa-youtube-play" aria-hidden="true"></i>#}
-                          {% else %}
-                            <img src="http://img.youtube.com/vi/{{ story.youtube_id }}/mqdefault.jpg">
-                            {#                            <i class="fa fa-youtube-play" aria-hidden="true"></i>#}
-                          {% endif %}
-                        </div>
-                    </div>
-                    {% else %}
-                      <div class="header-bg">
-                        <div class="avatar">
-                          {% if story.header_image %}
-                            <img src="{{ story.header_image.image.url }}" alt="{{ story.header_image.image.title }}"/>
-                          {% endif %}
-                        </div>
-                        <h2>{{ story.header_name }}</h2>
-                      </div>
-                    {% endif %}
-                  </a>
-                  <div class="offer-content">
-                    <div class="info">
-                      <a class="card-hover" href='{{ story.get_absolute_url }}'>
-                        <h3>{{ story.title }}</h3>
-                      </a>
-                      <div class="pcomp"></div>
-                    </div>
-                    <div class="description">
-                      <p>{{ story.description|apply_markup:'creole' }}</p>
-                    </div>
-                  </div>
-                </div>
-            </div>
-
-        {% endfor %}
-
-      </div>
-    </div>
-
-  {% endblock %}
-
-{% else %}
-
-  {% block content %}
-
-    <div class="container-fluid page-header">
-      <div class="row">
-        <div class="f-moto pb-5 pt-5">
-          <div class="f-moto-shader"></div>
-          <nav class="navbar navbar-expand-sm">
-            <ul class="navbar-nav mx-auto smooth-scroll">
-              {% for category in object_list %}
-                <li class="nav-item text-center">
-                  <a class="nav-link" href="#category-{{ category.id }}">{{ category.title }}</a>
-                </li>
-              {% endfor %}
-            </ul>
-          </nav>
-          <div class="f-moto-layout pb-5 pt-5">
-            <div class="container">
-              <div class="row">
-                <div class="col-12">
-                  <h1 class="f-moto-title mb-4 text-center">Startup Templates</h1>
-                  <h3 class="f-moto-subtitle text-center">Pitch Deck, Contract, NDA templates & more for your startup needs!</h3>
-                </div>
+  <div class="container-fluid page-header">
+    <div class="row">
+      <div class="f-moto pb-5 pt-5">
+        <div class="f-moto-shader"></div>
+        <div class="f-moto-layout pb-5 pt-5">
+          <div class="container">
+            <div class="row">
+              <div class="col-12">
+                <h1 class="f-moto-title mb-4 text-center">Bear Founders Stories</h1>
+                <h3 class="f-moto-subtitle text-center">Success stories of Bear Founders users!</h3>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <div class='container-fluid categories'>
-        <div class='row'>
-
-          <div id="category-{{ category.id }}" class="col-12 c-title pt-4 pb-3 mb-4">
-            <div class="container c-title-inner">
-              <h2 class="text-center text-white">Some title{{ category.title }}</h2>
-            </div>
-          </div>
-
-          <div class="container">
-            <div class="row">
+  <div class='container-fluid stories'>
+    <div class='row'>
+      <div class="container">
+        <div class="row">
 
           {% for story in object_list %}
 
-              <div class="col col-md-4 item">
-                  <div class="card story-card">
-                    {% if story.youtube_id %}
-                      <div class="header-video">
-                        <a class="card-hover" href='{{ story.get_absolute_url }}'>
-                        <div class="video">
-                            {% if story.header_image %}
-                              <img src="{{ story.header_image.image.url }}" alt="{{ story.header_image.image.title }}"/>
-                            {% else  %}
-                              <img src="http://img.youtube.com/vi/{{ story.youtube_id }}/mqdefault.jpg">
-                            {% endif %}
-                        </div>
-                        </a>
-                      </div>
-                    {% else %}
-                      <a class="card-hover" href='{{ story.get_absolute_url }}'>
-                      <div class="header-bg">
-                        <div class="avatar">
-                            {% if story.header_image %}
-                              <img src="{{ story.header_image.image.url }}"  alt="{{ story.header_image.image.title }}"/>
-                            {% endif %}
-                        </div>
-                        <h2 class="text-white">{{ story.header_name }}</h2>
-                      </div>
-                      </a>
-                    {% endif %}
+            <div class="col-sm-12 col-md-6">
+              <div class="card mb-4 story-card">
+                {% if story.youtube_id %}
+                  <a href="{{ story.get_absolute_url }}" class="view overlay hm-white-slight">
+                      {% if story.header_image %}
+                        <img src="{{ story.header_image.image.url }}" alt="{{ story.header_image.image.title }}" class="card-img"/>
+                      {% else %}
+                        <img src="http://img.youtube.com/vi/{{ story.youtube_id }}/mqdefault.jpg" class="card-img">
+                      {% endif %}
+                  </a>
+{#                  <div class="header-video">#}
+{#                    <a class="card-hover" href='{{ story.get_absolute_url }}'>#}
+{#                      <div class="video">#}
+{#                        {% if story.header_image %}#}
+{#                          <img src="{{ story.header_image.image.url }}" alt="{{ story.header_image.image.title }}"/>#}
+{#                        {% else %}#}
+{#                          <img src="http://img.youtube.com/vi/{{ story.youtube_id }}/mqdefault.jpg">#}
+{#                        {% endif %}#}
+{#                      </div>#}
+{#                    </a>#}
+{#                  </div>#}
+                {% else %}
+                  <a href="{{ story.get_absolute_url }}" class="view overlay hm-white-slight">
+                      {% if story.header_image %}
+                        <img src="{{ story.header_image.image.url }}" alt="{{ story.header_image.image.title }}" class="card-img"/>
+                      {% endif %}
+                  </a>
+
+{#                  <a class="card-hover" href='{{ story.get_absolute_url }}'>#}
+{#                    <div class="header-bg">#}
+{#                      <div class="avatar">#}
+{#                        {% if story.header_image %}#}
+{#                          <img src="{{ story.header_image.image.url }}" alt="{{ story.header_image.image.title }}"/>#}
+{#                        {% endif %}#}
+{#                      </div>#}
+{#                      <h2 class="text-white">{{ story.header_name }}</h2>#}
+{#                    </div>#}
+{#                  </a>#}
+                {% endif %}
+                <div class="card-body text-center">
+                    <a class="card-hover" href='{{ story.get_absolute_url }}'>
+                      <h3>{{ story.title }}</h3>
                     </a>
-                    <div class="offer-content">
-                      <div class="info">
-                        <a class="card-hover" href='{{ story.get_absolute_url }}'>
-                          <h3>{{ story.title }}</h3>
-                        </a>
-                        <div class="pcomp"></div>
-                      </div>
-                      <div class="description">
-                        {{ story.description|apply_markup:'creole' }}
-                      </div>
-                    </div>
-                  </div>
+                    {{ story.description|apply_markup:'creole' }}
+                </div>
+
+
+{#                <div class="offer-content">#}
+{#                  <div class="info">#}
+{#                    <a class="card-hover" href='{{ story.get_absolute_url }}'>#}
+{#                      <h3>{{ story.title }}</h3>#}
+{#                    </a>#}
+{#                    <div class="pcomp"></div>#}
+{#                  </div>#}
+{#                  <div class="description">#}
+{#                    {{ story.description|apply_markup:'creole' }}#}
+{#                  </div>#}
+{#                </div>#}
               </div>
+            </div>
 
           {% endfor %}
-
-            </div>
-          </div>
 
         </div>
       </div>
 
-  {% endblock content %}
+    </div>
+  </div>
 
-{% endif %}
+{% endblock content %}

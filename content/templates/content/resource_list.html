@@ -7,19 +7,6 @@
   Resources page
 {% endblock %}
 
-{#{% block body_start %}#}
-{#  <style type="text/css">#}
-{#  {% for category in object_list %}#}
-{#    a[id="category-{{ category.id }}"]:target#}
-{##}
-{#  {% endfor %}#}
-{#  </style>#}
-{##}
-{#  {% for category in object_list %}#}
-{#    <a id="category-{{ category.id }}"></a>#}
-{#  {% endfor %}#}
-{#{% endblock body_start %}#}
-
 {% block search_panel %}
   {% if is_mobile %}{{ block.super }}{% endif %}
 {% endblock search_panel %}

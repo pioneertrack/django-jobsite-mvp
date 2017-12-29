@@ -139,46 +139,24 @@
         {% endif %}
         {% block mobile_content %}{% endblock %}
 
-      {% block mobile_footer %}
-      <footer class="footer">
-        <div class="container f-inner">
-            <a class="navbar-brand" href="{% url 'landing:home' %}">
-              <span>Bear founders&nbsp;</span>
-              <span class="copyright">
-                <i class="fa fa-copyright" aria-hidden="true"></i>&nbsp;2017
-              </span>
-            </a>
-            <span class="social">
-              Social media:
-              <a class="nav-link" href="https://www.facebook.com/Bearfounders/"  target="_blank">
-                <i class="fa fa-facebook-square" aria-hidden="true"></i>
+        {% block mobile_footer %}
+        <footer class="footer">
+          <div class="container f-inner">
+              <a class="navbar-brand" href="{% url 'landing:home' %}">
+                <span>Bear founders&nbsp;</span>
+                <span class="copyright">
+                  <i class="fa fa-copyright" aria-hidden="true"></i>&nbsp;2017
+                </span>
               </a>
-            </span>
-        </div>
-      </footer>
-{#        <footer class="footer align-items-center">#}
-{#          <div class="container align-items-center h-100">#}
-{#            <nav class="navbar navbar-expand navbar-light bg-white h-100 align-middle">#}
-{#              <a class="navbar-brand" href="{% url 'landing:home' %}">#}
-{#                <span>Bear founders&nbsp;</span>#}
-{#                <span class="copyright">#}
-{#            <i class="fa fa-copyright" aria-hidden="true"></i>&nbsp;2017#}
-{#            </span>#}
-{#              </a>#}
-{#              <ul class="navbar-nav navbar-right">#}
-{#                <li class="nav-item">#}
-{#                  <span class="navbar-text align-middle">Social media:</span>#}
-{#                </li>#}
-{#                <li class="nav-item">#}
-{#                <span class="navbar-text">#}
-{#                  <a class="nav-link" href="https://www.facebook.com/Bearfounders/"  target="_blank"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>#}
-{#                </span>#}
-{#                </li>#}
-{#              </ul>#}
-{#            </nav>#}
-{#          </div>#}
-{#        </footer>#}
-      {% endblock mobile_footer %}
+              <span class="social">
+                Social media:
+                <a class="nav-link" href="https://www.facebook.com/Bearfounders/"  target="_blank">
+                  <i class="fa fa-facebook-square" aria-hidden="true"></i>
+                </a>
+              </span>
+          </div>
+        </footer>
+        {% endblock mobile_footer %}
 
       </main> <!-- .cd-main-content -->
 
@@ -553,33 +531,8 @@
                 <i class="fa fa-facebook-square" aria-hidden="true"></i>
               </a>
             </span>
-{#            <a class="nav-link" href="https://www.facebook.com/Bearfounders/"  target="_blank">#}
-{#              <i class="fa fa-facebook-square" aria-hidden="true"></i>#}
-{#            </a>#}
         </div>
       </footer>
-{#      <footer class="footer align-items-center">#}
-{#        <div class="container align-items-center h-100">#}
-{#          <nav class="navbar navbar-expand navbar-light bg-white h-100 align-middle">#}
-{#            <a class="navbar-brand" href="{% url 'landing:home' %}">#}
-{#              <span>Bear founders&nbsp;</span>#}
-{#              <span class="copyright">#}
-{#            <i class="fa fa-copyright" aria-hidden="true"></i>&nbsp;2017#}
-{#            </span>#}
-{#            </a>#}
-{#            <ul class="navbar-nav navbar-right">#}
-{#              <li class="nav-item">#}
-{#                <span class="navbar-text align-middle">Social media:</span>#}
-{#              </li>#}
-{#              <li class="nav-item">#}
-{#                <span class="navbar-text">#}
-{#                  <a class="nav-link" href="https://www.facebook.com/Bearfounders/"  target="_blank"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>#}
-{#                </span>#}
-{#              </li>#}
-{#            </ul>#}
-{#          </nav>#}
-{#        </div>#}
-{#      </footer>#}
     {% endblock footer %}
 
   </main> <!-- .cd-main-content -->

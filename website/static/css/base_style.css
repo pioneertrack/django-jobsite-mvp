@@ -414,7 +414,6 @@ footer .fa-facebook-square {
   }
   .navbar-brand .copyright{
     font-size: 18px;
-    /*font-size: 1.25rem;*/
   }
   .footer > .container {
     margin: 0;
@@ -425,21 +424,6 @@ footer .fa-facebook-square {
   .navbar-brand {
     font-size: 0;
   }
-  .navbar-brand .copyright{
-    /*font-size: 0;*/
-  }
-  .card {
-    height: auto;
-  }
-  
-  .card .view.overlay.hm-white-slight {
-    height: 12rem;
-    overflow: hidden;
-  }
-  
-  .card-body {
-    height: auto;
-  }
   .footer .social {
     font-size: 0;
   }
@@ -448,4 +432,7 @@ footer .fa-facebook-square {
   footer .navbar-light .navbar-text {
     font-size: 0;
   }
+}
+.with-top-padding .container-fluid {
+  padding-top: 1.5rem;
 }

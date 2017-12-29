@@ -26,18 +26,6 @@ class StoryListView(LoginRequiredMixin, ListView):
 
 
 @method_decorator(check_profiles, 'get')
-class StoryListViewNew(LoginRequiredMixin, ListView):
-    model = Story
-    template_name = 'content/story_list_new.html'
-    queryset = Story.objects.filter(published=True).order_by('-created_at')
-
-    def get_context_data(self, **kwargs):
-        context = super(StoryListViewNew, self).get_context_data(**kwargs)
-        context.update(JOB_CONTEXT)
-        return context
-
-
-@method_decorator(check_profiles, 'get')
 class StoryDetailView(LoginRequiredMixin, DetailView):
     model = Story
 
