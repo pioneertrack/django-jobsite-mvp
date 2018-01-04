@@ -33,23 +33,23 @@
         <form id="profile_form" method="POST" enctype="multipart/form-data" class="profileForm">
           {% csrf_token %}
           <div id="smartwizard">
-            <ul>
-              <li><a href="#step-0">Step 1<br/>
-                <small>About you</small>
-              </a></li>
-              <li><a href="#step-1">Step 2<br/>
-                <small>Skills</small>
-              </a></li>
-              <li><a href="#step-2">Step 3<br/>
-                <small>School</small>
-              </a></li>
-              <li><a href="#step-3">Step 4<br/>
-                <small>Professional</small>
-              </a></li>
-              <li><a href="#step-4">Step 5<br/>
-                <small>Complete</small>
-              </a></li>
-            </ul>
+              <ul>
+                <li><a href="#step-0">Step 1<br/>
+                  <small>About you</small>
+                </a></li>
+                <li><a href="#step-1">Step 2<br/>
+                  <small>Skills</small>
+                </a></li>
+                <li><a href="#step-2">Step 3<br/>
+                  <small>School</small>
+                </a></li>
+                <li><a href="#step-3">Step 4<br/>
+                  <small>Professional</small>
+                </a></li>
+                <li><a href="#step-4">Step 5<br/>
+                  <small>Complete</small>
+                </a></li>
+              </ul>
 
             <div {% if errors %} class="missing-data" {% endif %}>
 

@@ -399,3 +399,13 @@ a.fill-out-later{
   overflow: hidden;
   clear: both;
 }
+@media screen and (max-width: 768px) {
+  .sw-theme-default>.nav-tabs>li {
+    float: left!important;
+  }
+}
+@media screen and (max-width: 470px) {
+  .sw-theme-default>.nav-tabs>li {
+    float: none!important;
+  }
+}

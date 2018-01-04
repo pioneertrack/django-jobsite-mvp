@@ -403,6 +403,7 @@ footer .fa-facebook-square {
     .footer .social {
       margin-left: 10px;
       font-size: 18px;
+      color: #747373;
       }
     .footer .social a {
       margin-left: 5px;
@@ -435,4 +436,10 @@ footer .fa-facebook-square {
 }
 .with-top-padding .container-fluid {
   padding-top: 1.5rem;
+}
+.cd-main-content.flex-display {
+  display: flex;
+}
+.cd-main-content.flex-display .container-wrapper {
+  width: 100%;
 }
