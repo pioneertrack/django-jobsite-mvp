@@ -38,7 +38,7 @@
 
 {% block body_start %}{% endblock body_start %}
 
-{% if is_mobile %}
+{% if is_mobile and user.is_authenticated %}
 
   <div off-canvas="id-1 left reveal" class="mobile-filters search-select">
     <div class="mobile-filter-header">
@@ -232,7 +232,7 @@
 
 {% endif %}
 
-{% if is_mobile %}
+{% if is_mobile and user.is_authenticated %}
   <div canvas="container">
 {% endif %}
 
@@ -252,66 +252,79 @@
         <ul class="navbar-nav">
           {% if is_mobile %}
 
-            {% if user.is_individual %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'website:profile' %}">My profile</a>
-            </li>
+            {% if user.is_authenticated %}
+
+              {% if user.is_individual %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'website:profile' %}">My profile</a>
+              </li>
+              {% endif %}
+              {% if user.is_founder %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'website:startup_profile' %}">Startup
+                  profile</a>
+              </li>
+              {% endif %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'website:settings' %}">Settings</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link feedback" href="#">Give feedback</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'auth_logout' %}">Logout</a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'auth_login' %}">Login</a>
+              </li>
             {% endif %}
-            {% if user.is_founder %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'website:startup_profile' %}">Startup
-                profile</a>
-            </li>
-            {% endif %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'website:settings' %}">Settings</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link feedback" href="#">Give feedback</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'auth_logout' %}">Logout</a>
-            </li>
 
           {% else %}
 
-            <li class="nav-item">
-              <input id="searchChoice2" form="mainform" name="select-category" value="startups" type="radio">
-              <label class="nav-link" for="searchChoice2">Startups</label>
-            </li>
-            <li class="nav-item">
-              <input id="searchChoice3" form="mainform" name="select-category" value="jobs" type="radio">
-              <label class="nav-link" for="searchChoice3">Jobs</label>
-            </li>
-            <li class="nav-item">
-              <input id="searchChoice1" form="mainform" name="select-category" value="people" type="radio">
-              <label class="nav-link" for="searchChoice1">Members</label>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'content:stories' %}">Stories</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'content:templates' %}">Templates</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="dropdown" data-toggle="dropdown"
-                 aria-haspopup="true"
-                 aria-expanded="false">
-                My profile
-              </a>
-              <div class="dropdown-menu" aria-labelledby="dropdown">
-                {% if user.is_individual %}
-                  <a class="dropdown-item" href="{% url 'website:profile' %}">My profile</a>
-                {% endif %}
-                {% if user.is_founder %}
-                  <a class="dropdown-item" href="{% url 'website:startup_profile' %}">Startup
-                    profile</a>
-                {% endif %}
-                <a class="dropdown-item" href="{% url 'website:settings' %}">Settings</a>
-                <a class="dropdown-item feedback" href="#">Give feedback</a>
-                <a class="dropdown-item" href="{% url 'auth_logout' %}">Logout</a>
-              </div>
-            </li>
+            {% if user.is_authenticated %}
+              <li class="nav-item">
+                <input id="searchChoice2" form="mainform" name="select-category" value="startups" type="radio">
+                <label class="nav-link" for="searchChoice2">Startups</label>
+              </li>
+              <li class="nav-item">
+                <input id="searchChoice3" form="mainform" name="select-category" value="jobs" type="radio">
+                <label class="nav-link" for="searchChoice3">Jobs</label>
+              </li>
+              <li class="nav-item">
+                <input id="searchChoice1" form="mainform" name="select-category" value="people" type="radio">
+                <label class="nav-link" for="searchChoice1">Members</label>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'content:stories' %}">Stories</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'content:templates' %}">Templates</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdown" data-toggle="dropdown"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                  My profile
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdown">
+                  {% if user.is_individual %}
+                    <a class="dropdown-item" href="{% url 'website:profile' %}">My profile</a>
+                  {% endif %}
+                  {% if user.is_founder %}
+                    <a class="dropdown-item" href="{% url 'website:startup_profile' %}">Startup
+                      profile</a>
+                  {% endif %}
+                  <a class="dropdown-item" href="{% url 'website:settings' %}">Settings</a>
+                  <a class="dropdown-item feedback" href="#">Give feedback</a>
+                  <a class="dropdown-item" href="{% url 'auth_logout' %}">Logout</a>
+                </div>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'auth_login' %}">Login</a>
+              </li>
+            {% endif %}
 
           {% endif %}
         </ul>
@@ -321,49 +334,51 @@
 
   {% block search_panel %}
 
-  <div class="second-nav">
+    {% if user.is_authenticated %}
+      <div class="second-nav">
 
-   <form  id="mainform" action="/search/" autocomplete="off" method="POST">
-      {% csrf_token %}
-      <div class="navbar navbar-expand-lg navbar-dark">
-        <div class="">
-          <button class="navbar-toggler" type="button">
-            <span class="navbar-toggler-icon toggle-id-1"></span>
-          </button>
+       <form  id="mainform" action="/search/" autocomplete="off" method="POST">
+          {% csrf_token %}
+          <div class="navbar navbar-expand-lg navbar-dark">
+            <div class="">
+              <button class="navbar-toggler" type="button">
+                <span class="navbar-toggler-icon toggle-id-1"></span>
+              </button>
 
-          {% if not is_mobile %}
-            <div class="collapse navbar-collapse">
-              <ul class="navbar-nav">
-                {% for item in p_context %}
-                  <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="{{ item.0 }}" data-toggle="dropdown"
-                       aria-haspopup="true"
-                       aria-expanded="false">
-                      {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
-                    </a>
-                    <div class="dropdown-menu custom-scrollbar" aria-labelledby="{{ item.0 }}">
-                      {% for subitem in item.1 %}
-                        <input type="checkbox" name="{{ item.0 }}" id="{{ subitem.0 }}"
-                               value="{{ subitem.0 }}">
-                        <label class="dropdown-item" for="{{ subitem.0 }}">{{ subitem.1 }}</label>
-                      {% endfor %}
-                    </div>
-                  </li>
-                {% endfor %}
-              </ul>
+              {% if not is_mobile %}
+                <div class="collapse navbar-collapse">
+                  <ul class="navbar-nav">
+                    {% for item in p_context %}
+                      <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="{{ item.0 }}" data-toggle="dropdown"
+                           aria-haspopup="true"
+                           aria-expanded="false">
+                          {% if item.2.name %}{{ item.2.name }}{% else %}{{ item.0 }}{% endif %}
+                        </a>
+                        <div class="dropdown-menu custom-scrollbar" aria-labelledby="{{ item.0 }}">
+                          {% for subitem in item.1 %}
+                            <input type="checkbox" name="{{ item.0 }}" id="{{ subitem.0 }}"
+                                   value="{{ subitem.0 }}">
+                            <label class="dropdown-item" for="{{ subitem.0 }}">{{ subitem.1 }}</label>
+                          {% endfor %}
+                        </div>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
             </div>
-          {% endif %}
-        </div>
 
-        <div class="search">
-          <input type="search" placeholder="Search by name or keywords..." name="query" placeholder="Search... ">
-          <button class="search-btn" id="searchbutton" type="submit">Go</button>
-        </div>
+            <div class="search">
+              <input type="search" placeholder="Search by name or keywords..." name="query" placeholder="Search... ">
+              <button class="search-btn" id="searchbutton" type="submit">Go</button>
+            </div>
+          </div>
+
+        </form>
+
       </div>
-
-    </form>
-
-  </div>
+    {% endif %}
 
   {% endblock search_panel %}
 
@@ -395,7 +410,7 @@
 </div>
 
 
-{% if is_mobile %}
+{% if is_mobile and user.is_authenticated %}
   </div>
 {% endif %}
 
