@@ -23,7 +23,6 @@
       <link href="{% static 'css/new_main.css' %}" rel="stylesheet"/>
       {% if is_mobile %}
         <link rel="stylesheet" href="{% static 'slidebars-fork/dist/slidebars.min.css' %}" type="text/css">
-        <link rel="stylesheet" href="{% static 'css/base_style.css' %}" type="text/css">
       {% else %}
         <link href="{% static 'jquery.mCustomScrollbar.css' %}" rel="stylesheet"/>
       {% endif %}
@@ -240,7 +239,6 @@
 <div class="wrapper">
 
   <header class="header">
-    {#        <header class="header fixed-top">#}
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
       <a class="navbar-brand" href="{% url 'landing:home' %}">
         <span>Bear founders</span>
@@ -373,7 +371,29 @@
 
   <a href="#0" class="cd-top"></a>
 
+  {% block footer %}
+    <footer class="footer align-items-center">
+      <div class="container align-items-center h-100">
+        <nav class="navbar navbar-expand navbar-light bg-white h-100 align-middle">
+          <a class="navbar-brand" href="{% url 'landing:home' %}">
+            <span>Bear founders&nbsp;</span>
+            <span class="copyright">
+          <i class="fa fa-copyright" aria-hidden="true"></i>&nbsp;2017
+          </span>
+          </a>
+          <ul class="navbar-nav ml-auto align-middle">
+            <span class="navbar-text align-middle social">Social media:</span>
+            <li class="nav-item">
+              <a class="nav-link" href="https://www.facebook.com/Bearfounders/"  target="_blank"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </footer>
+  {% endblock footer %}
+
 </div>
+
 
 {% if is_mobile %}
   </div>

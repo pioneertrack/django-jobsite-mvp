@@ -1,0 +1,29 @@
+{% extends 'new/base.html' %}
+{% load static from staticfiles %}
+{% load i18n %}
+
+{% block title %}
+{% trans "Page not found" %}
+{% endblock %}
+
+{% block search_panel %}
+  {% if is_mobile %}{{ block.super }}{% endif %}
+{% endblock search_panel %}
+
+{% block content %}
+  <div class="jumbotron jumbotron-fluid error-rise">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-12">
+          <h1 class="error-code">400</h1>
+        </div>
+        <div class="col-md-12 error-message">
+          Bad request
+        </div>
+        <div class="col-md-12">
+          <a class="link" href="{% url 'landing:home' %}">home</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

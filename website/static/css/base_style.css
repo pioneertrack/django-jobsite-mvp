@@ -153,7 +153,8 @@ html {
     min-height: 100%;
 }
 body {
-    min-height: 100%;
+  position: relative;
+    min-height: 100vh;
 }
 height-100 {
     height: 100%
@@ -330,4 +331,115 @@ height-100 {
 
 .height-100 {
   height: 100%;
+}
+main {
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: 11.5rem;
+}
+
+.footer {
+  border-top: solid 3px #8F3985;
+  position: absolute;
+  width: 100%;
+  height: 11.5rem;
+  bottom: 0;
+  align-items: center;
+  display: flex;
+}
+main footer .navbar-brand {
+  padding: 0 0 0 110px;
+  min-width: 110px;
+  color: black;
+  width: auto;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  text-transform: uppercase;
+  font-weight: bold;
+  background: url("../favicon/logo.png") center left no-repeat;
+  -webkit-background-size: 100% auto;
+  background-size: auto 100%;
+}
+
+main footer .copyright {
+  color: #747373;
+}
+footer .navbar {
+  margin-bottom: 0;
+  display: flex;
+  flex-flow: row nowrap;
+}
+footer .navbar-text {
+  margin-top: 0;
+  margin-bottom: 0;
+  align-self: center;
+  font-size: 2.25rem;
+  text-transform: capitalize;
+  color: #747373;
+}
+footer .fa-facebook-square {
+  margin: -5px 0 0;
+  color: #5064b0;
+  font-size: 5rem;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.footer {
+  
+  }
+  .footer .container.f-inner {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    }
+  .footer .container.f-inner:before,
+  .footer .container.f-inner:after {
+    display: none;
+    }
+    .footer .social {
+      margin-left: 10px;
+      font-size: 18px;
+      color: #747373;
+      }
+    .footer .social a {
+      margin-left: 5px;
+      }
+
+@media (max-width: 540px) {
+  .navbar-brand {
+    font-size: 0;
+  }
+  .navbar-brand .copyright{
+    font-size: 18px;
+  }
+  .footer > .container {
+    margin: 0;
+    width: 100%;
+  }
+}
+@media (max-width: 390px) {
+  .navbar-brand {
+    font-size: 0;
+  }
+  .footer .social {
+    font-size: 0;
+  }
+}
+@media (max-width: 320px) {
+  footer .navbar-light .navbar-text {
+    font-size: 0;
+  }
+}
+.with-top-padding .container-fluid {
+  padding-top: 1.5rem;
+}
+.cd-main-content.flex-display {
+  display: flex;
+}
+.cd-main-content.flex-display .container-wrapper {
+  width: 100%;
 }

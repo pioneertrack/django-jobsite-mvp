@@ -125,7 +125,7 @@
   .jumbotron {
     padding-top: 30px !important;
     padding-bottom: 30px !important;
-    margin-bottom: 30px !important;
+    /*margin-bottom: 30px !important;*/
   }
 
   #profile-hero {
@@ -398,4 +398,14 @@ a.fill-out-later{
 .profile-form-container .inline-container {
   overflow: hidden;
   clear: both;
+}
+@media screen and (max-width: 768px) {
+  .sw-theme-default>.nav-tabs>li {
+    float: left!important;
+  }
+}
+@media screen and (max-width: 470px) {
+  .sw-theme-default>.nav-tabs>li {
+    float: none!important;
+  }
 }

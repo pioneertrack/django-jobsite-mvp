@@ -1,3 +1,10 @@
+[off-canvas*=left], [off-canvas*=right] {
+  width: 87vw;
+}
+[off-canvas] {
+  color: white;
+  background-color: #25283d;
+}
 .checkboxes .top {
   font-size: 1.2rem;
 }
@@ -12,6 +19,12 @@
 }
 .checkboxes .filter-container.search-category a {
   font-size: 0.9rem;
+  position: relative;
+  padding: 5px 40px 5px 20px;
+  display: block;
+  transition: all 0.1s ease;
+  color: white;
+  font-weight: bold;
 }
 .checkboxes .filter-container label {
   font-size: 0.9rem;

@@ -632,3 +632,19 @@ def test_mail(request):
     message = render_to_string('email/startup_profile_incomplete.txt', {'profile': user.profile})
     user.email_user('You startup profile is incomplete', message, 'noreply@bearfounders.com')
     return HttpResponseRedirect('/')
+
+
+def handler404(request):
+    return render(request, '404.html', JOB_CONTEXT)
+
+
+def handler500(request):
+    return render(request, '500.html', JOB_CONTEXT)
+
+
+def handler400(request):
+    return render(request, '400.html', JOB_CONTEXT)
+
+
+def test(request):
+    return render(request, 'test.html', JOB_CONTEXT)
