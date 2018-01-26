@@ -237,7 +237,7 @@
   <div canvas="container">
 {% endif %}
 
-<div class="wrapper {% if request.path == "/incorporation/" %}static-page{% endif %}">
+<div class="wrapper {% if request.path == "/incorporation/" and not is_mobile %}static-page{% endif %}">
 
   <header class="header">
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
