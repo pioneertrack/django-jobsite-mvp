@@ -12,7 +12,7 @@
 
 {% block content %}
 
-  <div class="container-fluid page-header single-page-wrapper">
+  <div class="container-fluid page-header {% if not is_mobile %}single-page-wrapper{% endif %}">
     <div class="row">
       <div class="f-moto pb-5 pt-5">
         <div class="f-moto-shader"></div>
