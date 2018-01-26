@@ -6,5 +6,6 @@ urlpatterns = [
     url(r'^story/(?P<slug>[\w-]+)/$', StoryDetailView.as_view(), name="story_detail", ),
     url(r'^templates/$', ResourceListView.as_view(), name="templates"),
     url(r'^template/(?P<slug>[\w-]+)/$', ResourceDetailView.as_view(), name="template_detail", ),
+    url(r'^incorporation/$', IncorporationView.as_view(), name="incorporation"),
     url(r'^picture-autocomplete/$', PictureAutocomplete.as_view(), name='picture-autocomplete', ),
 ]

@@ -211,6 +211,7 @@
         </label>
         <a href="{% url 'content:stories' %}">Stories</a>
         <a href="{% url 'content:templates' %}">Templates</a>
+        <a href="{% url 'content:incorporation' %}">Incorporation</a>
       </div>
     </div>
 
@@ -395,7 +396,20 @@
                     <a href="{% url 'content:stories' %}">Stories</a>
                   </li>
                   <li>
-                    <a href="{% url 'content:templates' %}">Templates</a>
+                    <div id="resources_holder">
+                      <div class="nice-select-li filter small" tabindex="0">
+                        <span class="current text-capitalize">Resources</span>
+                        <div class="filler"></div>
+                        <ul class="list text-capitalize">
+                          <li class="option">
+                            <a href="{% url 'content:templates' %}">Templates</a>
+                          </li>
+                          <li class="option">
+                            <a href="{% url 'content:incorporation' %}">Incorporation</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
                   </li>
                   <li>
                     <div id="profiles_holder">
