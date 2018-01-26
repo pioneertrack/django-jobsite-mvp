@@ -705,18 +705,35 @@ header > * > .navbar {
 .card .card-body .card-hover h3 {
   color: #25283D;
 }
-.wrapper.static-page {
-  height: 100vh;
-}
-.single-page-wrapper {
-  display: flex;
-  padding-left: 0;
-  padding-right: 0;
-  padding-bottom: 5.0rem;
-  height: 100%;
-}
-.single-page-wrapper .row {
-  width: 100%;
-  margin-right: 0;
-  margin-left: 0;
+/*.wrapper.static-page {*/
+  /*height: 100vh;*/
+/*}*/
+/*.single-page-wrapper {*/
+  /*display: flex;*/
+  /*padding-left: 0;*/
+  /*padding-right: 0;*/
+  /*padding-bottom: 5.0rem;*/
+  /*height: 100%;*/
+/*}*/
+/*.single-page-wrapper .row {*/
+  /*width: 100%;*/
+  /*margin-right: 0;*/
+  /*margin-left: 0;*/
+/*}*/
+@media (min-height: 650px) {
+  .wrapper.static-page {
+    height: 100vh;
+  }
+  .single-page-wrapper {
+    display: flex;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 5.0rem;
+    height: 100%;
+  }
+  .single-page-wrapper .row {
+    width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+  }
 }
