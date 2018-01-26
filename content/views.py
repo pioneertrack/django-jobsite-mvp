@@ -1,6 +1,5 @@
 from django.shortcuts import render
-from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView
+from django.views.generic import ListView, DetailView, View
 
 from search.views import JOB_CONTEXT
 from content.models import *
@@ -55,6 +54,19 @@ class ResourceDetailView(LoginRequiredMixin, DetailView):
         context = super(ResourceDetailView, self).get_context_data(**kwargs)
         context.update(JOB_CONTEXT)
         return context
+
+
+@method_decorator(check_profiles, 'get')
+class IncorporationView(LoginRequiredMixin, View):
+    template_name = 'content/incorporation_view.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(IncorporationView, self).get_context_data(**kwargs)
+        context.update(JOB_CONTEXT)
+        return context
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
 
 
 @method_decorator(user_passes_test(lambda u: u.is_superuser), 'get')

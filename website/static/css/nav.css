@@ -271,3 +271,20 @@ ul#cd-navigation div.nice-select-li ul.list li {
         -ms-transform: scale(1) translateY(0);
             transform: scale(1) translateY(0);
 }
+#resources_holder {
+    padding: 0;
+}
+
+#resources_holder:hover .nice-select-li:after {
+  content: '\f106';
+}
+#resources_holder:hover .nice-select-li, .nice-select-li:focus {
+    border-color: #999;
+}
+#resources_holder:hover  .nice-select-li .list {
+    opacity: 1;
+    pointer-events: auto;
+    -webkit-transform: scale(1) translateY(0);
+        -ms-transform: scale(1) translateY(0);
+            transform: scale(1) translateY(0);
+}
