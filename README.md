@@ -19,7 +19,7 @@ Admin site can be accessed with the /admin url endpoint
 
 `profile_update`: generates inline form based on whether or not user is founder. If new data is POSTed then write to database.
 
-`get_user_view`: view someone elses profile based on user id in the URL string.
+`get_user_view`: view someone else's profile based on user id in the URL string.
 
 `index`: main page and search logic. The POST received from the search form has the following parameters:
 
@@ -46,15 +46,28 @@ CSS/JS is a main navbar with a secondary navbar under it. The main nav will hide
 
 `pip install -r requirements/prod.txt`
 
-3. Setup your local development environment by copying
+3. Set up your local development environment by copying
 
-`./berkleyconnect/local/local_setting.py` to `./berkleyconnect` directory and adjust settings (DATABASES, EMAIL Settings, etc.) in that file to meet your needs.
+`./berkeleyconnect/local/local_settings.py` to the `./berkeleyconnect` directory.
+
+ a.  If you want to use `localhost` rather than `127`, change the line to ```ALLOWED_HOSTS = ['127.0.0.1', 'localhost']```
+ b.  Set up a PostgreSQL server on your local machine and update the `DATABASE` settings to reflect this.
+ c.  If you want to be able to send emails from your local server (this is only one way to do this):
+   i.  Change your email host to `smtp.gmail.com` and your port to `587`.
+   ii.  Choose a valid email address you'd like to send from. Set up Google Two-Step Verification if you don't already have it, and generate an app password.
+   iii.  Change `EMAIL_HOST_USER` and set the password to the App Password you generated. Two-Step Verification does not need to remain on after you do this.
+   iv.  Change `EMAIL_USE_TLS` to `True`.
+ d.  If you want to be able to receive emails as an admin from your local server:
+   i.  Ensure that you followed steps in part C to establish an address will be able to send emails.
+   ii.  Choose the email address you want to use for receiving emails. Note this doesn't need to be a valid email address, but it might be useful depending on what you're working on.
+   ii.  Change `DEFAULT_FEEDBACK_EMAIL` to the receiving email address. 
+ f.  Set up `elasticsearch` if you don't already have it.
 
 4. Create local migrations
 
 `./manage.py makemigrations`
 
-After that apply migrations for database from you local settings
+After that apply migrations for database from your local settings
 
 `./manage.py migrate`
 
@@ -73,4 +86,6 @@ in common with
 
 `bower install`
 
-to fully setup assets environment
+to fully set up assets environment. 
+
+You may need to run the `elasticsearch` command while running the server in order to fully avoid any errors on the local server.
