@@ -88,4 +88,6 @@ in common with
 
 to fully set up assets environment. 
 
-You may need to run the `elasticsearch` command while running the server in order to fully avoid any errors on the local server.
+You may need to run the `elasticsearch` command while running the server in order to fully avoid any errors on the local server. 
+
+The pages for startups, jobs, and members may start off giving you a 404 error. If this is the case, you must create a startup, job, and member on your local server. This can be done in the admin site at `/admin/`, or you could create a local member profile, use that profile to create a startup, and use that startup to offer a job.
