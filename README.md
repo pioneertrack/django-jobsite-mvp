@@ -61,13 +61,10 @@ CSS/JS is a main navbar with a secondary navbar under it. The main nav will hide
    i.  Ensure that you followed steps in part C to establish an address will be able to send emails.
    ii.  Choose the email address you want to use for receiving emails. Note this doesn't need to be a valid email address, but it might be useful depending on what you're working on.
    ii.  Change `DEFAULT_FEEDBACK_EMAIL` to the receiving email address. 
+ e. Set the `TEST_EMAIL` variable so you don't accidentally send emails to end users by accident.
  f.  Set up `elasticsearch` if you don't already have it.
 
-4. Create local migrations
-
-`./manage.py makemigrations`
-
-After that apply migrations for database from your local settings
+4. Apply migrations for database from your local settings
 
 `./manage.py migrate`
 
@@ -88,6 +85,6 @@ in common with
 
 to fully set up assets environment. 
 
-You may need to run the `elasticsearch` command while running the server in order to fully avoid any errors on the local server. 
+Must have elasticsearch downloaded and run the `elasticsearch` command to set up the elasticsearch server before using `python manage.py runserver`.
 
 The pages for startups, jobs, and members may start off giving you a 404 error. If this is the case, you must create a startup, job, and member on your local server. This can be done in the admin site at `/admin/`, or you could create a local member profile, use that profile to create a startup, and use that startup to offer a job.
