@@ -50,19 +50,24 @@ CSS/JS is a main navbar with a secondary navbar under it. The main nav will hide
 
 `./berkeleyconnect/local/local_settings.py` to the `./berkeleyconnect` directory.
 
- a.  If you want to use `localhost` rather than `127`, change the line to ```ALLOWED_HOSTS = ['127.0.0.1', 'localhost']```
- b.  Set up a PostgreSQL server on your local machine and update the `DATABASE` settings to reflect this.
- c.  If you want to be able to send emails from your local server (this is only one way to do this):
-   i.  Change your email host to `smtp.gmail.com` and your port to `587`.
-   ii.  Choose a valid email address you'd like to send from. Set up Google Two-Step Verification if you don't already have it, and generate an app password.
-   iii.  Change `EMAIL_HOST_USER` and set the password to the App Password you generated. Two-Step Verification does not need to remain on after you do this.
-   iv.  Change `EMAIL_USE_TLS` to `True`.
- d.  If you want to be able to receive emails as an admin from your local server:
-   i.  Ensure that you followed steps in part C to establish an address will be able to send emails.
-   ii.  Choose the email address you want to use for receiving emails. Note this doesn't need to be a valid email address, but it might be useful depending on what you're working on.
-   ii.  Change `DEFAULT_FEEDBACK_EMAIL` to the receiving email address. 
- e. Set the `TEST_EMAIL` variable so you don't accidentally send emails to end users by accident.
- f.  Set up `elasticsearch` if you don't already have it.
+> a.If you want to use `localhost` rather than `127`, change the line to ```ALLOWED_HOSTS = ['127.0.0.1', 'localhost']```  
+>
+> b.  Set up a PostgreSQL server on your local machine and update the `DATABASE` settings to reflect this.  
+>
+> c.  If you want to be able to send emails from your local server (this is only one way to do this):  
+>>   i.  Change your email host to `smtp.gmail.com` and your port to `587`.  
+>>   ii.  Choose a valid email address you'd like to send from. Set up Google Two-Step Verification if you don't already have it, and generate an app password.  
+>>  iii.  Change `EMAIL_HOST_USER` and set the password to the App Password you generated. Two-Step Verification does not need to remain on after you do this.  
+>>   iv.  Change `EMAIL_USE_TLS` to `True`.  
+>
+> d.  If you want to be able to receive emails as an admin from your local server:  
+>>   i.  Ensure that you followed steps in part C to establish an address will be able to send emails.  
+>>   ii.  Choose the email address you want to use for receiving emails. Note this doesn't need to be a valid email address, but it might be useful depending on what you're working on.  
+>>   ii.  Change `DEFAULT_FEEDBACK_EMAIL` to the receiving email address.  
+>
+> e. Set the `TEST_EMAIL` variable so you don't accidentally send emails to end users by accident.  
+>
+> f.  Set up `elasticsearch` if you don't already have it.  
 
 4. Apply migrations for database from your local settings
 
