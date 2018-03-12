@@ -63,7 +63,9 @@ if DEBUG:
 
 ELASTICSEARCH_DSL={
     'default': {
-        'hosts': 'https://search-bearfounders-hudt5zn5xt6o2pyr2zz3o2ebqu.us-west-1.es.amazonaws.com'
+        'hosts': 'localhost:9200'
     },
 }
+
+STATICFILES_LOCATION = BASE_DIR + '/static/'
 
