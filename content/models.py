@@ -16,7 +16,7 @@ class Story(models.Model):
     description = models.TextField(max_length=256)
     content = models.TextField()
     youtube_id = models.CharField(max_length=256, null=True, blank=True)
-
+    detail = models.CharField(max_length=256, null=True, blank = True)
     def get_absolute_url(self):
         return reverse('content:story_detail', kwargs={'slug': self.slug})
 
