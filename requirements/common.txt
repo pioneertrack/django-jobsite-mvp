@@ -14,7 +14,7 @@ entrypoints==0.2.2
 html5lib==0.9999999
 MarkupSafe==0.23
 mistune==0.7.3
-nbconvert==5.1.1
+nbconvert==6.5.1
 nbformat==4.2.0
 nltk==3.2.2
 olefile==0.44
